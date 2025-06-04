@@ -48,6 +48,7 @@ class RoleController extends Controller
     public function store(StoreRoleRequest $request)
     {
         Gate::authorize('create_role');
+
         $validated = $request->validated();
 
         try {
@@ -58,7 +59,7 @@ class RoleController extends Controller
             $newRole->save();
             $newRole->permissions()->sync($newPermissions);
 
-            return back()->with('message', [
+            return redirect()->route('roles.index')->with('message', [
                 'type' => 'success',
                 'description' => 'Role created successfully',
             ]);
@@ -84,10 +85,7 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         Gate::authorize('update_role');
-
-        if ($role->name === 'Admin') {
-            abort(403, 'You are not allowed to edit the Admin role.');
-        }
+        Gate::authorize('update', $role);
 
         return Inertia::render('role/edit', [
             'availablePermissions' => Permission::pluck('name'),
@@ -103,6 +101,7 @@ class RoleController extends Controller
     public function update(UpdateRoleRequest $request, Role $role)
     {
         Gate::authorize('update_role');
+        Gate::authorize('update', $role);
 
         try {
             $validated = $request->validated();
@@ -133,6 +132,7 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         Gate::authorize('delete_role');
+        Gate::authorize('delete', $role);
 
         if ($role->name === 'Admin') {
             abort(403, 'You are not allowed to delete the Admin role.');

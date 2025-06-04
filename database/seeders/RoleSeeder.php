@@ -32,14 +32,11 @@ class RoleSeeder extends Seeder
         // }
 
         // Mengambil semua permission
-        $allPermissions = Permission::pluck('name');
-        $adminRole->givePermissionTo($allPermissions);
+        $adminRole->givePermissionTo(Permission::all());
+
 
         // Cari user admin dan assign role jika ditemukan
         $admin = User::where('email', 'admin@gmail.com')->first();
-
-        if ($admin) {
-            $admin->assignRole('Admin');
-        }
+        $admin->assignRole($adminRole);
     }
 }
