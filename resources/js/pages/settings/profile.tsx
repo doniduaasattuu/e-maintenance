@@ -1,7 +1,7 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useRef } from 'react';
 
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
@@ -22,21 +22,31 @@ const breadcrumbs: BreadcrumbItem[] = [
 type ProfileForm = {
     name: string;
     email: string;
-}
+    avatar?: File | null;
+};
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
     const { auth } = usePage<SharedData>().props;
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
+    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<ProfileForm>>({
         name: auth.user.name,
         email: auth.user.email,
+        avatar: null,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'), {
+        post(route('profile.update'), {
+            method: 'patch',
             preserveScroll: true,
+            onSuccess: () => {
+                reset('avatar');
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+            },
         });
     };
 
@@ -62,7 +72,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 placeholder="Full name"
                             />
 
-                            <InputError className="mt-2" message={errors.name} />
+                            <InputError message={errors.name} />
                         </div>
 
                         <div className="grid gap-2">
@@ -79,7 +89,22 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 placeholder="Email address"
                             />
 
-                            <InputError className="mt-2" message={errors.email} />
+                            <InputError message={errors.email} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="avatar">Avatar</Label>
+
+                            <Input
+                                id="avatar"
+                                type="file"
+                                ref={fileInputRef}
+                                className="mt-1 block w-full"
+                                onChange={(e) => setData('avatar', e.target.files?.[0] ?? null)}
+                                accept=".jpg,.jpeg,.png,.webp"
+                            />
+
+                            <InputError message={errors.avatar} />
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
