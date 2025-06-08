@@ -9,7 +9,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useIsMobile } from '@/hooks/use-mobile';
 import TableLayout from '@/layouts/table/layout';
 import { cn } from '@/lib/utils';
-import { Head } from '@inertiajs/react';
 import { Check, ListChecks, X } from 'lucide-react';
 import React, { FormEventHandler } from 'react';
 
@@ -60,8 +59,7 @@ export default function RoleForm({
 
     return (
         <React.Fragment>
-            <Head title="Roles" />
-            <TableLayout title="Roles" description="Role permission management">
+            <TableLayout title="Roles" description="Role permission management" className="md:max-w-2xl">
                 <form className="space-y-4" onSubmit={submit}>
                     <div className="grid gap-2">
                         <Label htmlFor="name">Name</Label>

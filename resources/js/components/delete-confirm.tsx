@@ -30,7 +30,7 @@ export function DeleteConfirm({ action, title, description, children }: DeleteCo
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={action}>Continue</AlertDialogAction>
+                    <AlertDialogAction onClick={action}>Delete</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

@@ -142,7 +142,6 @@ test('old avatar is deleted when uploading new one', function () {
 
     $oldStoredPath = str_replace('/storage/', '', $user->avatar);
     Storage::disk('public')->assertExists($oldStoredPath);
-    dump($oldStoredPath);
 
     $this->actingAs($user)->post('/settings/profile', [
         'name' => 'Updated User',

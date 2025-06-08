@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Meta, Role } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 
 import ButtonAdd from '@/components/button-add';
 import { DeleteConfirm } from '@/components/delete-confirm';
@@ -10,7 +10,7 @@ import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
-import { Edit, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -36,11 +36,10 @@ export default function RoleIndex({ roles }: RoleProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Roles" />
-            <TableLayout title="Roles" description="Role permission management">
+            <TableLayout title="Roles" description="Role permission management" className="md:max-w-2xl">
                 <div className="flex justify-between gap-2">
-                    <SearchBar />
-                    {can.create_role && <ButtonAdd route={route('roles.create')} label="New Role" />}
+                    <SearchBar tabIndex={1} />
+                    {can.create_role && <ButtonAdd tabIndex={2} route={route('roles.create')} label="New Role" />}
                 </div>
                 <Table>
                     <TableCaption className="text-sm">{tableCaption}</TableCaption>
@@ -50,8 +49,7 @@ export default function RoleIndex({ roles }: RoleProps) {
                             <TableHead className="text-muted-foreground">Name</TableHead>
                             <TableHead className="text-muted-foreground">Created at</TableHead>
                             <TableHead className="text-muted-foreground">Updated at</TableHead>
-                            <TableHead className="text-muted-foreground w-10"></TableHead>
-                            <TableHead className="text-muted-foreground w-10 text-right"></TableHead>
+                            {can.delete_role && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -59,27 +57,29 @@ export default function RoleIndex({ roles }: RoleProps) {
                             return (
                                 <TableRow key={role.id}>
                                     <TableCell className="w-[50px]">{meta.from + index}</TableCell>
-                                    <TableCell className="font-medium">{role.name}</TableCell>
-                                    <TableCell className="w-[90px]">{role.created_at}</TableCell>
-                                    <TableCell className="w-[90px]">{role.updated_at}</TableCell>
-                                    <TableCell className="w-10">
-                                        {can.update_role && role.name !== 'Admin' && (
-                                            <TextLink href={route('roles.edit', role.id)}>
-                                                <Edit size={18} />
-                                            </TextLink>
+                                    <TableCell className="font-medium">
+                                        {can.update_role && role.name !== 'Admin' ? (
+                                            <TextLink href={route('roles.edit', role.id)}>{role.name}</TextLink>
+                                        ) : (
+                                            <span>{role.name}</span>
                                         )}
                                     </TableCell>
-                                    <TableCell className="w-10 text-right">
-                                        {can.delete_role && role.name !== 'Admin' && (
-                                            <DeleteConfirm
-                                                action={() => handleDelete(role.id)}
-                                                title={`Delete Role ${role.name}?`}
-                                                description="This action will remove this role from all users. This cannot be undone."
-                                            >
-                                                <Trash2 size={18} className="text-red-500" />
-                                            </DeleteConfirm>
-                                        )}
-                                    </TableCell>
+                                    <TableCell className="text-muted-foreground w-[90px]">{role.created_at}</TableCell>
+                                    <TableCell className="text-muted-foreground w-[90px]">{role.updated_at}</TableCell>
+
+                                    {can.delete_role && (
+                                        <TableCell className="w-10 text-right">
+                                            {can.delete_role && role.name !== 'Admin' && (
+                                                <DeleteConfirm
+                                                    action={() => handleDelete(role.id)}
+                                                    title={`Delete Role ${role.name}?`}
+                                                    description="This action will remove this role from all users. This cannot be undone."
+                                                >
+                                                    <Trash2 size={18} className="text-red-500" />
+                                                </DeleteConfirm>
+                                            )}
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             );
                         })}
