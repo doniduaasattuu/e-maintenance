@@ -23,9 +23,16 @@ export interface NavItem {
     permission?: string;
 }
 
+type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
+
 export interface Message {
     type: 'success' | 'error' | 'warning' | 'info';
     description: string;
+    action?: {
+        label: string;
+        url: string;
+        method: HttpMethod;
+    };
 }
 
 export interface SharedData {
@@ -87,6 +94,7 @@ export interface User {
     position_id?: number;
     work_center_id?: number;
     is_online?: boolean;
+    deleted_at?: string;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...

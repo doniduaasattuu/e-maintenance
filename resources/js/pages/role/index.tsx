@@ -1,15 +1,14 @@
-import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Meta, Role } from '@/types';
-import { router } from '@inertiajs/react';
-
+import { ActionConfirm } from '@/components/action-confirm';
 import ButtonAdd from '@/components/button-add';
-import { DeleteConfirm } from '@/components/delete-confirm';
 import { GeneratePagination } from '@/components/generate-pagination';
 import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
+import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
+import { BreadcrumbItem, Meta, Role } from '@/types';
+import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -30,7 +29,7 @@ export default function RoleIndex({ roles }: RoleProps) {
     const meta = roles.meta;
     const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
 
-    function handleDelete(id: number) {
+    function handleDeleteRole(id: number) {
         router.delete(route('roles.destroy', id));
     }
 
@@ -70,13 +69,13 @@ export default function RoleIndex({ roles }: RoleProps) {
                                     {can.delete_role && (
                                         <TableCell className="w-10 text-right">
                                             {can.delete_role && role.name !== 'Admin' && (
-                                                <DeleteConfirm
-                                                    action={() => handleDelete(role.id)}
+                                                <ActionConfirm
+                                                    action={() => handleDeleteRole(role.id)}
                                                     title={`Delete Role ${role.name}?`}
                                                     description="This action will remove this role from all users. This cannot be undone."
                                                 >
                                                     <Trash2 size={18} className="text-red-500" />
-                                                </DeleteConfirm>
+                                                </ActionConfirm>
                                             )}
                                         </TableCell>
                                     )}

@@ -1,9 +1,10 @@
+import { ActionConfirm } from '@/components/action-confirm';
 import ButtonAdd from '@/components/button-add';
-import { DeleteConfirm } from '@/components/delete-confirm';
 import Filter from '@/components/filter';
 import FilterDepartment from '@/components/filter-department';
 import FilterPosition from '@/components/filter-position';
 import FilterRole from '@/components/filter-role';
+import FilterWithTrashed from '@/components/filter-with-trashed';
 import { GeneratePagination } from '@/components/generate-pagination';
 import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
@@ -15,7 +16,7 @@ import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
 import { BreadcrumbItem, Department, Meta, Position, User } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { Trash2 } from 'lucide-react';
+import { RefreshCcw, Trash2 } from 'lucide-react';
 import React from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -44,8 +45,12 @@ export default function UserIndex({ users, departments, positions, roles }: User
     const meta = users.meta;
     const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
 
-    function handleDelete(id: number) {
+    function handleDeleteUser(id: number) {
         router.delete(route('users.destroy', id));
+    }
+
+    function handleRestoreUser(id: number) {
+        router.post(route('users.restore', id));
     }
 
     return (
@@ -61,6 +66,8 @@ export default function UserIndex({ users, departments, positions, roles }: User
                             <FilterPosition positions={positions.data} setOpen={setOpen} />
                             <CommandSeparator />
                             <FilterRole roles={roles} setOpen={setOpen} />
+                            <CommandSeparator />
+                            <FilterWithTrashed setOpen={setOpen} />
                         </Filter>
                     </div>
                     {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} label="New User" />}
@@ -87,7 +94,7 @@ export default function UserIndex({ users, departments, positions, roles }: User
 
                                     <TableCell className="flex-col align-top">
                                         <div className="flex max-w-sm flex-col items-start truncate">
-                                            {can.update_user ? (
+                                            {can.update_user && user.deleted_at == null ? (
                                                 <TextLink href={route('users.edit', user.id)}>
                                                     <span className="font-medium">{user.name}</span>
                                                 </TextLink>
@@ -115,15 +122,26 @@ export default function UserIndex({ users, departments, positions, roles }: User
                                             <span className="text-muted-foreground">{user.created_at}</span>
                                         </div>
                                     </TableCell>
-                                    {can.delete_user && (
+                                    {can.delete_user && user.deleted_at === null ? (
                                         <TableCell className="w-10 flex-col text-right align-top">
-                                            <DeleteConfirm
-                                                action={() => handleDelete(user.id)}
+                                            <ActionConfirm
+                                                action={() => handleDeleteUser(user.id)}
                                                 title={`Delete User ${user.name}?`}
-                                                description="This action will remove this user from database. This cannot be undone."
+                                                description="This action will remove this user from database."
                                             >
                                                 <Trash2 size={18} className="text-red-500" />
-                                            </DeleteConfirm>
+                                            </ActionConfirm>
+                                        </TableCell>
+                                    ) : (
+                                        <TableCell className="w-10 flex-col text-right align-top">
+                                            <ActionConfirm
+                                                action={() => handleRestoreUser(user.id)}
+                                                title={`Restore User ${user.name}?`}
+                                                description="This action will restore user from database."
+                                                actionLabel="Restore"
+                                            >
+                                                <RefreshCcw size={18} className="text-blue-500" />
+                                            </ActionConfirm>
                                         </TableCell>
                                     )}
                                 </TableRow>

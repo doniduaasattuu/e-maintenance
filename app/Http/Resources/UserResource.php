@@ -31,6 +31,7 @@ class UserResource extends JsonResource
             'position' => new PositionResource(Position::find($this->position_id)),
             'work_center' => new WorkCenterResource(WorkCenter::find($this->work_center_id)),
             'is_online' => $this->is_online(),
+            'deleted_at' => $this->deleted_at?->toFormattedDateString(),
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
         ];

@@ -28,7 +28,7 @@ interface UserFormParams {
 
 export default function UserEdit({ user, departments, positions, workCenters, availableRoles, userRoles }: UserFormParams) {
     const can = usePermissions();
-    const [selectedRoles, setSelectedRoles] = React.useState<string[]>(userRoles);
+    const [selectedRoles, setSelectedRoles] = React.useState<string[]>(userRoles ?? []);
     const { data, setData, post, processing, errors, reset } = useForm<Required<UserFormData>>({
         name: user.data.name,
         employee_id: user.data.employee_id,
@@ -46,6 +46,7 @@ export default function UserEdit({ user, departments, positions, workCenters, av
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('users.update', user.data.id), {
+            // forceFormData: true,
             onSuccess: () => {
                 reset('avatar');
 

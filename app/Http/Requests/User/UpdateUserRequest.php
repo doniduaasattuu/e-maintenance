@@ -19,6 +19,13 @@ class UpdateUserRequest extends FormRequest
         return auth()->user()->hasPermissionTo('update_user');
     }
 
+    public function prepareForValidation()
+    {
+        $this->mergeIfMissing([
+            'selectedRoles' => [],
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

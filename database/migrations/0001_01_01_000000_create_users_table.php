@@ -54,6 +54,7 @@ return new class extends Migration
             $table->unsignedBigInteger('work_center_id')->nullable();
             $table->timestamp('last_activity')->nullable();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('department_id')->references('id')->on('departments')->cascadeOnUpdate()->nullOnDelete();

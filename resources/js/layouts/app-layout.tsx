@@ -3,7 +3,7 @@ import { useAppearance } from '@/hooks/use-appearance';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { cfl } from '@/lib/utils';
 import { SharedData, type BreadcrumbItem } from '@/types';
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import React, { type ReactNode } from 'react';
 import { toast } from 'sonner';
 
@@ -20,6 +20,29 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
         if (message) {
             toast[message.type](cfl(message?.type), {
                 description: message?.description,
+                action: message.action && {
+                    label: message.action.label,
+                    onClick: () => {
+                        const { url, method } = message.action!;
+
+                        switch (method.toLowerCase()) {
+                            case 'get':
+                                router.get(url);
+                                break;
+                            case 'post':
+                                router.post(url);
+                                break;
+                            case 'put':
+                                router.put(url);
+                                break;
+                            case 'delete':
+                                router.delete(url);
+                                break;
+                            default:
+                                console.warn('Unsupported method:', method);
+                        }
+                    },
+                },
             });
         }
     }, [message]);

@@ -125,7 +125,15 @@ class UserController extends Controller
 
         $validated = $request->validated();
 
-        $user->update($validated);
+        $user->update([
+            'name' => $validated['name'],
+            'employee_id' => $validated['employee_id'],
+            'email' => $validated['email'],
+            'phone_number' => $validated['phone_number'],
+            'department_id' => $validated['department_id'],
+            'position_id' => $validated['position_id'],
+            'work_center_id' => $validated['work_center_id'],
+        ]);
 
         if ($request->hasFile('avatar')) {
 
@@ -141,7 +149,9 @@ class UserController extends Controller
             $user->avatar = "/storage/" . $avatarPath;
         }
 
-        $user->syncRoles($validated['selectedRoles']);
+        if ($request->filled('selectedRoles')) {
+            $user->syncRoles($validated['selectedRoles']);
+        }
 
         $user->save();
 
@@ -158,19 +168,29 @@ class UserController extends Controller
     {
         Gate::authorize('delete_user');
 
-        if ($user->avatar) {
-            $oldAvatarPath = str_replace('/storage/', '', $user->avatar);
-
-            if (Storage::disk('public')->exists($oldAvatarPath)) {
-                Storage::disk('public')->delete($oldAvatarPath);
-            }
-        }
-
         $user->delete();
 
         return back()->with('message', [
             'type' => 'success',
             'description' => 'User deleted successfully',
+            'action' => [
+                'label' => 'Undo',
+                'url' => route('users.restore', $user->id),
+                'method' => 'post',
+            ]
+        ]);
+    }
+
+    public function restore($id)
+    {
+        Gate::authorize('restore_user');
+
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+
+        return back()->with('message', [
+            'type' => 'success',
+            'description' => 'User restored successfully',
         ]);
     }
 }

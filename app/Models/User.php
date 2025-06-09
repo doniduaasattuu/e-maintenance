@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,  HasRoles;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -31,7 +32,6 @@ class User extends Authenticatable
         'department_id',
         'departments',
         'position_id',
-        // 'position_id',
         'work_center_id',
     ];
 
@@ -67,6 +67,7 @@ class User extends Authenticatable
         $departmentCode = $request->query('department');
         $positionCode = $request->query('position');
         $roleName = $request->query('role');
+        $withTrashed = $request->boolean('withTrashed');
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
@@ -92,6 +93,10 @@ class User extends Authenticatable
             if ($roleExists) {
                 $builder->role($roleName);
             }
+        }
+
+        if ($withTrashed) {
+            $builder->withTrashed();
         }
     }
 
