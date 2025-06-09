@@ -14,11 +14,16 @@ class DatabaseCleaner extends Seeder
      */
     public function run(): void
     {
-        DB::table('model_has_permissions')->truncate();
-        DB::table('model_has_roles')->truncate();
-        DB::table('role_has_permissions')->truncate();
-        DB::table('permissions')->truncate();
-        DB::table('roles')->truncate();
-        DB::table('users')->truncate();
+        DB::table('users')->delete();
+        DB::table('work_centers')->delete();
+        DB::table('positions')->delete();
+        DB::table('departments')->delete();
+        DB::table('divisions')->delete();
+
+        DB::table('model_has_permissions')->delete();
+        DB::table('model_has_roles')->delete();
+        DB::table('role_has_permissions')->delete();
+        DB::table('permissions')->delete();
+        DB::table('roles')->delete();
     }
 }

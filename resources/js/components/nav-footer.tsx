@@ -25,7 +25,7 @@ export function NavFooter({
                                 <SidebarMenuButton
                                     isActive={page.url.includes(item.href)}
                                     asChild
-                                    className="text-neutral-600 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-100"
+                                    className={`${page.url.includes(item.href) ? 'hover:text-neutral-800 dark:hover:text-neutral-100' : 'text-neutral-600 dark:text-neutral-300'}`}
                                 >
                                     <Link href={item.href} prefetch>
                                         {item.icon && <item.icon />}

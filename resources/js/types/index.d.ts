@@ -23,9 +23,16 @@ export interface NavItem {
     permission?: string;
 }
 
+type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
+
 export interface Message {
     type: 'success' | 'error' | 'warning' | 'info';
     description: string;
+    action?: {
+        label: string;
+        url: string;
+        method: HttpMethod;
+    };
 }
 
 export interface SharedData {
@@ -39,12 +46,55 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export interface Division {
+    id: number;
+    code: string;
+    name: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Department {
+    id: number;
+    code: string;
+    name: string;
+    division?: Division;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Position {
+    id: number;
+    code: string;
+    name: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface WorkCenter {
+    id: number;
+    code: string;
+    name: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface User {
     id: number;
+    employee_id: string;
     name: string;
     email: string;
+    phone_number?: string;
     avatar?: string;
     email_verified_at: string | null;
+    department?: Department;
+    position?: Position;
+    work_center?: WorkCenter;
+    department_id?: number;
+    position_id?: number;
+    work_center_id?: number;
+    is_online?: boolean;
+    deleted_at?: string;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...

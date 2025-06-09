@@ -14,7 +14,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $models = ['Role', 'User', 'Loan'];
-        $actions = ['create', 'read', 'update', 'delete'];
+        $actions = ['create', 'read', 'update', 'delete', 'restore'];
 
         foreach ($models as $model) {
             foreach ($actions as $action) {

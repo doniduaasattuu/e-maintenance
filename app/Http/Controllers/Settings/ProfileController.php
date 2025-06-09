@@ -47,6 +47,7 @@ class ProfileController extends Controller
             $avatarPath = $request->file(('avatar'))->store('avatars', 'public');
             $user->avatar = "/storage/" . $avatarPath;
         }
+
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }

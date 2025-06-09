@@ -14,7 +14,7 @@ beforeEach(function () {
     Permission::create(['name' => 'delete_role']);
 });
 
-function createAdminUser(): User
+function createAdmin(): User
 {
     $admin = User::factory()->create();
     $role = Role::create(['name' => 'Admin']);
@@ -29,7 +29,7 @@ function createNormalUser(): User
 }
 
 test('admin can create role with valid data', function () {
-    $admin = createAdminUser();
+    $admin = createAdmin();
 
     $this->actingAs($admin)
         ->from(route('roles.create'))
@@ -43,7 +43,7 @@ test('admin can create role with valid data', function () {
 });
 
 test('admin cannot create role with invalid data', function () {
-    $admin = createAdminUser();
+    $admin = createAdmin();
 
     $this->actingAs($admin)
         ->post('/roles', [
@@ -54,7 +54,7 @@ test('admin cannot create role with invalid data', function () {
 });
 
 test('admin cannot create duplicate role', function () {
-    $admin = createAdminUser();
+    $admin = createAdmin();
     Role::create(['name' => 'Supervisor']);
 
     $this->actingAs($admin)
@@ -67,7 +67,7 @@ test('admin cannot create duplicate role', function () {
 });
 
 test('admin can update role', function () {
-    $admin = createAdminUser();
+    $admin = createAdmin();
     $role = Role::create(['name' => 'Supervisor']);
     $editPage = route('roles.edit', $role->id);
 
@@ -83,7 +83,7 @@ test('admin can update role', function () {
 });
 
 test('admin cannot update Admin role', function () {
-    $admin = createAdminUser();
+    $admin = createAdmin();
     $role = Role::where('name', 'Admin')->first();
 
     $this->actingAs($admin)
@@ -92,7 +92,7 @@ test('admin cannot update Admin role', function () {
 });
 
 test('admin can delete role other than Admin', function () {
-    $admin = createAdminUser();
+    $admin = createAdmin();
     $role = Role::create(['name' => 'Temporary']);
 
     $this->actingAs($admin)
@@ -104,7 +104,7 @@ test('admin can delete role other than Admin', function () {
 });
 
 test('admin cannot delete Admin role', function () {
-    $admin = createAdminUser();
+    $admin = createAdmin();
     $role = Role::where('name', 'Admin')->first();
 
     $this->actingAs($admin)
@@ -113,7 +113,7 @@ test('admin cannot delete Admin role', function () {
 });
 
 test('admin can access role routes', function () {
-    $admin = createAdminUser();
+    $admin = createAdmin();
 
     $this->actingAs($admin)
         ->get('/roles')

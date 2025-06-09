@@ -8,6 +8,7 @@ test('registration screen can be rendered', function () {
 
 test('new users can register', function () {
     $response = $this->post('/register', [
+        'employee_id' => (string) fake()->randomNumber(8, true),
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',

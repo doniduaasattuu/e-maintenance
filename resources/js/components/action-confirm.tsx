@@ -10,14 +10,15 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-interface DeleteConfirmProps {
+interface ActionConfirmProps {
     action: () => void;
     title?: string;
     description?: string;
     children: React.ReactNode | undefined;
+    actionLabel?: string;
 }
 
-export function DeleteConfirm({ action, title, description, children }: DeleteConfirmProps) {
+export function ActionConfirm({ action, title, description, actionLabel, children }: ActionConfirmProps) {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -30,7 +31,7 @@ export function DeleteConfirm({ action, title, description, children }: DeleteCo
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={action}>Continue</AlertDialogAction>
+                    <AlertDialogAction onClick={action}>{actionLabel ?? 'Delete'}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

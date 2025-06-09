@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -43,6 +44,11 @@ class HandleInertiaRequests extends Middleware
         $permissions = [];
 
         if ($user) {
+
+            // UPDATE USER LAST ACTIVITY
+            $user->last_activity = Carbon::now();
+            $user->save();
+
             foreach ($user->roles as $role) {
                 foreach ($role->permissions as $permission) {
                     $permissions[] = $permission->name;

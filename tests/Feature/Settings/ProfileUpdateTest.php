@@ -142,7 +142,6 @@ test('old avatar is deleted when uploading new one', function () {
 
     $oldStoredPath = str_replace('/storage/', '', $user->avatar);
     Storage::disk('public')->assertExists($oldStoredPath);
-    dump($oldStoredPath);
 
     $this->actingAs($user)->post('/settings/profile', [
         'name' => 'Updated User',
@@ -163,6 +162,7 @@ test('old avatar is deleted when uploading new one', function () {
 
 test('user can delete their account', function () {
     $user = User::factory()->create();
+    expect($user->deleted_at)->toBeNull();
 
     $response = $this
         ->actingAs($user)
@@ -175,7 +175,7 @@ test('user can delete their account', function () {
         ->assertRedirect('/');
 
     $this->assertGuest();
-    expect($user->fresh())->toBeNull();
+    expect($user->fresh()->deleted_at)->not()->toBeNull();
 });
 
 test('correct password must be provided to delete account', function () {
