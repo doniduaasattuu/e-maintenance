@@ -7,4 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class WorkCenter extends Model
 {
     protected $table = 'work_centers';
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

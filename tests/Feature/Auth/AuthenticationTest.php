@@ -18,6 +18,9 @@ test('users can authenticate using the login screen', function () {
 
     $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
+    event(new \App\Events\UserActivityDetected($user->fresh()));
+
+    expect($user->refresh()->isOnline())->toBe(true);
 });
 
 test('users can not authenticate with invalid password', function () {

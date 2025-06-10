@@ -19,6 +19,7 @@ beforeEach(function () {
     Permission::create(['name' => 'read_user']);
     Permission::create(['name' => 'update_user']);
     Permission::create(['name' => 'delete_user']);
+    Permission::create(['name' => 'restore_user']);
 });
 
 function createAdminUser(): User
@@ -163,7 +164,7 @@ test('update fails validation', function () {
     $response->assertSessionHasErrors(['name', 'employee_id', 'email']);
 });
 
-test('destroy deletes user', function () {
+test('can soft deletes user', function () {
     $user = User::factory()->create();
 
     $response = $this
@@ -172,4 +173,23 @@ test('destroy deletes user', function () {
     $response->assertSessionHas('message.description', 'User deleted successfully');
 
     expect(User::find($user->id))->toBeNull();
+    expect(User::withTrashed()->find($user->id))->not()->toBeNull();
+});
+
+test('can restore deleted user', function () {
+    $user = User::factory()->create();
+    $admin = createAdminUser();
+
+    $response = $this
+        ->actingAs($admin)
+        ->delete(route('users.destroy', $user->id));
+    $response->assertSessionHas('message.description', 'User deleted successfully');
+
+    expect(User::find($user->id))->toBeNull();
+    expect(User::withTrashed()->find($user->id))->not()->toBeNull();
+
+    $response = $this
+        ->actingAs($admin)
+        ->post(route('users.restore', $user->id));
+    $response->assertSessionHas('message.description', 'User restored successfully');
 });

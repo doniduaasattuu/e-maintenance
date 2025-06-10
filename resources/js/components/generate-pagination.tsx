@@ -15,21 +15,6 @@ interface PaginationProps {
     meta: Meta;
 }
 
-// function mergeQueryWithUrl(rawUrl: string | null): string {
-//     if (!rawUrl) return '#';
-
-//     const currentParams = new URLSearchParams(window.location.search);
-//     const newUrl = new URL(rawUrl, window.location.origin);
-
-//     currentParams.forEach((value, key) => {
-//         if (!newUrl.searchParams.has(key)) {
-//             newUrl.searchParams.set(key, value);
-//         }
-//     });
-
-//     return newUrl.pathname + '?' + newUrl.searchParams.toString();
-// }
-
 export function GeneratePagination({ meta }: PaginationProps) {
     const isHavePagination = meta.links.length > 3;
     return isHavePagination ? (
@@ -45,17 +30,26 @@ export function GeneratePagination({ meta }: PaginationProps) {
                             {isEllipsis ? (
                                 <PaginationEllipsis />
                             ) : isPrevious ? (
-                                // <Link href={mergeQueryWithUrl(link.url)} as="button" preserveScroll>
-                                <Link href={link.url ?? '#'} as="button" preserveScroll>
+                                <Link
+                                    href={link.url ?? '#'}
+                                    as="button"
+                                    preserveScroll
+                                    disabled={link.url == null}
+                                    className={`${link.url == null ? 'cursor-not-allowed' : undefined}`}
+                                >
                                     <PaginationPrevious isActive={link.active} className={!link.url ? 'pointer-events-none opacity-50' : ''} />
                                 </Link>
                             ) : isNext ? (
-                                // <Link href={mergeQueryWithUrl(link.url)} as="button" preserveScroll>
-                                <Link href={link.url ?? '#'} as="button" preserveScroll>
+                                <Link
+                                    href={link.url ?? '#'}
+                                    as="button"
+                                    preserveScroll
+                                    disabled={link.url == null}
+                                    className={`${link.url == null ? 'cursor-not-allowed' : undefined}`}
+                                >
                                     <PaginationNext isActive={link.active} className={!link.url ? 'pointer-events-none opacity-50' : ''} />
                                 </Link>
                             ) : (
-                                // <Link href={mergeQueryWithUrl(link.url)} as="button" preserveScroll>
                                 <Link href={link.url ?? '#'} as="button" preserveScroll>
                                     <PaginationLink isActive={link.active}>{link.label}</PaginationLink>
                                 </Link>

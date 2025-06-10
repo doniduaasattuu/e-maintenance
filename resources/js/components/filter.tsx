@@ -24,7 +24,7 @@ export default function Filter({ children, open, setOpen }: FilterProps) {
                     <Settings2 />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent align={align} className="w-[200px] justify-between p-0 sm:w-full">
+            <PopoverContent align={align} className="w-[250px] justify-between p-0 sm:w-full">
                 <Command>
                     <CommandList>{children}</CommandList>
                     <CommandSeparator />

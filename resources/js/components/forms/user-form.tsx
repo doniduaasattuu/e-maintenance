@@ -75,8 +75,8 @@ export default function UserForm({
     return (
         <React.Fragment>
             <TableLayout title="Users" description="User management">
-                <form className="space-y-4" onSubmit={submit}>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2">
+                <form className="space-y-6" onSubmit={submit}>
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="name">Name</Label>
                             <Input
@@ -111,7 +111,7 @@ export default function UserForm({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input
@@ -143,7 +143,7 @@ export default function UserForm({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="department">Department</Label>
                             <Select disabled={processing} onValueChange={(e) => setData('department_id', e)} value={data.department_id}>
@@ -189,7 +189,7 @@ export default function UserForm({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="work_center">Work Center</Label>
                             <Select disabled={processing} onValueChange={(e) => setData('work_center_id', e)} value={data.work_center_id}>

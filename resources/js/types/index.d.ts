@@ -93,7 +93,7 @@ export interface User {
     department_id?: number;
     position_id?: number;
     work_center_id?: number;
-    is_online?: boolean;
+    isOnline?: boolean;
     deleted_at?: string;
     created_at: string;
     updated_at: string;
