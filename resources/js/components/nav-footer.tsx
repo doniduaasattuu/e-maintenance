@@ -23,7 +23,9 @@ export function NavFooter({
                         return shouldRender ? (
                             <SidebarMenuItem key={item.title}>
                                 <SidebarMenuButton
-                                    isActive={page.url.includes(item.href)}
+                                    isActive={
+                                        item.children ? item.children.some((target) => page.url.includes(target)) : page.url.includes(item.href)
+                                    }
                                     asChild
                                     className={`${page.url.includes(item.href) ? 'hover:text-neutral-800 dark:hover:text-neutral-100' : 'text-neutral-600 dark:text-neutral-300'}`}
                                 >

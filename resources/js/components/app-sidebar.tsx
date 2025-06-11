@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BadgeCheck, LayoutGrid, Users2 } from 'lucide-react';
+import { BadgeCheck, Building2, LayoutGrid, Users2 } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -27,6 +27,13 @@ const footerNavItems: NavItem[] = [
         href: '/roles',
         icon: BadgeCheck,
         permission: 'read_role',
+    },
+    {
+        title: 'Organizations',
+        href: '/organizations/departments',
+        icon: Building2,
+        permission: 'read_department',
+        children: ['/organizations/departments', '/organizations/divisions', '/organizations/work-centers'],
     },
 ];
 

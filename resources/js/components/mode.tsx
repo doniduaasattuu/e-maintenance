@@ -1,6 +1,7 @@
 // mode.tsx
 import { Button } from '@/components/ui/button';
 import { useAppearance } from '@/hooks/use-appearance';
+import { cn } from '@/lib/utils';
 import { Monitor, Moon, Sun } from 'lucide-react';
 
 const getNextAppearance = (current: 'light' | 'dark' | 'system'): 'light' | 'dark' | 'system' => {
@@ -14,7 +15,7 @@ const getNextAppearance = (current: 'light' | 'dark' | 'system'): 'light' | 'dar
     }
 };
 
-export function ModeToggle() {
+export function ModeToggle({ className }: { className?: string }) {
     const { appearance, updateAppearance } = useAppearance();
 
     const handleToggle = () => {
@@ -22,13 +23,13 @@ export function ModeToggle() {
     };
 
     const icon = {
-        light: <Sun className="h-5 w-5" />,
-        dark: <Moon className="h-5 w-5" />,
-        system: <Monitor className="h-5 w-5" />,
+        light: <Sun />,
+        dark: <Moon />,
+        system: <Monitor />,
     };
 
     return (
-        <Button variant="ghost" onClick={handleToggle} title={`Mode: ${appearance}`}>
+        <Button variant="ghost" className={cn('h-7 w-7', className)} size="icon" onClick={handleToggle} title={`Mode: ${appearance}`}>
             {icon[appearance]}
         </Button>
     );

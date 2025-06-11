@@ -21,6 +21,7 @@ export interface NavItem {
     icon?: LucideIcon | null;
     isActive?: boolean;
     permission?: string;
+    children?: string[];
 }
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
