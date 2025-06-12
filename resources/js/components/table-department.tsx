@@ -23,7 +23,7 @@ export default function TableDepartment({ departments }: DepartmentTableProps) {
     const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
 
     function handleDeleteDepartment(id: number) {
-        router.delete(route('divisions.destroy', id));
+        router.delete(route('departments.destroy', id));
     }
 
     return (

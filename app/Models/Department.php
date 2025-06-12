@@ -11,6 +11,12 @@ class Department extends Model
 {
     protected $table = 'departments';
 
+    protected $fillable = [
+        'code',
+        'name',
+        'division_id',
+    ];
+
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
     {

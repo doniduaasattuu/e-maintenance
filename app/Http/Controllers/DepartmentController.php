@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Department\StoreDepartmentRequest;
+use App\Http\Requests\Department\UpdateDepartmentRequest;
 use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\DivisionResource;
 use App\Models\Department;
+use App\Models\Division;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class DepartmentController extends Controller
@@ -14,6 +19,7 @@ class DepartmentController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('read_department');
         $departments = Department::with('division')->search($request)->paginate()->withQueryString();
 
         return Inertia::render('department/index', [
@@ -26,15 +32,33 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        //
+        Gate::authorize('create_department');
+        $divisions = Division::all();
+
+        return Inertia::render('department/create', [
+            'divisions' => DivisionResource::collection($divisions),
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreDepartmentRequest $request)
     {
-        //
+        Gate::authorize('create_department');
+
+        $validated = $request->validated();
+
+        Department::create([
+            'code' => $validated['code'],
+            'name' => $validated['name'],
+            'division_id' => $validated['division_id'],
+        ]);
+
+        return redirect()->route('departments.index')->with('message', [
+            'type' => 'success',
+            'description' => 'Department created successfully',
+        ]);
     }
 
     /**
@@ -50,15 +74,42 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
-        //
+        Gate::authorize('update_department');
+        $divisions = Division::all();
+
+        return Inertia::render('department/edit', [
+            'department' => new DepartmentResource($department),
+            'divisions' => DivisionResource::collection($divisions),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Department $department)
+    public function update(UpdateDepartmentRequest $request, Department $department)
     {
-        //
+        Gate::authorize('update_department');
+
+
+        try {
+            $validated = $request->validated();
+
+            $department->update([
+                'name' => $validated['name'],
+                'code' => $validated['code'],
+                'division_id' => $validated['division_id'],
+            ]);
+
+            return back()->with('message', [
+                'type' => 'success',
+                'description' => 'Department updated successfully',
+            ]);
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Failed updating department',
+            ]);
+        }
     }
 
     /**
@@ -66,6 +117,13 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        //
+        Gate::authorize('delete_department');
+
+        $department->delete();
+
+        return redirect()->route('departments.index')->with('message', [
+            'type' => 'success',
+            'description' => 'Department deleted successfully',
+        ]);
     }
 }

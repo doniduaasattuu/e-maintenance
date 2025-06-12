@@ -59,6 +59,7 @@ export interface Department {
     id: number;
     code: string;
     name: string;
+    division_id: number;
     division?: Division;
     created_at: string;
     updated_at: string;
