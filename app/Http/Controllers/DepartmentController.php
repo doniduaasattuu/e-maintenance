@@ -20,6 +20,7 @@ class DepartmentController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('read_department');
+
         $departments = Department::with('division')->search($request)->paginate()->withQueryString();
 
         return Inertia::render('department/index', [
@@ -33,6 +34,7 @@ class DepartmentController extends Controller
     public function create()
     {
         Gate::authorize('create_department');
+
         $divisions = Division::all();
 
         return Inertia::render('department/create', [
@@ -75,6 +77,7 @@ class DepartmentController extends Controller
     public function edit(Department $department)
     {
         Gate::authorize('update_department');
+
         $divisions = Division::all();
 
         return Inertia::render('department/edit', [
@@ -89,7 +92,6 @@ class DepartmentController extends Controller
     public function update(UpdateDepartmentRequest $request, Department $department)
     {
         Gate::authorize('update_department');
-
 
         try {
             $validated = $request->validated();

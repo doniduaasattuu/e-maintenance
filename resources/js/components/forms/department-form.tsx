@@ -72,7 +72,7 @@ export default function DepartmentForm({ divisions, data, setData, errors, proce
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectLabel className="text-muted-foreground">Positions</SelectLabel>
+                            <SelectLabel className="text-muted-foreground">Divisions</SelectLabel>
                             {divisions.data.map((p) => {
                                 return (
                                     <SelectItem key={p.id} value={p.id.toString()}>

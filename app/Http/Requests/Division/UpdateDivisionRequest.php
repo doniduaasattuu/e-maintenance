@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Department;
+namespace App\Http\Requests\Division;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateDepartmentRequest extends FormRequest
+class UpdateDivisionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,15 +27,14 @@ class UpdateDepartmentRequest extends FormRequest
                 'required',
                 'max:50',
                 'string',
-                Rule::unique('departments', 'name')->ignore($this->department),
+                Rule::unique('departments', 'name')->ignore($this->division),
             ],
             'code' => [
                 'required',
                 'max:5',
                 'string',
-                Rule::unique('departments', 'code')->ignore($this->department),
+                Rule::unique('departments', 'code')->ignore($this->division),
             ],
-            'division_id' => ['required', 'exists:divisions,id'],
         ];
     }
 }

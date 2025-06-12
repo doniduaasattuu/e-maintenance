@@ -11,6 +11,11 @@ class Division extends Model
 {
     protected $table = 'divisions';
 
+    protected $fillable = [
+        'name',
+        'code',
+    ];
+
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
     {

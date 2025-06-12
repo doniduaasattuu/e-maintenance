@@ -24,7 +24,7 @@ export default function DepartmentIndex({ departments }: DepartmentIndexProps) {
             <Head title="Department" />
 
             <OrganizationsLayout>
-                <div className="max-w-2xl space-y-4">
+                <div className="max-w-4xl space-y-4">
                     <TableDepartment departments={departments} />
                 </div>
             </OrganizationsLayout>

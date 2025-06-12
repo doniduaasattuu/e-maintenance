@@ -1,62 +1,54 @@
-import DepartmentForm, { DepartmentFormData } from '@/components/forms/department-form';
+import DivisionForm, { DivisionFormData } from '@/components/forms/division-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import OrganizationsLayout from '@/layouts/organizations/layout';
-import { BreadcrumbItem, Division } from '@/types';
+import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Department',
-        href: '/organizations/departments',
+        title: 'Division',
+        href: '/organizations/divisions',
     },
     {
         title: 'Create',
-        href: '/organizations/departments/create',
+        href: '/organizations/divisions/{id}/create',
     },
 ];
 
-interface DepartmentCreateProps {
-    divisions: {
-        data: Division[];
-    };
-}
-
-export default function DepartmentCreate({ divisions }: DepartmentCreateProps) {
+export default function DivisionCreate() {
     const can = usePermissions();
-    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<DepartmentFormData>>({
+    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<DivisionFormData>>({
         code: '',
         name: '',
-        division_id: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('departments.store'), {
+        post(route('divisions.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                reset('name', 'code', 'division_id');
+                reset('name', 'code');
             },
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Department" />
+            <Head title="Division" />
 
             <OrganizationsLayout>
                 <div className="max-w-2xl space-y-4">
-                    <DepartmentForm
-                        divisions={divisions}
+                    <DivisionForm
                         data={data}
                         setData={setData}
                         errors={errors}
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
                         submit={submit}
-                        canSubmit={can.create_department}
+                        canSubmit={can.create_division}
                         buttonLabel="Submit"
                     />
                 </div>

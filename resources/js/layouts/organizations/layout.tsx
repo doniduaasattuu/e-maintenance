@@ -58,9 +58,7 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
 
                 <Separator className="my-6 md:hidden" />
 
-                <div className="flex-1 md:max-w-2xl">
-                    <section className="max-w-4xl space-y-12">{children}</section>
-                </div>
+                <section className="space-y-12">{children}</section>
             </div>
         </div>
     );
