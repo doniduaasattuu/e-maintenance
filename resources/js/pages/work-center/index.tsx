@@ -7,7 +7,7 @@ import { Head } from '@inertiajs/react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Work Center',
-        href: '/work-centers',
+        href: '/organizations/work-centers',
     },
 ];
 

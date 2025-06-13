@@ -49,6 +49,7 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
                                     isActive && 'bg-muted sm:bg-background text-foreground',
                                 )}
                                 prefetch
+                                cacheFor={5000}
                             >
                                 {item.title}
                             </Link>

@@ -10,6 +10,11 @@ class WorkCenter extends Model
 {
     protected $table = 'work_centers';
 
+    protected $fillable = [
+        'code',
+        'name',
+    ];
+
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
     {

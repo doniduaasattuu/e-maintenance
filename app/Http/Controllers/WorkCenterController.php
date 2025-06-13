@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\WorkCenter\StoreWorkCenterRequest;
+use App\Http\Requests\WorkCenter\UpdateWorkCenterRequest;
 use App\Http\Resources\WorkCenterResource;
 use App\Models\WorkCenter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Throwable;
 
 class WorkCenterController extends Controller
 {
@@ -26,15 +30,29 @@ class WorkCenterController extends Controller
      */
     public function create()
     {
-        //
+        Gate::authorize('create_workcenter');
+
+        return Inertia::render('work-center/create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreWorkCenterRequest $request)
     {
-        //
+        Gate::authorize('create_workcenter');
+
+        $validated = $request->validated();
+
+        WorkCenter::create([
+            'code' => $validated['code'],
+            'name' => $validated['name'],
+        ]);
+
+        return redirect()->route('work-centers.index')->with('message', [
+            'type' => 'success',
+            'description' => 'Work center created successfully',
+        ]);
     }
 
     /**
@@ -50,15 +68,38 @@ class WorkCenterController extends Controller
      */
     public function edit(WorkCenter $workCenter)
     {
-        //
+        Gate::authorize('update_workcenter');
+
+        return Inertia::render('work-center/edit', [
+            'workCenter' => new WorkCenterResource($workCenter),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, WorkCenter $workCenter)
+    public function update(UpdateWorkCenterRequest $request, WorkCenter $workCenter)
     {
-        //
+        Gate::authorize('update_workcenter');
+
+        try {
+            $validated = $request->validated();
+
+            $workCenter->update([
+                'name' => $validated['name'],
+                'code' => $validated['code'],
+            ]);
+
+            return back()->with('message', [
+                'type' => 'success',
+                'description' => 'Work center updated successfully',
+            ]);
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Failed updating work center',
+            ]);
+        }
     }
 
     /**
@@ -66,6 +107,13 @@ class WorkCenterController extends Controller
      */
     public function destroy(WorkCenter $workCenter)
     {
-        //
+        Gate::authorize('delete_workcenter');
+
+        $workCenter->delete();
+
+        return redirect()->route('work-centers.index')->with('message', [
+            'type' => 'success',
+            'description' => 'Work center deleted successfully',
+        ]);
     }
 }
