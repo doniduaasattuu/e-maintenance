@@ -28,7 +28,7 @@ class UserController extends Controller
     {
         Gate::authorize('read_user');
 
-        $users = User::search($request)->paginate(10)->withQueryString();
+        $users = User::with(['department', 'position', 'workCenter'])->search($request)->paginate(10)->withQueryString();
         $departments = Department::all();
         $positions = Position::all();
 

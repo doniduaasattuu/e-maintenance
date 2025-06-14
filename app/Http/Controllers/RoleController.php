@@ -53,11 +53,8 @@ class RoleController extends Controller
 
         try {
             $newRole = new Role(['name' => $validated['name']]);
-            $newPermissions = collect($validated['selectedPermissions'])->map(function ($permission) {
-                return Permission::where('name', $permission)->first()->id;
-            });
             $newRole->save();
-            $newRole->permissions()->sync($newPermissions);
+            $newRole->syncPermissions($validated['selectedPermissions']);
 
             return redirect()->route('roles.index')->with('message', [
                 'type' => 'success',
@@ -109,10 +106,7 @@ class RoleController extends Controller
             $role->name = $validated['name'];
             $role->save();
 
-            $selectedPermissions = collect($validated['selectedPermissions'])->map(function ($permission) {
-                return Permission::where('name', $permission)->first()->id;
-            });
-            $role->permissions()->sync($selectedPermissions);
+            $role->syncPermissions($validated['selectedPermissions']);
 
             return back()->with('message', [
                 'type' => 'success',

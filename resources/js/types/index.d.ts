@@ -21,6 +21,7 @@ export interface NavItem {
     icon?: LucideIcon | null;
     isActive?: boolean;
     permission?: string;
+    children?: string[];
 }
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
@@ -58,6 +59,7 @@ export interface Department {
     id: number;
     code: string;
     name: string;
+    division_id: number;
     division?: Division;
     created_at: string;
     updated_at: string;
@@ -93,7 +95,7 @@ export interface User {
     department_id?: number;
     position_id?: number;
     work_center_id?: number;
-    is_online?: boolean;
+    isOnline?: boolean;
     deleted_at?: string;
     created_at: string;
     updated_at: string;

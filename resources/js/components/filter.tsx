@@ -1,11 +1,10 @@
-import * as React from 'react';
-
 import { Button } from '@/components/ui/button';
 import { Command, CommandList, CommandSeparator } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { router } from '@inertiajs/react';
 import { Settings2 } from 'lucide-react';
+import * as React from 'react';
+import TextLink from './text-link';
 
 interface FilterProps {
     children: React.ReactNode;
@@ -24,18 +23,16 @@ export default function Filter({ children, open, setOpen }: FilterProps) {
                     <Settings2 />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent align={align} className="w-[200px] justify-between p-0 sm:w-full">
+            <PopoverContent align={align} className="w-[250px] justify-between p-0 sm:w-full">
                 <Command>
                     <CommandList>{children}</CommandList>
                     <CommandSeparator />
-                    <p
-                        className="text-muted-foreground cursor-pointer py-1 text-center text-sm hover:text-blue-500"
-                        onClick={() => {
-                            router.get(window.location.pathname);
-                        }}
+                    <TextLink
+                        className="text-muted-foreground cursor-pointer py-2 text-center text-sm hover:text-blue-500"
+                        href={window.location.pathname}
                     >
-                        Reset
-                    </p>
+                        Reset filter
+                    </TextLink>
                 </Command>
             </PopoverContent>
         </Popover>

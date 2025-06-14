@@ -30,9 +30,9 @@ class User extends Authenticatable
         'password',
         'avatar',
         'department_id',
-        'departments',
         'position_id',
         'work_center_id',
+        'last_activity'
     ];
 
     /**
@@ -57,22 +57,23 @@ class User extends Authenticatable
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
             'password' => 'hashed',
+            'last_activity' => 'datetime',
         ];
     }
 
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
     {
-        $search = $request->query('query');
-        $departmentCode = $request->query('department');
-        $positionCode = $request->query('position');
-        $roleName = $request->query('role');
+        $search = trim($request->query('query'));
+        $departmentCode = trim($request->query('department'));
+        $positionCode = trim($request->query('position'));
+        $roleName = trim($request->query('role'));
         $withTrashed = $request->boolean('withTrashed');
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
                 $query
-                    ->orWhere('name', 'LIKE', "%{$search}%")
+                    ->where('name', 'LIKE', "%{$search}%")
                     ->orWhere('employee_id', 'LIKE', "%{$search}%")
                     ->orWhere('phone_number', 'LIKE', "%{$search}%")
                     ->orWhere('email', 'LIKE', "%{$search}%");
@@ -87,17 +88,18 @@ class User extends Authenticatable
             $builder->whereRelation('position', 'code', $positionCode);
         }
 
-        if ($roleName) {
-            $roleExists = Role::where('name', $roleName)->where('guard_name', 'web')->exists();
-
-            if ($roleExists) {
-                $builder->role($roleName);
-            }
+        if (self::roleExists($roleName)) {
+            $builder->role($roleName);
         }
 
         if ($withTrashed) {
             $builder->withTrashed();
         }
+    }
+
+    private static function roleExists(string $roleName): bool
+    {
+        return Role::where('name', $roleName)->where('guard_name', 'web')->exists();
     }
 
     public function department()
@@ -110,9 +112,13 @@ class User extends Authenticatable
         return $this->belongsTo(Position::class);
     }
 
-
-    public function is_online(): bool
+    public function workCenter()
     {
-        return $this->last_activity && Carbon::parse($this->last_activity)->gt(Carbon::now()->subMinute(5));
+        return $this->belongsTo(WorkCenter::class);
+    }
+
+    public function isOnline(): bool
+    {
+        return $this->last_activity && $this->last_activity->gt(now()->subMinutes(5));
     }
 }

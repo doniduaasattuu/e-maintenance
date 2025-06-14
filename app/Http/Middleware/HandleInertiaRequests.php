@@ -45,19 +45,13 @@ class HandleInertiaRequests extends Middleware
 
         if ($user) {
 
-            // UPDATE USER LAST ACTIVITY
-            $user->last_activity = Carbon::now();
-            $user->save();
-
-            foreach ($user->roles as $role) {
-                foreach ($role->permissions as $permission) {
-                    $permissions[] = $permission->name;
-                }
+            if ($user) {
+                $permissions = $user->roles
+                    ->flatMap->permissions
+                    ->pluck('name')
+                    ->unique()
+                    ->mapWithKeys(fn($permission) => [$permission => true]);
             }
-
-            $permissions = collect($permissions)->unique()->map(function ($permission) {
-                return [$permission => true];
-            })->collapse();
         }
 
         return [

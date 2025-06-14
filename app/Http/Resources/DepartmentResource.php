@@ -18,6 +18,8 @@ class DepartmentResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'name' => $this->name,
+            'division_id' => $this->division_id,
+            'division' => new DivisionResource($this->whenLoaded('division')),
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
         ];

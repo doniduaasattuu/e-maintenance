@@ -46,7 +46,6 @@ export default function UserEdit({ user, departments, positions, workCenters, av
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('users.update', user.data.id), {
-            // forceFormData: true,
             onSuccess: () => {
                 reset('avatar');
 
