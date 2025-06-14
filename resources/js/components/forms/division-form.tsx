@@ -49,7 +49,7 @@ export default function DivisionForm({ data, setData, errors, processing, submit
                     id="code"
                     className="mt-1 block w-full"
                     value={data.code}
-                    onChange={(e) => setData('code', e.target.value)}
+                    onChange={(e) => setData('code', e.target.value.toUpperCase())}
                     required
                     disabled={processing}
                     autoComplete="code"

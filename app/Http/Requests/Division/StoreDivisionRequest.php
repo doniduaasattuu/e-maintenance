@@ -23,7 +23,7 @@ class StoreDivisionRequest extends FormRequest
     {
         return [
             'name' => ['required', 'max:50', 'string', 'unique:divisions,name'],
-            'code' => ['required', 'max:5', 'string', 'unique:divisions,code'],
+            'code' => ['required', 'max:5', 'string', 'uppercase', 'unique:divisions,code'],
         ];
     }
 }

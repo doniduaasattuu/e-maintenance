@@ -33,6 +33,7 @@ class UpdateDepartmentRequest extends FormRequest
                 'required',
                 'max:5',
                 'string',
+                'uppercase',
                 Rule::unique('departments', 'code')->ignore($this->department),
             ],
             'division_id' => ['required', 'exists:divisions,id'],

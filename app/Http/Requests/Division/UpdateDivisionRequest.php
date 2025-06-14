@@ -33,6 +33,7 @@ class UpdateDivisionRequest extends FormRequest
                 'required',
                 'max:5',
                 'string',
+                'uppercase',
                 Rule::unique('departments', 'code')->ignore($this->division),
             ],
         ];

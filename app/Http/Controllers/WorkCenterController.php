@@ -18,6 +18,8 @@ class WorkCenterController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('read_workcenter');
+
         $workCenters = WorkCenter::search($request)->paginate()->withQueryString();
 
         return Inertia::render('work-center/index', [

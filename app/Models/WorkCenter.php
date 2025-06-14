@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 
 class WorkCenter extends Model
 {
+    use HasFactory;
+
     protected $table = 'work_centers';
 
     protected $fillable = [

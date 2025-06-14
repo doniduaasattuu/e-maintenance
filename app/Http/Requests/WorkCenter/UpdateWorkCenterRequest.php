@@ -33,6 +33,7 @@ class UpdateWorkCenterRequest extends FormRequest
                 'required',
                 'string',
                 'size:8',
+                'regex:/^[A-Z]{3}\d{5}$/',
                 Rule::unique('work_centers', 'code')->ignore($this->work_center),
             ],
         ];

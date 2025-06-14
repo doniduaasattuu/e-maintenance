@@ -23,7 +23,13 @@ class StoreWorkCenterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:50', 'unique:work_centers,name'],
-            'code' => ['required',  'string', 'size:8', 'unique:work_centers,code'],
+            'code' => [
+                'required',
+                'string',
+                'size:8',
+                'regex:/^[A-Z]{3}\d{5}$/',
+                'unique:work_centers,code',
+            ],
         ];
     }
 }

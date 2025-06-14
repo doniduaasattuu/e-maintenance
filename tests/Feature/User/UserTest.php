@@ -22,15 +22,6 @@ beforeEach(function () {
     Permission::create(['name' => 'restore_user']);
 });
 
-function createAdminUser(): User
-{
-    $admin = User::factory()->create();
-    $role = Role::create(['name' => 'Admin']);
-    $role->givePermissionTo(Permission::all());
-    $admin->assignRole($role);
-    return $admin;
-}
-
 test('index page accessible', function () {
     User::factory()->count(3)->create();
 

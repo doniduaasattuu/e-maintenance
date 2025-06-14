@@ -55,7 +55,7 @@ export default function DepartmentForm({ divisions, data, setData, errors, proce
                     id="code"
                     className="mt-1 block w-full"
                     value={data.code}
-                    onChange={(e) => setData('code', e.target.value)}
+                    onChange={(e) => setData('code', e.target.value.toUpperCase())}
                     required
                     disabled={processing}
                     autoComplete="code"
