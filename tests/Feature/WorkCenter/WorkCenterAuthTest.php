@@ -57,6 +57,6 @@ test('guest cannot access work center edit form', function () {
     $workcenter = WorkCenter::first();
 
     $this
-        ->get(route('work-centers.edit', $workcenter))
+        ->get(route('work-centers.edit', $workcenter->id))
         ->assertRedirect(route('login'));
 });

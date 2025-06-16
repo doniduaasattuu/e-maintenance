@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
@@ -67,6 +68,7 @@ class User extends Authenticatable
         $search = trim($request->query('query'));
         $departmentCode = trim($request->query('department'));
         $positionCode = trim($request->query('position'));
+        $workCenterCode = trim($request->query('work-center'));
         $roleName = trim($request->query('role'));
         $withTrashed = $request->boolean('withTrashed');
 
@@ -88,6 +90,10 @@ class User extends Authenticatable
             $builder->whereRelation('position', 'code', $positionCode);
         }
 
+        if ($workCenterCode) {
+            $builder->whereRelation('workCenter', 'code', $workCenterCode);
+        }
+
         if (self::roleExists($roleName)) {
             $builder->role($roleName);
         }
@@ -102,17 +108,17 @@ class User extends Authenticatable
         return Role::where('name', $roleName)->where('guard_name', 'web')->exists();
     }
 
-    public function department()
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
 
-    public function position()
+    public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
     }
 
-    public function workCenter()
+    public function workCenter(): BelongsTo
     {
         return $this->belongsTo(WorkCenter::class);
     }

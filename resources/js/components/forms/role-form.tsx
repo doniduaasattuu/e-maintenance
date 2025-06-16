@@ -74,7 +74,7 @@ export default function RoleForm({
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 disabled={processing}
-                                placeholder="Role name"
+                                placeholder="Inspector"
                             />
                             <Popover open={open} onOpenChange={setOpen}>
                                 <PopoverTrigger asChild>

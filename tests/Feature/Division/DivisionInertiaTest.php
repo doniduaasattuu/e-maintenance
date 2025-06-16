@@ -55,7 +55,7 @@ test('division edit form should be rendered', function () {
     $division = Division::first();
 
     $this->actingAs($admin)
-        ->get(route('divisions.edit', $division))
+        ->get(route('divisions.edit', $division->id))
         ->assertInertia(
             fn($page) => $page
                 ->component('division/edit')

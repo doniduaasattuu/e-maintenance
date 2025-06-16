@@ -39,6 +39,7 @@ export default function DepartmentForm({ divisions, data, setData, errors, proce
                     value={data.name}
                     autoFocus
                     onChange={(e) => setData('name', e.target.value)}
+                    placeholder="ELECTRIC INSTRUMENT #2"
                     required
                     disabled={processing}
                     autoComplete="name"
@@ -56,6 +57,7 @@ export default function DepartmentForm({ divisions, data, setData, errors, proce
                     className="mt-1 block w-full"
                     value={data.code}
                     onChange={(e) => setData('code', e.target.value.toUpperCase())}
+                    placeholder="EI2"
                     required
                     disabled={processing}
                     autoComplete="code"
@@ -86,7 +88,15 @@ export default function DepartmentForm({ divisions, data, setData, errors, proce
                 <InputError message={errors.division_id} />
             </div>
 
-            <div className="flex items-center gap-4">{canSubmit && <ButtonSubmit label={buttonLabel} disabled={processing} tabIndex={4} />}</div>
+            <div className="flex items-center gap-4">
+                {canSubmit && (
+                    <ButtonSubmit
+                        label={buttonLabel}
+                        disabled={processing || data.code == '' || data.name == '' || data.division_id == ''}
+                        tabIndex={4}
+                    />
+                )}
+            </div>
         </form>
     );
 }

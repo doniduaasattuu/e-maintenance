@@ -30,7 +30,7 @@ export default function TableDepartment({ departments }: DepartmentTableProps) {
         <React.Fragment>
             <div className="flex justify-between gap-2">
                 <SearchBar />
-                {can.create_department && <ButtonAdd route={route('departments.create')} label="New Department" tabIndex={2} />}
+                {can.create_department && <ButtonAdd route={route('departments.create')} tabIndex={2} />}
             </div>
             <Table>
                 <TableCaption className="text-sm">{tableCaption}</TableCaption>

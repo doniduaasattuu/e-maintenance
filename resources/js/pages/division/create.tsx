@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Create',
-        href: '/organizations/divisions/{id}/create',
+        href: '/organizations/divisions/create',
     },
 ];
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\FunctionalLocationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkCenterController;
@@ -23,6 +24,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
     Route::resource('users', UserController::class);
+
+    Route::resource('/functional-locations', FunctionalLocationController::class);
 
     Route::resource('/organizations/departments', DepartmentController::class)->names([
         'index' => 'departments.index',

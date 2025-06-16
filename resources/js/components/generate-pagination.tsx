@@ -36,6 +36,7 @@ export function GeneratePagination({ meta }: PaginationProps) {
                                     preserveScroll
                                     disabled={link.url == null}
                                     className={`${link.url == null ? 'cursor-not-allowed' : undefined}`}
+                                    prefetch
                                 >
                                     <PaginationPrevious isActive={link.active} className={!link.url ? 'pointer-events-none opacity-50' : ''} />
                                 </Link>
@@ -46,6 +47,7 @@ export function GeneratePagination({ meta }: PaginationProps) {
                                     preserveScroll
                                     disabled={link.url == null}
                                     className={`${link.url == null ? 'cursor-not-allowed' : undefined}`}
+                                    prefetch
                                 >
                                     <PaginationNext isActive={link.active} className={!link.url ? 'pointer-events-none opacity-50' : ''} />
                                 </Link>

@@ -22,6 +22,7 @@ export interface NavItem {
     isActive?: boolean;
     permission?: string;
     children?: string[];
+    subItems?: NavItem[];
 }
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
@@ -135,4 +136,13 @@ export interface Meta {
     per_page: number;
     to: number;
     total: number;
+}
+
+// MASTER DATA
+export interface FunctionalLocation {
+    id: number;
+    code: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
 }

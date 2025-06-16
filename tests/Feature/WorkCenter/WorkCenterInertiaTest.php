@@ -54,7 +54,7 @@ test('workcenter edit form should be rendered', function () {
     $workCenter = WorkCenter::first();
 
     $this->actingAs($admin)
-        ->get(route('work-centers.edit', $workCenter))
+        ->get(route('work-centers.edit', $workCenter->id))
         ->assertInertia(
             fn($page) => $page
                 ->component('work-center/edit')

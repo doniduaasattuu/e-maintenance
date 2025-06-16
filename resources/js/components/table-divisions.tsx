@@ -30,7 +30,7 @@ export default function TableDivision({ divisions }: DivisionTableProps) {
         <React.Fragment>
             <div className="flex justify-between gap-2">
                 <SearchBar />
-                {can.create_division && <ButtonAdd route={route('divisions.create')} label="New Division" tabIndex={2} />}
+                {can.create_division && <ButtonAdd route={route('divisions.create')} tabIndex={2} />}
             </div>
             <Table>
                 <TableCaption className="text-sm">{tableCaption}</TableCaption>

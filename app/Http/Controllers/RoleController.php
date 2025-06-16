@@ -86,8 +86,7 @@ class RoleController extends Controller
 
         return Inertia::render('role/edit', [
             'availablePermissions' => Permission::pluck('name'),
-            'id' => $role->id,
-            'name' => $role->name,
+            'role' => new RoleResource($role),
             'currentPermissions' => $role->permissions->pluck('name')->toArray(),
         ]);
     }
