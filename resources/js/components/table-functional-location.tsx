@@ -49,10 +49,12 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                         return (
                             <TableRow key={functionalLocation.id}>
                                 <TableCell>
-                                    {can.update_functionallocation && (
+                                    {can.update_functionallocation ? (
                                         <TextLink href={route('functional-locations.edit', functionalLocation.id)}>
                                             <span className="font-medium">{functionalLocation.code}</span>
                                         </TextLink>
+                                    ) : (
+                                        <span className="font-medium">{functionalLocation.code}</span>
                                     )}
                                 </TableCell>
                                 <TableCell className="max-w-md truncate">{functionalLocation.description}</TableCell>
@@ -64,7 +66,7 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                                     <TableCell className="w-10 flex-col text-right align-top">
                                         <ActionConfirm
                                             action={() => handleDeleteFunctionalLocation(functionalLocation.id)}
-                                            title={`Delete data ${functionalLocation.id}?`}
+                                            title={`Delete data ${functionalLocation.code}?`}
                                             description="This action will remove this functional location from database. This action cannot be undone."
                                         >
                                             <Trash2 size={18} className="text-red-500" />

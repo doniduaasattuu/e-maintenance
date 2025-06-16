@@ -47,6 +47,7 @@ export default function FunctionalLocationForm({
                         value={data.code}
                         autoFocus
                         onChange={(e) => setData('code', e.target.value.toUpperCase())}
+                        placeholder="FP-01-PM3-CUT-RWD"
                         required
                         disabled={processing}
                         autoComplete="code"
@@ -64,6 +65,7 @@ export default function FunctionalLocationForm({
                         className="mt-1 block w-full"
                         value={data.description}
                         onChange={(e) => setData('description', e.target.value.toUpperCase())}
+                        placeholder="REWINDER #1 PM3"
                         required
                         disabled={processing}
                         autoComplete="description"
@@ -74,7 +76,7 @@ export default function FunctionalLocationForm({
 
                 {canSubmit && (
                     <div className="flex items-center gap-4">
-                        <ButtonSubmit label={buttonLabel} disabled={processing} tabIndex={3} />
+                        <ButtonSubmit label={buttonLabel} disabled={processing || data.code == '' || data.description == ''} tabIndex={3} />
 
                         <Transition
                             show={recentlySuccessful}

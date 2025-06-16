@@ -33,6 +33,7 @@ export default function WorkCenterForm({ data, setData, errors, processing, subm
                     value={data.name}
                     autoFocus
                     onChange={(e) => setData('name', e.target.value)}
+                    placeholder="ELECTRIC NON SHIFT PM37"
                     required
                     disabled={processing}
                     autoComplete="name"
@@ -50,6 +51,7 @@ export default function WorkCenterForm({ data, setData, errors, processing, subm
                     className="mt-1 block w-full"
                     value={data.code}
                     onChange={(e) => setData('code', e.target.value.toUpperCase())}
+                    placeholder="PME21001"
                     required
                     disabled={processing}
                     autoComplete="code"
@@ -58,7 +60,9 @@ export default function WorkCenterForm({ data, setData, errors, processing, subm
                 <InputError message={errors.code} />
             </div>
 
-            <div className="flex items-center gap-4">{canSubmit && <ButtonSubmit label={buttonLabel} disabled={processing} tabIndex={3} />}</div>
+            <div className="flex items-center gap-4">
+                {canSubmit && <ButtonSubmit label={buttonLabel} disabled={processing || data.code == '' || data.name == ''} tabIndex={3} />}
+            </div>
         </form>
     );
 }

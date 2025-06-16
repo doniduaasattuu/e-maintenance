@@ -33,6 +33,7 @@ export default function DivisionForm({ data, setData, errors, processing, submit
                     value={data.name}
                     autoFocus
                     onChange={(e) => setData('name', e.target.value)}
+                    placeholder="Engineering"
                     required
                     disabled={processing}
                     autoComplete="name"
@@ -50,6 +51,7 @@ export default function DivisionForm({ data, setData, errors, processing, submit
                     className="mt-1 block w-full"
                     value={data.code}
                     onChange={(e) => setData('code', e.target.value.toUpperCase())}
+                    placeholder="ENG"
                     required
                     disabled={processing}
                     autoComplete="code"
@@ -58,7 +60,9 @@ export default function DivisionForm({ data, setData, errors, processing, submit
                 <InputError message={errors.code} />
             </div>
 
-            <div className="flex items-center gap-4">{canSubmit && <ButtonSubmit label={buttonLabel} disabled={processing} tabIndex={3} />}</div>
+            <div className="flex items-center gap-4">
+                {canSubmit && <ButtonSubmit label={buttonLabel} disabled={processing || data.code == '' || data.name == ''} tabIndex={3} />}
+            </div>
         </form>
     );
 }

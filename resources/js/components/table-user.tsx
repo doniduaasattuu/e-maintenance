@@ -130,16 +130,19 @@ export default function TableUser({ users, departments, positions, workCenters, 
                                         </ActionConfirm>
                                     </TableCell>
                                 ) : (
-                                    <TableCell className="w-10 flex-col text-right align-top">
-                                        <ActionConfirm
-                                            action={() => handleRestoreUser(user.id)}
-                                            title={`Restore User ${user.name}?`}
-                                            description="This action will restore user from database."
-                                            actionLabel="Restore"
-                                        >
-                                            <RefreshCcw size={18} className="text-blue-500" />
-                                        </ActionConfirm>
-                                    </TableCell>
+                                    can.restore_user &&
+                                    user.deleted_at !== null && (
+                                        <TableCell className="w-10 flex-col text-right align-top">
+                                            <ActionConfirm
+                                                action={() => handleRestoreUser(user.id)}
+                                                title={`Restore User ${user.name}?`}
+                                                description="This action will restore user from database."
+                                                actionLabel="Restore"
+                                            >
+                                                <RefreshCcw size={18} className="text-blue-500" />
+                                            </ActionConfirm>
+                                        </TableCell>
+                                    )
                                 )}
                             </TableRow>
                         );
