@@ -63,7 +63,7 @@ test('department edit form should be rendered', function () {
     $department = Department::first();
 
     $this->actingAs($admin)
-        ->get(route('departments.edit', $department))
+        ->get(route('departments.edit', $department->id))
         ->assertInertia(
             fn($page) => $page
                 ->component('department/edit')

@@ -1,7 +1,7 @@
 import RoleForm, { RoleFormData } from '@/components/forms/role-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, Role } from '@/types';
 import { useForm } from '@inertiajs/react';
 import React, { FormEventHandler } from 'react';
 
@@ -18,22 +18,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface RoleEditProps {
     availablePermissions: string[];
-    id: string;
-    name: string;
+    role: {
+        data: Role;
+    };
     currentPermissions: string[];
 }
 
-export default function RoleEdit({ availablePermissions, id, name, currentPermissions }: RoleEditProps) {
+export default function RoleEdit({ availablePermissions, role, currentPermissions }: RoleEditProps) {
     const can = usePermissions();
     const [selectedPermissions, setSelectedPermissions] = React.useState<string[]>(currentPermissions);
     const { data, setData, patch, processing, errors } = useForm<Required<RoleFormData>>({
-        name: name,
+        name: role.data.name,
         selectedPermissions: selectedPermissions,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(route('roles.update', id));
+        patch(route('roles.update', role.data.id));
     };
 
     return (

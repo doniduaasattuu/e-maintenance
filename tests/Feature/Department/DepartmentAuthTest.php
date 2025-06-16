@@ -4,7 +4,6 @@ use App\Models\Department;
 use App\Models\Division;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
@@ -67,6 +66,6 @@ test('guest cannot access department edit form', function () {
     $department = Department::first();
 
     $this
-        ->get(route('departments.edit', $department))
+        ->get(route('departments.edit', $department->id))
         ->assertRedirect(route('login'));
 });

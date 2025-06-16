@@ -31,11 +31,13 @@ class UserController extends Controller
         $users = User::with(['department', 'position', 'workCenter'])->search($request)->paginate(10)->withQueryString();
         $departments = Department::all();
         $positions = Position::all();
+        $workCenters = WorkCenter::all();
 
         return Inertia::render('user/index', [
             'users' => UserResource::collection($users),
             'departments' => DepartmentResource::collection($departments),
             'positions' => PositionResource::collection($positions),
+            'workCenters' => WorkCenterResource::collection($workCenters),
             'roles' => Role::pluck('name'),
         ]);
     }

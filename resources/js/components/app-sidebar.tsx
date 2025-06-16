@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BadgeCheck, Building2, LayoutGrid, Users2 } from 'lucide-react';
+import { BadgeCheck, Building2, BuildingIcon, DatabaseZap, File, LayoutGrid, ScanQrCodeIcon, Users2 } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -12,6 +12,50 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'QR Scanner',
+        href: '/qr-scanner',
+        icon: ScanQrCodeIcon,
+    },
+    {
+        title: 'Master Data',
+        href: '#',
+        icon: DatabaseZap,
+        subItems: [
+            {
+                title: 'Functional location',
+                href: '/functional-locations',
+            },
+            {
+                title: 'Equipment',
+                href: '/equipments',
+            },
+            {
+                title: 'Material',
+                href: '/materials',
+            },
+        ],
+    },
+    {
+        title: 'Department',
+        href: '#',
+        icon: BuildingIcon,
+        subItems: [
+            {
+                title: 'Report',
+                href: '/reports',
+            },
+            {
+                title: 'Finding',
+                href: '/findings',
+            },
+        ],
+    },
+    {
+        title: 'Repositories',
+        href: '/repositories',
+        icon: File,
     },
 ];
 

@@ -57,6 +57,6 @@ test('guest cannot access division edit form', function () {
     $division = Division::first();
 
     $this
-        ->get(route('divisions.edit', $division))
+        ->get(route('divisions.edit', $division->id))
         ->assertRedirect(route('login'));
 });

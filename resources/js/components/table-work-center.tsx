@@ -30,7 +30,7 @@ export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
         <React.Fragment>
             <div className="flex justify-between gap-2">
                 <SearchBar />
-                <ButtonAdd route={route('work-centers.create')} label="New Work Center" tabIndex={2} />
+                <ButtonAdd route={route('work-centers.create')} tabIndex={2} />
             </div>
             <Table>
                 <TableCaption className="text-sm">{tableCaption}</TableCaption>

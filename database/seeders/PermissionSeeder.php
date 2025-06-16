@@ -13,7 +13,7 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $models = ['User', 'Role', 'Department', 'Division', 'WorkCenter'];
+        $models = ['User', 'Role', 'Department', 'Division', 'WorkCenter', 'FunctionalLocation'];
         $actions = ['create', 'read', 'update', 'delete', 'restore'];
 
         foreach ($models as $model) {
