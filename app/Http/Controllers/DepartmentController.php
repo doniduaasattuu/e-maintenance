@@ -57,10 +57,7 @@ class DepartmentController extends Controller
             'division_id' => $validated['division_id'],
         ]);
 
-        return redirect()->route('departments.index')->with('message', [
-            'type' => 'success',
-            'description' => 'Department created successfully',
-        ]);
+        return back();
     }
 
     /**
@@ -102,10 +99,7 @@ class DepartmentController extends Controller
                 'division_id' => $validated['division_id'],
             ]);
 
-            return back()->with('message', [
-                'type' => 'success',
-                'description' => 'Department updated successfully',
-            ]);
+            return back();
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',

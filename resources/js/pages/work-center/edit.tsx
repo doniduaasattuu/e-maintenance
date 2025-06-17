@@ -8,7 +8,7 @@ import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Work Center',
+        title: 'Work Centers',
         href: '/organizations/work-centers',
     },
     {
@@ -40,7 +40,7 @@ export default function WorkCenterEdit({ workCenter }: WorkCenterEditProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Work Center" />
+            <Head title="Work Centers" />
 
             <OrganizationsLayout>
                 <div className="max-w-2xl space-y-4">

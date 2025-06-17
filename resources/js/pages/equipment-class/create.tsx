@@ -1,53 +1,52 @@
-import FunctionalLocationForm, { FunctionalLocationFormData } from '@/components/forms/functional-location-form';
+import EquipmentClassForm, { EquipmentClassFormData } from '@/components/forms/equipment-class-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Functional Locations',
-        href: '/functional-locations',
+        title: 'Equipment Classes',
+        href: '/equipment-classes',
     },
     {
         title: 'Create',
-        href: '/functional-locations/create',
+        href: '/equipment-classes/create',
     },
 ];
 
-export default function FunctionalLocationCreate() {
+export default function EquipmentClassCreate() {
     const can = usePermissions();
-    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<FunctionalLocationFormData>>({
+    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<EquipmentClassFormData>>({
         code: '',
+        name: '',
         description: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('functional-locations.store'), {
+        post(route('equipment-classes.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                reset('code', 'description');
+                reset('code', 'name', 'description');
             },
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Functional Location" />
-
             <div className="max-w-2xl space-y-4">
-                <FunctionalLocationForm
+                <EquipmentClassForm
                     data={data}
                     setData={setData}
                     errors={errors}
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.create_functionallocation}
-                    buttonLabel="Submit"
+                    canSubmit={can.create_equipmentclass}
+                    buttonLabel="Create"
                     successMessage="Created"
                 />
             </div>

@@ -18,9 +18,20 @@ interface DivisionFormProps {
     submit: FormEventHandler;
     canSubmit: boolean;
     buttonLabel: string;
+    successMessage?: string;
 }
 
-export default function DivisionForm({ data, setData, errors, processing, submit, canSubmit, buttonLabel }: DivisionFormProps) {
+export default function DivisionForm({
+    data,
+    setData,
+    errors,
+    processing,
+    submit,
+    canSubmit,
+    successMessage,
+    recentlySuccessful,
+    buttonLabel,
+}: DivisionFormProps) {
     return (
         <form onSubmit={submit} className="space-y-6">
             <div className="grid gap-2">
@@ -60,9 +71,15 @@ export default function DivisionForm({ data, setData, errors, processing, submit
                 <InputError message={errors.code} />
             </div>
 
-            <div className="flex items-center gap-4">
-                {canSubmit && <ButtonSubmit label={buttonLabel} disabled={processing || data.code == '' || data.name == ''} tabIndex={3} />}
-            </div>
+            {canSubmit && (
+                <ButtonSubmit
+                    label={buttonLabel}
+                    disabled={processing || data.code == '' || data.name == ''}
+                    tabIndex={3}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage={successMessage}
+                />
+            )}
         </form>
     );
 }

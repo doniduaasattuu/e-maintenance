@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BadgeCheck, Building2, BuildingIcon, DatabaseIcon, File, LayoutGrid, ScanQrCodeIcon, Users2 } from 'lucide-react';
+import { BadgeCheck, Building2, BuildingIcon, DatabaseIcon, File, Layers, LayoutGrid, ScanQrCodeIcon, Users2 } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -24,16 +24,36 @@ const mainNavItems: NavItem[] = [
         icon: DatabaseIcon,
         subItems: [
             {
-                title: 'Functional location',
+                title: 'Functional locations',
                 href: '/functional-locations',
+                permission: 'read_functionallocation',
             },
             {
-                title: 'Equipment',
+                title: 'Equipments',
                 href: '/equipments',
+                permission: 'read_equipments',
             },
             {
-                title: 'Material',
+                title: 'Materials',
                 href: '/materials',
+                permission: 'read_materials',
+            },
+        ],
+    },
+    {
+        title: 'Reference Data',
+        href: '#',
+        icon: Layers,
+        subItems: [
+            {
+                title: 'Equipment classes',
+                href: '/equipment-classes',
+                permission: 'read_equipmentclass',
+            },
+            {
+                title: 'Equipment statuses',
+                href: '/equipment-statuses',
+                permission: 'read_equipmentstatus',
             },
         ],
     },
@@ -43,12 +63,14 @@ const mainNavItems: NavItem[] = [
         icon: BuildingIcon,
         subItems: [
             {
-                title: 'Report',
+                title: 'Reports',
                 href: '/reports',
+                permission: 'read_report',
             },
             {
-                title: 'Finding',
+                title: 'Findings',
                 href: '/findings',
+                permission: 'read_finding',
             },
         ],
     },
@@ -56,6 +78,7 @@ const mainNavItems: NavItem[] = [
         title: 'Repositories',
         href: '/repositories',
         icon: File,
+        permission: 'read_repository',
     },
 ];
 

@@ -1,7 +1,6 @@
-import TableRole from '@/components/table-role';
+import TableRole from '@/components/tables/table-role';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Meta, Role } from '@/types';
-import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,7 +18,6 @@ type RoleIndexProps = {
 export default function RoleIndex({ roles }: RoleIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Roles" />
             <TableRole roles={roles} />
         </AppLayout>
     );

@@ -23,6 +23,8 @@ interface RoleFormParams {
     errors: Partial<Record<keyof RoleFormData, string>>;
     buttonLabel: string;
     canSubmit: boolean;
+    recentlySuccessful: boolean;
+    successMessage?: string;
 }
 
 export type RoleFormData = {
@@ -41,6 +43,8 @@ export default function RoleForm({
     errors,
     buttonLabel,
     canSubmit,
+    recentlySuccessful,
+    successMessage,
 }: RoleFormParams) {
     const [open, setOpen] = React.useState(false);
     const isMobile = useIsMobile();
@@ -136,7 +140,13 @@ export default function RoleForm({
                     </div>
 
                     {canSubmit && (
-                        <ButtonSubmit label={buttonLabel} disabled={processing || selectedPermissions.length < 1 || data.name === ''} tabIndex={3} />
+                        <ButtonSubmit
+                            label={buttonLabel}
+                            disabled={processing || selectedPermissions.length < 1 || data.name === ''}
+                            tabIndex={3}
+                            recentlySuccessful={recentlySuccessful}
+                            successMessage={successMessage}
+                        />
                     )}
                 </form>
             </TableLayout>

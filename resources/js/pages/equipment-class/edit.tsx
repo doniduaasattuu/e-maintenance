@@ -1,38 +1,39 @@
-import FunctionalLocationForm, { FunctionalLocationFormData } from '@/components/forms/functional-location-form';
+import EquipmentClassForm, { EquipmentClassFormData } from '@/components/forms/equipment-class-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, FunctionalLocation } from '@/types';
+import { BreadcrumbItem, EquipmentClass } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Functional Locations',
-        href: '/functional-locations',
+        title: 'Equipment Classes',
+        href: '/equipment-classes',
     },
     {
         title: 'Edit',
-        href: '/functional-locations/{id}/edit',
+        href: '/equipment-classes/{id}/edit',
     },
 ];
 
-interface FunctionalLocationEditProps {
-    functionalLocation: {
-        data: FunctionalLocation;
+interface EquipmentClassEditProps {
+    equipmentClass: {
+        data: EquipmentClass;
     };
 }
 
-export default function FunctionalLocationEdit({ functionalLocation }: FunctionalLocationEditProps) {
+export default function EquipmentClassEdit({ equipmentClass }: EquipmentClassEditProps) {
     const can = usePermissions();
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<FunctionalLocationFormData>>({
-        code: functionalLocation.data.code,
-        description: functionalLocation.data.description,
+    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<EquipmentClassFormData>>({
+        code: equipmentClass.data.code,
+        name: equipmentClass.data.name,
+        description: equipmentClass.data?.description ?? '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        patch(route('functional-locations.update', functionalLocation.data.id), {
+        patch(route('equipment-classes.update', equipmentClass.data.id), {
             preserveScroll: true,
         });
     };
@@ -40,14 +41,14 @@ export default function FunctionalLocationEdit({ functionalLocation }: Functiona
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="max-w-2xl space-y-4">
-                <FunctionalLocationForm
+                <EquipmentClassForm
                     data={data}
                     setData={setData}
                     errors={errors}
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.update_functionallocation}
+                    canSubmit={can.update_equipmentclass}
                     buttonLabel="Update"
                 />
             </div>

@@ -8,7 +8,7 @@ import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Department',
+        title: 'Departments',
         href: '/organizations/departments',
     },
     {
@@ -45,7 +45,7 @@ export default function DepartmentEdit({ department, divisions }: DepartmentEdit
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Department" />
+            <Head title="Departments" />
 
             <OrganizationsLayout>
                 <div className="max-w-2xl space-y-4">

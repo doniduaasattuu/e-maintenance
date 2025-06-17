@@ -2,35 +2,35 @@ import { ActionConfirm } from '@/components/action-confirm';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import { Department, Meta } from '@/types';
+import { Meta, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import React from 'react';
-import ButtonAdd from './button-add';
-import { GeneratePagination } from './generate-pagination';
-import SearchBar from './search-bar';
+import ButtonAdd from '../button-add';
+import { GeneratePagination } from '../generate-pagination';
+import SearchBar from '../search-bar';
 
-interface DepartmentTableProps {
-    departments: {
-        data: Department[];
+interface WorkCenterTableProps {
+    workCenters: {
+        data: WorkCenter[];
         meta: Meta;
     };
 }
 
-export default function TableDepartment({ departments }: DepartmentTableProps) {
+export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
     const can = usePermissions();
-    const meta = departments.meta;
+    const meta = workCenters.meta;
     const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
 
-    function handleDeleteDepartment(id: number) {
-        router.delete(route('departments.destroy', id));
+    function handleDeleteWorkCenter(id: number) {
+        router.delete(route('work-centers.destroy', id));
     }
 
     return (
         <React.Fragment>
             <div className="flex justify-between gap-2">
                 <SearchBar />
-                {can.create_department && <ButtonAdd route={route('departments.create')} tabIndex={2} />}
+                {can.create_workcenter && <ButtonAdd route={route('work-centers.create')} tabIndex={2} />}
             </div>
             <Table>
                 <TableCaption className="text-sm">{tableCaption}</TableCaption>
@@ -39,35 +39,33 @@ export default function TableDepartment({ departments }: DepartmentTableProps) {
                         <TableHead className="text-muted-foreground">#</TableHead>
                         <TableHead className="text-muted-foreground">Name</TableHead>
                         <TableHead className="text-muted-foreground">Code</TableHead>
-                        <TableHead className="text-muted-foreground">Division</TableHead>
                         <TableHead className="text-muted-foreground">Created at</TableHead>
                         <TableHead className="text-muted-foreground">Updated at</TableHead>
-                        {can.delete_department && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
+                        {can.delete_workcenter && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {departments.data.map((department: Department, index: number) => {
+                    {workCenters.data.map((workcenter: WorkCenter, index: number) => {
                         return (
-                            <TableRow key={department.id}>
+                            <TableRow key={workcenter.id}>
                                 <TableCell className="w-[50px]">{meta.from + index}</TableCell>
                                 <TableCell className="font-medium">
-                                    {can.update_department ? (
-                                        <TextLink href={route('departments.edit', department.id)}>{department.name}</TextLink>
+                                    {can.update_workcenter ? (
+                                        <TextLink href={route('work-centers.edit', workcenter.id)}>{workcenter.name}</TextLink>
                                     ) : (
-                                        <span>{department.name}</span>
+                                        <span>{workcenter.name}</span>
                                     )}
                                 </TableCell>
-                                <TableCell className="font-medium">{department.code}</TableCell>
-                                <TableCell>{department.division?.name}</TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{department.created_at}</TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{department.updated_at}</TableCell>
+                                <TableCell className="font-medium">{workcenter.code}</TableCell>
+                                <TableCell className="text-muted-foreground w-[90px]">{workcenter.created_at}</TableCell>
+                                <TableCell className="text-muted-foreground w-[90px]">{workcenter.updated_at}</TableCell>
 
-                                {can.delete_department && (
+                                {can.delete_workcenter && (
                                     <TableCell className="w-10 text-right">
                                         <ActionConfirm
-                                            action={() => handleDeleteDepartment(department.id)}
-                                            title={`Delete Department ${department.name}?`}
-                                            description="This action will remove this department from all users. This cannot be undone."
+                                            action={() => handleDeleteWorkCenter(workcenter.id)}
+                                            title={`Delete Work Center ${workcenter.code}?`}
+                                            description="This action will remove this work center from database. This cannot be undone."
                                         >
                                             <Trash2 size={18} className="text-red-500" />
                                         </ActionConfirm>

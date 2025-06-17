@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleSeeder::class,
             FunctionalLocationSeeder::class,
+            EquipmentClassSeeder::class,
         ]);
     }
 }

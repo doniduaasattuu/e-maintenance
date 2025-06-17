@@ -23,13 +23,7 @@ test('admin can create division with valid data', function () {
             'name' => 'Engineering',
             'code' => 'ENG',
         ])
-        ->assertRedirect(route('divisions.index'))->assertSessionHas(
-            'message',
-            [
-                'type' => 'success',
-                'description' => 'Division created successfully',
-            ],
-        );
+        ->assertRedirect(route('divisions.create'));
 });
 
 test('admin cannot create division with invalid data', function () {
@@ -71,13 +65,7 @@ test('admin can update division', function () {
             'code' => $division->code,
         ])
         ->assertRedirect($editPage)
-        ->assertSessionHas(
-            'message',
-            [
-                'type' => 'success',
-                'description' => 'Division updated successfully',
-            ]
-        );
+    ;
 
     $this->assertDatabaseHas('divisions', ['name' => 'Engineering One']);
 });

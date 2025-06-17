@@ -24,9 +24,21 @@ interface DepartmentFormProps {
     submit: FormEventHandler;
     canSubmit: boolean;
     buttonLabel: string;
+    successMessage?: string;
 }
 
-export default function DepartmentForm({ divisions, data, setData, errors, processing, submit, canSubmit, buttonLabel }: DepartmentFormProps) {
+export default function DepartmentForm({
+    divisions,
+    data,
+    setData,
+    errors,
+    processing,
+    submit,
+    canSubmit,
+    buttonLabel,
+    recentlySuccessful,
+    successMessage,
+}: DepartmentFormProps) {
     return (
         <form onSubmit={submit} className="space-y-6">
             <div className="grid gap-2">
@@ -88,15 +100,15 @@ export default function DepartmentForm({ divisions, data, setData, errors, proce
                 <InputError message={errors.division_id} />
             </div>
 
-            <div className="flex items-center gap-4">
-                {canSubmit && (
-                    <ButtonSubmit
-                        label={buttonLabel}
-                        disabled={processing || data.code == '' || data.name == '' || data.division_id == ''}
-                        tabIndex={4}
-                    />
-                )}
-            </div>
+            {canSubmit && (
+                <ButtonSubmit
+                    label={buttonLabel}
+                    disabled={processing || data.code == '' || data.name == '' || data.division_id == ''}
+                    tabIndex={4}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage={successMessage}
+                />
+            )}
         </form>
     );
 }

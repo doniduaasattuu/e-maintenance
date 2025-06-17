@@ -53,12 +53,13 @@ test('create page accessible', function () {
 });
 
 test('store successfully with avatar and roles', function () {
-    $role = Role::create(['name' => 'UserRole']);
+    Role::create(['name' => 'UserRole']);
 
     $file = UploadedFile::fake()->image('avatar.jpg');
 
     $response = $this
         ->actingAs(createAdminUser())
+        ->from(route('users.create'))
         ->post(route('users.store'), [
             'name' => 'TestName',
             'employee_id' => '12345678',
@@ -71,8 +72,7 @@ test('store successfully with avatar and roles', function () {
             'selectedRoles' => ['UserRole'],
         ]);
 
-    $response->assertRedirect(route('users.create'))
-        ->assertSessionHas('message.description', 'User created successfully');
+    $response->assertRedirect(route('users.create'));
 
     $user = User::where('email', 'test@example.com')->first();
     expect($user)->not->toBeNull();
@@ -132,8 +132,7 @@ test('update successfully with avatar change and role sync', function () {
             'work_center_id' => null,
         ]);
 
-    $response->assertRedirect(route('users.edit', $user->id))
-        ->assertSessionHas('message.description', 'User updated successfully');
+    $response->assertRedirect(route('users.edit', $user->id));
 
     $user->refresh();
     expect($user->name)->toBe('UpdatedName');

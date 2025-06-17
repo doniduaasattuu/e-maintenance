@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\EquipmentClassController;
 use App\Http\Controllers\FunctionalLocationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkCenterController;
+use App\Http\Resources\EquipmentClassResource;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('users', UserController::class);
 
     Route::resource('/functional-locations', FunctionalLocationController::class);
+    Route::resource('/equipment-classes', EquipmentClassController::class);
 
     Route::resource('/organizations/departments', DepartmentController::class)->names([
         'index' => 'departments.index',

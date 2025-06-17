@@ -5,10 +5,10 @@ import TableLayout from '@/layouts/table/layout';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 
-interface FunctionalLocationFormProps {
-    data: Required<FunctionalLocationFormData>;
-    setData: <K extends keyof FunctionalLocationFormData>(key: K, value: FunctionalLocationFormData[K]) => void;
-    errors: Partial<Record<keyof FunctionalLocationFormData, string>>;
+interface EquipmentClassFormProps {
+    data: Required<EquipmentClassFormData>;
+    setData: <K extends keyof EquipmentClassFormData>(key: K, value: EquipmentClassFormData[K]) => void;
+    errors: Partial<Record<keyof EquipmentClassFormData, string>>;
     processing: boolean;
     recentlySuccessful: boolean;
     submit: FormEventHandler;
@@ -17,12 +17,13 @@ interface FunctionalLocationFormProps {
     successMessage?: string;
 }
 
-export type FunctionalLocationFormData = {
+export type EquipmentClassFormData = {
     code: string;
+    name: string;
     description: string;
 };
 
-export default function FunctionalLocationForm({
+export default function EquipmentClassForm({
     data,
     setData,
     errors,
@@ -32,9 +33,9 @@ export default function FunctionalLocationForm({
     canSubmit,
     buttonLabel,
     successMessage,
-}: FunctionalLocationFormProps) {
+}: EquipmentClassFormProps) {
     return (
-        <TableLayout title="Functional Locations" description="Overview and management of functional locations in the system">
+        <TableLayout title="Equipment Classes" description="Overview and management of equipment class in the system">
             <form onSubmit={submit} className="space-y-6">
                 <div className="grid gap-2">
                     <Label htmlFor="code">Code</Label>
@@ -46,7 +47,7 @@ export default function FunctionalLocationForm({
                         value={data.code}
                         autoFocus
                         onChange={(e) => setData('code', e.target.value.toUpperCase())}
-                        placeholder="FP-01-PM3-CUT-RWD"
+                        placeholder="ZCLASS_E008"
                         required
                         disabled={processing}
                         autoComplete="code"
@@ -56,16 +57,33 @@ export default function FunctionalLocationForm({
                 </div>
 
                 <div className="grid gap-2">
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="name">Name</Label>
 
                     <Input
                         tabIndex={2}
+                        id="name"
+                        className="mt-1 block w-full"
+                        value={data.name}
+                        onChange={(e) => setData('name', e.target.value.toUpperCase())}
+                        placeholder="ELECTRICAL PANEL"
+                        required
+                        disabled={processing}
+                        autoComplete="name"
+                    />
+
+                    <InputError message={errors.name} />
+                </div>
+
+                <div className="grid gap-2">
+                    <Label htmlFor="description">Description</Label>
+
+                    <Input
+                        tabIndex={3}
                         id="description"
                         className="mt-1 block w-full"
-                        value={data.description}
-                        onChange={(e) => setData('description', e.target.value.toUpperCase())}
-                        placeholder="REWINDER #1 PM3"
-                        required
+                        value={data.description ?? ''}
+                        onChange={(e) => setData('description', e.target.value)}
+                        placeholder="Distribution panels for managing electrical circuits and power systems."
                         disabled={processing}
                         autoComplete="description"
                     />
@@ -75,11 +93,11 @@ export default function FunctionalLocationForm({
 
                 {canSubmit && (
                     <ButtonSubmit
-                        label={buttonLabel}
-                        disabled={processing || data.code == '' || data.description == ''}
-                        tabIndex={3}
+                        disabled={processing || data.code == '' || data.name == ''}
+                        tabIndex={4}
                         recentlySuccessful={recentlySuccessful}
                         successMessage={successMessage}
+                        label={buttonLabel}
                     />
                 )}
             </form>

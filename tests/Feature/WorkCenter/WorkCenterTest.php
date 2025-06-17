@@ -26,14 +26,7 @@ test('admin can create work center with valid data', function () {
             'name' => 'Maintenance Enchancement',
             'code' => 'PMN21001',
         ])
-        ->assertRedirect(route('work-centers.index'))
-        ->assertSessionHas(
-            'message',
-            [
-                'type' => 'success',
-                'description' => 'Work center created successfully',
-            ],
-        );
+        ->assertRedirect(route('work-centers.create'));
 });
 
 test('admin cannot create work center with invalid data', function () {
@@ -75,13 +68,7 @@ test('admin can update work center', function () {
             'code' => $workcenter->code,
         ])
         ->assertRedirect($editPage)
-        ->assertSessionHas(
-            'message',
-            [
-                'type' => 'success',
-                'description' => 'Work center updated successfully',
-            ]
-        );
+    ;
 
     $this->assertDatabaseHas('work_centers', ['name' => 'Electrical Non Shift PM37']);
 });

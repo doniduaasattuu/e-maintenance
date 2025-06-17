@@ -1,13 +1,13 @@
 import { Division, Meta, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
-import TableDivision from '@/components/table-divisions';
+import TableDivision from '@/components/tables/table-divisions';
 import AppLayout from '@/layouts/app-layout';
 import OrganizationsLayout from '@/layouts/organizations/layout';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Division',
+        title: 'Divisions',
         href: '/organizations/divisions',
     },
 ];
@@ -22,7 +22,7 @@ interface DivisionIndexProps {
 export default function DivisionIndex({ divisions }: DivisionIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Division" />
+            <Head title="Divisions" />
 
             <OrganizationsLayout>
                 <div className="max-w-4xl space-y-4">

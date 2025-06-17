@@ -7,17 +7,17 @@ import { type PropsWithChildren } from 'react';
 
 const tabItems: NavItem[] = [
     {
-        title: 'Department',
+        title: 'Departments',
         href: '/organizations/departments',
         icon: null,
     },
     {
-        title: 'Division',
+        title: 'Divisions',
         href: '/organizations/divisions',
         icon: null,
     },
     {
-        title: 'Work Center',
+        title: 'Work Centers',
         href: '/organizations/work-centers',
         icon: null,
     },

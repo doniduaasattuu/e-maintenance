@@ -47,11 +47,18 @@ class FunctionalLocationController extends Controller
     {
         Gate::authorize('create_functionallocation');
 
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        FunctionalLocation::create($validated);
+            FunctionalLocation::create($validated);
 
-        return back();
+            return back();
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Failed creating functional location',
+            ]);
+        }
     }
 
     /**
@@ -81,14 +88,21 @@ class FunctionalLocationController extends Controller
     {
         Gate::authorize('update_functionallocation');
 
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        $functionalLocation->update([
-            'code' => $validated['code'],
-            'description' => $validated['description'],
-        ]);
+            $functionalLocation->update([
+                'code' => $validated['code'],
+                'description' => $validated['description'],
+            ]);
 
-        return back();
+            return back();
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Failed updating functional location',
+            ]);
+        }
     }
 
     /**

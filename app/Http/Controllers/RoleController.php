@@ -49,17 +49,14 @@ class RoleController extends Controller
     {
         Gate::authorize('create_role');
 
-        $validated = $request->validated();
-
         try {
+            $validated = $request->validated();
+
             $newRole = new Role(['name' => $validated['name']]);
             $newRole->save();
             $newRole->syncPermissions($validated['selectedPermissions']);
 
-            return redirect()->route('roles.index')->with('message', [
-                'type' => 'success',
-                'description' => 'Role created successfully',
-            ]);
+            return back();
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',
@@ -107,10 +104,7 @@ class RoleController extends Controller
 
             $role->syncPermissions($validated['selectedPermissions']);
 
-            return back()->with('message', [
-                'type' => 'success',
-                'description' => 'Role updated successfully',
-            ]);
+            return back();
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',

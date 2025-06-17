@@ -1,4 +1,4 @@
-import TableDepartment from '@/components/table-department';
+import TableDepartment from '@/components/tables/table-department';
 import AppLayout from '@/layouts/app-layout';
 import OrganizationsLayout from '@/layouts/organizations/layout';
 import { Department, Meta, type BreadcrumbItem } from '@/types';
@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Department',
+        title: 'Departments',
         href: '/organizations/departments',
     },
 ];
@@ -21,7 +21,7 @@ interface DepartmentIndexProps {
 export default function DepartmentIndex({ departments }: DepartmentIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Department" />
+            <Head title="Departments" />
 
             <OrganizationsLayout>
                 <div className="max-w-4xl space-y-4">

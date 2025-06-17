@@ -100,7 +100,7 @@ export interface User {
     deleted_at?: string;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    [key: string]: unknown;
 }
 
 export interface Permission {
@@ -143,6 +143,15 @@ export interface FunctionalLocation {
     id: number;
     code: string;
     description: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface EquipmentClass {
+    id: number;
+    code: string;
+    name: string;
+    description: string | null;
     created_at: string;
     updated_at: string;
 }

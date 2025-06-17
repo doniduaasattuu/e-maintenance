@@ -8,7 +8,7 @@ import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Work Center',
+        title: 'Work Centers',
         href: '/organizations/work-centers',
     },
     {
@@ -37,7 +37,7 @@ export default function WorkCenterCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Work Center" />
+            <Head title="Work Centers" />
 
             <OrganizationsLayout>
                 <div className="max-w-2xl space-y-4">
@@ -50,6 +50,7 @@ export default function WorkCenterCreate() {
                         submit={submit}
                         canSubmit={can.create_division}
                         buttonLabel="Submit"
+                        successMessage="Created"
                     />
                 </div>
             </OrganizationsLayout>
