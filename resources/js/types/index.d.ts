@@ -155,3 +155,12 @@ export interface EquipmentClass {
     created_at: string;
     updated_at: string;
 }
+
+export interface EquipmentStatus {
+    id: number;
+    code: string;
+    name: string;
+    description: string | null;
+    created_at: string;
+    updated_at: string;
+}

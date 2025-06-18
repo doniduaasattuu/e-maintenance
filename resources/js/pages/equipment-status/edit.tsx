@@ -1,0 +1,57 @@
+import EquipmentStatusForm, { EquipmentStatusFormData } from '@/components/forms/equipment-status-form';
+import usePermissions from '@/hooks/use-permissions';
+import AppLayout from '@/layouts/app-layout';
+import { BreadcrumbItem, EquipmentStatus } from '@/types';
+import { useForm } from '@inertiajs/react';
+import { FormEventHandler } from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Equipment Statuses',
+        href: '/equipment-statuses',
+    },
+    {
+        title: 'Edit',
+        href: '/equipment-statuses/{id}/edit',
+    },
+];
+
+interface EquipmentStatusEditProps {
+    equipmentStatus: {
+        data: EquipmentStatus;
+    };
+}
+
+export default function EquipmentStatusEdit({ equipmentStatus }: EquipmentStatusEditProps) {
+    const can = usePermissions();
+    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<EquipmentStatusFormData>>({
+        code: equipmentStatus.data.code,
+        name: equipmentStatus.data.name,
+        description: equipmentStatus.data?.description ?? '',
+    });
+
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+
+        patch(route('equipment-statuses.update', equipmentStatus.data.id), {
+            preserveScroll: true,
+        });
+    };
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <div className="max-w-2xl space-y-4">
+                <EquipmentStatusForm
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    submit={submit}
+                    canSubmit={can.update_equipmentclass}
+                    buttonLabel="Update"
+                />
+            </div>
+        </AppLayout>
+    );
+}

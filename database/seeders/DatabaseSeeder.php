@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             FunctionalLocationSeeder::class,
             EquipmentClassSeeder::class,
+            EquipmentStatusSeeder::class,
         ]);
     }
 }

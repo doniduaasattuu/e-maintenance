@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\EquipmentClass>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\EquipmentStatus>
  */
-class EquipmentClassFactory extends Factory
+class EquipmentStatusFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,8 +18,8 @@ class EquipmentClassFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => 'ZCLASS_' . Str::upper(fake()->randomLetter() . fake()->unique()->numerify('###')),
-            'name' => fake()->sentence(2),
+            'code' => Str::upper(fake()->unique()->lexify('????')),
+            'name' => Str::upper(fake()->sentence(1)),
             'description' => Str::ucfirst(fake()->sentence(5)),
         ];
     }
