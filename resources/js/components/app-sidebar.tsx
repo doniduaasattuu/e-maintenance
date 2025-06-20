@@ -31,12 +31,12 @@ const mainNavItems: NavItem[] = [
             {
                 title: 'Equipments',
                 href: '/equipments',
-                permission: 'read_equipments',
+                permission: 'read_equipment',
             },
             {
                 title: 'Materials',
                 href: '/materials',
-                permission: 'read_materials',
+                permission: 'read_material',
             },
         ],
     },

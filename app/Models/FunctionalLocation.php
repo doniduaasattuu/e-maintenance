@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
 class FunctionalLocation extends Model
@@ -30,5 +31,10 @@ class FunctionalLocation extends Model
                     ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }
+    }
+
+    public function equipments(): HasMany
+    {
+        return $this->hasMany(Equipment::class);
     }
 }

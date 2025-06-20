@@ -24,9 +24,12 @@ class FunctionalLocationController extends Controller
 
         $functionalLocations = FunctionalLocation::search($request)->paginate()->withQueryString();
 
+        if ($request->expectsJson() && $request->filled('query')) {
+            return response()->json(FunctionalLocationResource::collection($functionalLocations));
+        }
+
         return Inertia::render('functional-location/index', [
             'functionalLocations' => FunctionalLocationResource::collection($functionalLocations),
-
         ]);
     }
 

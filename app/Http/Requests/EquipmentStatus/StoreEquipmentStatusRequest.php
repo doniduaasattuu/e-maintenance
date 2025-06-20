@@ -32,7 +32,6 @@ class StoreEquipmentStatusRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'uppercase',
                 'max:50',
                 'unique:equipment_statuses,name'
             ],

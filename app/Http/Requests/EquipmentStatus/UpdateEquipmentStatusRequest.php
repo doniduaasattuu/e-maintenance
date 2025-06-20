@@ -33,7 +33,6 @@ class UpdateEquipmentStatusRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'uppercase',
                 'max:50',
                 Rule::unique('equipment_statuses', 'name')->ignore($this->equipment_status),
             ],

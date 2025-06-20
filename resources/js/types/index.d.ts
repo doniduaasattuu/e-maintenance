@@ -164,3 +164,18 @@ export interface EquipmentStatus {
     created_at: string;
     updated_at: string;
 }
+
+export interface Equipment {
+    id: number;
+    code: string;
+    sort_field: string | null;
+    description: string | null;
+    functional_location_id: number | null;
+    equipment_class_id: number | null;
+    equipment_status_id: number | null;
+    functionalLocation: FunctionalLocation | null;
+    equipmentClass: EquipmentClass | null;
+    equipmentStatus: EquipmentStatus | null;
+    created_at: string;
+    updated_at: string;
+}

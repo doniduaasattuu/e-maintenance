@@ -2,7 +2,7 @@ import FunctionalLocationForm, { FunctionalLocationFormData } from '@/components
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -36,8 +36,6 @@ export default function FunctionalLocationCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Functional Location" />
-
             <div className="max-w-2xl space-y-4">
                 <FunctionalLocationForm
                     data={data}

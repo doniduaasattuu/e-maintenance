@@ -16,22 +16,22 @@ class EquipmentStatusSeeder extends Seeder
         $equipment_statuses = [
             [
                 'code' => 'INST',
-                'name' => 'INSTALLED',
+                'name' => 'Installed',
                 'description' => 'Equipment is currently installed and operational at its assigned location.'
             ],
             [
                 'code' => 'AVLB',
-                'name' => 'AVAILABLE',
+                'name' => 'Available',
                 'description' => 'Equipment is available for deployment or assignment, not currently in use.'
             ],
             [
                 'code' => 'RPRD',
-                'name' => 'REPAIRED',
+                'name' => 'Repaired',
                 'description' => 'Equipment has been repaired and is ready for use or reinstallation.'
             ],
             [
                 'code' => 'SCRP',
-                'name' => 'SCRAPPED',
+                'name' => 'Scrapped',
                 'description' => 'Equipment is no longer in use and has been scrapped.'
             ],
         ];

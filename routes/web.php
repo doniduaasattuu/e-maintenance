@@ -3,6 +3,7 @@
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\EquipmentClassController;
+use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FunctionalLocationController;
 use App\Http\Controllers\RoleController;
@@ -31,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/functional-locations', FunctionalLocationController::class);
     Route::resource('/equipment-classes', EquipmentClassController::class);
     Route::resource('/equipment-statuses', EquipmentStatusController::class);
+    Route::resource('/equipments', EquipmentController::class);
 
     Route::resource('/organizations/departments', DepartmentController::class)->names([
         'index' => 'departments.index',

@@ -118,7 +118,7 @@ test('update equipment status fails validation', function () {
         ->from(route('equipment-statuses.edit', $equipmentStatus->id))
         ->patch(route('equipment-statuses.update', $equipmentStatus->id), [
             'code' => '',
-            'name' => 'lowercase name',
+            'name' => '',
             'description' => '',
         ])
         ->assertSessionHasErrors(['code', 'name']);

@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             FunctionalLocationSeeder::class,
             EquipmentClassSeeder::class,
             EquipmentStatusSeeder::class,
+            EquipmentSeeder::class,
         ]);
     }
 }
