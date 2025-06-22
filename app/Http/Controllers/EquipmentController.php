@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Equipment\StoreEquipmentRequest;
+use App\Http\Requests\Equipment\UpdateEquipmentRequest;
 use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
@@ -84,15 +85,35 @@ class EquipmentController extends Controller
      */
     public function edit(Equipment $equipment)
     {
-        //
+        Gate::authorize('update_equipment');
+
+        $equipmentClasses = EquipmentClass::all();
+        $equipmentStatuses = EquipmentStatus::all();
+
+        return Inertia::render('equipment/edit', [
+            'equipment' => new EquipmentResource($equipment->load('functionalLocation')),
+            'equipmentClasses' => EquipmentClassResource::collection($equipmentClasses),
+            'equipmentStatuses' => EquipmentStatusResource::collection($equipmentStatuses),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Equipment $equipment)
+    public function update(UpdateEquipmentRequest $request, Equipment $equipment)
     {
-        //
+        Gate::authorize('update_equipment');
+
+        try {
+            $equipment->update($request->validated());
+
+            return back();
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Failed updating equipment',
+            ]);
+        }
     }
 
     /**
@@ -100,6 +121,20 @@ class EquipmentController extends Controller
      */
     public function destroy(Equipment $equipment)
     {
-        //
+        Gate::authorize('delete_equipment');
+
+        try {
+            $equipment->delete();
+
+            return back()->with('message', [
+                'type' => 'success',
+                'description' => 'Equipment deleted successfully',
+            ]);
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Equipment is not found',
+            ]);
+        }
     }
 }

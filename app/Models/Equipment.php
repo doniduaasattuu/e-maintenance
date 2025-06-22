@@ -35,7 +35,12 @@ class Equipment extends Model
                 $query
                     ->where('code', 'LIKE', "%{$search}%")
                     ->orWhere('sort_field', 'LIKE', "%{$search}%")
-                    ->orWhere('description', 'LIKE', "%{$search}%");
+                    ->orWhere('description', 'LIKE', "%{$search}%")
+                    ->orwhereRelation('functionalLocation', function (Builder $q) use ($search) {
+                        $q
+                            ->where('code', 'LIKE', "%{$search}%")
+                            ->orWhere('description', 'LIKE', "%{$search}%");
+                    });
             });
         }
 

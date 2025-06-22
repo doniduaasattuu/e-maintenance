@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TableLayout from '@/layouts/table/layout';
-import { EquipmentClass, EquipmentStatus } from '@/types';
+import { EquipmentClass, EquipmentStatus, FunctionalLocation } from '@/types';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 import FunctionalLocationSelect from '../functional-location-select';
@@ -18,6 +18,7 @@ export type EquipmentFormData = {
 };
 
 interface EquipmentFormProps {
+    functionalLocation?: FunctionalLocation | null;
     equipmentClasses: {
         data: EquipmentClass[];
     };
@@ -33,9 +34,11 @@ interface EquipmentFormProps {
     canSubmit: boolean;
     buttonLabel: string;
     successMessage?: string;
+    isEditing?: boolean;
 }
 
 export default function EquipmentForm({
+    functionalLocation,
     equipmentClasses,
     equipmentStatuses,
     data,
@@ -47,6 +50,7 @@ export default function EquipmentForm({
     buttonLabel,
     recentlySuccessful,
     successMessage,
+    isEditing,
 }: EquipmentFormProps) {
     return (
         <TableLayout title="Equipments" description="Overview and management of equipments in the system">
@@ -110,10 +114,13 @@ export default function EquipmentForm({
                     <Label htmlFor="functional_location_id">Functional location</Label>
 
                     <FunctionalLocationSelect
+                        value={data.functional_location_id}
+                        isEditing={isEditing}
+                        processing={processing}
                         recentlySuccessful={recentlySuccessful}
                         tabIndex={4}
                         id="functional_location_id"
-                        value={data.functional_location_id}
+                        currentValue={functionalLocation}
                         onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
                     />
 
@@ -167,15 +174,14 @@ export default function EquipmentForm({
                 {canSubmit && (
                     <ButtonSubmit
                         label={buttonLabel}
-                        // disabled={
-                        //     processing ||
-                        //     data.code == '' ||
-                        //     data.sort_field == '' ||
-                        //     data.description == '' ||
-                        //     data.equipment_class_id == '' ||
-                        //     data.equipment_status_id == ''
-                        // }
-                        disabled={processing}
+                        disabled={
+                            processing ||
+                            data.code == '' ||
+                            data.sort_field == '' ||
+                            data.description == '' ||
+                            data.equipment_class_id == '' ||
+                            data.equipment_status_id == ''
+                        }
                         tabIndex={7}
                         recentlySuccessful={recentlySuccessful}
                         successMessage={successMessage}

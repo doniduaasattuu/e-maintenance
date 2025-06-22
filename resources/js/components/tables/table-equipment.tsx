@@ -59,8 +59,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                         <TableHead className="text-muted-foreground">Details</TableHead>
                         <TableHead className="text-muted-foreground">Class</TableHead>
                         <TableHead className="text-muted-foreground">Functional Location</TableHead>
-                        <TableHead className="text-muted-foreground">Created at</TableHead>
-                        <TableHead className="text-muted-foreground">Updated at</TableHead>
+                        <TableHead className="text-muted-foreground">Date</TableHead>
                         {can.delete_equipment && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                     </TableRow>
                 </TableHeader>
@@ -89,7 +88,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                                 <TableCell className="flex-col align-top">
                                     <div className="flex max-w-sm flex-col items-start truncate">
                                         <span className="max-w-xs truncate font-medium">{equipment.equipmentClass?.name}</span>
-                                        <span className="text-muted-foreground max-w-xs truncate">{equipment.equipmentClass?.code}</span>
+                                        <span className="text-muted-foreground max-w-[300px] truncate">{equipment.equipmentClass?.code}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="flex-col align-top">
@@ -102,18 +101,24 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                                             <span className="max-w-xs truncate font-medium">{equipment.functionalLocation?.code}</span>
                                         )}
 
-                                        <span className="text-muted-foreground max-w-xs truncate">{equipment.functionalLocation?.description}</span>
+                                        <span className="text-muted-foreground max-w-[300px] truncate">
+                                            {equipment.functionalLocation?.description}
+                                        </span>
                                     </div>
                                 </TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{equipment.created_at}</TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{equipment.updated_at}</TableCell>
+                                <TableCell className="flex-col align-top">
+                                    <div className="flex max-w-sm flex-col items-start truncate">
+                                        <span className="text-muted-foreground">{equipment.created_at}</span>
+                                        <span className="text-muted-foreground">{equipment.updated_at}</span>
+                                    </div>
+                                </TableCell>
 
                                 {can.delete_equipment && (
                                     <TableCell className="w-10 text-right">
                                         <ActionConfirm
                                             action={() => handleDeleteEquipment(equipment.id)}
                                             title={`Delete Equipment ${equipment.code}?`}
-                                            description="This action will remove this equipment from all users. This cannot be undone."
+                                            description="This action will remove this equipment from database. This cannot be undone."
                                         >
                                             <Trash2 size={18} className="text-red-500" />
                                         </ActionConfirm>

@@ -1,7 +1,7 @@
 import EquipmentForm, { EquipmentFormData } from '@/components/forms/equipment-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, EquipmentClass, EquipmentStatus } from '@/types';
+import { BreadcrumbItem, Equipment, EquipmentClass, EquipmentStatus } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -11,12 +11,15 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/equipments',
     },
     {
-        title: 'Create',
-        href: '/equipments/create',
+        title: 'Edit',
+        href: '/equipments/{id}/edit',
     },
 ];
 
-interface EquipmentCreateProps {
+interface EquipmentEditProps {
+    equipment: {
+        data: Equipment;
+    };
     equipmentClasses: {
         data: EquipmentClass[];
     };
@@ -25,25 +28,22 @@ interface EquipmentCreateProps {
     };
 }
 
-export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }: EquipmentCreateProps) {
+export default function EquipmentEdit({ equipment, equipmentClasses, equipmentStatuses }: EquipmentEditProps) {
     const can = usePermissions();
-    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<EquipmentFormData>>({
-        code: '',
-        sort_field: '',
-        description: '',
-        functional_location_id: '',
-        equipment_class_id: '',
-        equipment_status_id: '',
+    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<EquipmentFormData>>({
+        code: equipment.data.code,
+        sort_field: equipment.data.sort_field,
+        description: equipment.data.description ?? '',
+        functional_location_id: equipment.data.functional_location_id?.toString() ?? '',
+        equipment_class_id: equipment.data.equipment_class_id?.toString() ?? '',
+        equipment_status_id: equipment.data.equipment_status_id?.toString() ?? '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('equipments.store'), {
+        patch(route('equipments.update', equipment.data.id), {
             preserveScroll: true,
-            onSuccess: () => {
-                reset('code', 'sort_field', 'description', 'functional_location_id', 'equipment_class_id', 'equipment_status_id');
-            },
         });
     };
 
@@ -51,6 +51,7 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="max-w-2xl space-y-4">
                 <EquipmentForm
+                    functionalLocation={equipment.data.functionalLocation}
                     equipmentClasses={equipmentClasses}
                     equipmentStatuses={equipmentStatuses}
                     data={data}
@@ -59,9 +60,10 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.create_equipment}
-                    buttonLabel="Create"
-                    successMessage="Created"
+                    canSubmit={can.update_equipment}
+                    buttonLabel="Update"
+                    successMessage="Updated"
+                    isEditing={true}
                 />
             </div>
         </AppLayout>
