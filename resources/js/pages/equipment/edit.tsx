@@ -5,17 +5,6 @@ import { BreadcrumbItem, Equipment, EquipmentClass, EquipmentStatus } from '@/ty
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Equipments',
-        href: '/equipments',
-    },
-    {
-        title: 'Edit',
-        href: '/equipments/{id}/edit',
-    },
-];
-
 interface EquipmentEditProps {
     equipment: {
         data: Equipment;
@@ -29,6 +18,21 @@ interface EquipmentEditProps {
 }
 
 export default function EquipmentEdit({ equipment, equipmentClasses, equipmentStatuses }: EquipmentEditProps) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Equipments',
+            href: '/equipments',
+        },
+        {
+            title: equipment.data.code,
+            href: `/equipments/${equipment.data.id}`,
+        },
+        {
+            title: 'Edit',
+            href: '/equipments/{id}/edit',
+        },
+    ];
+
     const can = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<EquipmentFormData>>({
         code: equipment.data.code,

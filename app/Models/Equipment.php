@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Events\EquipmentStatusChanged;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
 class Equipment extends Model
@@ -22,6 +24,20 @@ class Equipment extends Model
         'equipment_class_id',
         'equipment_status_id',
     ];
+
+    protected static function booted()
+    {
+        static::updated(function ($equipment) {
+            if ($equipment->isDirty('equipment_status_id')) {
+                event(new EquipmentStatusChanged(
+                    $equipment,
+                    $equipment->getOriginal('equipment_status_id'),
+                    $equipment->equipment_status_id,
+                    auth()->id()
+                ));
+            }
+        });
+    }
 
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
@@ -66,5 +82,10 @@ class Equipment extends Model
     public function equipmentStatus(): BelongsTo
     {
         return $this->belongsTo(EquipmentStatus::class);
+    }
+
+    public function installDismantleHistories(): HasMany
+    {
+        return $this->hasMany(InstallDismantleHistory::class);
     }
 }

@@ -77,7 +77,11 @@ class EquipmentController extends Controller
      */
     public function show(Equipment $equipment)
     {
-        //
+        Gate::authorize('read_equipment');
+
+        return Inertia::render('equipment/show', [
+            'equipment' => new EquipmentResource($equipment->load(['functionalLocation', 'equipmentClass', 'equipmentStatus'])),
+        ]);
     }
 
     /**

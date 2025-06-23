@@ -1,4 +1,5 @@
 import { Select, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import { FunctionalLocation } from '@/types';
 import axios from 'axios';
 import { ArrowUpRightFromSquareIcon, Check } from 'lucide-react';
@@ -16,9 +17,20 @@ type Props = {
     recentlySuccessful: boolean;
     processing: boolean;
     isEditing?: boolean;
+    className?: string;
 };
 
-export default function FunctionalLocationSelect({ id, value, currentValue, onChange, tabIndex, recentlySuccessful, processing, isEditing }: Props) {
+export default function FunctionalLocationSelect({
+    id,
+    value,
+    currentValue,
+    onChange,
+    tabIndex,
+    recentlySuccessful,
+    processing,
+    isEditing,
+    className,
+}: Props) {
     const [input, setInput] = useState('');
     const selected = useRef<FunctionalLocation | null>(null);
     const [options, setOptions] = useState<FunctionalLocation[]>([]);
@@ -59,7 +71,7 @@ export default function FunctionalLocationSelect({ id, value, currentValue, onCh
     };
 
     return (
-        <div className="flex justify-between gap-2">
+        <div className={cn('flex justify-between gap-2', className)}>
             <Select disabled={processing}>
                 <SelectTrigger tabIndex={tabIndex} id={id} className={`w-full ${selected.current || value ? '!text-foreground' : undefined}`}>
                     <SelectValue
@@ -109,14 +121,14 @@ export default function FunctionalLocationSelect({ id, value, currentValue, onCh
                     </Command>
                 </SelectContent>
             </Select>
-            {isEditing && (
+            {isEditing && value !== '' && (
                 <ActionConfirm
                     action={handleDismantling}
-                    title="Remove from this functional location ?"
-                    description="This action will dismantling equipment from functional location and logged in history."
-                    actionLabel="Remove"
+                    title="Dismantle from this functional location?"
+                    description="This action will dismantling equipment from functional location."
+                    actionLabel="Dismantle"
                 >
-                    <Button variant="outline">
+                    <Button title="Dismantle" variant="outline">
                         <ArrowUpRightFromSquareIcon />
                     </Button>
                 </ActionConfirm>

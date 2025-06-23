@@ -33,7 +33,7 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
 
     return (
         <div className="px-4 py-6">
-            <Heading title="Organizations" description="Manage organizations data and information" />
+            <Heading title="Organizations" description="Manage organizations data and information" className="mb-8" />
 
             <div className="space-y-6">
                 <div className="sm:bg-muted text-muted-foreground flex flex-col gap-1 rounded-lg sm:inline-flex sm:flex-row sm:p-1">

@@ -25,6 +25,7 @@ class EquipmentResource extends JsonResource
             'functionalLocation' => new FunctionalLocationResource($this->whenLoaded('functionalLocation')),
             'equipmentClass' => new EquipmentClassResource($this->whenLoaded('equipmentClass')),
             'equipmentStatus' => new EquipmentStatusResource($this->whenLoaded('equipmentStatus')),
+            'installDismantleHistories' => new InstallDismantleResource($this->whenLoaded('installDismantleHistories')),
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
         ];

@@ -114,6 +114,7 @@ export default function EquipmentForm({
                     <Label htmlFor="functional_location_id">Functional location</Label>
 
                     <FunctionalLocationSelect
+                        className="mt-1"
                         value={data.functional_location_id}
                         isEditing={isEditing}
                         processing={processing}
@@ -130,7 +131,7 @@ export default function EquipmentForm({
                 <div className="grid gap-2">
                     <Label htmlFor="equipment_class_id">Equipment class</Label>
                     <Select disabled={processing} onValueChange={(e) => setData('equipment_class_id', e)} value={data.equipment_class_id}>
-                        <SelectTrigger tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={5} className="mt-1 truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select a equipment class" />
                         </SelectTrigger>
                         <SelectContent>
@@ -152,7 +153,7 @@ export default function EquipmentForm({
                 <div className="grid gap-2">
                     <Label htmlFor="equipment_status_id">Equipment status</Label>
                     <Select disabled={processing} onValueChange={(e) => setData('equipment_status_id', e)} value={data.equipment_status_id}>
-                        <SelectTrigger tabIndex={6} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={6} className="mt-1 truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select a equipment status" />
                         </SelectTrigger>
                         <SelectContent>

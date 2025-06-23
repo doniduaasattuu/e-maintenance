@@ -69,8 +69,8 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                             <TableRow key={equipment.id}>
                                 <TableCell className="flex-col align-top">
                                     <div className="flex max-w-sm flex-col items-start truncate">
-                                        {can.update_equipment ? (
-                                            <TextLink className="font-medium" href={route('equipments.edit', equipment.id)}>
+                                        {can.read_equipment ? (
+                                            <TextLink className="font-medium" href={route('equipments.show', equipment.id)}>
                                                 {equipment.code}
                                             </TextLink>
                                         ) : (
