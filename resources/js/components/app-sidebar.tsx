@@ -46,6 +46,11 @@ const mainNavItems: NavItem[] = [
         icon: Layers,
         subItems: [
             {
+                title: 'Equipment histories',
+                href: '/equipment-histories',
+                permission: 'read_installdismantlehistory',
+            },
+            {
                 title: 'Equipment classes',
                 href: '/equipment-classes',
                 permission: 'read_equipmentclass',

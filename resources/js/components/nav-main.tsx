@@ -43,7 +43,11 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                                 const shouldRender = !subItem.permission || permissions[subItem.permission] == true;
                                                 return shouldRender ? (
                                                     <SidebarMenuSubItem key={subItem.title}>
-                                                        <SidebarMenuSubButton asChild isActive={page.url.includes(subItem.href)}>
+                                                        <SidebarMenuSubButton
+                                                            asChild
+                                                            isActive={page.url.includes(subItem.href)}
+                                                            className={`${page.url.includes(subItem.href) ? 'font-medium' : undefined}`}
+                                                        >
                                                             <Link prefetch href={subItem.href}>
                                                                 {subItem.title}
                                                             </Link>

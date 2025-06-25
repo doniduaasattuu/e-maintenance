@@ -20,7 +20,9 @@ class DivisionController extends Controller
     {
         Gate::authorize('read_division');
 
-        $divisions = Division::search($request)->paginate()->withQueryString();
+        $divisions = Division::search($request)
+            ->paginate()
+            ->withQueryString();
 
         return Inertia::render('division/index', [
             'divisions' => DivisionResource::collection($divisions),

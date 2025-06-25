@@ -6,6 +6,7 @@ use App\Http\Controllers\EquipmentClassController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FunctionalLocationController;
+use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkCenterController;
@@ -27,12 +28,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('roles', RoleController::class);
     Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
-    Route::resource('users', UserController::class);
+    Route::resource('/users', UserController::class);
 
     Route::resource('/functional-locations', FunctionalLocationController::class);
     Route::resource('/equipment-classes', EquipmentClassController::class);
     Route::resource('/equipment-statuses', EquipmentStatusController::class);
     Route::resource('/equipments', EquipmentController::class);
+    Route::get('/equipments/{equipment}/history', [InstallDismantleHistoryController::class, 'show'])->name('equipments.history');
+    Route::resource('/equipment-histories', InstallDismantleHistoryController::class);
 
     Route::resource('/organizations/departments', DepartmentController::class)->names([
         'index' => 'departments.index',

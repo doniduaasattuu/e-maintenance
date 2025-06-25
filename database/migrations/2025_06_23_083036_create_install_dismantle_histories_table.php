@@ -16,7 +16,10 @@ return new class extends Migration
             $table->foreignId('equipment_id')->constrained('equipments')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('from_status_id')->constrained('equipment_statuses')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('to_status_id')->constrained('equipment_statuses')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('functional_location_id')->nullable()->constrained('functional_locations')->cascadeOnUpdate()->nullOnDelete();
+            $table->string('from_sort_field')->nullable();
+            $table->string('to_sort_field')->nullable();
+            $table->foreignId('from_functional_location_id')->nullable()->constrained('functional_locations')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('to_functional_location_id')->nullable()->constrained('functional_locations')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('changed_by')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamp('changed_at')->useCurrent();
             $table->text('note')->nullable();

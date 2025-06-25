@@ -20,8 +20,6 @@ class EquipmentStatusChanged
      */
     public function __construct(
         public Equipment $equipment,
-        public int $fromStatusId,
-        public int $toStatusId,
         public ?int $changedBy
     ) {
         //

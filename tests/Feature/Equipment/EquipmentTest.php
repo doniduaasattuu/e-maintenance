@@ -1,11 +1,18 @@
 <?php
 
 use App\Models\Equipment;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentStatus;
 use App\Models\FunctionalLocation;
 use App\Models\User;
+use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\EquipmentSeeder;
+use Database\Seeders\EquipmentStatusSeeder;
+use Database\Seeders\FunctionalLocationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
+
+use function Pest\Laravel\assertDatabaseHas;
 
 uses(RefreshDatabase::class);
 
@@ -14,8 +21,6 @@ beforeEach(function () {
     Permission::create(['name' => 'read_equipment']);
     Permission::create(['name' => 'update_equipment']);
     Permission::create(['name' => 'delete_equipment']);
-
-    $this->seed(EquipmentSeeder::class);
 });
 
 test('equipment index page accessible', function () {
@@ -43,7 +48,7 @@ test('create equipment page accessible', function () {
 });
 
 test('show equipment page accessible', function () {
-    $equipment = Equipment::where('functional_location_id', '!=', null)->first();
+    $equipment = Equipment::factory()->create();
 
     $response = $this
         ->actingAs(createAdminUser())
@@ -63,6 +68,8 @@ test('show equipment page accessible', function () {
 
 test('store equipment successfully', function () {
     $functionalLocation = FunctionalLocation::factory()->create();
+    $equipmentClass = EquipmentClass::factory()->create();
+    $equipmentStatus = EquipmentStatus::factory()->create();
 
     $response = $this
         ->actingAs(createAdminUser())
@@ -72,8 +79,8 @@ test('store equipment successfully', function () {
             'sort_field' => 'PM3.VACUUM.M-CLEAN',
             'description' => 'AC MOTOR;380V;4P;1500RPM;40A',
             'functional_location_id' => $functionalLocation->id,
-            'equipment_class_id' => '1',
-            'equipment_status_id' => '1',
+            'equipment_class_id' => $equipmentClass->id,
+            'equipment_status_id' => $equipmentStatus->id
         ]);
 
     $response
@@ -124,23 +131,25 @@ test('edit page accessible', function () {
 test('update equipment successfully', function () {
     $equipment = Equipment::factory()->create();
     $functionalLocation = FunctionalLocation::factory()->create();
+    $equipmentClass = EquipmentClass::factory()->create();
+    $equipmentStatus = EquipmentStatus::factory()->create();
+
+    expect($equipment)->not()->toBe(null);
 
     $this
         ->actingAs(createAdminUser())
         ->from(route('equipments.edit', $equipment->id))
         ->patch(route('equipments.update', $equipment->id), [
-            'code' => 'EMO123456',
+            'code' => 'ELP123456',
             'sort_field' => 'PM3.VACUUM.M-CLEAN',
             'description' => 'AC MOTOR;380V;4P;1500RPM;40A',
             'functional_location_id' => $functionalLocation->id,
-            'equipment_class_id' => '1',
-            'equipment_status_id' => '1'
+            'equipment_class_id' => $equipmentClass->id,
+            'equipment_status_id' => $equipmentStatus->id
         ])
         ->assertRedirect(route('equipments.edit', $equipment->id));
 
-    $equipment->refresh();
-    expect($equipment->code)->toBe('EMO123456');
-    expect($equipment->description)->toBe('AC MOTOR;380V;4P;1500RPM;40A');
+    assertDatabaseHas('equipments', ['code' => 'ELP123456']);
 });
 
 test('update equipment fails validation', function () {

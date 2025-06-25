@@ -28,11 +28,9 @@ class Equipment extends Model
     protected static function booted()
     {
         static::updated(function ($equipment) {
-            if ($equipment->isDirty('equipment_status_id')) {
+            if ($equipment->isDirty('equipment_status_id') || $equipment->isDirty('functional_location_id')) {
                 event(new EquipmentStatusChanged(
                     $equipment,
-                    $equipment->getOriginal('equipment_status_id'),
-                    $equipment->equipment_status_id,
                     auth()->id()
                 ));
             }

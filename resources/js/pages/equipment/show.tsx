@@ -7,7 +7,7 @@ import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
 import { BreadcrumbItem, Equipment } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ChartLine, Edit, NotepadTextIcon, PlusSquare } from 'lucide-react';
+import { ChartLine, Edit, LucideTruck, NotepadTextIcon, PlusSquare } from 'lucide-react';
 
 interface EquipmentShowProps {
     equipment: {
@@ -39,7 +39,14 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                     </Link>
                 </DropdownMenuItem>
             )}
-
+            {can.read_installdismantlehistory && (
+                <DropdownMenuItem asChild>
+                    <Link className="text-sm" href={route('equipments.history', equipment.data.id)}>
+                        <LucideTruck />
+                        History
+                    </Link>
+                </DropdownMenuItem>
+            )}
             <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                     <div className="flex items-center gap-2">

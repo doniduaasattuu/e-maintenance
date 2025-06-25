@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\EquipmentStatus;
-use App\Models\User;
 use Database\Seeders\EquipmentStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;

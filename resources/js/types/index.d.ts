@@ -179,3 +179,25 @@ export interface Equipment {
     created_at: string;
     updated_at: string;
 }
+
+export interface InstallDismantleHistory {
+    id: number;
+    equipment_id: number;
+    from_status_id: number;
+    to_status_id: number;
+    from_sort_field: string | null;
+    to_sort_field: string | null;
+    from_functional_location_id: number;
+    to_functional_location_id: number;
+    changed_by: number;
+    changed_at: string;
+    note: string;
+    created_at: string;
+    updated_at: string;
+    equipment: Equipment;
+    fromStatus: EquipmentStatus;
+    toStatus: EquipmentStatus;
+    fromFunctionalLocation: FunctionalLocation | null;
+    toFunctionalLocation: FunctionalLocation | null;
+    changedBy: User | null;
+}

@@ -2,11 +2,15 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
 import { EquipmentClass, EquipmentStatus, FunctionalLocation } from '@/types';
+import { Info } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 import FunctionalLocationSelect from '../functional-location-select';
+import TextLink from '../text-link';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
 export type EquipmentFormData = {
     code: string;
@@ -18,6 +22,7 @@ export type EquipmentFormData = {
 };
 
 interface EquipmentFormProps {
+    id?: number | undefined;
     functionalLocation?: FunctionalLocation | null;
     equipmentClasses: {
         data: EquipmentClass[];
@@ -38,6 +43,7 @@ interface EquipmentFormProps {
 }
 
 export default function EquipmentForm({
+    id,
     functionalLocation,
     equipmentClasses,
     equipmentStatuses,
@@ -52,6 +58,8 @@ export default function EquipmentForm({
     successMessage,
     isEditing,
 }: EquipmentFormProps) {
+    const can = usePermissions();
+
     return (
         <TableLayout title="Equipments" description="Overview and management of equipments in the system">
             <form onSubmit={submit} className="space-y-6">
@@ -172,16 +180,24 @@ export default function EquipmentForm({
                     <InputError message={errors.equipment_status_id} />
                 </div>
 
+                {isEditing && (
+                    <Alert>
+                        <Info />
+                        <AlertTitle>Note</AlertTitle>
+                        <AlertDescription>
+                            <span>
+                                Changes to equipment status or functional location will be recorded in the equipment's install/dismantle history.
+                            </span>
+                            {can.read_installdismantlehistory && <TextLink href={route('equipments.history', id)}>View history</TextLink>}
+                        </AlertDescription>
+                    </Alert>
+                )}
+
                 {canSubmit && (
                     <ButtonSubmit
                         label={buttonLabel}
                         disabled={
-                            processing ||
-                            data.code == '' ||
-                            data.sort_field == '' ||
-                            data.description == '' ||
-                            data.equipment_class_id == '' ||
-                            data.equipment_status_id == ''
+                            processing || data.code == '' || data.description == '' || data.equipment_class_id == '' || data.equipment_status_id == ''
                         }
                         tabIndex={7}
                         recentlySuccessful={recentlySuccessful}

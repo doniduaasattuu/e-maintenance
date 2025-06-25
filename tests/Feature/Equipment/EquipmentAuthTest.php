@@ -2,7 +2,10 @@
 
 use App\Models\Equipment;
 use App\Models\FunctionalLocation;
+use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\EquipmentSeeder;
+use Database\Seeders\EquipmentStatusSeeder;
+use Database\Seeders\FunctionalLocationSeeder;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -13,8 +16,6 @@ beforeEach(function () {
     Permission::create(['name' => 'read_equipment']);
     Permission::create(['name' => 'update_equipment']);
     Permission::create(['name' => 'delete_equipment']);
-
-    $this->seed(EquipmentSeeder::class);
 });
 
 test('normal user cannot access equipment index page', function () {
@@ -35,7 +36,7 @@ test('normal user cannot access equipment create form', function () {
 
 test('normal user cannot access equipment edit form', function () {
     $user = createNormalUser();
-    $equipment = Equipment::first();
+    $equipment = Equipment::factory()->create();
 
     $this->actingAs($user)
         ->get(route('equipments.edit', $equipment))
@@ -55,7 +56,7 @@ test('guest cannot access equipment create form', function () {
 });
 
 test('guest cannot access equipment edit form', function () {
-    $equipment = Equipment::first();
+    $equipment = Equipment::factory()->create();
 
     $this
         ->get(route('equipments.edit', $equipment->id))

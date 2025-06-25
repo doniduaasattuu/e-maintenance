@@ -48,6 +48,7 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
 
         patch(route('equipments.update', equipment.data.id), {
             preserveScroll: true,
+            preserveState: true,
         });
     };
 
@@ -55,6 +56,7 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="max-w-2xl space-y-4">
                 <EquipmentForm
+                    id={equipment.data.id}
                     functionalLocation={equipment.data.functionalLocation}
                     equipmentClasses={equipmentClasses}
                     equipmentStatuses={equipmentStatuses}
