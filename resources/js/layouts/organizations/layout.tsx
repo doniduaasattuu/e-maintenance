@@ -32,7 +32,7 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
     const currentPath = window.location.pathname;
 
     return (
-        <div className="px-4 py-6">
+        <div className="max-w-7xl px-4 py-6">
             <Heading title="Organizations" description="Manage organizations data and information" className="mb-8" />
 
             <div className="space-y-6">
@@ -49,7 +49,6 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
                                     isActive && 'bg-muted sm:bg-background text-foreground',
                                 )}
                                 prefetch
-                                cacheFor={5000}
                             >
                                 {item.title}
                             </Link>

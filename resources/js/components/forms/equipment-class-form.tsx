@@ -20,6 +20,7 @@ interface EquipmentClassFormProps {
 export type EquipmentClassFormData = {
     code: string;
     name: string;
+    formable: string;
     description: string;
 };
 
@@ -75,10 +76,27 @@ export default function EquipmentClassForm({
                 </div>
 
                 <div className="grid gap-2">
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="formable">Formable</Label>
 
                     <Input
                         tabIndex={3}
+                        id="formable"
+                        className="mt-1 block w-full"
+                        value={data.formable ?? ''}
+                        onChange={(e) => setData('formable', e.target.value)}
+                        placeholder="PANEL"
+                        disabled={processing}
+                        autoComplete="formable"
+                    />
+
+                    <InputError message={errors.formable} />
+                </div>
+
+                <div className="grid gap-2">
+                    <Label htmlFor="description">Description</Label>
+
+                    <Input
+                        tabIndex={4}
                         id="description"
                         className="mt-1 block w-full"
                         value={data.description ?? ''}
@@ -93,8 +111,8 @@ export default function EquipmentClassForm({
 
                 {canSubmit && (
                     <ButtonSubmit
-                        disabled={processing || data.code == '' || data.name == ''}
-                        tabIndex={4}
+                        disabled={processing || data.code == '' || data.name == '' || data.formable == ''}
+                        tabIndex={5}
                         recentlySuccessful={recentlySuccessful}
                         successMessage={successMessage}
                         label={buttonLabel}

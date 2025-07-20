@@ -26,7 +26,7 @@ export default function TableLayout({ title, description, className, action, chi
             </div>
 
             <div className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 lg:space-x-12">
-                <div className={cn('flex-1 space-y-2', className ?? 'md:max-w-4xl')}>{children}</div>
+                <div className={cn('flex-1 space-y-2', className ?? 'md:max-w-7xl')}>{children}</div>
             </div>
         </div>
     );

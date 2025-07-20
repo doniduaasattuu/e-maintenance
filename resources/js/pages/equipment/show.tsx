@@ -56,12 +56,14 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                     <DropdownMenuSubContent>
-                        <DropdownMenuItem asChild>
-                            <Link className="text-sm" href={route('equipments.show', equipment.data.id)}>
-                                <PlusSquare />
-                                New
-                            </Link>
-                        </DropdownMenuItem>
+                        {can.create_inspection && (
+                            <DropdownMenuItem asChild>
+                                <Link className="text-sm" href={route('inspections.create', equipment.data.id)}>
+                                    <PlusSquare />
+                                    New
+                                </Link>
+                            </DropdownMenuItem>
+                        )}
                         <DropdownMenuItem asChild>
                             <Link className="text-sm" href={route('equipments.show', equipment.data.id)}>
                                 <ChartLine />

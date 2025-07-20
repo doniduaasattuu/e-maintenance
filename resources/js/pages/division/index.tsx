@@ -25,9 +25,7 @@ export default function DivisionIndex({ divisions }: DivisionIndexProps) {
             <Head title="Divisions" />
 
             <OrganizationsLayout>
-                <div className="max-w-4xl space-y-4">
-                    <TableDivision divisions={divisions} />
-                </div>
+                <TableDivision divisions={divisions} />
             </OrganizationsLayout>
         </AppLayout>
     );

@@ -21,6 +21,7 @@ export default function EquipmentClassCreate() {
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<EquipmentClassFormData>>({
         code: '',
         name: '',
+        formable: '',
         description: '',
     });
 
@@ -30,7 +31,7 @@ export default function EquipmentClassCreate() {
         post(route('equipment-classes.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                reset('code', 'name', 'description');
+                reset('code', 'name', 'formable', 'description');
             },
         });
     };

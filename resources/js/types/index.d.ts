@@ -151,6 +151,7 @@ export interface EquipmentClass {
     id: number;
     code: string;
     name: string;
+    formable: string;
     description: string | null;
     created_at: string;
     updated_at: string;
@@ -200,4 +201,35 @@ export interface InstallDismantleHistory {
     fromFunctionalLocation: FunctionalLocation | null;
     toFunctionalLocation: FunctionalLocation | null;
     changedBy: User | null;
+}
+
+export interface InspectionForm {
+    equipment_id: number;
+    formable_id: number;
+    formable_type: string;
+    equipment: Equipment;
+}
+
+export interface InspectionMotor {
+    id: number;
+    is_operational: number;
+    is_clean: number;
+    number_of_greasing: number;
+    temperature_de: string | null; // decimal
+    temperature_body: string | null; // decimal
+    temperature_nde: string | null; // decimal
+    vibration_dev: string | null; // decimal
+    vibration_deh: string | null; // decimal
+    vibration_dea: string | null; // decimal
+    vibration_def: string | null; // decimal
+    is_noisy_de: number;
+    vibration_ndev: string | null; // decimal
+    vibration_ndeh: string | null; // decimal
+    vibration_ndef: string | null; // decimal
+    is_noisy_nde: number;
+    inspected_by: number | null;
+    created_at: string;
+    updated_at: string;
+    inspectedBy: User | null;
+    inspectionForm: InspectionForm;
 }

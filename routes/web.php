@@ -4,13 +4,16 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\EquipmentClassController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FunctionalLocationController;
+use App\Http\Controllers\InspectionMotorController;
 use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkCenterController;
 use App\Http\Resources\EquipmentClassResource;
+use App\Models\EquipmentInspectionForm;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -31,12 +34,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/users', UserController::class);
 
     Route::resource('/functional-locations', FunctionalLocationController::class);
-    Route::resource('/equipment-classes', EquipmentClassController::class);
-    Route::resource('/equipment-statuses', EquipmentStatusController::class);
     Route::resource('/equipments', EquipmentController::class);
     Route::get('/equipments/{equipment}/history', [InstallDismantleHistoryController::class, 'show'])->name('equipments.history');
     Route::resource('/equipment-histories', InstallDismantleHistoryController::class);
 
+    // INSPECTION
+    Route::get('/equipments/{equipment}/inspection', [EquipmentInspectionFormController::class, 'create'])->name('inspections.create');
+
+    // INSPECTION MOTOR
+    Route::post('/inspections/motor', [InspectionMotorController::class, 'store'])->name('inspectionmotors.store');
+    Route::get('/inspections/motor/{inspectionMotor}/edit', [InspectionMotorController::class, 'edit'])->name('inspectionmotors.edit');
+    Route::patch('/inspections/motor/{inspectionMotor}', [InspectionMotorController::class, 'update'])->name('inspectionmotors.update');
+    // Route::post('/inspections/panel', [InspectionPanelController::class, 'create'])->name('inspectionpanels.store');
+    // Route::post('/inspections/transformer', [InspectionTransformerController::class, 'create'])->name('inspectiontransformers.store');
+    // Route::post('/inspections/ac', [InspectionAirConditionerController::class, 'create'])->name('inspectionacs.store');
+
+    // EQUIPMENT CLASS
+    Route::resource('/equipment-classes', EquipmentClassController::class);
+
+    // EQUIPMENT STATUS
+    Route::resource('/equipment-statuses', EquipmentStatusController::class);
+
+    // DEPARTMENT
     Route::resource('/organizations/departments', DepartmentController::class)->names([
         'index' => 'departments.index',
         'create' => 'departments.create',
@@ -45,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'delete' => 'departments.delete',
     ]);
 
+    // DIVISION
     Route::resource('/organizations/divisions', DivisionController::class)->names([
         'index' => 'divisions.index',
         'create' => 'divisions.create',
@@ -53,6 +73,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'delete' => 'divisions.delete',
     ]);
 
+    // WORK CENTER
     Route::resource('/organizations/work-centers', WorkCenterController::class)->names([
         'index' => 'work-centers.index',
         'create' => 'work-centers.create',

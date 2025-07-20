@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('equipment_classes', function (Blueprint $table) {
+        Schema::create('equipment_inspection_forms', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 50)->unique();
-            $table->string('name', 50);
-            $table->string('formable', 50);
-            $table->string('description')->nullable();
+            $table->foreignId('equipment_id')->nullable(false)->constrained('equipments')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->unsignedBigInteger('formable_id');
+            $table->string('formable_type');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('equipment_classes');
+        Schema::dropIfExists('equipment_inspection_forms');
     }
 };

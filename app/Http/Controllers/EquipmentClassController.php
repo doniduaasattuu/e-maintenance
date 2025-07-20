@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Throwable;
 
+use function PHPUnit\Framework\isEmpty;
+
 class EquipmentClassController extends Controller
 {
     /**
@@ -103,12 +105,19 @@ class EquipmentClassController extends Controller
         Gate::authorize('delete_equipmentclass');
 
         try {
-            $equipmentClass->delete();
+            if (count($equipmentClass->equipments) > 0) {
+                return back()->with('message', [
+                    'type' => 'error',
+                    'description' => 'Equipment class cannot deleted when related to Equipment',
+                ]);
+            } else {
+                $equipmentClass->delete();
 
-            return back()->with('message', [
-                'type' => 'success',
-                'description' => 'Equipment class deleted successfully',
-            ]);
+                return back()->with('message', [
+                    'type' => 'success',
+                    'description' => 'Equipment class deleted successfully',
+                ]);
+            }
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',

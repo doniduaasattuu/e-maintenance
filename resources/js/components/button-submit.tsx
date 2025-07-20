@@ -7,10 +7,19 @@ interface ButtonSubmitProps {
     disabled: boolean;
     label?: string;
     recentlySuccessful?: boolean;
+    showSuccessMessage?: boolean;
     successMessage?: string;
 }
 
-export default function ButtonSubmit({ variant, tabIndex, disabled, recentlySuccessful, successMessage, label }: ButtonSubmitProps) {
+export default function ButtonSubmit({
+    variant,
+    tabIndex,
+    disabled,
+    recentlySuccessful,
+    showSuccessMessage = true,
+    successMessage,
+    label,
+}: ButtonSubmitProps) {
     return (
         <div className="mt-2 flex items-center gap-4">
             <Button variant={variant ?? 'default'} type="submit" disabled={disabled} tabIndex={tabIndex}>
@@ -18,7 +27,7 @@ export default function ButtonSubmit({ variant, tabIndex, disabled, recentlySucc
             </Button>
 
             <Transition
-                show={recentlySuccessful}
+                show={recentlySuccessful && showSuccessMessage}
                 enter="transition ease-in-out"
                 enterFrom="opacity-0"
                 leave="transition ease-in-out"

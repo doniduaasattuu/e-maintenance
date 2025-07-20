@@ -37,7 +37,22 @@ class UpdateEquipmentClassRequest extends FormRequest
                 'max:50',
                 Rule::unique('equipment_classes', 'name')->ignore($this->equipment_class),
             ],
+            'formable' => [
+                'required',
+                'string',
+                'uppercase',
+                'max:50',
+                'regex:/^\S*$/',
+                Rule::unique('equipment_classes', 'formable')->ignore($this->equipment_class),
+            ],
             'description' => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'formable.regex' => 'The formable field cannot contain spaces',
         ];
     }
 }

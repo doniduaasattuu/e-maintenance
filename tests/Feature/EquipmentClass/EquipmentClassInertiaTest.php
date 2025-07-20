@@ -61,6 +61,7 @@ test('equipment class edit form should be rendered', function () {
                 ->has('equipmentClass.data')
                 ->has('equipmentClass.data.id')
                 ->has('equipmentClass.data.code')
+                ->has('equipmentClass.data.formable')
                 ->has('equipmentClass.data.description')
         );
 });

@@ -6,6 +6,7 @@ use App\Policies\RolePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\Models\Role;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,5 +24,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Role::class, RolePolicy::class);
+
+        Relation::enforceMorphMap([
+            'USER' => 'App\Models\User',
+            'INSPECTION_MOTOR' => 'App\Models\InspectionMotor',
+        ]);
     }
 }

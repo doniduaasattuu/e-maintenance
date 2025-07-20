@@ -75,7 +75,7 @@ class EquipmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Equipment $equipment)
+    public function show(Request $request, Equipment $equipment)
     {
         Gate::authorize('read_equipment');
 

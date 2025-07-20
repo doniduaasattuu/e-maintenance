@@ -39,7 +39,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
     }
 
     return (
-        <TableLayout title="Equipments" description="Overview and management of equipments in the system" className="md:max-w-6xl">
+        <TableLayout title="Equipments" description="Overview and management of equipments in the system">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
@@ -68,7 +68,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                         return (
                             <TableRow key={equipment.id}>
                                 <TableCell className="flex-col align-top">
-                                    <div className="flex max-w-sm flex-col items-start truncate">
+                                    <div className="flex max-w-sm flex-col items-start">
                                         {can.read_equipment ? (
                                             <TextLink className="font-medium" href={route('equipments.show', equipment.id)}>
                                                 {equipment.code}
@@ -80,34 +80,32 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                                     </div>
                                 </TableCell>
                                 <TableCell className="flex-col align-top">
-                                    <div className="flex max-w-sm flex-col items-start truncate">
-                                        <span className="max-w-xs truncate font-medium">{equipment.sort_field}</span>
-                                        <span className="text-muted-foreground max-w-xs truncate">{equipment.description}</span>
+                                    <div className="flex max-w-sm flex-col items-start">
+                                        <span className="max-w-xs font-medium">{equipment.sort_field}</span>
+                                        <span className="text-muted-foreground max-w-md truncate">{equipment.description}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="flex-col align-top">
-                                    <div className="flex max-w-sm flex-col items-start truncate">
-                                        <span className="max-w-xs truncate font-medium">{equipment.equipmentClass?.name}</span>
-                                        <span className="text-muted-foreground max-w-[300px] truncate">{equipment.equipmentClass?.code}</span>
+                                    <div className="flex max-w-sm flex-col items-start">
+                                        <span className="max-w-xs font-medium">{equipment.equipmentClass?.name}</span>
+                                        <span className="text-muted-foreground">{equipment.equipmentClass?.code}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="flex-col align-top">
-                                    <div className="flex max-w-sm flex-col items-start truncate">
+                                    <div className="flex max-w-sm flex-col items-start">
                                         {can.update_functionallocation && equipment.functionalLocation ? (
                                             <TextLink href={route('functional-locations.edit', equipment.functionalLocation.id)}>
-                                                <span className="max-w-xs truncate font-medium">{equipment.functionalLocation.code}</span>
+                                                <span className="max-w-xs font-medium">{equipment.functionalLocation.code}</span>
                                             </TextLink>
                                         ) : (
-                                            <span className="max-w-xs truncate font-medium">{equipment.functionalLocation?.code}</span>
+                                            <span className="max-w-xs font-medium">{equipment.functionalLocation?.code}</span>
                                         )}
 
-                                        <span className="text-muted-foreground max-w-[300px] truncate">
-                                            {equipment.functionalLocation?.description}
-                                        </span>
+                                        <span className="text-muted-foreground max-w-sm truncate">{equipment.functionalLocation?.description}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="flex-col align-top">
-                                    <div className="flex max-w-sm flex-col items-start truncate">
+                                    <div className="flex max-w-sm flex-col items-start">
                                         <span className="text-muted-foreground">{equipment.created_at}</span>
                                         <span className="text-muted-foreground">{equipment.updated_at}</span>
                                     </div>

@@ -27,6 +27,7 @@ export default function EquipmentClassEdit({ equipmentClass }: EquipmentClassEdi
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<EquipmentClassFormData>>({
         code: equipmentClass.data.code,
         name: equipmentClass.data.name,
+        formable: equipmentClass.data.formable,
         description: equipmentClass.data?.description ?? '',
     });
 

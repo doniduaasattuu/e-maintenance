@@ -86,4 +86,9 @@ class Equipment extends Model
     {
         return $this->hasMany(InstallDismantleHistory::class);
     }
+
+    public function inspections(): HasMany
+    {
+        return $this->hasMany(EquipmentInspectionForm::class);
+    }
 }

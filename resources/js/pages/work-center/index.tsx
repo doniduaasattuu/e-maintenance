@@ -24,9 +24,7 @@ export default function WorkCenterIndex({ workCenters }: WorkCenterIndexProps) {
             <Head title="Work Centers" />
 
             <OrganizationsLayout>
-                <div className="max-w-4xl space-y-4">
-                    <TableWorkCenter workCenters={workCenters} />
-                </div>
+                <TableWorkCenter workCenters={workCenters} />
             </OrganizationsLayout>
         </AppLayout>
     );

@@ -17,6 +17,7 @@ class EquipmentClass extends Model
     protected $fillable = [
         'code',
         'name',
+        'formable',
         'description',
     ];
 
@@ -30,6 +31,7 @@ class EquipmentClass extends Model
                 $query
                     ->where('code', 'LIKE', "%{$search}%")
                     ->orWhere('name', 'LIKE', "%{$search}%")
+                    ->orWhere('formable', 'LIKE', "%{$search}%")
                     ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }

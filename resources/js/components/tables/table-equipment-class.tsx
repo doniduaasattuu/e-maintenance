@@ -39,6 +39,7 @@ export default function TableEquipmentClass({ equipmentClasses }: TableEquipment
                     <TableRow>
                         <TableHead className="text-muted-foreground">Code</TableHead>
                         <TableHead className="text-muted-foreground">Name</TableHead>
+                        <TableHead className="text-muted-foreground">Formable</TableHead>
                         <TableHead className="text-muted-foreground">Description</TableHead>
                         <TableHead className="text-muted-foreground">Created at</TableHead>
                         <TableHead className={`text-muted-foreground ${can.delete_equipmentclass ?? 'text-right'}`}>Updated at</TableHead>
@@ -59,6 +60,7 @@ export default function TableEquipmentClass({ equipmentClasses }: TableEquipment
                                     )}
                                 </TableCell>
                                 <TableCell className="max-w-[200px] truncate">{equipmentClass.name}</TableCell>
+                                <TableCell>{equipmentClass.formable}</TableCell>
                                 <TableCell className="max-w-[300px] truncate">{equipmentClass.description}</TableCell>
                                 <TableCell className="text-muted-foreground">{equipmentClass.created_at}</TableCell>
                                 <TableCell className={`text-muted-foreground ${can.delete_equipmentclass ?? 'text-right'}`}>
