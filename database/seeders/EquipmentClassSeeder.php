@@ -17,25 +17,25 @@ class EquipmentClassSeeder extends Seeder
             [
                 'code' => 'ZCLASS_E008',
                 'name' => 'ELECTRICAL PANEL',
-                'formable' => 'PANEL',
+                'formable_type' => 'PANEL',
                 'description' => 'Distribution panels for managing electrical circuits and power systems.'
             ],
             [
                 'code' => 'ZCLASS_E009',
                 'name' => 'MOTOR /DRIVE',
-                'formable' => 'MOTOR',
+                'formable_type' => 'MOTOR',
                 'description' => 'Rotating machinery and motor drives used for mechanical operations.'
             ],
             [
                 'code' => 'ZCLASS_E012',
                 'name' => 'TRANSFORMER',
-                'formable' => 'TRANSFORMER',
+                'formable_type' => 'TRANSFORMER',
                 'description' => 'Electrical equipment used to step up or step down voltage in power systems.'
             ],
             [
                 'code' => 'ZCLASS_U001',
                 'name' => 'AIR CONDITIONER / CHILLER',
-                'formable' => 'AC',
+                'formable_type' => 'AC',
                 'description' => 'Cooling systems for climate control and industrial process temperature regulation.'
             ],
         ];

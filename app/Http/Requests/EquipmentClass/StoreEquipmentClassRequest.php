@@ -36,7 +36,7 @@ class StoreEquipmentClassRequest extends FormRequest
                 'max:50',
                 'unique:equipment_classes,name',
             ],
-            'formable' => [
+            'formable_type' => [
                 'required',
                 'string',
                 'uppercase',

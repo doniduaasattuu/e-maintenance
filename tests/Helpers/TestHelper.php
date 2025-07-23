@@ -20,3 +20,17 @@ function createNormalUser(): User
 {
     return User::factory()->create();
 }
+
+function createInspectorUser(): User
+{
+    $inspector = User::factory()->create();
+
+    $role = Role::firstOrCreate([
+        'name' => 'Inspector'
+    ]);
+    $role->givePermissionTo(Permission::all());
+
+    $inspector->assignRole($role);
+
+    return $inspector;
+}

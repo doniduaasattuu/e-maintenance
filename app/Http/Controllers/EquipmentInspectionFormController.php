@@ -27,7 +27,7 @@ class EquipmentInspectionFormController extends Controller
         Gate::authorize('create_inspection');
 
         $equipment->load('equipmentClass');
-        $class = $equipment->equipmentClass->formable;
+        $class = $equipment->equipmentClass->formable_type;
 
         switch ($class) {
             case "MOTOR":

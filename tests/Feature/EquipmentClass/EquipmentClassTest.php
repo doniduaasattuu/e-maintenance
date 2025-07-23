@@ -53,7 +53,7 @@ test('store equipment class successfully', function () {
         ->post(route('equipment-classes.store'), [
             'code' => 'ZCLASS_E008',
             'name' => 'ELECTRICAL PANEL',
-            'formable' => 'PANEL',
+            'formable_type' => 'PANEL',
             'description' => 'Distribution panels for managing electrical circuits and power systems.'
         ]);
 
@@ -70,7 +70,7 @@ test('store fails validation', function () {
         ->post(route('equipment-classes.store'), [
             'code' => '',
             'name' => '',
-            'formable' => 'PANEL LISTRIK',
+            'formable_type' => 'PANEL LISTRIK',
             'description' => '',
         ]);
 
@@ -105,7 +105,7 @@ test('update equipment class successfully', function () {
         ->put(route('equipment-classes.update', $equipmentClass->id), [
             'code' => 'ZCLASS_E111',
             'name' => 'FIRE EXTINGUISHER',
-            'formable' => 'APAR'
+            'formable_type' => 'APAR'
         ])
         ->assertRedirect(route('equipment-classes.edit', $equipmentClass->id));
 
@@ -123,7 +123,7 @@ test('update equipment class fails validation', function () {
         ->patch(route('equipment-classes.update', $equipmentClass->id), [
             'code' => '',
             'name' => 'lowercase name',
-            'formable' => 'pemadam api',
+            'formable_type' => 'pemadam api',
             'description' => '',
         ])
         ->assertSessionHasErrors(['code', 'name']);

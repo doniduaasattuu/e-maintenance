@@ -120,7 +120,7 @@ test('update successfully with avatar change and role sync', function () {
     $response = $this
         ->actingAs(createAdminUser())
         ->from(route('users.edit', $user->id))
-        ->put(route('users.update', $user->id), [
+        ->post(route('users.update', $user->id), [
             'name' => 'UpdatedName',
             'employee_id' => (string) $user->employee_id,
             'email' => $user->email,
@@ -145,7 +145,7 @@ test('update fails validation', function () {
 
     $response = $this
         ->actingAs(createAdminUser())
-        ->put(route('users.update', $user->id), [
+        ->post(route('users.update', $user->id), [
             'name' => '',
             'employee_id' => '123',
             'email' => 'bad',

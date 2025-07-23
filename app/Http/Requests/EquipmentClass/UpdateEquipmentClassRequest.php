@@ -37,7 +37,7 @@ class UpdateEquipmentClassRequest extends FormRequest
                 'max:50',
                 Rule::unique('equipment_classes', 'name')->ignore($this->equipment_class),
             ],
-            'formable' => [
+            'formable_type' => [
                 'required',
                 'string',
                 'uppercase',

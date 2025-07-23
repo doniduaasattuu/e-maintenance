@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code', 50)->unique();
             $table->string('name', 50);
-            $table->string('formable', 50);
+            $table->string('formable_type', 50);
             $table->string('description')->nullable();
             $table->timestamps();
         });
