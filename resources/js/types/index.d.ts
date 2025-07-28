@@ -233,3 +233,24 @@ export interface InspectionMotor {
     inspectedBy: User | null;
     inspectionForm: InspectionForm;
 }
+
+export interface InspectionPanel {
+    id: number;
+    is_operational: number;
+    is_clean: number;
+    temperature_incoming_r: string | null; // decimal
+    temperature_incoming_s: string | null; // decimal
+    temperature_incoming_t: string | null; // decimal
+    temperature_cabinet: string | null; // decimal
+    temperature_outgoing_r: string | null; // decimal
+    temperature_outgoing_s: string | null; // decimal
+    temperature_outgoing_t: string | null; // decimal
+    current_r: string | null; // decimal
+    current_s: string | null; // decimal
+    current_t: string | null; // decimal
+    inspected_by: number | null;
+    created_at: string;
+    updated_at: string;
+    inspectedBy: User | null;
+    inspectionForm: InspectionForm;
+}

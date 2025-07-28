@@ -1,10 +1,8 @@
 <?php
 
 use App\Models\Equipment;
-use App\Models\FunctionalLocation;
 use App\Models\InspectionMotor;
 use Database\Seeders\EquipmentClassSeeder;
-use Database\Seeders\FunctionalLocationSeeder;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

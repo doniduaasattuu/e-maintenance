@@ -28,7 +28,7 @@ return new class extends Migration
             $table->decimal('vibration_ndeh', 4, 2)->nullable(true);
             $table->decimal('vibration_ndef', 4, 2)->nullable(true);
             $table->boolean('is_noisy_nde')->nullable(true);
-            $table->foreignId('inspected_by')->nullable(true)->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('inspected_by')->nullable(true)->constrained('users')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();
         });
     }

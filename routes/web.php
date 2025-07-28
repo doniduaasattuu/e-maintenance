@@ -8,6 +8,7 @@ use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FunctionalLocationController;
 use App\Http\Controllers\InspectionMotorController;
+use App\Http\Controllers\InspectionPanelController;
 use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -45,9 +46,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/inspections/motor', [InspectionMotorController::class, 'store'])->name('inspectionmotors.store');
     Route::get('/inspections/motor/{inspectionMotor}/edit', [InspectionMotorController::class, 'edit'])->name('inspectionmotors.edit');
     Route::patch('/inspections/motor/{inspectionMotor}', [InspectionMotorController::class, 'update'])->name('inspectionmotors.update');
-    // Route::post('/inspections/panel', [InspectionPanelController::class, 'create'])->name('inspectionpanels.store');
-    // Route::post('/inspections/transformer', [InspectionTransformerController::class, 'create'])->name('inspectiontransformers.store');
-    // Route::post('/inspections/ac', [InspectionAirConditionerController::class, 'create'])->name('inspectionacs.store');
+
+
+    Route::post('/inspections/panel', [InspectionPanelController::class, 'store'])->name('inspectionpanels.store');
+    Route::get('/inspections/panel/{inspectionPanel}/edit', [InspectionPanelController::class, 'edit'])->name('inspectionpanels.edit');
+    Route::patch('/inspections/panel/{inspectionPanel}', [InspectionPanelController::class, 'update'])->name('inspectionpanels.update');
 
     // EQUIPMENT CLASS
     Route::resource('/equipment-classes', EquipmentClassController::class);

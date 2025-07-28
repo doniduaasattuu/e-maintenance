@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         Relation::enforceMorphMap([
             'USER' => 'App\Models\User',
             'INSPECTION_MOTOR' => 'App\Models\InspectionMotor',
+            'INSPECTION_PANEL' => 'App\Models\InspectionPanel',
         ]);
     }
 }

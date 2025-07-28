@@ -86,6 +86,7 @@ export default function InspectionMotorForm({
                         <InputError message={errors.is_clean} />
                     </div>
                 </div>
+
                 <div className="grid gap-2">
                     <Label htmlFor="number_of_greasing">Number of greasing</Label>
                     <Input
@@ -111,7 +112,7 @@ export default function InspectionMotorForm({
             <div className="space-y-5">
                 <div className="text-muted-foreground text-sm font-semibold">Temperature</div>
                 <div className="grid grid-cols-3 gap-2">
-                    <div className="flex flex-col gap-2">
+                    <div className="grid gap-2">
                         <Label htmlFor="temperature_de">DE</Label>
                         <Input
                             id="temperature_de"
@@ -127,7 +128,7 @@ export default function InspectionMotorForm({
                         <InputError message={errors.temperature_de} />
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="grid gap-2">
                         <Label htmlFor="temperature_body">Body</Label>
                         <Input
                             id="temperature_body"
@@ -143,7 +144,7 @@ export default function InspectionMotorForm({
                         <InputError message={errors.temperature_body} />
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="grid gap-2">
                         <Label htmlFor="temperature_nde">NDE</Label>
                         <Input
                             id="temperature_nde"
@@ -168,7 +169,7 @@ export default function InspectionMotorForm({
                 <div className="text-muted-foreground text-sm font-semibold">Vibration DE</div>
                 <div className="grid gap-6">
                     <div className="grid grid-cols-2 gap-2 gap-y-6 sm:grid-cols-4">
-                        <div className="flex flex-col gap-2">
+                        <div className="grid gap-2">
                             <Label htmlFor="vibration_dev">Vertical</Label>
                             <Input
                                 id="vibration_dev"
@@ -184,7 +185,7 @@ export default function InspectionMotorForm({
                             <InputError message={errors.vibration_dev} />
                         </div>
 
-                        <div className="flex flex-col gap-2">
+                        <div className="grid gap-2">
                             <Label htmlFor="vibration_deh">Horizontal</Label>
                             <Input
                                 id="vibration_deh"
@@ -200,7 +201,7 @@ export default function InspectionMotorForm({
                             <InputError message={errors.vibration_deh} />
                         </div>
 
-                        <div className="flex flex-col gap-2">
+                        <div className="grid gap-2">
                             <Label htmlFor="vibration_dea">Axial</Label>
                             <Input
                                 id="vibration_dea"
@@ -216,7 +217,7 @@ export default function InspectionMotorForm({
                             <InputError message={errors.vibration_dea} />
                         </div>
 
-                        <div className="flex flex-col gap-2">
+                        <div className="grid gap-2">
                             <Label htmlFor="vibration_def">Frame</Label>
                             <Input
                                 id="vibration_def"
@@ -258,7 +259,7 @@ export default function InspectionMotorForm({
             <div className="space-y-5">
                 <div className="text-muted-foreground text-sm font-semibold">Vibration NDE</div>
                 <div className="grid grid-cols-3 gap-2">
-                    <div className="flex flex-col gap-2">
+                    <div className="grid gap-2">
                         <Label htmlFor="vibration_ndev">Vertical</Label>
                         <Input
                             id="vibration_ndev"
@@ -274,7 +275,7 @@ export default function InspectionMotorForm({
                         <InputError message={errors.vibration_ndev} />
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="grid gap-2">
                         <Label htmlFor="vibration_ndeh">Horizontal</Label>
                         <Input
                             id="vibration_ndeh"
@@ -290,7 +291,7 @@ export default function InspectionMotorForm({
                         <InputError message={errors.vibration_ndeh} />
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="grid gap-2">
                         <Label htmlFor="vibration_ndef">Frame</Label>
                         <Input
                             id="vibration_ndef"

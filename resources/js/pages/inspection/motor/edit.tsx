@@ -28,7 +28,7 @@ export default function InspectionMotorEdit({ inspectionMotor }: Props) {
     ];
 
     const { data, setData, patch, processing, errors, recentlySuccessful } = useForm<Required<InspectionMotorData>>({
-        equipment_id: 1,
+        equipment_id: inspectionMotor.data.inspectionForm.equipment.id,
         is_operational: inspectionMotor.data.is_operational.toString(),
         is_clean: inspectionMotor.data.is_clean.toString(),
         number_of_greasing: inspectionMotor.data.number_of_greasing,

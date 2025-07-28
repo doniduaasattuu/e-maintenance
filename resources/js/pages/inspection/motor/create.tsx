@@ -77,10 +77,10 @@ export default function InspectionMotorCreate({ equipment }: Props) {
             <TableLayout title="Inspection form" description="Form inspection for equipment motor" className="max-w-2xl">
                 <InspectionMotorForm
                     data={data}
-                    errors={errors}
-                    processing={processing}
-                    recentlySuccessful={recentlySuccessful}
                     setData={setData}
+                    processing={processing}
+                    errors={errors}
+                    recentlySuccessful={recentlySuccessful}
                     submit={submit}
                 />
             </TableLayout>
