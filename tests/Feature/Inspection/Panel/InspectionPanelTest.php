@@ -105,11 +105,11 @@ test('store success validation', function () {
 
 test('update fails validation', function () {
     $inspector = createInspectorUser();
-    $inspectionMotor = InspectionPanel::factory()->create();
+    $inspectionPanel = InspectionPanel::factory()->create();
 
     $response = $this
         ->actingAs($inspector)
-        ->patch(route('inspectionpanels.update', $inspectionMotor->id), [
+        ->patch(route('inspectionpanels.update', $inspectionPanel->id), [
             'is_operational' => 's',
             'is_clean' => 'g',
             'temperature_incoming_r' => 's',
@@ -142,7 +142,7 @@ test('update fails validation', function () {
     ]);
 });
 
-test('update success validation', function () {
+test('update inspection panel success validation', function () {
     $inspector = createInspectorUser();
     $inspectionPanel = InspectionPanel::factory()->create();
 

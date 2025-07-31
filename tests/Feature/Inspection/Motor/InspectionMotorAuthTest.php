@@ -79,6 +79,7 @@ test('inspector user can store inspection motor data', function () {
     ]);
 
     $this->actingAs($user)
+        ->from(route('inspections.create', $equipment->id))
         ->post(route('inspectionmotors.store'), [
             'equipment_id' => $equipment->id,
             'is_operational' => 1,

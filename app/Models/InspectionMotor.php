@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InspectionMotor extends Model
 {
+    /** @use HasFactory<\Database\Factories\InspectionMotorFactory> */
     use HasFactory;
 
     protected $table = 'inspection_motors';

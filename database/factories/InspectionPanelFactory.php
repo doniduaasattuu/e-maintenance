@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\InspectionPanel>
@@ -17,8 +18,8 @@ class InspectionPanelFactory extends Factory
     public function definition(): array
     {
         return [
-            'is_operational' => 1,
-            'is_clean' => 1,
+            'is_operational' => Arr::random([0, 1]),
+            'is_clean' => Arr::random([0, 1]),
             'temperature_incoming_r' => fake()->numberBetween(30, 70),
             'temperature_incoming_s' => fake()->numberBetween(30, 70),
             'temperature_incoming_t' => fake()->numberBetween(30, 70),

@@ -155,7 +155,7 @@ test('update fails validation', function () {
     ]);
 });
 
-test('update success validation', function () {
+test('update inspection motor success validation', function () {
     $inspector = createInspectorUser();
     $inspectionMotor = InspectionMotor::factory()->create();
 

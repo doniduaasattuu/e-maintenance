@@ -76,6 +76,7 @@ test('inspector user can store inspection panel data', function () {
     ]);
 
     $this->actingAs($user)
+        ->from(route('inspections.create', $equipment->id))
         ->post(route('inspectionpanels.store'), [
             'equipment_id' => $equipment->id,
             'is_operational' => 1,
@@ -98,25 +99,25 @@ test('inspector user can store inspection panel data', function () {
 test('normal user cannot access inspection panel edit page', function () {
     $user = createNormalUser();
 
-    $inspectionMotorData = InspectionPanel::all();
-    $this->assertEmpty($inspectionMotorData);
+    $inspectionPanelData = InspectionPanel::all();
+    $this->assertEmpty($inspectionPanelData);
 
-    $inspectionMotor = InspectionPanel::factory()->create();
+    $inspectionPanel = InspectionPanel::factory()->create();
 
     $this->actingAs($user)
-        ->get(route('inspectionpanels.edit', $inspectionMotor->id))
+        ->get(route('inspectionpanels.edit', $inspectionPanel->id))
         ->assertStatus(403);
 });
 
 test('inspector user can access inspection panel edit page', function () {
     $inspector = createInspectorUser();
 
-    $inspectionMotorData = InspectionPanel::all();
-    $this->assertEmpty($inspectionMotorData);
+    $inspectionPanelData = InspectionPanel::all();
+    $this->assertEmpty($inspectionPanelData);
 
-    $inspectionMotor = InspectionPanel::factory()->create();
+    $inspectionPanel = InspectionPanel::factory()->create();
 
     $this->actingAs($inspector)
-        ->get(route('inspectionpanels.edit', $inspectionMotor->id))
+        ->get(route('inspectionpanels.edit', $inspectionPanel->id))
         ->assertStatus(200);
 });

@@ -254,3 +254,29 @@ export interface InspectionPanel {
     inspectedBy: User | null;
     inspectionForm: InspectionForm;
 }
+
+export interface InspectionTransformer {
+    id: number;
+    is_operational: number;
+    is_clean: number;
+    primary_current_r: string | null; // decimal
+    primary_current_s: string | null; // decimal
+    primary_current_t: string | null; // decimal
+    primary_voltage_r: string | null; // decimal
+    primary_voltage_s: string | null; // decimal
+    primary_voltage_t: string | null; // decimal
+    secondary_current_r: string | null; // decimal
+    secondary_current_s: string | null; // decimal
+    secondary_current_t: string | null; // decimal
+    secondary_voltage_r: string | null; // decimal
+    secondary_voltage_s: string | null; // decimal
+    secondary_voltage_t: string | null; // decimal
+    temperature_oil: string | null; // decimal
+    temperature_winding: string | null; // decimal
+    desicant_level_id: number;
+    inspected_by: number | null;
+    created_at: string;
+    updated_at: string;
+    inspectedBy: User | null;
+    inspectionForm: InspectionForm;
+}

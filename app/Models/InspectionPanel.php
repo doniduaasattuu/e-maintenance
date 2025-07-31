@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InspectionPanel extends Model
 {
+    /** @use HasFactory<\Database\Factories\InspectionPanelFactory> */
     use HasFactory;
 
     protected $table = 'inspection_panels';

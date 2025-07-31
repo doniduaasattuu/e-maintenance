@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
             'USER' => 'App\Models\User',
             'INSPECTION_MOTOR' => 'App\Models\InspectionMotor',
             'INSPECTION_PANEL' => 'App\Models\InspectionPanel',
+            'INSPECTION_TRANSFORMER' => 'App\Models\InspectionTransformer',
         ]);
     }
 }

@@ -37,10 +37,10 @@ test('inspection panel create form should be rendered', function () {
 test('inspection panel edit form should be rendered', function () {
     $inspector = createInspectorUser();
 
-    $inspectionMotor = InspectionPanel::factory()->create();
+    $inspectionPanel = InspectionPanel::factory()->create();
 
     $this->actingAs($inspector)
-        ->get(route('inspectionpanels.edit', $inspectionMotor->id))
+        ->get(route('inspectionpanels.edit', $inspectionPanel->id))
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('inspection/panel/edit'),

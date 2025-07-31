@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\InspectionMotor>
@@ -17,8 +18,8 @@ class InspectionMotorFactory extends Factory
     public function definition(): array
     {
         return [
-            'is_operational' => 1,
-            'is_clean' => 1,
+            'is_operational' => Arr::random([0, 1]),
+            'is_clean' => Arr::random([0, 1]),
             'number_of_greasing' => fake()->randomNumber() * 10,
             'temperature_de' => fake()->numberBetween(30, 70),
             'temperature_body' => fake()->numberBetween(30, 70),

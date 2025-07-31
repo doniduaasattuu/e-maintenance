@@ -23,7 +23,7 @@ export type InspectionPanelData = {
     current_t: string;
 };
 
-export type InspectionMotorFormProps = {
+export type InspectionPanelFormProps = {
     submit: FormEventHandler;
     data: Required<InspectionPanelData>;
     setData: <K extends keyof InspectionPanelData>(key: K, value: InspectionPanelData[K]) => void;
@@ -43,7 +43,7 @@ export default function InspectionPanelForm({
     recentlySuccessful,
     showSuccessMessage = false,
     isEditing = false,
-}: InspectionMotorFormProps) {
+}: InspectionPanelFormProps) {
     const can = usePermissions();
 
     return (
