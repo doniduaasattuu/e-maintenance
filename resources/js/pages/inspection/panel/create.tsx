@@ -68,7 +68,7 @@ export default function InspectionPanelCreate({ equipment }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title="Inspection Form" description="Form inspection for equipment panel" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Form inspection for equipment panel" className="max-w-2xl">
                 <InspectionPanelForm
                     data={data}
                     setData={setData}

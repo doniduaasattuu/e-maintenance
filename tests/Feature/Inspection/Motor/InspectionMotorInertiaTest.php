@@ -38,6 +38,9 @@ test('inspection motor edit form should be rendered', function () {
     $inspector = createInspectorUser();
 
     $inspectionMotor = InspectionMotor::factory()->create();
+    $inspectionMotor->inspectionForm()->create([
+        'equipment_id' => Equipment::factory()->create(['equipment_class_id' => 2])->id
+    ]);
 
     $this->actingAs($inspector)
         ->get(route('inspectionmotors.edit', $inspectionMotor->id))

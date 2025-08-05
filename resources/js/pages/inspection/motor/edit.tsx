@@ -1,7 +1,7 @@
 import InspectionMotorForm, { InspectionMotorData } from '@/components/forms/inspection-motor-form';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
-import { BreadcrumbItem, InspectionMotor } from '@/types';
+import { BreadcrumbItem, Equipment, InspectionMotor } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -9,9 +9,12 @@ interface Props {
     inspectionMotor: {
         data: InspectionMotor;
     };
+    equipment: {
+        data: Equipment;
+    };
 }
 
-export default function InspectionMotorEdit({ inspectionMotor }: Props) {
+export default function InspectionMotorEdit({ inspectionMotor, equipment }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
@@ -55,7 +58,7 @@ export default function InspectionMotorEdit({ inspectionMotor }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title="Inspection form" description="Inspection edit form for equipment motor" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment motor" className="max-w-2xl">
                 <InspectionMotorForm
                     data={data}
                     errors={errors}

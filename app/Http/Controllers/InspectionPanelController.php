@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InspectionPanel\StoreInspectionPanelRequest;
 use App\Http\Requests\InspectionPanel\UpdateInspectionPanelRequest;
+use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\InspectionPanelResource;
 use App\Models\InspectionPanel;
 use Illuminate\Http\Request;
@@ -81,9 +82,11 @@ class InspectionPanelController extends Controller
     public function edit(InspectionPanel $inspectionPanel)
     {
         Gate::authorize('update_inspectionpanel');
+        $inspectionPanel->load('inspectionForm.equipment');
 
         return Inertia::render('inspection/panel/edit', [
-            'inspectionPanel' => new InspectionPanelResource($inspectionPanel->load('inspectionForm.equipment')),
+            'inspectionPanel' => new InspectionPanelResource($inspectionPanel),
+            'equipment' => new EquipmentResource($inspectionPanel->inspectionForm->equipment)
         ]);
     }
 

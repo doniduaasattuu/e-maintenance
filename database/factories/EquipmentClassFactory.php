@@ -20,7 +20,7 @@ class EquipmentClassFactory extends Factory
         return [
             'code' => 'ZCLASS_' . Str::upper(fake()->randomLetter() . fake()->unique()->numerify('###')),
             'name' => fake()->sentence(2),
-            'formable_type' => fake()->sentence(1),
+            'formable_type' => fake()->unique()->sentence(1),
             'description' => Str::ucfirst(fake()->sentence(5)),
         ];
     }

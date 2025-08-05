@@ -1,7 +1,7 @@
 import InspectionTransformerForm, { InspectionTransformerData } from '@/components/forms/inspection-transformer-form';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
-import { BreadcrumbItem, InspectionTransformer } from '@/types';
+import { BreadcrumbItem, Equipment, InspectionTransformer } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -9,9 +9,12 @@ interface Props {
     inspectionTransformer: {
         data: InspectionTransformer;
     };
+    equipment: {
+        data: Equipment;
+    };
 }
 
-export default function InspectionTransformerEdit({ inspectionTransformer }: Props) {
+export default function InspectionTransformerEdit({ inspectionTransformer, equipment }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
@@ -57,7 +60,7 @@ export default function InspectionTransformerEdit({ inspectionTransformer }: Pro
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title="Inspection Form" description="Inspection edit form for equipment transformer" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment transformer" className="max-w-2xl">
                 <InspectionTransformerForm
                     data={data}
                     setData={setData}

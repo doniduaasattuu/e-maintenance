@@ -1,7 +1,7 @@
 import InspectionPanelForm, { InspectionPanelData } from '@/components/forms/inspection-panel-form';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
-import { BreadcrumbItem, InspectionPanel } from '@/types';
+import { BreadcrumbItem, Equipment, InspectionPanel } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -9,9 +9,12 @@ interface Props {
     inspectionPanel: {
         data: InspectionPanel;
     };
+    equipment: {
+        data: Equipment;
+    };
 }
 
-export default function InspectionPanelEdit({ inspectionPanel }: Props) {
+export default function InspectionPanelEdit({ inspectionPanel, equipment }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
@@ -52,7 +55,7 @@ export default function InspectionPanelEdit({ inspectionPanel }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title="Inspection Form" description="Inspection edit form for equipment panel" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment panel" className="max-w-2xl">
                 <InspectionPanelForm
                     data={data}
                     setData={setData}

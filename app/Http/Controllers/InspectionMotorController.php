@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InspectionMotor\StoreInspectionMotorRequest;
 use App\Http\Requests\InspectionMotor\UpdateInspectionMotorRequest;
+use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\InspectionMotorResource;
 use App\Models\EquipmentInspectionForm;
 use App\Models\InspectionMotor;
@@ -82,9 +83,11 @@ class InspectionMotorController extends Controller
     public function edit(InspectionMotor $inspectionMotor)
     {
         Gate::authorize('update_inspectionmotor');
+        $inspectionMotor->load('inspectionForm.equipment');
 
         return Inertia::render('inspection/motor/edit', [
-            'inspectionMotor' => new InspectionMotorResource($inspectionMotor->load('inspectionForm.equipment')),
+            'inspectionMotor' => new InspectionMotorResource($inspectionMotor),
+            'equipment' => new EquipmentResource($inspectionMotor->inspectionForm->equipment)
         ]);
     }
 

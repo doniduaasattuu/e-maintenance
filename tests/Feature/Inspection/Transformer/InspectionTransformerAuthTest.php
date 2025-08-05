@@ -106,7 +106,7 @@ test('inspector user can store inspection transformer data', function () {
             'desicant_level_id' => $qualityRating->id,
             'inspected_by' => $user->id,
         ])
-        ->assertRedirect(route('inspections.create', $equipment->id));
+        ->assertStatus(200);
 });
 
 test('normal user cannot access inspection transformer edit page', function () {
@@ -129,6 +129,9 @@ test('inspector user can access inspection transformer edit page', function () {
     $this->assertEmpty($inspectionTransformerData);
 
     $inspectionTransformer = InspectionTransformer::factory()->create();
+    $inspectionTransformer->inspectionForm()->create([
+        'equipment_id' => Equipment::factory()->create(['equipment_class_id' => 3])->id
+    ]);
 
     $this->actingAs($inspector)
         ->get(route('inspectiontransformers.edit', $inspectionTransformer->id))

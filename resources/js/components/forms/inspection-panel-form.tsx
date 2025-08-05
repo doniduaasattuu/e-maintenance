@@ -220,7 +220,7 @@ export default function InspectionPanelForm({
                             autoComplete="current_r"
                             inputMode="numeric"
                             value={data.current_r}
-                            placeholder="&deg;C"
+                            placeholder="A"
                             onChange={(e) => setData('current_r', e.target.value)}
                             disabled={processing}
                         />
@@ -236,7 +236,7 @@ export default function InspectionPanelForm({
                             autoComplete="current_s"
                             inputMode="numeric"
                             value={data.current_s}
-                            placeholder="&deg;C"
+                            placeholder="A"
                             onChange={(e) => setData('current_s', e.target.value)}
                             disabled={processing}
                         />
@@ -252,7 +252,7 @@ export default function InspectionPanelForm({
                             autoComplete="current_t"
                             inputMode="numeric"
                             value={data.current_t}
-                            placeholder="&deg;C"
+                            placeholder="A"
                             onChange={(e) => setData('current_t', e.target.value)}
                             disabled={processing}
                         />

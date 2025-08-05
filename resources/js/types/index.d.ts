@@ -151,7 +151,7 @@ export interface EquipmentClass {
     id: number;
     code: string;
     name: string;
-    formable: string;
+    formable_type: string;
     description: string | null;
     created_at: string;
     updated_at: string;
@@ -274,6 +274,23 @@ export interface InspectionTransformer {
     temperature_oil: string | null; // decimal
     temperature_winding: string | null; // decimal
     desicant_level_id: number;
+    inspected_by: number | null;
+    created_at: string;
+    updated_at: string;
+    inspectedBy: User | null;
+    inspectionForm: InspectionForm;
+}
+
+export interface InspectionAirConditioner {
+    id: number;
+    is_operational: number;
+    is_drain_leaking: number;
+    current_load: string | null;
+    blowing_temperature: string | null;
+    ambient_temperature: string | null;
+    is_filter_clean: number;
+    is_evaporator_clean: number;
+    is_condensor_clean: number;
     inspected_by: number | null;
     created_at: string;
     updated_at: string;

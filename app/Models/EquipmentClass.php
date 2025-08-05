@@ -17,7 +17,7 @@ class EquipmentClass extends Model
     protected $fillable = [
         'code',
         'name',
-        'formable',
+        'formable_type',
         'description',
     ];
 

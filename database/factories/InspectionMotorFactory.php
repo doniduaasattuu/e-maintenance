@@ -28,11 +28,11 @@ class InspectionMotorFactory extends Factory
             'vibration_deh' => fake()->numberBetween(0, 45) / 10,
             'vibration_dea' => fake()->numberBetween(0, 45) / 10,
             'vibration_def' => fake()->numberBetween(0, 45) / 10,
-            'is_noisy_de' => 0,
+            'is_noisy_de' => Arr::random([0, 1]),
             'vibration_ndev' => fake()->numberBetween(0, 45) / 10,
             'vibration_ndeh' => fake()->numberBetween(0, 45) / 10,
             'vibration_ndef' => fake()->numberBetween(0, 45) / 10,
-            'is_noisy_nde' => 0,
+            'is_noisy_nde' => Arr::random([0, 1]),
         ];
     }
 }

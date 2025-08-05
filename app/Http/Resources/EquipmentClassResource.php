@@ -18,7 +18,7 @@ class EquipmentClassResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'name' => $this->name,
-            'formable' => $this->formable,
+            'formable_type' => $this->formable_type,
             'description' => $this->description,
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),

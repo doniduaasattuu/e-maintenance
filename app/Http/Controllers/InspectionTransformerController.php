@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InspectionTransformer\StoreInspectionTransformerRequest;
 use App\Http\Requests\InspectionTransformer\UpdateInspectionTransformerRequest;
+use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\InspectionTransformerResource;
 use App\Models\InspectionTransformer;
 use Illuminate\Http\Request;
@@ -81,9 +82,11 @@ class InspectionTransformerController extends Controller
     public function edit(InspectionTransformer $inspectionTransformer)
     {
         Gate::authorize('update_inspectiontransformer');
+        $inspectionTransformer->load('inspectionForm.equipment');
 
         return Inertia::render('inspection/transformer/edit', [
-            'inspectionTransformer' => new InspectionTransformerResource($inspectionTransformer->load('inspectionForm.equipment')),
+            'inspectionTransformer' => new InspectionTransformerResource($inspectionTransformer),
+            'equipment' => new EquipmentResource($inspectionTransformer->inspectionForm->equipment),
         ]);
     }
 

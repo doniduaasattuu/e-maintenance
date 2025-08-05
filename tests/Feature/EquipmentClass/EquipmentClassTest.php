@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\EquipmentClass;
-use App\Models\User;
 use Database\Seeders\EquipmentClassSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
@@ -91,7 +90,7 @@ test('edit page accessible', function () {
                 ->has('equipmentClass.data.id')
                 ->has('equipmentClass.data.code')
                 ->has('equipmentClass.data.name')
-                ->has('equipmentClass.data.formable')
+                ->has('equipmentClass.data.formable_type')
                 ->has('equipmentClass.data.description')
         );
 });

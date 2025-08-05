@@ -103,6 +103,9 @@ test('normal user cannot access inspection panel edit page', function () {
     $this->assertEmpty($inspectionPanelData);
 
     $inspectionPanel = InspectionPanel::factory()->create();
+    $inspectionPanel->inspectionForm()->create([
+        'equipment_id' => Equipment::factory()->create(['equipment_class_id' => 1])->id
+    ]);
 
     $this->actingAs($user)
         ->get(route('inspectionpanels.edit', $inspectionPanel->id))
@@ -116,6 +119,9 @@ test('inspector user can access inspection panel edit page', function () {
     $this->assertEmpty($inspectionPanelData);
 
     $inspectionPanel = InspectionPanel::factory()->create();
+    $inspectionPanel->inspectionForm()->create([
+        'equipment_id' => Equipment::factory()->create(['equipment_class_id' => 1])->id
+    ]);
 
     $this->actingAs($inspector)
         ->get(route('inspectionpanels.edit', $inspectionPanel->id))

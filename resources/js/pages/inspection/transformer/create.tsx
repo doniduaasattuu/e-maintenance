@@ -78,7 +78,7 @@ export default function InspectionTransformerCreate({ equipment }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title="Inspection Form" description="Form inspection for equipment transformer" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Form inspection for equipment transformer" className="max-w-2xl">
                 <InspectionTransformerForm
                     data={data}
                     setData={setData}

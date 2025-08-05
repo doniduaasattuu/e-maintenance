@@ -40,6 +40,8 @@ class EquipmentClassSeeder extends Seeder
             ],
         ];
 
-        collect($equipment_classes)->each(fn($e) => EquipmentClass::create($e));
+        collect($equipment_classes)->each(function ($e) {
+            EquipmentClass::firstOrCreate(['code' => $e['code']], $e);
+        });
     }
 }

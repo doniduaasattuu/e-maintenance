@@ -7,6 +7,7 @@ use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FunctionalLocationController;
+use App\Http\Controllers\InspectionAirConditionerController;
 use App\Http\Controllers\InspectionMotorController;
 use App\Http\Controllers\InspectionPanelController;
 use App\Http\Controllers\InspectionTransformerController;
@@ -57,6 +58,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/inspections/transformer', [InspectionTransformerController::class, 'store'])->name('inspectiontransformers.store');
     Route::get('/inspections/transformer/{inspectionTransformer}/edit', [InspectionTransformerController::class, 'edit'])->name('inspectiontransformers.edit');
     Route::patch('/inspections/transformer/{inspectionTransformer}', [InspectionTransformerController::class, 'update'])->name('inspectiontransformers.update');
+
+    // INSPECTION AIR CONDITIONER
+    Route::post('/inspections/airconditioner', [InspectionAirConditionerController::class, 'store'])->name('inspectionairconditioners.store');
+    Route::get('/inspections/airconditioner/{inspectionAirConditioner}/edit', [InspectionAirConditionerController::class, 'edit'])->name('inspectionairconditioners.edit');
+    Route::patch('/inspections/airconditioner/{inspectionAirConditioner}', [InspectionAirConditionerController::class, 'update'])->name('inspectionairconditioners.update');
 
     // EQUIPMENT CLASS
     Route::resource('/equipment-classes', EquipmentClassController::class);

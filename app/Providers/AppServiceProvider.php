@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
             'INSPECTION_MOTOR' => 'App\Models\InspectionMotor',
             'INSPECTION_PANEL' => 'App\Models\InspectionPanel',
             'INSPECTION_TRANSFORMER' => 'App\Models\InspectionTransformer',
+            'INSPECTION_AIR_CONDITIONER' => 'App\Models\InspectionAirConditioner',
         ]);
     }
 }

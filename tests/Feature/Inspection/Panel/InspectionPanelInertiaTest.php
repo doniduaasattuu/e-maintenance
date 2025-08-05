@@ -38,6 +38,9 @@ test('inspection panel edit form should be rendered', function () {
     $inspector = createInspectorUser();
 
     $inspectionPanel = InspectionPanel::factory()->create();
+    $inspectionPanel->inspectionForm()->create([
+        'equipment_id' => Equipment::factory()->create(['equipment_class_id' => 1])->id
+    ]);
 
     $this->actingAs($inspector)
         ->get(route('inspectionpanels.edit', $inspectionPanel->id))

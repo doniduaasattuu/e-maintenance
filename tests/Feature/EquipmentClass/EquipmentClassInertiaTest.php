@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\EquipmentClass;
+use Database\Seeders\EquipmentClassSeeder;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -61,7 +62,7 @@ test('equipment class edit form should be rendered', function () {
                 ->has('equipmentClass.data')
                 ->has('equipmentClass.data.id')
                 ->has('equipmentClass.data.code')
-                ->has('equipmentClass.data.formable')
+                ->has('equipmentClass.data.formable_type')
                 ->has('equipmentClass.data.description')
         );
 });

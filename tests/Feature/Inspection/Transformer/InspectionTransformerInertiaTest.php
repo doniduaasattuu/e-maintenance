@@ -39,6 +39,9 @@ test('inspection transformer edit form should be rendered', function () {
     $inspector = createInspectorUser();
 
     $inspectionTransformer = InspectionTransformer::factory()->create();
+    $inspectionTransformer->inspectionForm()->create([
+        'equipment_id' => Equipment::factory()->create(['equipment_class_id' => 3])->id
+    ]);
 
     $this->actingAs($inspector)
         ->get(route('inspectiontransformers.edit', $inspectionTransformer->id))

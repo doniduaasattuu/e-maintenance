@@ -15,12 +15,13 @@ interface EquipmentClassFormProps {
     canSubmit: boolean;
     buttonLabel: string;
     successMessage?: string;
+    isEditing?: boolean;
 }
 
 export type EquipmentClassFormData = {
     code: string;
     name: string;
-    formable: string;
+    formable_type: string;
     description: string;
 };
 
@@ -34,6 +35,7 @@ export default function EquipmentClassForm({
     canSubmit,
     buttonLabel,
     successMessage,
+    isEditing = false,
 }: EquipmentClassFormProps) {
     return (
         <TableLayout title="Equipment Classes" description="Overview and management of equipment class in the system">
@@ -76,20 +78,20 @@ export default function EquipmentClassForm({
                 </div>
 
                 <div className="grid gap-2">
-                    <Label htmlFor="formable">Formable</Label>
+                    <Label htmlFor="formable_type">Formable</Label>
 
                     <Input
                         tabIndex={3}
-                        id="formable"
+                        id="formable_type"
                         className="mt-1 block w-full"
-                        value={data.formable ?? ''}
-                        onChange={(e) => setData('formable', e.target.value)}
+                        value={data.formable_type ?? ''}
+                        onChange={(e) => setData('formable_type', e.target.value)}
                         placeholder="PANEL"
-                        disabled={processing}
-                        autoComplete="formable"
+                        disabled={processing || isEditing}
+                        autoComplete="formable_type"
                     />
 
-                    <InputError message={errors.formable} />
+                    <InputError message={errors.formable_type} />
                 </div>
 
                 <div className="grid gap-2">
@@ -111,7 +113,7 @@ export default function EquipmentClassForm({
 
                 {canSubmit && (
                     <ButtonSubmit
-                        disabled={processing || data.code == '' || data.name == '' || data.formable == ''}
+                        disabled={processing || data.code == '' || data.name == '' || data.formable_type == ''}
                         tabIndex={5}
                         recentlySuccessful={recentlySuccessful}
                         successMessage={successMessage}

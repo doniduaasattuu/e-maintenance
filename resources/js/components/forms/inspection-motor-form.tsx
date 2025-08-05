@@ -54,7 +54,7 @@ export default function InspectionMotorForm({
             <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-2">
                 <div className="col-span-2 grid grid-cols-2 gap-2">
                     <div className="grid gap-2">
-                        <Label htmlFor="equipment_class_id">Operated</Label>
+                        <Label htmlFor="is_operational">Operated</Label>
                         <Select disabled={processing} onValueChange={(e) => setData('is_operational', e)} value={data.is_operational}>
                             <SelectTrigger tabIndex={1} className="truncate overflow-hidden whitespace-nowrap">
                                 <SelectValue placeholder="Operating status" />
@@ -70,7 +70,7 @@ export default function InspectionMotorForm({
                         <InputError message={errors.is_operational} />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="equipment_class_id">Cleanliness</Label>
+                        <Label htmlFor="is_clean">Cleanliness</Label>
                         <Select disabled={processing} onValueChange={(e) => setData('is_clean', e)} value={data.is_clean}>
                             <SelectTrigger tabIndex={2} className="truncate overflow-hidden whitespace-nowrap">
                                 <SelectValue placeholder="Operating status" />

@@ -30,6 +30,7 @@ return new class extends Migration
             $table->decimal('temperature_oil', 5, 2)->nullable(true);
             $table->decimal('temperature_winding', 5, 2)->nullable(true);
             $table->foreignId('desicant_level_id')->nullable(true)->constrained('quality_ratings')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('inspected_by')->nullable(true)->constrained('users')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();
         });
     }

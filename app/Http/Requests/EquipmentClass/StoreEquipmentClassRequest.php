@@ -42,7 +42,7 @@ class StoreEquipmentClassRequest extends FormRequest
                 'uppercase',
                 'max:50',
                 'regex:/^\S*$/',
-                'unique:equipment_classes,formable',
+                'unique:equipment_classes,formable_type',
             ],
             'description' => ['nullable', 'string', 'max:255'],
         ];
@@ -51,7 +51,7 @@ class StoreEquipmentClassRequest extends FormRequest
     public function messages()
     {
         return [
-            'formable.regex' => 'The formable field cannot contain spaces',
+            'formable_type.regex' => 'The formable field cannot contain spaces',
         ];
     }
 }
