@@ -18,8 +18,6 @@ beforeEach(function () {
 });
 
 test('functional location index page accessible', function () {
-    User::factory()->count(3)->create();
-
     $response = $this
         ->actingAs(createAdminUser())
         ->get(route('functional-locations.index'));

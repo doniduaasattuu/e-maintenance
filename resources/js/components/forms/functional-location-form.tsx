@@ -2,7 +2,6 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import TableLayout from '@/layouts/table/layout';
-import { Transition } from '@headlessui/react';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 
@@ -15,7 +14,7 @@ interface FunctionalLocationFormProps {
     submit: FormEventHandler;
     canSubmit: boolean;
     buttonLabel: string;
-    successMessage: string;
+    successMessage?: string;
 }
 
 export type FunctionalLocationFormData = {
@@ -75,19 +74,13 @@ export default function FunctionalLocationForm({
                 </div>
 
                 {canSubmit && (
-                    <div className="flex items-center gap-4">
-                        <ButtonSubmit label={buttonLabel} disabled={processing || data.code == '' || data.description == ''} tabIndex={3} />
-
-                        <Transition
-                            show={recentlySuccessful}
-                            enter="transition ease-in-out"
-                            enterFrom="opacity-0"
-                            leave="transition ease-in-out"
-                            leaveTo="opacity-0"
-                        >
-                            <p className="mt-2 text-sm text-neutral-600">{successMessage}</p>
-                        </Transition>
-                    </div>
+                    <ButtonSubmit
+                        label={buttonLabel}
+                        disabled={processing || data.code == '' || data.description == ''}
+                        tabIndex={3}
+                        recentlySuccessful={recentlySuccessful}
+                        successMessage={successMessage}
+                    />
                 )}
             </form>
         </TableLayout>

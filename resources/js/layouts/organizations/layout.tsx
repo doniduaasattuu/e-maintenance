@@ -7,17 +7,17 @@ import { type PropsWithChildren } from 'react';
 
 const tabItems: NavItem[] = [
     {
-        title: 'Department',
+        title: 'Departments',
         href: '/organizations/departments',
         icon: null,
     },
     {
-        title: 'Division',
+        title: 'Divisions',
         href: '/organizations/divisions',
         icon: null,
     },
     {
-        title: 'Work Center',
+        title: 'Work Centers',
         href: '/organizations/work-centers',
         icon: null,
     },
@@ -32,8 +32,8 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
     const currentPath = window.location.pathname;
 
     return (
-        <div className="px-4 py-6">
-            <Heading title="Organizations" description="Manage organizations data and information" />
+        <div className="max-w-7xl px-4 py-6">
+            <Heading title="Organizations" description="Manage organizations data and information" className="mb-8" />
 
             <div className="space-y-6">
                 <div className="sm:bg-muted text-muted-foreground flex flex-col gap-1 rounded-lg sm:inline-flex sm:flex-row sm:p-1">
@@ -49,7 +49,6 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
                                     isActive && 'bg-muted sm:bg-background text-foreground',
                                 )}
                                 prefetch
-                                cacheFor={5000}
                             >
                                 {item.title}
                             </Link>

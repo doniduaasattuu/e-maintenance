@@ -27,7 +27,7 @@ interface UserFormParams {
 export default function UserCreate({ departments, positions, workCenters, availableRoles }: UserFormParams) {
     const can = usePermissions();
     const [selectedRoles, setSelectedRoles] = React.useState<string[]>([]);
-    const { data, setData, post, processing, errors, reset } = useForm<Required<UserFormData>>({
+    const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<Required<UserFormData>>({
         name: '',
         employee_id: '',
         email: '',
@@ -44,6 +44,7 @@ export default function UserCreate({ departments, positions, workCenters, availa
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('users.store'), {
+            preserveScroll: true,
             onSuccess: () => {
                 reset('name', 'employee_id', 'email', 'phone_number', 'department_id', 'position_id', 'avatar', 'work_center_id', 'selectedRoles');
                 setSelectedRoles([]);
@@ -62,7 +63,7 @@ export default function UserCreate({ departments, positions, workCenters, availa
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <UserForm
-                buttonLabel="Create User"
+                buttonLabel="Create"
                 canSubmit={can.create_user}
                 data={data}
                 setData={setData}
@@ -76,6 +77,8 @@ export default function UserCreate({ departments, positions, workCenters, availa
                 setSelectedRoles={setSelectedRoles}
                 fileInputRef={fileInputRef}
                 submit={submit}
+                recentlySuccessful={recentlySuccessful}
+                successMessage="Created"
             />
         </AppLayout>
     );

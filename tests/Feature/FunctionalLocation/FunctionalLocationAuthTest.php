@@ -4,7 +4,6 @@ use App\Models\FunctionalLocation;
 use Database\Seeders\FunctionalLocationSeeder;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 

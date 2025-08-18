@@ -9,6 +9,7 @@ use App\Models\Division;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Throwable;
 
 class DivisionController extends Controller
 {
@@ -19,7 +20,9 @@ class DivisionController extends Controller
     {
         Gate::authorize('read_division');
 
-        $divisions = Division::search($request)->paginate()->withQueryString();
+        $divisions = Division::search($request)
+            ->paginate()
+            ->withQueryString();
 
         return Inertia::render('division/index', [
             'divisions' => DivisionResource::collection($divisions),
@@ -43,17 +46,21 @@ class DivisionController extends Controller
     {
         Gate::authorize('create_division');
 
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        Division::create([
-            'code' => $validated['code'],
-            'name' => $validated['name'],
-        ]);
+            Division::create([
+                'code' => $validated['code'],
+                'name' => $validated['name'],
+            ]);
 
-        return redirect()->route('divisions.index')->with('message', [
-            'type' => 'success',
-            'description' => 'Division created successfully',
-        ]);
+            return back();
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Failed creating division',
+            ]);
+        }
     }
 
     /**
@@ -91,10 +98,7 @@ class DivisionController extends Controller
                 'code' => $validated['code'],
             ]);
 
-            return back()->with('message', [
-                'type' => 'success',
-                'description' => 'Division updated successfully',
-            ]);
+            return back();
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',

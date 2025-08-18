@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Edit',
-        href: '/users/edit',
+        href: '/users/{id}/edit',
     },
 ];
 
@@ -29,7 +29,7 @@ interface UserFormParams {
 export default function UserEdit({ user, departments, positions, workCenters, availableRoles, userRoles }: UserFormParams) {
     const can = usePermissions();
     const [selectedRoles, setSelectedRoles] = React.useState<string[]>(userRoles ?? []);
-    const { data, setData, post, processing, errors, reset } = useForm<Required<UserFormData>>({
+    const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<Required<UserFormData>>({
         name: user.data.name,
         employee_id: user.data.employee_id,
         email: user.data.email,
@@ -46,6 +46,7 @@ export default function UserEdit({ user, departments, positions, workCenters, av
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('users.update', user.data.id), {
+            preserveScroll: true,
             onSuccess: () => {
                 reset('avatar');
 
@@ -59,7 +60,7 @@ export default function UserEdit({ user, departments, positions, workCenters, av
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <UserForm
-                buttonLabel="Update User"
+                buttonLabel="Update"
                 canSubmit={can.update_user}
                 data={data}
                 setData={setData}
@@ -72,6 +73,7 @@ export default function UserEdit({ user, departments, positions, workCenters, av
                 selectedRoles={selectedRoles}
                 setSelectedRoles={setSelectedRoles}
                 fileInputRef={fileInputRef}
+                recentlySuccessful={recentlySuccessful}
                 submit={submit}
             />
         </AppLayout>

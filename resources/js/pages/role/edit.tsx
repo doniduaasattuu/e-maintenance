@@ -27,7 +27,7 @@ interface RoleEditProps {
 export default function RoleEdit({ availablePermissions, role, currentPermissions }: RoleEditProps) {
     const can = usePermissions();
     const [selectedPermissions, setSelectedPermissions] = React.useState<string[]>(currentPermissions);
-    const { data, setData, patch, processing, errors } = useForm<Required<RoleFormData>>({
+    const { data, setData, patch, processing, errors, recentlySuccessful } = useForm<Required<RoleFormData>>({
         name: role.data.name,
         selectedPermissions: selectedPermissions,
     });
@@ -41,7 +41,7 @@ export default function RoleEdit({ availablePermissions, role, currentPermission
         <AppLayout breadcrumbs={breadcrumbs}>
             <RoleForm
                 availablePermissions={availablePermissions}
-                buttonLabel="Update role"
+                buttonLabel="Update"
                 canSubmit={can.update_role || selectedPermissions.length > 1}
                 data={data}
                 errors={errors}
@@ -50,6 +50,7 @@ export default function RoleEdit({ availablePermissions, role, currentPermission
                 setSelectedPermissions={setSelectedPermissions}
                 setData={setData}
                 submit={submit}
+                recentlySuccessful={recentlySuccessful}
             />
         </AppLayout>
     );

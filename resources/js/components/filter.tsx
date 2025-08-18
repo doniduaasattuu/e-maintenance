@@ -14,7 +14,7 @@ interface FilterProps {
 
 export default function Filter({ children, open, setOpen }: FilterProps) {
     const isMobile = useIsMobile();
-    const align = isMobile ? 'center' : 'start';
+    const align = isMobile ? 'end' : 'start';
 
     return (
         <Popover open={open} onOpenChange={setOpen}>

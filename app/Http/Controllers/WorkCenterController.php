@@ -51,10 +51,7 @@ class WorkCenterController extends Controller
             'name' => $validated['name'],
         ]);
 
-        return redirect()->route('work-centers.index')->with('message', [
-            'type' => 'success',
-            'description' => 'Work center created successfully',
-        ]);
+        return back();
     }
 
     /**
@@ -92,10 +89,7 @@ class WorkCenterController extends Controller
                 'code' => $validated['code'],
             ]);
 
-            return back()->with('message', [
-                'type' => 'success',
-                'description' => 'Work center updated successfully',
-            ]);
+            return back();
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',

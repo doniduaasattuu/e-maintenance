@@ -51,13 +51,13 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                                 <TableCell>
                                     {can.update_functionallocation ? (
                                         <TextLink href={route('functional-locations.edit', functionalLocation.id)}>
-                                            <span className="font-medium">{functionalLocation.code}</span>
+                                            <span className="truncate font-medium">{functionalLocation.code}</span>
                                         </TextLink>
                                     ) : (
-                                        <span className="font-medium">{functionalLocation.code}</span>
+                                        <span className="truncate font-medium">{functionalLocation.code}</span>
                                     )}
                                 </TableCell>
-                                <TableCell className="max-w-md truncate">{functionalLocation.description}</TableCell>
+                                <TableCell className="max-w-sm truncate sm:max-w-md">{functionalLocation.description}</TableCell>
                                 <TableCell className="text-muted-foreground">{functionalLocation.created_at}</TableCell>
                                 <TableCell className={`text-muted-foreground ${can.delete_functionallocation ?? 'text-right'}`}>
                                     {functionalLocation.updated_at}

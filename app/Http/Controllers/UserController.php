@@ -83,10 +83,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->route('users.create')->with('message', [
-            'type' => 'success',
-            'description' => 'User created successfully',
-        ]);
+        return back();
     }
 
     /**
@@ -157,10 +154,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->route('users.edit', $user->id)->with('message', [
-            'type' => 'success',
-            'description' => 'User updated successfully',
-        ]);
+        return back();
     }
 
     /**

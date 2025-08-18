@@ -8,13 +8,14 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
+import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const page = usePage();
+    const { permissions } = usePage<SharedData>().props;
 
     return (
         <SidebarGroup className="px-2 py-0">
@@ -38,21 +39,28 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 <CollapsibleContent>
                                     {
                                         <SidebarMenuSub>
-                                            {item.subItems.map((subItem) => (
-                                                <SidebarMenuSubItem key={subItem.title}>
-                                                    <SidebarMenuSubButton asChild isActive={page.url.includes(subItem.href)}>
-                                                        <Link prefetch href={subItem.href}>
-                                                            {subItem.title}
-                                                        </Link>
-                                                    </SidebarMenuSubButton>
-                                                </SidebarMenuSubItem>
-                                            ))}
+                                            {item.subItems.map((subItem) => {
+                                                const shouldRender = !subItem.permission || permissions[subItem.permission] == true;
+                                                return shouldRender ? (
+                                                    <SidebarMenuSubItem key={subItem.title}>
+                                                        <SidebarMenuSubButton
+                                                            asChild
+                                                            isActive={page.url.includes(subItem.href)}
+                                                            className={`${page.url.includes(subItem.href) ? 'font-medium' : undefined}`}
+                                                        >
+                                                            <Link prefetch href={subItem.href}>
+                                                                {subItem.title}
+                                                            </Link>
+                                                        </SidebarMenuSubButton>
+                                                    </SidebarMenuSubItem>
+                                                ) : null;
+                                            })}
                                         </SidebarMenuSub>
                                     }
                                 </CollapsibleContent>
                             </SidebarMenuItem>
                         </Collapsible>
-                    ) : (
+                    ) : !item.permission || permissions[item.permission] == true ? (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton asChild isActive={item.href === page.url} tooltip={{ children: item.title }}>
                                 <Link href={item.href} prefetch>
@@ -61,7 +69,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
-                    ),
+                    ) : null,
                 )}
             </SidebarMenu>
         </SidebarGroup>

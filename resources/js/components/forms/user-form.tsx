@@ -28,6 +28,8 @@ interface UserFormParams {
     buttonLabel: string;
     canSubmit: boolean;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
+    recentlySuccessful: boolean;
+    successMessage?: string;
 }
 
 export type UserFormData = {
@@ -57,6 +59,8 @@ export default function UserForm({
     buttonLabel,
     canSubmit,
     fileInputRef,
+    recentlySuccessful,
+    successMessage,
 }: UserFormParams) {
     const [open, setOpen] = React.useState(false);
 
@@ -282,7 +286,15 @@ export default function UserForm({
                     )}
                 </div>
 
-                {canSubmit && <ButtonSubmit label={buttonLabel} disabled={processing} tabIndex={10} />}
+                {canSubmit && (
+                    <ButtonSubmit
+                        label={buttonLabel}
+                        disabled={processing || data.name == '' || data.employee_id == '' || data.email == ''}
+                        tabIndex={10}
+                        recentlySuccessful={recentlySuccessful}
+                        successMessage={successMessage}
+                    />
+                )}
             </form>
         </TableLayout>
     );

@@ -23,7 +23,7 @@ test('admin can create role with valid data', function () {
             'name' => 'Supervisor',
             'selectedPermissions' => ['create_role', 'read_role']
         ])
-        ->assertRedirect(route('roles.index'));
+        ->assertRedirect(route('roles.create'));
 
     $this->assertDatabaseHas('roles', ['name' => 'Supervisor']);
 });

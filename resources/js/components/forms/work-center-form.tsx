@@ -18,9 +18,20 @@ interface WorkCenterFormProps {
     submit: FormEventHandler;
     canSubmit: boolean;
     buttonLabel: string;
+    successMessage?: string;
 }
 
-export default function WorkCenterForm({ data, setData, errors, processing, submit, canSubmit, buttonLabel }: WorkCenterFormProps) {
+export default function WorkCenterForm({
+    data,
+    setData,
+    errors,
+    processing,
+    submit,
+    canSubmit,
+    recentlySuccessful,
+    successMessage,
+    buttonLabel,
+}: WorkCenterFormProps) {
     return (
         <form onSubmit={submit} className="space-y-6">
             <div className="grid gap-2">
@@ -60,9 +71,15 @@ export default function WorkCenterForm({ data, setData, errors, processing, subm
                 <InputError message={errors.code} />
             </div>
 
-            <div className="flex items-center gap-4">
-                {canSubmit && <ButtonSubmit label={buttonLabel} disabled={processing || data.code == '' || data.name == ''} tabIndex={3} />}
-            </div>
+            {canSubmit && (
+                <ButtonSubmit
+                    label={buttonLabel}
+                    disabled={processing || data.code == '' || data.name == ''}
+                    tabIndex={3}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage={successMessage}
+                />
+            )}
         </form>
     );
 }

@@ -100,7 +100,7 @@ export interface User {
     deleted_at?: string;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    [key: string]: unknown;
 }
 
 export interface Permission {
@@ -145,4 +145,155 @@ export interface FunctionalLocation {
     description: string;
     created_at: string;
     updated_at: string;
+}
+
+export interface EquipmentClass {
+    id: number;
+    code: string;
+    name: string;
+    formable_type: string;
+    description: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface EquipmentStatus {
+    id: number;
+    code: string;
+    name: string;
+    description: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Equipment {
+    id: number;
+    code: string;
+    sort_field: string;
+    description: string | null;
+    functional_location_id: number | null;
+    equipment_class_id: number | null;
+    equipment_status_id: number | null;
+    functionalLocation: FunctionalLocation | null;
+    equipmentClass: EquipmentClass | null;
+    equipmentStatus: EquipmentStatus | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface InstallDismantleHistory {
+    id: number;
+    equipment_id: number;
+    from_status_id: number;
+    to_status_id: number;
+    from_sort_field: string | null;
+    to_sort_field: string | null;
+    from_functional_location_id: number;
+    to_functional_location_id: number;
+    changed_by: number;
+    changed_at: string;
+    note: string;
+    created_at: string;
+    updated_at: string;
+    equipment: Equipment;
+    fromStatus: EquipmentStatus;
+    toStatus: EquipmentStatus;
+    fromFunctionalLocation: FunctionalLocation | null;
+    toFunctionalLocation: FunctionalLocation | null;
+    changedBy: User | null;
+}
+
+export interface InspectionForm {
+    equipment_id: number;
+    formable_id: number;
+    formable_type: string;
+    equipment: Equipment;
+}
+
+export interface InspectionMotor {
+    id: number;
+    is_operational: number;
+    is_clean: number;
+    number_of_greasing: number;
+    temperature_de: string | null; // decimal
+    temperature_body: string | null; // decimal
+    temperature_nde: string | null; // decimal
+    vibration_dev: string | null; // decimal
+    vibration_deh: string | null; // decimal
+    vibration_dea: string | null; // decimal
+    vibration_def: string | null; // decimal
+    is_noisy_de: number;
+    vibration_ndev: string | null; // decimal
+    vibration_ndeh: string | null; // decimal
+    vibration_ndef: string | null; // decimal
+    is_noisy_nde: number;
+    inspected_by: number | null;
+    created_at: string;
+    updated_at: string;
+    inspectedBy: User | null;
+    inspectionForm: InspectionForm;
+}
+
+export interface InspectionPanel {
+    id: number;
+    is_operational: number;
+    is_clean: number;
+    temperature_incoming_r: string | null; // decimal
+    temperature_incoming_s: string | null; // decimal
+    temperature_incoming_t: string | null; // decimal
+    temperature_cabinet: string | null; // decimal
+    temperature_outgoing_r: string | null; // decimal
+    temperature_outgoing_s: string | null; // decimal
+    temperature_outgoing_t: string | null; // decimal
+    current_r: string | null; // decimal
+    current_s: string | null; // decimal
+    current_t: string | null; // decimal
+    inspected_by: number | null;
+    created_at: string;
+    updated_at: string;
+    inspectedBy: User | null;
+    inspectionForm: InspectionForm;
+}
+
+export interface InspectionTransformer {
+    id: number;
+    is_operational: number;
+    is_clean: number;
+    primary_current_r: string | null; // decimal
+    primary_current_s: string | null; // decimal
+    primary_current_t: string | null; // decimal
+    primary_voltage_r: string | null; // decimal
+    primary_voltage_s: string | null; // decimal
+    primary_voltage_t: string | null; // decimal
+    secondary_current_r: string | null; // decimal
+    secondary_current_s: string | null; // decimal
+    secondary_current_t: string | null; // decimal
+    secondary_voltage_r: string | null; // decimal
+    secondary_voltage_s: string | null; // decimal
+    secondary_voltage_t: string | null; // decimal
+    temperature_oil: string | null; // decimal
+    temperature_winding: string | null; // decimal
+    desicant_level_id: number;
+    inspected_by: number | null;
+    created_at: string;
+    updated_at: string;
+    inspectedBy: User | null;
+    inspectionForm: InspectionForm;
+}
+
+export interface InspectionAirConditioner {
+    id: number;
+    is_operational: number;
+    is_drain_leaking: number;
+    current_load: string | null;
+    blowing_temperature: string | null;
+    ambient_temperature: string | null;
+    is_filter_clean: number;
+    is_evaporator_clean: number;
+    is_condensor_clean: number;
+    inspected_by: number | null;
+    created_at: string;
+    updated_at: string;
+    inspectedBy: User | null;
+    inspectionForm: InspectionForm;
 }

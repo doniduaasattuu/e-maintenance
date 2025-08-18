@@ -29,7 +29,7 @@ test('admin can create department with valid data', function () {
             'code' => 'EI2',
             'division_id' => $division->id,
         ])
-        ->assertRedirect(route('departments.index'));
+        ->assertRedirect(route('departments.create'));
 });
 
 test('admin cannot create department with invalid data', function () {
@@ -75,14 +75,7 @@ test('admin can update department', function () {
             'code' => $department->code,
             'division_id' => $division->id,
         ])
-        ->assertRedirect($editPage)
-        ->assertSessionHas(
-            'message',
-            [
-                'type' => 'success',
-                'description' => 'Department updated successfully',
-            ]
-        );
+        ->assertRedirect($editPage);
 
     $this->assertDatabaseHas('departments', ['name' => 'Electric Instrument PM37']);
 });

@@ -2,12 +2,12 @@ import FunctionalLocationForm, { FunctionalLocationFormData } from '@/components
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Functional Location',
+        title: 'Functional Locations',
         href: '/functional-locations',
     },
     {
@@ -36,8 +36,6 @@ export default function FunctionalLocationCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Functional Location" />
-
             <div className="max-w-2xl space-y-4">
                 <FunctionalLocationForm
                     data={data}
@@ -48,7 +46,7 @@ export default function FunctionalLocationCreate() {
                     submit={submit}
                     canSubmit={can.create_functionallocation}
                     buttonLabel="Submit"
-                    successMessage="Saved"
+                    successMessage="Created"
                 />
             </div>
         </AppLayout>

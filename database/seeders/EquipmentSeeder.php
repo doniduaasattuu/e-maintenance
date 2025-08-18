@@ -1,0 +1,29 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Equipment;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentStatus;
+use App\Models\FunctionalLocation;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Database\Seeder;
+
+class EquipmentSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        Equipment::factory()
+            ->count(20)
+            ->state(new Sequence(fn(Sequence $sequence) => [
+                'functional_location_id' => FunctionalLocation::all()->random()->id,
+                'equipment_class_id' => EquipmentClass::all()->random()->id,
+                'equipment_status_id' => EquipmentStatus::all()->random()->id,
+            ]))
+            ->create();
+    }
+}

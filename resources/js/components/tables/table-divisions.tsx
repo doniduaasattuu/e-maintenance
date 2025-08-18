@@ -6,9 +6,9 @@ import { Division, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import React from 'react';
-import ButtonAdd from './button-add';
-import { GeneratePagination } from './generate-pagination';
-import SearchBar from './search-bar';
+import ButtonAdd from '../button-add';
+import { GeneratePagination } from '../generate-pagination';
+import SearchBar from '../search-bar';
 
 interface DivisionTableProps {
     divisions: {

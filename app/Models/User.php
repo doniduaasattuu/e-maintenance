@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
@@ -126,5 +127,10 @@ class User extends Authenticatable
     public function isOnline(): bool
     {
         return $this->last_activity && $this->last_activity->gt(now()->subMinutes(5));
+    }
+
+    public function installDismantleHistories(): HasMany
+    {
+        return $this->hasMany(InstallDismantleHistory::class);
     }
 }

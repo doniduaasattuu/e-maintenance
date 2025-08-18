@@ -2,10 +2,21 @@
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\EquipmentClassController;
+use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\EquipmentInspectionFormController;
+use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FunctionalLocationController;
+use App\Http\Controllers\InspectionAirConditionerController;
+use App\Http\Controllers\InspectionMotorController;
+use App\Http\Controllers\InspectionPanelController;
+use App\Http\Controllers\InspectionTransformerController;
+use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkCenterController;
+use App\Http\Resources\EquipmentClassResource;
+use App\Models\EquipmentInspectionForm;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -23,10 +34,43 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('roles', RoleController::class);
     Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
-    Route::resource('users', UserController::class);
+    Route::resource('/users', UserController::class)->except('update');
 
     Route::resource('/functional-locations', FunctionalLocationController::class);
+    Route::resource('/equipments', EquipmentController::class);
+    Route::get('/equipments/{equipment}/history', [InstallDismantleHistoryController::class, 'show'])->name('equipments.history');
+    Route::resource('/equipment-histories', InstallDismantleHistoryController::class);
 
+    // INSPECTION
+    Route::get('/equipments/{equipment}/inspection', [EquipmentInspectionFormController::class, 'create'])->name('inspections.create');
+
+    // INSPECTION MOTOR
+    Route::post('/inspections/motor', [InspectionMotorController::class, 'store'])->name('inspectionmotors.store');
+    Route::get('/inspections/motor/{inspectionMotor}/edit', [InspectionMotorController::class, 'edit'])->name('inspectionmotors.edit');
+    Route::patch('/inspections/motor/{inspectionMotor}', [InspectionMotorController::class, 'update'])->name('inspectionmotors.update');
+
+    // INSPECTION PANEL
+    Route::post('/inspections/panel', [InspectionPanelController::class, 'store'])->name('inspectionpanels.store');
+    Route::get('/inspections/panel/{inspectionPanel}/edit', [InspectionPanelController::class, 'edit'])->name('inspectionpanels.edit');
+    Route::patch('/inspections/panel/{inspectionPanel}', [InspectionPanelController::class, 'update'])->name('inspectionpanels.update');
+
+    // INSPECTION TRANSFORMER
+    Route::post('/inspections/transformer', [InspectionTransformerController::class, 'store'])->name('inspectiontransformers.store');
+    Route::get('/inspections/transformer/{inspectionTransformer}/edit', [InspectionTransformerController::class, 'edit'])->name('inspectiontransformers.edit');
+    Route::patch('/inspections/transformer/{inspectionTransformer}', [InspectionTransformerController::class, 'update'])->name('inspectiontransformers.update');
+
+    // INSPECTION AIR CONDITIONER
+    Route::post('/inspections/airconditioner', [InspectionAirConditionerController::class, 'store'])->name('inspectionairconditioners.store');
+    Route::get('/inspections/airconditioner/{inspectionAirConditioner}/edit', [InspectionAirConditionerController::class, 'edit'])->name('inspectionairconditioners.edit');
+    Route::patch('/inspections/airconditioner/{inspectionAirConditioner}', [InspectionAirConditionerController::class, 'update'])->name('inspectionairconditioners.update');
+
+    // EQUIPMENT CLASS
+    Route::resource('/equipment-classes', EquipmentClassController::class);
+
+    // EQUIPMENT STATUS
+    Route::resource('/equipment-statuses', EquipmentStatusController::class);
+
+    // DEPARTMENT
     Route::resource('/organizations/departments', DepartmentController::class)->names([
         'index' => 'departments.index',
         'create' => 'departments.create',
@@ -35,6 +79,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'delete' => 'departments.delete',
     ]);
 
+    // DIVISION
     Route::resource('/organizations/divisions', DivisionController::class)->names([
         'index' => 'divisions.index',
         'create' => 'divisions.create',
@@ -43,6 +88,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'delete' => 'divisions.delete',
     ]);
 
+    // WORK CENTER
     Route::resource('/organizations/work-centers', WorkCenterController::class)->names([
         'index' => 'work-centers.index',
         'create' => 'work-centers.create',

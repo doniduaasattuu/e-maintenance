@@ -1,4 +1,4 @@
-import TableWorkCenter from '@/components/table-work-center';
+import TableWorkCenter from '@/components/tables/table-work-center';
 import AppLayout from '@/layouts/app-layout';
 import OrganizationsLayout from '@/layouts/organizations/layout';
 import { Meta, WorkCenter, type BreadcrumbItem } from '@/types';
@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Work Center',
+        title: 'Work Centers',
         href: '/organizations/work-centers',
     },
 ];
@@ -21,12 +21,10 @@ interface WorkCenterIndexProps {
 export default function WorkCenterIndex({ workCenters }: WorkCenterIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Work Center" />
+            <Head title="Work Centers" />
 
             <OrganizationsLayout>
-                <div className="max-w-4xl space-y-4">
-                    <TableWorkCenter workCenters={workCenters} />
-                </div>
+                <TableWorkCenter workCenters={workCenters} />
             </OrganizationsLayout>
         </AppLayout>
     );
