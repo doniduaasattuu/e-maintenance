@@ -177,6 +177,7 @@ export interface Equipment {
     functionalLocation: FunctionalLocation | null;
     equipmentClass: EquipmentClass | null;
     equipmentStatus: EquipmentStatus | null;
+    images: null | Image[];
     created_at: string;
     updated_at: string;
 }
@@ -296,4 +297,12 @@ export interface InspectionAirConditioner {
     updated_at: string;
     inspectedBy: User | null;
     inspectionForm: InspectionForm;
+}
+
+export interface Image {
+    id: number;
+    path: string;
+    url: string;
+    created_at: string;
+    updated_at: string;
 }

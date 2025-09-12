@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             DatabaseCleaner::class,
+            ImageSeeder::class,
             UserSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,

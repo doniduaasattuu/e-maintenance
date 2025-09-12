@@ -25,15 +25,8 @@ class RoleSeeder extends Seeder
             'name' => 'Admin',
         ]);
 
-        // for ($i = 0; $i < 500; $i++) {
-        //     Role::firstOrCreate([
-        //         'name' => fake()->name('male')
-        //     ]);
-        // }
-
         // Mengambil semua permission
         $adminRole->givePermissionTo(Permission::all());
-
 
         // Cari user admin dan assign role jika ditemukan
         $admin = User::where('email', 'admin@gmail.com')->first();

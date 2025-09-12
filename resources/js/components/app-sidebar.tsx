@@ -10,7 +10,7 @@ import AppLogo from './app-logo';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: route('dashboard'),
         icon: LayoutGrid,
     },
     {
@@ -25,19 +25,19 @@ const mainNavItems: NavItem[] = [
         subItems: [
             {
                 title: 'Functional locations',
-                href: '/functional-locations',
+                href: route('functional-locations.index'),
                 permission: 'read_functionallocation',
             },
             {
                 title: 'Equipments',
-                href: '/equipments',
+                href: route('equipments.index'),
                 permission: 'read_equipment',
             },
-            {
-                title: 'Materials',
-                href: '/materials',
-                permission: 'read_material',
-            },
+            // {
+            //     title: 'Materials',
+            //     href: '/materials',
+            //     permission: 'read_material',
+            // },
         ],
     },
     {

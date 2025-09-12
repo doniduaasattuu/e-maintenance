@@ -32,6 +32,6 @@ class UserSeeder extends Seeder
             'email' => 'doni@gmail.com',
         ]);
 
-        User::factory()->count(100)->create();
+        // User::factory()->count(100)->create();
     }
 }

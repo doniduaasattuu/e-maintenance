@@ -7,6 +7,7 @@ use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
@@ -90,5 +91,15 @@ class Equipment extends Model
     public function inspections(): HasMany
     {
         return $this->hasMany(EquipmentInspectionForm::class);
+    }
+
+    public function equipmentImage(): HasMany
+    {
+        return $this->hasMany(EquipmentImage::class);
+    }
+
+    public function images(): BelongsToMany
+    {
+        return $this->belongsToMany(Image::class, 'equipment_images', 'equipment_id', 'image_id');
     }
 }

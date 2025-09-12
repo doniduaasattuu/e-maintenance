@@ -1,7 +1,9 @@
+import HeadingSmall from '@/components/heading-small';
 import TableHistory from '@/components/tables/table-history';
 import AppLayout from '@/layouts/app-layout';
-import TableLayout from '@/layouts/table/layout';
+import EquipmentLayout from '@/layouts/equipment/layout';
 import { BreadcrumbItem, Equipment, InstallDismantleHistory, Meta } from '@/types';
+import { Head } from '@inertiajs/react';
 
 interface EquipmentHistoryProps {
     equipment: {
@@ -31,12 +33,23 @@ export default function EquipmentHistory({ equipment, histories }: EquipmentHist
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout
+            <Head title="History" />
+
+            <EquipmentLayout equipment={equipment.data} width="md:max-w-6xl">
+                <div className="space-y-6">
+                    <HeadingSmall
+                        title="History"
+                        description="Installation and dismantle history for this equipment, including status and location changes."
+                    />
+                    <TableHistory histories={histories} />
+                </div>
+            </EquipmentLayout>
+            {/* <TableLayout
                 title="Equipments"
                 description="Installation and dismantle history for this equipment, including status and location changes"
             >
                 <TableHistory histories={histories} />
-            </TableLayout>
+            </TableLayout> */}
         </AppLayout>
     );
 }

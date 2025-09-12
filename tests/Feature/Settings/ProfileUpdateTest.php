@@ -78,8 +78,8 @@ test('user can upload a valid avatar image', function () {
 
     $user->refresh();
 
-    expect($user->avatar)->toStartWith('/storage/avatars/');
-    Storage::disk('public')->assertExists(str_replace('/storage/', '', $user->avatar));
+    expect($user->avatar)->toStartWith('storage/avatars/');
+    Storage::disk('public')->assertExists(str_replace('storage/', '', $user->avatar));
 });
 
 test('avatar upload fails if file is not an image', function () {
@@ -140,7 +140,7 @@ test('old avatar is deleted when uploading new one', function () {
 
     $user->refresh();
 
-    $oldStoredPath = str_replace('/storage/', '', $user->avatar);
+    $oldStoredPath = str_replace('storage/', '', $user->avatar);
     Storage::disk('public')->assertExists($oldStoredPath);
 
     $this->actingAs($user)->post('/settings/profile', [
@@ -151,7 +151,7 @@ test('old avatar is deleted when uploading new one', function () {
 
     $user->refresh();
 
-    $newStoredPath = str_replace('/storage/', '', $user->avatar);
+    $newStoredPath = str_replace('storage/', '', $user->avatar);
 
     // ✅ File lama harus sudah dihapus
     // Storage::disk('public')->assertMissing($oldStoredPath);

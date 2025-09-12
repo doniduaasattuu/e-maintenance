@@ -1,8 +1,9 @@
 import InspectionPanelForm, { InspectionPanelData } from '@/components/forms/inspection-panel-form';
+import HeadingSmall from '@/components/heading-small';
 import AppLayout from '@/layouts/app-layout';
-import TableLayout from '@/layouts/table/layout';
+import EquipmentLayout from '@/layouts/equipment/layout';
 import { BreadcrumbItem, Equipment } from '@/types';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function InspectionPanelCreate({ equipment }: Props) {
+    const equipmentClassName = equipment.data.equipmentClass?.name.toLocaleLowerCase();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
@@ -68,16 +70,21 @@ export default function InspectionPanelCreate({ equipment }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Form inspection for equipment panel" className="max-w-2xl">
-                <InspectionPanelForm
-                    data={data}
-                    setData={setData}
-                    processing={processing}
-                    errors={errors}
-                    recentlySuccessful={recentlySuccessful}
-                    submit={submit}
-                />
-            </TableLayout>
+            <Head title="Inspection" />
+
+            <EquipmentLayout equipment={equipment.data}>
+                <div className="space-y-6">
+                    <HeadingSmall title="Inspection" description={`Equipment inspection form ${equipmentClassName}.`} />
+                    <InspectionPanelForm
+                        data={data}
+                        setData={setData}
+                        processing={processing}
+                        errors={errors}
+                        recentlySuccessful={recentlySuccessful}
+                        submit={submit}
+                    />
+                </div>
+            </EquipmentLayout>
         </AppLayout>
     );
 }

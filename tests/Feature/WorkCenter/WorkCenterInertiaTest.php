@@ -26,7 +26,7 @@ test('work center index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('work-center/index')
-                ->has('workCenters.data', 15)
+                ->has('workCenters.data', 10)
         );
 
     $this->actingAs($admin)
@@ -34,7 +34,7 @@ test('work center index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('work-center/index')
-                ->has('workCenters.data', 5)
+                ->has('workCenters.data', 10)
         );
 });
 
