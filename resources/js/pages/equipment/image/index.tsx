@@ -87,12 +87,6 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                                 {canDelete ? 'Cancel' : 'Manage'}
                             </Button>
                         )}
-                        {/* <Link href={route('equipment-image.edit', equipment.data.id)} prefetch>
-                            <Button variant={'outline'}>
-                                <Edit />
-                                Manage
-                            </Button>
-                        </Link> */}
                     </div>
 
                     {equipment.data.images && equipment.data.images.length > 0 && <ImageCarousel canDelete={canDelete} equipment={equipment.data} />}

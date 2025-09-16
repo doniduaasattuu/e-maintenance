@@ -24,7 +24,6 @@ export function ImageDialog({ open, setOpen, src }: ImageDialogProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTitle className="hidden" />
-            {/* <DialogContent className={`max-h-screen border-1 p-0 ${orientation === 'landscape' ? 'min-w-[50%]' : null}`}> */}
             <DialogContent className={cn('max-h-screen border-1 p-0', { 'min-w-[50%]': orientation === 'landscape' })}>
                 <img onLoad={handleLoad} className="h-full w-full rounded-md object-cover" src={src} />
             </DialogContent>

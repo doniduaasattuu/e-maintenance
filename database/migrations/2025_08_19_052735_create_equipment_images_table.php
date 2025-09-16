@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('equipment_images', function (Blueprint $table) {
+        Schema::create('equipment_image', function (Blueprint $table) {
             $table->foreignId('image_id')
                 ->constrained('images')
                 ->cascadeOnUpdate()

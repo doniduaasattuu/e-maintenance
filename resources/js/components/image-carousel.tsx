@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { Equipment } from '@/types';
 import { router } from '@inertiajs/react';
@@ -16,7 +17,9 @@ interface ImageCarouselProps {
 }
 
 export function ImageCarousel({ equipment, canDelete }: ImageCarouselProps) {
+    const isMobile = useIsMobile();
     const images = equipment.images;
+    const length = images?.length;
     const [open, setOpen] = useState<boolean>(false);
     const [src, setSrc] = useState<string>();
     const handleDeleteImage = (equipmentId: number, imageId: number) => {
@@ -57,6 +60,7 @@ export function ImageCarousel({ equipment, canDelete }: ImageCarouselProps) {
                                 <CardContent
                                     className={cn('relative aspect-square w-full overflow-hidden rounded-md p-0', { 'opacity-70': canDelete })}
                                 >
+                                    <span className="absolute bottom-0 left-3 z-10 py-2 text-center text-sm">{`${index + 1} of ${length}`}</span>
                                     <img
                                         className="absolute inset-0 h-full w-full object-cover"
                                         src={image.url}
@@ -67,8 +71,12 @@ export function ImageCarousel({ equipment, canDelete }: ImageCarouselProps) {
                         </CarouselItem>
                     ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            {!isMobile && (
+                <>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </>
+            )}
             <ImageDialog open={open} setOpen={setOpen} src={src} />
         </Carousel>
     );

@@ -93,13 +93,8 @@ class Equipment extends Model
         return $this->hasMany(EquipmentInspectionForm::class);
     }
 
-    public function equipmentImage(): HasMany
-    {
-        return $this->hasMany(EquipmentImage::class);
-    }
-
     public function images(): BelongsToMany
     {
-        return $this->belongsToMany(Image::class, 'equipment_images', 'equipment_id', 'image_id');
+        return $this->belongsToMany(Image::class, 'equipment_image', 'equipment_id', 'image_id');
     }
 }

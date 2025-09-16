@@ -74,7 +74,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // EQUIPMENT IMAGE
     Route::get('/equipments/{equipment}/image', [EquipmentImageController::class, 'index'])->name('equipments.image');
     Route::post('/equipments/{equipment}/image/store', [EquipmentImageController::class, 'store'])->name('equipment-image.store');
-    Route::get('/equipments/{equipment}/image/edit', [EquipmentImageController::class, 'edit'])->name('equipment-image.edit');
     Route::delete('/equipments/{equipment}/image/{image}', [EquipmentImageController::class, 'destroy'])->name('equipment-image.destroy');
 
     // DEPARTMENT

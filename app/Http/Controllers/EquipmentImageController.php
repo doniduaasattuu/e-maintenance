@@ -40,31 +40,16 @@ class EquipmentImageController extends Controller
      */
     public function store(StoreEquipmentImageRequest $request)
     {
-        // Gate::authorize('create_equipmentimage');
-
-        // $equipment = Equipment::findOrFail($request->equipment);
-
-        // $imagePath = $request->file(('image'))->store('assets/images/equipment', 'public');
-
-        // $image = Image::create([
-        //     'path' => 'storage/' . $imagePath,
-        // ]);
-
-        // $equipment->images()->attach($image->id);
-        // return back();
         Gate::authorize('create_equipmentimage');
 
         $equipment = Equipment::findOrFail($request->equipment);
 
-        // Store the file in 'public/assets/images/equipment'
         $imagePath = $request->file('image')->store('assets/images/equipment', 'public');
 
-        // Save only relative path in DB
         $image = Image::create([
             'path' => $imagePath,
         ]);
 
-        // Attach relation in pivot table
         $equipment->images()->attach($image->id);
 
         return back();
@@ -83,13 +68,7 @@ class EquipmentImageController extends Controller
      */
     public function edit(Request $request)
     {
-        Gate::authorize('update_equipmentimage');
-
-        $equipment = Equipment::findOrFail($request->equipment);
-
-        return Inertia::render('equipment/image/edit', [
-            'equipment' => new EquipmentResource($equipment->load('images')),
-        ]);
+        //
     }
 
     /**

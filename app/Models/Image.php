@@ -13,13 +13,8 @@ class Image extends Model
         'path',
     ];
 
-    public function equipmentImages()
-    {
-        return $this->hasMany(EquipmentImage::class, 'image_id');
-    }
-
     public function equipments()
     {
-        return $this->belongsToMany(Equipment::class, 'equipment_images', 'image_id', 'equipment_id');
+        return $this->belongsToMany(Equipment::class, 'equipment_image', 'image_id', 'equipment_id');
     }
 }
