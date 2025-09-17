@@ -1,8 +1,10 @@
 import EquipmentForm, { EquipmentFormData } from '@/components/forms/equipment-form';
+import HeadingSmall from '@/components/heading-small';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import EquipmentLayout from '@/layouts/equipment/layout';
 import { BreadcrumbItem, Equipment, EquipmentClass, EquipmentStatus } from '@/types';
-import { useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface EquipmentEditProps {
@@ -54,24 +56,34 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
-                <EquipmentForm
-                    id={equipment.data.id}
-                    functionalLocation={equipment.data.functionalLocation}
-                    equipmentClasses={equipmentClasses}
-                    equipmentStatuses={equipmentStatuses}
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    recentlySuccessful={recentlySuccessful}
-                    submit={submit}
-                    canSubmit={can.update_equipment}
-                    buttonLabel="Update"
-                    successMessage="Updated"
-                    isEditing={true}
-                />
-            </div>
+            <Head title="Edit" />
+
+            <EquipmentLayout equipment={equipment.data}>
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between gap-2">
+                        <HeadingSmall title="Edit" description="Update equipment data and information." />
+                        <Link className="text-foreground hover:text-muted-foreground text-sm" href={`/equipments/${equipment.data.id}`}>
+                            Cancel
+                        </Link>
+                    </div>
+                    <EquipmentForm
+                        id={equipment.data.id}
+                        functionalLocation={equipment.data.functionalLocation}
+                        equipmentClasses={equipmentClasses}
+                        equipmentStatuses={equipmentStatuses}
+                        data={data}
+                        setData={setData}
+                        errors={errors}
+                        processing={processing}
+                        recentlySuccessful={recentlySuccessful}
+                        submit={submit}
+                        canSubmit={can.update_equipment}
+                        buttonLabel="Update"
+                        successMessage="Updated"
+                        isEditing={true}
+                    />
+                </div>
+            </EquipmentLayout>
         </AppLayout>
     );
 }

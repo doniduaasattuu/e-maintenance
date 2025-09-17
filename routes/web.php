@@ -4,6 +4,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\EquipmentClassController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\EquipmentImageController;
 use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FunctionalLocationController;
@@ -69,6 +70,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // EQUIPMENT STATUS
     Route::resource('/equipment-statuses', EquipmentStatusController::class);
+
+    // EQUIPMENT IMAGE
+    Route::get('/equipments/{equipment}/image', [EquipmentImageController::class, 'index'])->name('equipments.image');
+    Route::post('/equipments/{equipment}/image/store', [EquipmentImageController::class, 'store'])->name('equipment-image.store');
+    Route::delete('/equipments/{equipment}/image/{image}', [EquipmentImageController::class, 'destroy'])->name('equipment-image.destroy');
 
     // DEPARTMENT
     Route::resource('/organizations/departments', DepartmentController::class)->names([

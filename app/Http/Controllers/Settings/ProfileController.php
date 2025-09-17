@@ -37,7 +37,7 @@ class ProfileController extends Controller
         if ($request->hasFile('avatar')) {
 
             if ($user->avatar) {
-                $oldAvatarPath = str_replace('/storage/', '', $user->avatar);
+                $oldAvatarPath = str_replace('storage/', '', $user->avatar);
 
                 if (Storage::disk('public')->exists($oldAvatarPath)) {
                     Storage::disk('public')->delete($oldAvatarPath);
@@ -45,7 +45,7 @@ class ProfileController extends Controller
             }
 
             $avatarPath = $request->file(('avatar'))->store('avatars', 'public');
-            $user->avatar = "/storage/" . $avatarPath;
+            $user->avatar = "storage/" . $avatarPath;
         }
 
         if ($user->isDirty('email')) {

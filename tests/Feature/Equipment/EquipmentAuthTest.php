@@ -1,11 +1,6 @@
 <?php
 
 use App\Models\Equipment;
-use App\Models\FunctionalLocation;
-use Database\Seeders\EquipmentClassSeeder;
-use Database\Seeders\EquipmentSeeder;
-use Database\Seeders\EquipmentStatusSeeder;
-use Database\Seeders\FunctionalLocationSeeder;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

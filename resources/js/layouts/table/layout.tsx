@@ -16,7 +16,7 @@ export default function TableLayout({ title, description, className, action, chi
     }
 
     return (
-        <div className="px-4 py-6">
+        <div className="space-y-6 px-4 py-6">
             <div className="mb-8 flex items-center justify-between gap-2 align-top">
                 <div>
                     <Head title={title} />

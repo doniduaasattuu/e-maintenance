@@ -1,4 +1,5 @@
 import EquipmentForm, { EquipmentFormData } from '@/components/forms/equipment-form';
+import Heading from '@/components/heading';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, EquipmentClass, EquipmentStatus } from '@/types';
@@ -49,7 +50,9 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <div className="max-w-2xl space-y-6 px-4 py-6">
+                <Heading title="Create" description="Insert new equipment." />
+
                 <EquipmentForm
                     equipmentClasses={equipmentClasses}
                     equipmentStatuses={equipmentStatuses}

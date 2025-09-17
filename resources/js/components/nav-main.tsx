@@ -14,7 +14,6 @@ import { ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
-    const page = usePage();
     const { permissions } = usePage<SharedData>().props;
 
     return (
@@ -26,7 +25,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                         <Collapsible
                             key={item.title}
                             className="group/collapsible"
-                            defaultOpen={item.subItems?.some((subItem) => page.url.includes(subItem.href))}
+                            defaultOpen={item.subItems?.some((subItem) => window.location.href.includes(subItem.href))}
                         >
                             <SidebarMenuItem>
                                 <CollapsibleTrigger asChild>
@@ -45,8 +44,8 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                                     <SidebarMenuSubItem key={subItem.title}>
                                                         <SidebarMenuSubButton
                                                             asChild
-                                                            isActive={page.url.includes(subItem.href)}
-                                                            className={`${page.url.includes(subItem.href) ? 'font-medium' : undefined}`}
+                                                            isActive={window.location.href.includes(subItem.href)}
+                                                            className={`${window.location.href.includes(subItem.href) ? 'font-medium' : undefined}`}
                                                         >
                                                             <Link prefetch href={subItem.href}>
                                                                 {subItem.title}
@@ -62,7 +61,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                         </Collapsible>
                     ) : !item.permission || permissions[item.permission] == true ? (
                         <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild isActive={item.href === page.url} tooltip={{ children: item.title }}>
+                            <SidebarMenuButton asChild isActive={item.href === window.location.href} tooltip={{ children: item.title }}>
                                 <Link href={item.href} prefetch>
                                     {item.icon && <item.icon />}
                                     <span>{item.title}</span>

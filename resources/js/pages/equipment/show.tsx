@@ -1,13 +1,12 @@
-import OptionsDropdown from '@/components/options-dropdown';
-import { DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from '@/components/ui/dropdown-menu';
+import HeadingSmall from '@/components/heading-small';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
-import TableLayout from '@/layouts/table/layout';
+import EquipmentLayout from '@/layouts/equipment/layout';
 import { BreadcrumbItem, Equipment } from '@/types';
-import { Link } from '@inertiajs/react';
-import { ChartLine, Edit, LucideTruck, NotepadTextIcon, PlusSquare } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
+import { Edit } from 'lucide-react';
 
 interface EquipmentShowProps {
     equipment: {
@@ -29,58 +28,68 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
 
     const can = usePermissions();
 
-    const action = (
-        <OptionsDropdown className="w-[160px]">
-            {can.update_equipment && (
-                <DropdownMenuItem asChild>
-                    <Link className="text-sm" href={route('equipments.edit', equipment.data.id)}>
-                        <Edit />
-                        Edit
-                    </Link>
-                </DropdownMenuItem>
-            )}
-            {can.read_installdismantlehistory && (
-                <DropdownMenuItem asChild>
-                    <Link className="text-sm" href={route('equipments.history', equipment.data.id)}>
-                        <LucideTruck />
-                        History
-                    </Link>
-                </DropdownMenuItem>
-            )}
-            <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                    <div className="flex items-center gap-2">
-                        <NotepadTextIcon size={16} className="text-muted-foreground" />
-                        Inspection
-                    </div>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                        {can.create_inspection && (
-                            <DropdownMenuItem asChild>
-                                <Link className="text-sm" href={route('inspections.create', equipment.data.id)}>
-                                    <PlusSquare />
-                                    New
-                                </Link>
-                            </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem asChild>
-                            <Link className="text-sm" href={route('equipments.show', equipment.data.id)}>
-                                <ChartLine />
-                                Trend
-                            </Link>
-                        </DropdownMenuItem>
-                    </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-            </DropdownMenuSub>
-        </OptionsDropdown>
-    );
+    // const action = (
+    //     <OptionsDropdown className="w-[160px]">
+    //         {can.update_equipment && (
+    //             <DropdownMenuItem asChild>
+    //                 <Link className="text-sm" href={route('equipments.edit', equipment.data.id)}>
+    //                     <Edit />
+    //                     Edit
+    //                 </Link>
+    //             </DropdownMenuItem>
+    //         )}
+    //         {can.read_installdismantlehistory && (
+    //             <DropdownMenuItem asChild>
+    //                 <Link className="text-sm" href={route('equipments.history', equipment.data.id)}>
+    //                     <LucideTruck />
+    //                     History
+    //                 </Link>
+    //             </DropdownMenuItem>
+    //         )}
+    //         <DropdownMenuSub>
+    //             <DropdownMenuSubTrigger>
+    //                 <div className="flex items-center gap-2">
+    //                     <NotepadTextIcon size={16} className="text-muted-foreground" />
+    //                     Inspection
+    //                 </div>
+    //             </DropdownMenuSubTrigger>
+    //             <DropdownMenuPortal>
+    //                 <DropdownMenuSubContent>
+    //                     {can.create_inspection && (
+    //                         <DropdownMenuItem asChild>
+    //                             <Link className="text-sm" href={route('inspections.create', equipment.data.id)}>
+    //                                 <PlusSquare />
+    //                                 New
+    //                             </Link>
+    //                         </DropdownMenuItem>
+    //                     )}
+    //                     <DropdownMenuItem asChild>
+    //                         <Link className="text-sm" href={route('equipments.show', equipment.data.id)}>
+    //                             <ChartLine />
+    //                             Trend
+    //                         </Link>
+    //                     </DropdownMenuItem>
+    //                 </DropdownMenuSubContent>
+    //             </DropdownMenuPortal>
+    //         </DropdownMenuSub>
+    //     </OptionsDropdown>
+    // );
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
-                <TableLayout title="Equipments" description="Overview and management of equipments in the system" action={action}>
-                    <div className="space-y-6">
+            <Head title="Details" />
+
+            <EquipmentLayout equipment={equipment.data}>
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between gap-2">
+                        <HeadingSmall title="Details" description="Equipment data and information." />
+                        {can.update_equipment && (
+                            <Link href={route('equipments.edit', equipment.data.id)}>
+                                <Edit size={20} />
+                            </Link>
+                        )}
+                    </div>
+                    <div className="max-w-2xl space-y-6">
                         <div className="grid gap-2">
                             <Label htmlFor="code">Code</Label>
                             <Input readOnly className="mt-1" id="code" value={equipment.data.code} />
@@ -124,8 +133,8 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                             />
                         </div>
                     </div>
-                </TableLayout>
-            </div>
+                </div>
+            </EquipmentLayout>
         </AppLayout>
     );
 }
