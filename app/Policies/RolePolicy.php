@@ -37,7 +37,7 @@ class RolePolicy
      */
     public function update(User $user, Role $role): bool
     {
-        return $user->hasPermissionTo('update_role') && $role->name !== 'Admin';
+        return $user->hasPermissionTo('update_role') && $user->hasRole('Admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-        return $user->hasPermissionTo('delete_role') && $role->name !== 'Admin';
+        return $user->hasPermissionTo('delete_role') && $role->name !== 'Admin' && $user->hasRole('Admin');
     }
 
     /**

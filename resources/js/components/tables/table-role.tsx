@@ -49,7 +49,7 @@ export default function TableRole({ roles }: TableRoleProps) {
                             <TableRow key={role.id}>
                                 <TableCell className="w-[50px]">{meta.from + index}</TableCell>
                                 <TableCell className="font-medium">
-                                    {can.update_role && role.name !== 'Admin' ? (
+                                    {can.update_role ? (
                                         <TextLink href={route('roles.edit', role.id)}>{role.name}</TextLink>
                                     ) : (
                                         <span>{role.name}</span>

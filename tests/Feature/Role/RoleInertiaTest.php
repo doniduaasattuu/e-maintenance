@@ -67,13 +67,13 @@ test('role edit form should be rendered', function () {
         );
 });
 
-test('role edit admin form should not be rendered', function () {
+test('role edit admin form should be rendered', function () {
     $admin = createAdminUser();
     $role = Role::where('name', 'Admin')->first();
 
     $this->actingAs($admin)
         ->get(route('roles.edit', $role->id))
-        ->assertStatus(403);
+        ->assertStatus(200);
 });
 
 test('role admin should cannot be deleted', function () {

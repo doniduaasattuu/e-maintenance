@@ -68,13 +68,13 @@ test('admin can update role', function () {
     $this->assertDatabaseHas('roles', ['name' => 'Department Head']);
 });
 
-test('admin cannot update Admin role', function () {
+test('admin can update Admin role', function () {
     $admin = createAdminUser();
     $role = Role::where('name', 'Admin')->first();
 
     $this->actingAs($admin)
         ->get(route('roles.edit', $role->id))
-        ->assertForbidden();
+        ->assertStatus(200);
 });
 
 test('admin can delete role other than Admin', function () {

@@ -34,7 +34,9 @@ export default function RoleEdit({ availablePermissions, role, currentPermission
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(route('roles.update', role.data.id));
+        patch(route('roles.update', role.data.id), {
+            preserveScroll: true,
+        });
     };
 
     return (
