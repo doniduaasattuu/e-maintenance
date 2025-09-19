@@ -13,7 +13,7 @@ use App\Http\Controllers\InspectionMotorController;
 use App\Http\Controllers\InspectionPanelController;
 use App\Http\Controllers\InspectionTransformerController;
 use App\Http\Controllers\InstallDismantleHistoryController;
-use App\Http\Controllers\QrCodeController;
+use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkCenterController;
@@ -31,8 +31,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::get('/qr-scanner', [QrCodeController::class, 'index'])->name('qr-scanner');
-    Route::get('/qr-scanner/{equipment_code}', [QrCodeController::class, 'create'])->name('equipments.scan');
+    Route::get('/qr-scanner', [ScannerController::class, 'index'])->name('qr-scanner');
+    Route::get('/qr-scanner/{equipment_code}', [ScannerController::class, 'create'])->name('equipments.scan');
 
     Route::resource('roles', RoleController::class);
     Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');

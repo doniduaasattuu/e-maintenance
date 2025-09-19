@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
-class QrCodeController extends Controller
+class ScannerController extends Controller
 {
     /**
      * Display a listing of the resource.
