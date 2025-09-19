@@ -14,7 +14,6 @@ use App\Models\User;
 use App\Models\WorkCenter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;

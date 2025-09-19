@@ -15,7 +15,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'QR Scanner',
-        href: '/qr-scanner',
+        href: route('qr-scanner'),
         icon: ScanQrCodeIcon,
     },
     {
