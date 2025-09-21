@@ -15,6 +15,7 @@ use App\Http\Controllers\InspectionTransformerController;
 use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkCenterController;
 use Illuminate\Support\Facades\Route;
@@ -104,6 +105,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'update' => 'work-centers.update',
         'delete' => 'work-centers.delete',
     ]);
+
+    Route::resource('units', UnitController::class);
 });
 
 

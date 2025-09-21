@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             EquipmentStatusSeeder::class,
             EquipmentSeeder::class,
             QualityRatingSeeder::class,
+            UnitSeeder::class,
         ]);
     }
 }
