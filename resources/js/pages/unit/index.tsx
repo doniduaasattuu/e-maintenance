@@ -10,16 +10,14 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-interface WorkCenterIndexProps {
+interface UnitIndexProps {
     units: {
         data: Unit[];
         meta: Meta;
     };
 }
 
-export default function WorkCenterIndex({ units }: WorkCenterIndexProps) {
-    console.log(units);
-
+export default function UnitIndex({ units }: UnitIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Unit" />

@@ -2,20 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\Request;
 
-class Unit extends Model
+class MaterialType extends Model
 {
-    /** @use HasFactory<\Database\Factories\UnitFactory> */
+    /** @use HasFactory<\Database\Factories\MaterialTypeFactory> */
     use HasFactory;
 
-    protected $table = 'units';
+    protected $table = 'material_types';
 
     protected $fillable = [
-        'name',
+        'code',
+        'description',
     ];
 
     #[Scope]
@@ -26,7 +27,8 @@ class Unit extends Model
         if ($search) {
             $builder->where(function ($query) use ($search) {
                 $query
-                    ->where('name', 'LIKE', "%{$search}%");
+                    ->where('code', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }
     }

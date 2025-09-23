@@ -65,6 +65,11 @@ const mainNavItems: NavItem[] = [
                 href: route('units.index'),
                 permission: 'read_unit',
             },
+            {
+                title: 'Material type',
+                href: route('material-types.index'),
+                permission: 'read_materialtype',
+            },
         ],
     },
     {

@@ -13,6 +13,7 @@ use App\Http\Controllers\InspectionMotorController;
 use App\Http\Controllers\InspectionPanelController;
 use App\Http\Controllers\InspectionTransformerController;
 use App\Http\Controllers\InstallDismantleHistoryController;
+use App\Http\Controllers\MaterialTypeController;
 use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UnitController;
@@ -73,6 +74,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // EQUIPMENT STATUS
     Route::resource('/equipment-statuses', EquipmentStatusController::class);
+
+    // MATERIAL TYPE
+    Route::resource('/material-types', MaterialTypeController::class);
 
     // EQUIPMENT IMAGE
     Route::get('/equipments/{equipment}/image', [EquipmentImageController::class, 'index'])->name('equipments.image');
