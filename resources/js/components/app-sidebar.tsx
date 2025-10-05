@@ -33,11 +33,11 @@ const mainNavItems: NavItem[] = [
                 href: route('equipments.index'),
                 permission: 'read_equipment',
             },
-            // {
-            //     title: 'Materials',
-            //     href: route('materials.index'),
-            //     permission: 'read_material',
-            // },
+            {
+                title: 'Materials',
+                href: route('materials.index'),
+                permission: 'read_material',
+            },
         ],
     },
     {

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             QualityRatingSeeder::class,
             UnitSeeder::class,
             MaterialTypeSeeder::class,
+            MaterialSeeder::class,
         ]);
     }
 }

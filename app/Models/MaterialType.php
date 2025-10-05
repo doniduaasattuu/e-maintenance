@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
 class MaterialType extends Model
@@ -31,5 +32,10 @@ class MaterialType extends Model
                     ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }
+    }
+
+    public function materials(): HasMany
+    {
+        return $this->hasMany(Material::class);
     }
 }

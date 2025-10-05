@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
 class Unit extends Model
@@ -29,5 +30,10 @@ class Unit extends Model
                     ->where('name', 'LIKE', "%{$search}%");
             });
         }
+    }
+
+    public function materials(): HasMany
+    {
+        return $this->hasMany(Material::class);
     }
 }

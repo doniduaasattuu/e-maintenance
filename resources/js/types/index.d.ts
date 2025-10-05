@@ -321,3 +321,16 @@ export interface MaterialType {
     created_at: string;
     updated_at: string;
 }
+
+export interface Material {
+    id: number;
+    code: string;
+    name: string;
+    price: number;
+    unit_id: number | null;
+    material_type_id: number | null;
+    unit: Unit | null;
+    materialType: MaterialType | null;
+    created_at: string;
+    updated_at: string;
+}

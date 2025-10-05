@@ -12,3 +12,10 @@ export function cfl(word: string): string {
     const capitalizedWord = firstLetterCap + remainingLetters;
     return capitalizedWord;
 }
+
+export function formatCurrency(value: number, format: string = 'id-ID', currency: string = 'IDR') {
+    return new Intl.NumberFormat(format, {
+        style: 'currency',
+        currency: currency,
+    }).format(value);
+}

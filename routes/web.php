@@ -13,6 +13,7 @@ use App\Http\Controllers\InspectionMotorController;
 use App\Http\Controllers\InspectionPanelController;
 use App\Http\Controllers\InspectionTransformerController;
 use App\Http\Controllers\InstallDismantleHistoryController;
+use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MaterialTypeController;
 use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\RoleController;
@@ -41,8 +42,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
     Route::resource('/users', UserController::class)->except('update');
 
+
+    // MASTER DATA
     Route::resource('/functional-locations', FunctionalLocationController::class);
     Route::resource('/equipments', EquipmentController::class);
+    Route::resource('/materials', MaterialController::class);
+
     Route::get('/equipments/{equipment}/history', [InstallDismantleHistoryController::class, 'show'])->name('equipments.history');
     Route::resource('/equipment-histories', InstallDismantleHistoryController::class);
 
