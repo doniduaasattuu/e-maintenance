@@ -22,7 +22,7 @@ class StoreMaterialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => ['required', 'numeric', 'digit:8', 'unique:materials,code'],
+            'code' => ['required', 'numeric', 'digits:8', 'unique:materials,code'],
             'name' => ['required', 'string', 'max:50', 'unique:materials,name'],
             'price' => ['nullable', 'numeric'],
             'unit_id' => ['nullable', 'exists:units,id'],
