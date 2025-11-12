@@ -53,8 +53,8 @@ export default function TableMaterial({ materials }: TableMaterialProps) {
                         return (
                             <TableRow key={material.id}>
                                 <TableCell>
-                                    {can.update_material ? (
-                                        <TextLink href={route('materials.edit', material.id)}>
+                                    {can.read_material ? (
+                                        <TextLink href={route('materials.show', material.id)}>
                                             <span className="font-medium">{material.code}</span>
                                         </TextLink>
                                     ) : (

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\EquipmentImage;
+namespace App\Http\Requests\Image;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreEquipmentImageRequest extends FormRequest
+class StoreImageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

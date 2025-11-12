@@ -23,6 +23,7 @@ class MaterialResource extends JsonResource
             'material_type_id' => $this->material_type_id,
             'unit' => new UnitResource($this->whenLoaded('unit')),
             'materialType' => new MaterialTypeResource($this->whenLoaded('materialType')),
+            'images' => ImageResource::collection($this->whenLoaded('images')),
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
         ];

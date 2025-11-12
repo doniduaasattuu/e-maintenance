@@ -1,8 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
-import { Equipment } from '@/types';
+import { Equipment, Material } from '@/types';
 import { router } from '@inertiajs/react';
 import { X } from 'lucide-react';
 import { useState } from 'react';
@@ -12,18 +11,17 @@ import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 interface ImageCarouselProps {
-    equipment: Equipment;
+    model: Equipment | Material;
     canDelete: boolean;
 }
 
-export function ImageCarousel({ equipment, canDelete }: ImageCarouselProps) {
-    const isMobile = useIsMobile();
-    const images = equipment.images;
+export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
+    const images = model.images;
     const length = images?.length;
     const [open, setOpen] = useState<boolean>(false);
     const [src, setSrc] = useState<string>();
-    const handleDeleteImage = (equipmentId: number, imageId: number) => {
-        router.delete(route('equipment-image.destroy', { equipment: equipmentId, image: imageId }));
+    const handleDeleteImage = (imageId: number) => {
+        router.delete(route('images.destroy', imageId));
     };
 
     return (
@@ -35,7 +33,7 @@ export function ImageCarousel({ equipment, canDelete }: ImageCarouselProps) {
                             {canDelete && (
                                 <div className="absolute top-3 right-3 z-10">
                                     <ActionConfirm
-                                        action={() => handleDeleteImage(equipment.id, image.id)}
+                                        action={() => handleDeleteImage(image.id)}
                                         title={`Delete this image?`}
                                         description="This action will remove the image permanently. This action can't be undone."
                                     >
@@ -64,19 +62,14 @@ export function ImageCarousel({ equipment, canDelete }: ImageCarouselProps) {
                                     <img
                                         className="absolute inset-0 h-full w-full object-cover"
                                         src={image.url}
-                                        alt={`${equipment.code} - ${image.id}`}
+                                        alt={`${model.code} - ${image.id}`}
                                     />
                                 </CardContent>
                             </Card>
                         </CarouselItem>
                     ))}
             </CarouselContent>
-            {!isMobile && (
-                <>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                </>
-            )}
+
             <ImageDialog open={open} setOpen={setOpen} src={src} />
         </Carousel>
     );

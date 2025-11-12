@@ -62,8 +62,8 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Edit" description="Update equipment data and information." />
-                        <Link className="text-foreground hover:text-muted-foreground text-sm" href={`/equipments/${equipment.data.id}`}>
-                            Cancel
+                        <Link className="text-foreground hover:text-muted-foreground text-sm" href={route('equipments.show', equipment.data.id)}>
+                            Back
                         </Link>
                     </div>
                     <EquipmentForm

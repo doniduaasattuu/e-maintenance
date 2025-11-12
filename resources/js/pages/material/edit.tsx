@@ -1,20 +1,11 @@
 import MaterialForm, { MaterialFormData } from '@/components/forms/material-form';
+import HeadingSmall from '@/components/heading-small';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import MaterialLayout from '@/layouts/material/layout';
 import { BreadcrumbItem, Material, MaterialType, Unit } from '@/types';
-import { useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Material',
-        href: route('materials.index'),
-    },
-    {
-        title: 'Edit',
-        href: '/materials/edit',
-    },
-];
 
 interface MaterialEditParams {
     material: { data: Material };
@@ -23,6 +14,21 @@ interface MaterialEditParams {
 }
 
 export default function MaterialEdit({ material, units, materialTypes }: MaterialEditParams) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Material',
+            href: route('materials.index'),
+        },
+        {
+            title: material.data.code,
+            href: route('materials.show', material.data.id),
+        },
+        {
+            title: 'Edit',
+            href: route('materials.edit', material.data.id),
+        },
+    ];
+
     const can = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<MaterialFormData>>({
         code: material.data.code,
@@ -37,29 +43,36 @@ export default function MaterialEdit({ material, units, materialTypes }: Materia
 
         patch(route('materials.update', material.data.id), {
             preserveScroll: true,
-            // onSuccess: () => {
-            //     reset('code', 'name', 'price', 'unit_id', 'material_type_id');
-            // },
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
-                <MaterialForm
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    recentlySuccessful={recentlySuccessful}
-                    submit={submit}
-                    canSubmit={can.update_material}
-                    buttonLabel="Update"
-                    successMessage="Updated"
-                    units={units.data}
-                    materialTypes={materialTypes.data}
-                />
-            </div>
+            <Head title="Edit" />
+
+            <MaterialLayout material={material.data}>
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between gap-2">
+                        <HeadingSmall title="Edit" description="Update equipment data and information." />
+                        <Link className="text-foreground hover:text-muted-foreground text-sm" href={route('materials.show', material.data.id)}>
+                            Back
+                        </Link>
+                    </div>
+                    <MaterialForm
+                        data={data}
+                        setData={setData}
+                        errors={errors}
+                        processing={processing}
+                        recentlySuccessful={recentlySuccessful}
+                        submit={submit}
+                        canSubmit={can.update_material}
+                        buttonLabel="Update"
+                        successMessage="Updated"
+                        units={units.data}
+                        materialTypes={materialTypes.data}
+                    />
+                </div>
+            </MaterialLayout>
         </AppLayout>
     );
 }

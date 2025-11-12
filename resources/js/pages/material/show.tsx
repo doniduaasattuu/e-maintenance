@@ -1,0 +1,76 @@
+import HeadingSmall from '@/components/heading-small';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import usePermissions from '@/hooks/use-permissions';
+import AppLayout from '@/layouts/app-layout';
+import MaterialLayout from '@/layouts/material/layout';
+import { BreadcrumbItem, Material } from '@/types';
+import { Head, Link } from '@inertiajs/react';
+import { Edit } from 'lucide-react';
+
+interface MaterialShowProps {
+    material: {
+        data: Material;
+    };
+}
+
+export default function MaterialShow({ material }: MaterialShowProps) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Materials',
+            href: route('materials.index'),
+        },
+        {
+            title: material.data.code,
+            href: route('materials.show', material.data.id),
+        },
+    ];
+
+    const can = usePermissions();
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Details" />
+
+            <MaterialLayout material={material.data}>
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between gap-2">
+                        <HeadingSmall title="Details" description="Material data and information." />
+                        {can.update_material && (
+                            <Link href={route('materials.edit', material.data.id)}>
+                                <Edit size={20} />
+                            </Link>
+                        )}
+                    </div>
+                    <div className="max-w-2xl space-y-6">
+                        <div className="grid gap-2">
+                            <Label htmlFor="code">Code</Label>
+                            <Input readOnly className="mt-1" id="code" value={material.data.code} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="name">Name</Label>
+                            <Input readOnly className="mt-1" id="name" value={material.data.name} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="price">Price</Label>
+                            <Input readOnly className="mt-1" id="price" value={material.data.price ?? ''} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="unit_id">Unit</Label>
+                            <Input readOnly className="mt-1" id="unit_id" value={material.data.unit ? material.data.unit?.name : ''} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="type_id">Type</Label>
+                            <Input
+                                readOnly
+                                className="mt-1"
+                                id="type_id"
+                                value={material.data.materialType ? material.data.materialType?.code : ''}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </MaterialLayout>
+        </AppLayout>
+    );
+}

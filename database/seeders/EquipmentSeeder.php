@@ -27,11 +27,6 @@ class EquipmentSeeder extends Seeder
                 'equipment_class_id' => EquipmentClass::all()->random()->id,
                 'equipment_status_id' => EquipmentStatus::all()->random()->id,
             ]))
-            ->create()
-            ->each(function ($equipment) use ($images) {
-                $equipment->images()->attach(
-                    $images->random(rand(3, 5))->pluck('id')->toArray()
-                );
-            });
+            ->create();
     }
 }

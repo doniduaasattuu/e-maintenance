@@ -25,7 +25,11 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                         <Collapsible
                             key={item.title}
                             className="group/collapsible"
-                            defaultOpen={item.subItems?.some((subItem) => window.location.href.includes(subItem.href))}
+                            defaultOpen={item.subItems?.some(
+                                (subItem) =>
+                                    window.location.href.includes(subItem.href) ||
+                                    window.location.href.includes(subItem.href.replace(window.location.origin, '').slice(0, -1)),
+                            )}
                         >
                             <SidebarMenuItem>
                                 <CollapsibleTrigger asChild>
@@ -40,12 +44,16 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                         <SidebarMenuSub>
                                             {item.subItems.map((subItem) => {
                                                 const shouldRender = !subItem.permission || permissions[subItem.permission] == true;
+                                                const endpoint = subItem.href.replace(window.location.origin, '');
+                                                const isActive =
+                                                    window.location.href.includes(endpoint) || window.location.href.includes(endpoint.slice(0, -1));
+
                                                 return shouldRender ? (
                                                     <SidebarMenuSubItem key={subItem.title}>
                                                         <SidebarMenuSubButton
                                                             asChild
-                                                            isActive={window.location.href.includes(subItem.href)}
-                                                            className={`${window.location.href.includes(subItem.href) ? 'font-medium' : undefined}`}
+                                                            isActive={isActive}
+                                                            className={`${isActive ? 'font-medium' : undefined}`}
                                                         >
                                                             <Link prefetch href={subItem.href}>
                                                                 {subItem.title}

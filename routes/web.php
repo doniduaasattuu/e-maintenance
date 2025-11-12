@@ -4,10 +4,11 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\EquipmentClassController;
 use App\Http\Controllers\EquipmentController;
-use App\Http\Controllers\EquipmentImageController;
+// use App\Http\Controllers\EquipmentImageController;
 use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FunctionalLocationController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InspectionAirConditionerController;
 use App\Http\Controllers\InspectionMotorController;
 use App\Http\Controllers\InspectionPanelController;
@@ -83,10 +84,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // MATERIAL TYPE
     Route::resource('/material-types', MaterialTypeController::class);
 
-    // EQUIPMENT IMAGE
-    Route::get('/equipments/{equipment}/image', [EquipmentImageController::class, 'index'])->name('equipments.image');
-    Route::post('/equipments/{equipment}/image/store', [EquipmentImageController::class, 'store'])->name('equipment-image.store');
-    Route::delete('/equipments/{equipment}/image/{image}', [EquipmentImageController::class, 'destroy'])->name('equipment-image.destroy');
+    // IMAGE CONTROLLER
+    Route::prefix('images')->group(function () {
+        Route::get('/{model}/{id}', [ImageController::class, 'index'])->name('images.index');
+        Route::post('/{model}/{id}', [ImageController::class, 'store'])->name('images.store');
+        Route::delete('/{image}', [ImageController::class, 'destroy'])->name('images.destroy');
+    });
 
     // DEPARTMENT
     Route::resource('/organizations/departments', DepartmentController::class)->names([

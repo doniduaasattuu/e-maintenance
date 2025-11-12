@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Equipment;
 use App\Models\Image;
+use App\Models\Material;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -24,6 +26,14 @@ class ImageSeeder extends Seeder
         foreach ($paths as $path) {
             Image::firstOrCreate([
                 'path' => 'assets/images/equipment/' . $path,
+                'imageable_type' => 'equipment',
+                'imageable_id' => Equipment::first()->id,
+            ]);
+
+            Image::firstOrCreate([
+                'path' => 'assets/images/material/' . $path,
+                'imageable_type' => 'material',
+                'imageable_id' => Material::first()->id,
             ]);
         }
     }

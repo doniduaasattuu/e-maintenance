@@ -331,6 +331,7 @@ export interface Material {
     material_type_id: number | null;
     unit: Unit | null;
     materialType: MaterialType | null;
+    images: null | Image[];
     created_at: string;
     updated_at: string;
 }

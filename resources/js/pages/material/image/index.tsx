@@ -5,36 +5,37 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
-import EquipmentLayout from '@/layouts/equipment/layout';
-import { BreadcrumbItem, Equipment } from '@/types';
+import MaterialLayout from '@/layouts/material/layout';
+import { BreadcrumbItem, Material } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Edit } from 'lucide-react';
 import { FormEventHandler, useRef, useState } from 'react';
 
-interface EquipmentImageProps {
-    equipment: {
-        data: Equipment;
+interface MaterialImageProps {
+    material: {
+        data: Material;
     };
 }
 
-export default function EquipmentImage({ equipment }: EquipmentImageProps) {
+export default function MaterialImage({ material }: MaterialImageProps) {
     const can = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
-            href: route('equipments.index'),
+            title: 'Materials',
+            href: route('materials.index'),
         },
         {
-            title: equipment.data.code,
-            href: route('equipments.show', equipment.data.id),
+            title: material.data.code,
+            href: route('materials.show', material.data.id),
         },
         {
             title: 'Image',
-            href: route('images.index', ['equipment', equipment.data.id]),
+            href: route('images.index', ['material', material.data.id]),
         },
     ];
 
     // FILE UPLOAD
+
     type ImageForm = {
         image?: File | null;
     };
@@ -49,8 +50,8 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
 
         post(
             route('images.store', {
-                model: 'equipment',
-                id: equipment.data.id,
+                model: 'material',
+                id: material.data.id,
             }),
             {
                 preserveScroll: true,
@@ -65,17 +66,18 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
     };
 
     // IMAGE MANAGEMENT
+
     const [canDelete, setCanDelete] = useState<boolean>(false);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Image" />
 
-            <EquipmentLayout equipment={equipment.data} width="md:max-w-6xl">
+            <MaterialLayout material={material.data} width="md:max-w-6xl">
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
-                        <HeadingSmall title="Image" description="Images of equipment uploaded by users." />
-                        {can.delete_image && (equipment?.data?.images?.length ?? 0) > 0 && (
+                        <HeadingSmall title="Image" description="Images of material uploaded by users." />
+                        {can.delete_image && (material?.data?.images?.length ?? 0) > 0 && (
                             <Button
                                 variant={'outline'}
                                 onClick={() => {
@@ -88,7 +90,7 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                         )}
                     </div>
 
-                    {equipment.data.images && equipment.data.images.length > 0 && <ImageCarousel canDelete={canDelete} model={equipment.data} />}
+                    {material.data.images && material.data.images.length > 0 && <ImageCarousel canDelete={canDelete} model={material.data} />}
 
                     <Separator />
 
@@ -105,7 +107,7 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                         />
                     )}
                 </div>
-            </EquipmentLayout>
+            </MaterialLayout>
         </AppLayout>
     );
 }

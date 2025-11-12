@@ -52,4 +52,9 @@ class Material extends Model
     {
         return $this->belongsTo(MaterialType::class);
     }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }
