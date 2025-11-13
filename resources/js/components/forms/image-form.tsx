@@ -1,5 +1,6 @@
+import { useImageCompressor } from '@/hooks/use-image-compressor';
 import { AxiosProgressEvent } from 'axios';
-import { FormEventHandler } from 'react';
+import { ChangeEvent, FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 import InputDescription from '../input-description';
 import InputError from '../input-error';
@@ -21,6 +22,21 @@ interface ImageFormParams {
 }
 
 export default function ImageForm({ submit, fileInputRef, processing, setData, progress, errors, data, recentlySuccessful }: ImageFormParams) {
+    const compressImage = useImageCompressor();
+
+    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+
+        if (!file) return;
+
+        try {
+            const compressed = await compressImage(file);
+            setData('image', compressed);
+        } catch (error) {
+            console.error('Compression failed: ', error);
+        }
+    };
+
     return (
         <form onSubmit={submit} className="space-y-6">
             <div className="grid w-full gap-2 sm:max-w-xs">
@@ -31,14 +47,14 @@ export default function ImageForm({ submit, fileInputRef, processing, setData, p
                     id="image"
                     ref={fileInputRef}
                     disabled={processing}
-                    onChange={(e) => {
-                        setData('image', e.target.files?.[0]);
-                    }}
+                    onChange={handleFileChange}
                     accept=".jpg,.jpeg,.png,.webp"
                 />
                 {progress && <Progress className="mt-1 h-1.5" value={progress.percentage} />}
                 <InputError message={errors.image} />
-                {data.image && data.image.size > 1 && <InputDescription message={`File size: ${(data.image.size / 1024 / 1024).toFixed(2)} MB`} />}
+                {data.image && data.image.size > 1 && (
+                    <InputDescription message={`Compressed to ${(data.image?.size / 1024 / 1024).toFixed(2)} MB`} />
+                )}
             </div>
             <ButtonSubmit
                 disabled={processing || fileInputRef.current == null || data.image == null}

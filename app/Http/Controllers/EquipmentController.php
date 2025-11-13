@@ -11,7 +11,9 @@ use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Throwable;
 
@@ -128,7 +130,17 @@ class EquipmentController extends Controller
         Gate::authorize('delete_equipment');
 
         try {
-            $equipment->delete();
+            DB::transaction(function () use ($equipment) {
+
+                foreach ($equipment->images as $image) {
+                    if ($image->path && Storage::disk('public')->exists($image->path)) {
+                        Storage::disk('public')->delete($image->path);
+                    }
+                    $image->delete();
+                }
+
+                $equipment->delete();
+            });
 
             return back()->with('message', [
                 'type' => 'success',
@@ -137,7 +149,7 @@ class EquipmentController extends Controller
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',
-                'description' => $e->getMessage() ?? 'Equipment is not found',
+                'description' => 'Failed to delete equipment: ' . $e->getMessage(),
             ]);
         }
     }

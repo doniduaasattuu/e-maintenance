@@ -33,7 +33,23 @@ class UnitSeeder extends Seeder
             "Ons",
             "Gram",
             "Mililiter",
-            "Centimeter"
+            "Centimeter",
+            "Set",
+            "Kit",
+            "Lot",
+            "Each",
+            "Pack",
+            "AU",
+            "Sack",
+            "Bag",
+            "Meter persegi",
+            "Tube",
+            "Kaleng",
+            "Galon",
+            "Ton",
+            "Drigen",
+            "Tank",
+            "Feet",
         ];
 
         collect($units)->each(function ($u) {

@@ -3,6 +3,7 @@
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
+use App\Models\Image;
 use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\EquipmentSeeder;
 use Database\Seeders\EquipmentStatusSeeder;
@@ -11,10 +12,15 @@ use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    Permission::create(['name' => 'create_equipment']);
+    Permission::create(['name' => 'read_equipment']);
+    Permission::create(['name' => 'update_equipment']);
+    Permission::create(['name' => 'delete_equipment']);
     Permission::create(['name' => 'create_image']);
     Permission::create(['name' => 'read_image']);
     Permission::create(['name' => 'update_image']);
@@ -65,4 +71,41 @@ test('upload image equipment fails validation', function () {
         ])
         ->assertStatus(302)
         ->assertSessionHasErrors(['image']);
+});
+
+test('delete image equipment fail not found', function () {
+    $admin = createAdminUser();
+
+    $this->actingAs($admin)
+        ->delete(route('images.destroy', 1))
+        ->assertStatus(404);
+});
+
+test('test delete equipment and images are also automatically deleted', function () {
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => EquipmentClass::first()->id,
+        'equipment_status_id' => EquipmentStatus::first()->id,
+    ]);
+
+    $this->assertNotNull($equipment);
+    $this->assertEquals(0, count($equipment->images));
+
+    $equipment->images()->createMany([
+        ['path' => 'assets/images/equipment/' . Str::uuid() . '.jpg'],
+        ['path' => 'assets/images/equipment/' . Str::uuid() . '.jpg'],
+        ['path' => 'assets/images/equipment/' . Str::uuid() . '.jpg'],
+    ]);
+
+    $this->assertCount(3, Image::get());
+
+    $this
+        ->actingAs(createAdminUser())
+        ->from(route('equipments.index'))
+        ->delete(route('equipments.destroy', $equipment->id))
+        ->assertSessionHas('message', [
+            'type' => 'success',
+            'description' => 'Equipment deleted successfully',
+        ]);
+
+    $this->assertCount(0, Image::get());
 });

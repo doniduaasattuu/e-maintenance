@@ -18,8 +18,6 @@ interface MaterialIndexProps {
 }
 
 export default function MaterialIndex({ materials }: MaterialIndexProps) {
-    console.log(materials);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Material" />

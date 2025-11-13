@@ -11,7 +11,9 @@ use App\Models\Material;
 use App\Models\MaterialType;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Throwable;
 
@@ -132,7 +134,17 @@ class MaterialController extends Controller
         Gate::authorize('delete_material');
 
         try {
-            $material->delete();
+            DB::transaction(function () use ($material) {
+
+                foreach ($material->images as $image) {
+                    if ($image->path && Storage::disk('public')->exists($image->path)) {
+                        Storage::disk('public')->delete($image->path);
+                    }
+                    $image->delete();
+                }
+
+                $material->delete();
+            });
 
             return back()->with('message', [
                 'type' => 'success',
@@ -141,7 +153,7 @@ class MaterialController extends Controller
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',
-                'description' => $e->getMessage() ?? 'Material is not found',
+                'description' => 'Failed to delete material: ' . $e->getMessage(),
             ]);
         }
     }

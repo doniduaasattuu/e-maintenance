@@ -18,8 +18,6 @@ class EquipmentSeeder extends Seeder
      */
     public function run(): void
     {
-        $images = Image::all();
-
         Equipment::factory()
             ->count(20)
             ->state(new Sequence(fn(Sequence $sequence) => [

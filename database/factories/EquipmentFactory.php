@@ -2,9 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\EquipmentClass;
-use App\Models\EquipmentStatus;
-use App\Models\FunctionalLocation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

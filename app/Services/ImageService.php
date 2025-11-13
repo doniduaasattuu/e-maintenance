@@ -19,7 +19,7 @@ class ImageService
             case 'equipment':
 
                 $equipment = Equipment::findOrFail($id);
-                $imagePath = $request->file('image')->store('assets/images/' . $model, 'public');
+                $imagePath = $request->file('image')->store('images/' . $model, 'public');
 
                 Image::create([
                     'path' => $imagePath,
@@ -30,7 +30,7 @@ class ImageService
                 break;
             case 'material':
                 $material = Material::findOrFail($id);
-                $imagePath = $request->file('image')->store('assets/images/' . $model, 'public');
+                $imagePath = $request->file('image')->store('images/' . $model, 'public');
 
                 Image::create([
                     'path' => $imagePath,

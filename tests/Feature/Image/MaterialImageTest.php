@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Image;
 use App\Models\Material;
 use Database\Seeders\MaterialSeeder;
 use Database\Seeders\MaterialTypeSeeder;
@@ -8,10 +9,15 @@ use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    Permission::create(['name' => 'create_material']);
+    Permission::create(['name' => 'read_material']);
+    Permission::create(['name' => 'update_material']);
+    Permission::create(['name' => 'delete_material']);
     Permission::create(['name' => 'create_image']);
     Permission::create(['name' => 'read_image']);
     Permission::create(['name' => 'update_image']);
@@ -58,4 +64,38 @@ test('upload image material fails validation', function () {
         ])
         ->assertStatus(302)
         ->assertSessionHasErrors(['image']);
+});
+
+test('delete image material fail not found', function () {
+    $admin = createAdminUser();
+
+    $this->actingAs($admin)
+        ->delete(route('images.destroy', 1))
+        ->assertStatus(404);
+});
+
+test('test delete material and images are also automatically deleted', function () {
+    $material = Material::factory()->create();
+
+    $this->assertNotNull($material);
+    $this->assertEquals(0, count($material->images));
+
+    $material->images()->createMany([
+        ['path' => 'assets/images/material/' . Str::uuid() . '.jpg'],
+        ['path' => 'assets/images/material/' . Str::uuid() . '.jpg'],
+        ['path' => 'assets/images/material/' . Str::uuid() . '.jpg'],
+    ]);
+
+    $this->assertCount(3, Image::get());
+
+    $this
+        ->actingAs(createAdminUser())
+        ->from(route('materials.index'))
+        ->delete(route('materials.destroy', $material->id))
+        ->assertSessionHas('message', [
+            'type' => 'success',
+            'description' => 'Material deleted successfully',
+        ]);
+
+    $this->assertCount(0, Image::get());
 });
