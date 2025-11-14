@@ -1,12 +1,7 @@
-import ButtonSubmit from '@/components/button-submit';
+import ImageForm from '@/components/forms/image-form';
 import HeadingSmall from '@/components/heading-small';
 import { ImageCarousel } from '@/components/image-carousel';
-import InputDescription from '@/components/input-description';
-import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
@@ -35,12 +30,11 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
         },
         {
             title: 'Image',
-            href: route('equipments.image', equipment.data.id),
+            href: route('images.index', ['equipment', equipment.data.id]),
         },
     ];
 
     // FILE UPLOAD
-
     type ImageForm = {
         image?: File | null;
     };
@@ -53,19 +47,24 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('equipment-image.store', equipment.data.id), {
-            preserveScroll: true,
-            onSuccess: () => {
-                reset('image');
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                }
+        post(
+            route('images.store', {
+                model: 'equipment',
+                id: equipment.data.id,
+            }),
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    reset('image');
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                    }
+                },
             },
-        });
+        );
     };
 
     // IMAGE MANAGEMENT
-
     const [canDelete, setCanDelete] = useState<boolean>(false);
 
     return (
@@ -76,7 +75,7 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Image" description="Images of equipment uploaded by users." />
-                        {can.delete_equipmentimage && (
+                        {can.delete_image && (equipment?.data?.images?.length ?? 0) > 0 && (
                             <Button
                                 variant={'outline'}
                                 onClick={() => {
@@ -89,40 +88,21 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                         )}
                     </div>
 
-                    {equipment.data.images && equipment.data.images.length > 0 && <ImageCarousel canDelete={canDelete} equipment={equipment.data} />}
+                    {equipment.data.images && equipment.data.images.length > 0 && <ImageCarousel canDelete={canDelete} model={equipment.data} />}
 
                     <Separator />
 
-                    {can.create_equipmentimage && (
-                        <div>
-                            <form onSubmit={submit} className="space-y-6">
-                                <div className="grid w-full gap-2 sm:max-w-xs">
-                                    <Label htmlFor="image">Upload</Label>
-                                    <Input
-                                        className="mt-1"
-                                        type="file"
-                                        id="image"
-                                        ref={fileInputRef}
-                                        disabled={processing}
-                                        onChange={(e) => {
-                                            setData('image', e.target.files?.[0]);
-                                        }}
-                                        accept=".jpg,.jpeg,.png,.webp"
-                                    />
-                                    {progress && <Progress className="mt-1 h-1.5" value={progress.percentage} />}
-                                    <InputError message={errors.image} />
-                                    {data.image && data.image.size > 1 && (
-                                        <InputDescription message={`File size: ${(data.image.size / 1024 / 1024).toFixed(2)} MB`} />
-                                    )}
-                                </div>
-                                <ButtonSubmit
-                                    disabled={processing || fileInputRef.current == null || data.image == null}
-                                    showSuccessMessage={true}
-                                    successMessage="Saved"
-                                    recentlySuccessful={recentlySuccessful}
-                                />
-                            </form>
-                        </div>
+                    {can.create_image && (
+                        <ImageForm
+                            submit={submit}
+                            fileInputRef={fileInputRef}
+                            processing={processing}
+                            setData={setData}
+                            progress={progress}
+                            errors={errors}
+                            data={data}
+                            recentlySuccessful={recentlySuccessful}
+                        />
                     )}
                 </div>
             </EquipmentLayout>

@@ -26,12 +26,5 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
         ]);
-
-        User::factory()->create([
-            'name' => 'Doni Darmawan',
-            'email' => 'doni@gmail.com',
-        ]);
-
-        // User::factory()->count(100)->create();
     }
 }

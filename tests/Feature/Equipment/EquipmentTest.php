@@ -4,11 +4,6 @@ use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
 use App\Models\FunctionalLocation;
-use App\Models\User;
-use Database\Seeders\EquipmentClassSeeder;
-use Database\Seeders\EquipmentSeeder;
-use Database\Seeders\EquipmentStatusSeeder;
-use Database\Seeders\FunctionalLocationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 

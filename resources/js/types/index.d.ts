@@ -306,3 +306,32 @@ export interface Image {
     created_at: string;
     updated_at: string;
 }
+
+export interface Unit {
+    id: number;
+    name: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface MaterialType {
+    id: number;
+    code: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Material {
+    id: number;
+    code: string;
+    name: string;
+    price: number;
+    unit_id: number | null;
+    material_type_id: number | null;
+    unit: Unit | null;
+    materialType: MaterialType | null;
+    images: null | Image[];
+    created_at: string;
+    updated_at: string;
+}

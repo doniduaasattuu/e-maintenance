@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\EquipmentImage;
+namespace App\Http\Requests\MaterialType;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreEquipmentImageRequest extends FormRequest
+class UpdateMaterialTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +23,12 @@ class StoreEquipmentImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
+            'code' => [
+                'required',
+                'uppercase',
+                Rule::unique('material_types', 'code')->ignore($this->material_type),
+            ],
+            'description' => ['required']
         ];
     }
 }

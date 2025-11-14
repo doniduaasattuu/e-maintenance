@@ -99,8 +99,9 @@ class RoleController extends Controller
         try {
             $validated = $request->validated();
 
-            $role->name = $validated['name'];
-            $role->save();
+            $role->update([
+                'name' => $validated['name'],
+            ]);
 
             $role->syncPermissions($validated['selectedPermissions']);
 

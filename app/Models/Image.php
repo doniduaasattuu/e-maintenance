@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Image extends Model
 {
@@ -11,10 +11,12 @@ class Image extends Model
 
     protected $fillable = [
         'path',
+        'imageable_id',
+        'imageable_type',
     ];
 
-    public function equipments()
+    public function imageable(): MorphTo
     {
-        return $this->belongsToMany(Equipment::class, 'equipment_image', 'image_id', 'equipment_id');
+        return $this->morphTo();
     }
 }

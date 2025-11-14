@@ -33,11 +33,11 @@ const mainNavItems: NavItem[] = [
                 href: route('equipments.index'),
                 permission: 'read_equipment',
             },
-            // {
-            //     title: 'Materials',
-            //     href: '/materials',
-            //     permission: 'read_material',
-            // },
+            {
+                title: 'Materials',
+                href: route('materials.index'),
+                permission: 'read_material',
+            },
         ],
     },
     {
@@ -47,18 +47,28 @@ const mainNavItems: NavItem[] = [
         subItems: [
             {
                 title: 'Equipment histories',
-                href: '/equipment-histories',
+                href: route('equipment-histories.index'),
                 permission: 'read_installdismantlehistory',
             },
             {
                 title: 'Equipment classes',
-                href: '/equipment-classes',
+                href: route('equipment-classes.index'),
                 permission: 'read_equipmentclass',
             },
             {
                 title: 'Equipment statuses',
-                href: '/equipment-statuses',
+                href: route('equipment-statuses.index'),
                 permission: 'read_equipmentstatus',
+            },
+            {
+                title: 'Material unit',
+                href: route('units.index'),
+                permission: 'read_unit',
+            },
+            {
+                title: 'Material type',
+                href: route('material-types.index'),
+                permission: 'read_materialtype',
             },
         ],
     },
@@ -90,22 +100,22 @@ const mainNavItems: NavItem[] = [
 const footerNavItems: NavItem[] = [
     {
         title: 'Users',
-        href: '/users',
+        href: route('users.index'),
         icon: Users2,
         permission: 'read_user',
     },
     {
         title: 'Roles',
-        href: '/roles',
+        href: route('roles.index'),
         icon: BadgeCheck,
         permission: 'read_role',
     },
     {
         title: 'Organizations',
-        href: '/organizations/departments',
+        href: route('departments.index'),
         icon: Building2,
         permission: 'read_department',
-        children: ['/organizations/departments', '/organizations/divisions', '/organizations/work-centers'],
+        children: [route('departments.index'), route('divisions.index'), route('work-centers.index')],
     },
 ];
 

@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Throwable;
 
-use function PHPUnit\Framework\isEmpty;
-
 class EquipmentClassController extends Controller
 {
     /**

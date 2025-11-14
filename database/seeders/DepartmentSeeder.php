@@ -43,41 +43,41 @@ class DepartmentSeeder extends Seeder
                 'division_id' => $eng->id,
                 'name' => 'Electric Transformer',
             ],
-            // [
-            //     'code' => 'EI6',
-            //     'division_id' => $eng->id,
-            //     'name' => 'Electric Instrument ENC',
-            // ],
-            // [
-            //     'code' => 'ME1',
-            //     'division_id' => $eng->id,
-            //     'name' => 'Mechanic PM12',
-            // ],
-            // [
-            //     'code' => 'ME2',
-            //     'division_id' => $eng->id,
-            //     'name' => 'Mechanic PM37',
-            // ],
-            // [
-            //     'code' => 'ME3',
-            //     'division_id' => $eng->id,
-            //     'name' => 'Mechanic PM58',
-            // ],
-            // [
-            //     'code' => 'ME4',
-            //     'division_id' => $eng->id,
-            //     'name' => 'Mechanic Machining',
-            // ],
-            // [
-            //     'code' => 'ME5',
-            //     'division_id' => $eng->id,
-            //     'name' => 'Mechanic Piping',
-            // ],
-            // [
-            //     'code' => 'ME6',
-            //     'division_id' => $eng->id,
-            //     'name' => 'Mechanic ENC',
-            // ],
+            [
+                'code' => 'EI6',
+                'division_id' => $eng->id,
+                'name' => 'Electric Instrument ENC',
+            ],
+            [
+                'code' => 'ME1',
+                'division_id' => $eng->id,
+                'name' => 'Mechanic PM12',
+            ],
+            [
+                'code' => 'ME2',
+                'division_id' => $eng->id,
+                'name' => 'Mechanic PM37',
+            ],
+            [
+                'code' => 'ME3',
+                'division_id' => $eng->id,
+                'name' => 'Mechanic PM58',
+            ],
+            [
+                'code' => 'ME4',
+                'division_id' => $eng->id,
+                'name' => 'Mechanic Machining',
+            ],
+            [
+                'code' => 'ME5',
+                'division_id' => $eng->id,
+                'name' => 'Mechanic Piping',
+            ],
+            [
+                'code' => 'ME6',
+                'division_id' => $eng->id,
+                'name' => 'Mechanic ENC',
+            ],
         ];
 
         collect($electricals)->each(fn($e) => Department::create($e));
