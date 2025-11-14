@@ -33,7 +33,7 @@ test('unit index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('unit/index')
-                ->has('units.data', 5)
+                ->has('units.data', 15)
         );
 });
 
