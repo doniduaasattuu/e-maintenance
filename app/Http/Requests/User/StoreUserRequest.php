@@ -4,7 +4,6 @@ namespace App\Http\Requests\User;
 
 use App\Models\Department;
 use App\Models\Position;
-use App\Models\User;
 use App\Models\WorkCenter;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +29,10 @@ class StoreUserRequest extends FormRequest
     {
         $this->merge([
             'password' => Hash::make('password')
+        ]);
+
+        $this->mergeIfMissing([
+            'selectedRoles' => [],
         ]);
 
         $validRoles = Role::pluck('name');

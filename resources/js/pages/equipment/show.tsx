@@ -1,12 +1,16 @@
 import HeadingSmall from '@/components/heading-small';
+import { QRCodeGenerator } from '@/components/qr-generator';
+import TextLink from '@/components/text-link';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import { BreadcrumbItem, Equipment } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { Edit } from 'lucide-react';
+import { Head } from '@inertiajs/react';
+import { QrCodeIcon } from 'lucide-react';
+import React from 'react';
 
 interface EquipmentShowProps {
     equipment: {
@@ -27,72 +31,33 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
     ];
 
     const can = usePermissions();
-
-    // const action = (
-    //     <OptionsDropdown className="w-[160px]">
-    //         {can.update_equipment && (
-    //             <DropdownMenuItem asChild>
-    //                 <Link className="text-sm" href={route('equipments.edit', equipment.data.id)}>
-    //                     <Edit />
-    //                     Edit
-    //                 </Link>
-    //             </DropdownMenuItem>
-    //         )}
-    //         {can.read_installdismantlehistory && (
-    //             <DropdownMenuItem asChild>
-    //                 <Link className="text-sm" href={route('equipments.history', equipment.data.id)}>
-    //                     <LucideTruck />
-    //                     History
-    //                 </Link>
-    //             </DropdownMenuItem>
-    //         )}
-    //         <DropdownMenuSub>
-    //             <DropdownMenuSubTrigger>
-    //                 <div className="flex items-center gap-2">
-    //                     <NotepadTextIcon size={16} className="text-muted-foreground" />
-    //                     Inspection
-    //                 </div>
-    //             </DropdownMenuSubTrigger>
-    //             <DropdownMenuPortal>
-    //                 <DropdownMenuSubContent>
-    //                     {can.create_inspection && (
-    //                         <DropdownMenuItem asChild>
-    //                             <Link className="text-sm" href={route('inspections.create', equipment.data.id)}>
-    //                                 <PlusSquare />
-    //                                 New
-    //                             </Link>
-    //                         </DropdownMenuItem>
-    //                     )}
-    //                     <DropdownMenuItem asChild>
-    //                         <Link className="text-sm" href={route('equipments.show', equipment.data.id)}>
-    //                             <ChartLine />
-    //                             Trend
-    //                         </Link>
-    //                     </DropdownMenuItem>
-    //                 </DropdownMenuSubContent>
-    //             </DropdownMenuPortal>
-    //         </DropdownMenuSub>
-    //     </OptionsDropdown>
-    // );
+    const [isQROpen, setIsQROpen] = React.useState<boolean>(false);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Details" />
+
+            <QRCodeGenerator modelName="equipment" model={equipment.data} isQROpen={isQROpen} setIsQROpen={setIsQROpen} />
 
             <EquipmentLayout equipment={equipment.data}>
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Details" description="Equipment data and information." />
                         {can.update_equipment && (
-                            <Link href={route('equipments.edit', equipment.data.id)}>
-                                <Edit size={20} />
-                            </Link>
+                            <TextLink className="text-sm" href={route('equipments.edit', equipment.data.id)}>
+                                Edit
+                            </TextLink>
                         )}
                     </div>
                     <div className="max-w-2xl space-y-6">
                         <div className="grid gap-2">
                             <Label htmlFor="code">Code</Label>
-                            <Input readOnly className="mt-1" id="code" value={equipment.data.code} />
+                            <div className="mt-1 flex justify-between gap-2">
+                                <Input readOnly id="code" value={equipment.data.code} />
+                                <Button title="Show QR Code" variant="outline" onClick={() => setIsQROpen(true)}>
+                                    <QrCodeIcon />
+                                </Button>
+                            </div>
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="sort_field">Sort field</Label>

@@ -1,4 +1,6 @@
 import HeadingSmall from '@/components/heading-small';
+import { QRCodeGenerator } from '@/components/qr-generator';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import usePermissions from '@/hooks/use-permissions';
@@ -6,7 +8,8 @@ import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
 import { BreadcrumbItem, Material } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { Edit } from 'lucide-react';
+import { Edit, QrCodeIcon } from 'lucide-react';
+import React from 'react';
 
 interface MaterialShowProps {
     material: {
@@ -27,10 +30,13 @@ export default function MaterialShow({ material }: MaterialShowProps) {
     ];
 
     const can = usePermissions();
+    const [isQROpen, setIsQROpen] = React.useState<boolean>(false);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Details" />
+
+            <QRCodeGenerator modelName="material" model={material.data} isQROpen={isQROpen} setIsQROpen={setIsQROpen} />
 
             <MaterialLayout material={material.data}>
                 <div className="space-y-6">
@@ -45,7 +51,12 @@ export default function MaterialShow({ material }: MaterialShowProps) {
                     <div className="max-w-2xl space-y-6">
                         <div className="grid gap-2">
                             <Label htmlFor="code">Code</Label>
-                            <Input readOnly className="mt-1" id="code" value={material.data.code} />
+                            <div className="mt-1 flex justify-between gap-2">
+                                <Input readOnly id="code" value={material.data.code} />
+                                <Button title="Show QR Code" variant="outline" onClick={() => setIsQROpen(true)}>
+                                    <QrCodeIcon />
+                                </Button>
+                            </div>
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="name">Name</Label>

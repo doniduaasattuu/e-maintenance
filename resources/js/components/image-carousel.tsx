@@ -58,7 +58,7 @@ export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
                                 <CardContent
                                     className={cn('relative aspect-square w-full overflow-hidden rounded-md p-0', { 'opacity-70': canDelete })}
                                 >
-                                    <span className="absolute bottom-0 left-3 z-10 py-2 text-center text-sm">{`${index + 1} of ${length}`}</span>
+                                    <span className="absolute top-0 left-3 z-10 py-2 text-center text-sm text-white">{`${index + 1} of ${length}`}</span>
                                     <img
                                         className="absolute inset-0 h-full w-full object-cover"
                                         src={image.url}

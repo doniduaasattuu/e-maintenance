@@ -116,7 +116,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
 
         // DIVISION
-        Route::resource('/organizations/divisions', DivisionController::class)->names([
+        Route::resource('divisions', DivisionController::class)->names([
             'index' => 'divisions.index',
             'create' => 'divisions.create',
             'store' => 'divisions.store',
@@ -133,7 +133,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
 
         // WORK CENTER
-        Route::resource('/organizations/work-centers', WorkCenterController::class)->names([
+        Route::resource('work-centers', WorkCenterController::class)->names([
             'index' => 'work-centers.index',
             'create' => 'work-centers.create',
             'store' => 'work-centers.store',

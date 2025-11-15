@@ -1,10 +1,11 @@
 import EquipmentForm, { EquipmentFormData } from '@/components/forms/equipment-form';
 import HeadingSmall from '@/components/heading-small';
+import TextLink from '@/components/text-link';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import { BreadcrumbItem, Equipment, EquipmentClass, EquipmentStatus } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface EquipmentEditProps {
@@ -62,9 +63,9 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Edit" description="Update equipment data and information." />
-                        <Link className="text-foreground hover:text-muted-foreground text-sm" href={route('equipments.show', equipment.data.id)}>
+                        <TextLink className="text-sm" href={route('equipments.show', equipment.data.id)}>
                             Back
-                        </Link>
+                        </TextLink>
                     </div>
                     <EquipmentForm
                         id={equipment.data.id}
