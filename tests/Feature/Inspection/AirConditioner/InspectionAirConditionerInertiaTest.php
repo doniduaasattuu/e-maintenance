@@ -3,7 +3,6 @@
 use App\Models\Equipment;
 use App\Models\InspectionAirConditioner;
 use Database\Seeders\EquipmentClassSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -12,11 +11,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed([EquipmentClassSeeder::class]);
 
-    Permission::create(['name' => 'create_inspection']);
-    Permission::create(['name' => 'create_inspectionairconditioner']);
-    Permission::create(['name' => 'read_inspectionairconditioner']);
-    Permission::create(['name' => 'update_inspectionairconditioner']);
-    Permission::create(['name' => 'delete_inspectionairconditioner']);
+    $this->generatePermissions(['Inspection', 'InspectionAirConditioner']);
 });
 
 test('inspection air conditioner create form should be rendered', function () {

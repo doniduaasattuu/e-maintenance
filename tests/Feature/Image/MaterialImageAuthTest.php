@@ -4,17 +4,13 @@ use App\Models\Material;
 use Database\Seeders\MaterialSeeder;
 use Database\Seeders\MaterialTypeSeeder;
 use Database\Seeders\UnitSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_image']);
-    Permission::create(['name' => 'read_image']);
-    Permission::create(['name' => 'update_image']);
-    Permission::create(['name' => 'delete_image']);
+    $this->generatePermissions(['Image']);
 
     $this->seed(UnitSeeder::class);
     $this->seed(MaterialTypeSeeder::class);

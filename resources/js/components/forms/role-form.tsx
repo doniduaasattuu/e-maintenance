@@ -94,7 +94,7 @@ export default function RoleForm({
                                     </Button>
                                 </PopoverTrigger>
 
-                                <PopoverContent className="w-[250px] p-0" align="end">
+                                <PopoverContent className="w-62.5 p-0" align="end">
                                     <Command>
                                         <CommandInput placeholder="Search..." />
                                         <CommandList>

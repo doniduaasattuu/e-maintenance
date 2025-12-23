@@ -18,7 +18,7 @@ export default function MaterialLayout({ material, width, children }: Props) {
             title: 'Image',
             href: route('images.index', ['material', material.id]),
             icon: null,
-            permission: 'read_image',
+            permission: 'show_image',
         },
     ];
 

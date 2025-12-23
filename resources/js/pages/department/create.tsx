@@ -9,11 +9,11 @@ import { FormEventHandler } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Departments',
-        href: '/organizations/departments',
+        href: route('departments.index'),
     },
     {
         title: 'Create',
-        href: '/organizations/departments/create',
+        href: route('departments.create'),
     },
 ];
 
@@ -56,7 +56,7 @@ export default function DepartmentCreate({ divisions }: DepartmentCreateProps) {
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
                         submit={submit}
-                        canSubmit={can.create_department}
+                        canSubmit={can.store_department}
                         buttonLabel="Create"
                         successMessage="Created"
                     />

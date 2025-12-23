@@ -11,15 +11,7 @@ use Spatie\Permission\Models\Permission;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_role']);
-    Permission::create(['name' => 'read_role']);
-    Permission::create(['name' => 'update_role']);
-    Permission::create(['name' => 'delete_role']);
-    Permission::create(['name' => 'create_user']);
-    Permission::create(['name' => 'read_user']);
-    Permission::create(['name' => 'update_user']);
-    Permission::create(['name' => 'delete_user']);
-    Permission::create(['name' => 'restore_user']);
+    $this->generatePermissions(['Role', 'User']);
 });
 
 test('index page accessible', function () {

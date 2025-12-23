@@ -5,10 +5,15 @@ use App\Models\User;
 use Spatie\Permission\Models\Permission;
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_equipment']);
-    Permission::create(['name' => 'read_equipment']);
-    Permission::create(['name' => 'update_equipment']);
-    Permission::create(['name' => 'delete_equipment']);
+    $models = ['Equipment'];
+
+    foreach ($models as $model) {
+        foreach (config('permission.actions') as $action) {
+            Permission::firstOrCreate([
+                'name' => "{$action}_" . strtolower($model)
+            ]);
+        }
+    }
 });
 
 test('scan page is rendered', function () {

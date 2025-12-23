@@ -22,11 +22,11 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
-            href: '/equipments',
+            href: route('equipments.index'),
         },
         {
             title: equipment.data.code,
-            href: `/equipments/${equipment.data.id}`,
+            href: route('equipments.index', equipment.data.id),
         },
     ];
 
@@ -43,7 +43,7 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Details" description="Equipment data and information." />
-                        {can.update_equipment && (
+                        {can.edit_equipment && (
                             <TextLink className="text-sm" href={route('equipments.edit', equipment.data.id)}>
                                 Edit
                             </TextLink>

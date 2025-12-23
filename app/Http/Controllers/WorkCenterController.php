@@ -18,7 +18,7 @@ class WorkCenterController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_workcenter');
+        Gate::authorize('index_workcenter');
 
         $workCenters = WorkCenter::search($request)->paginate(10)->withQueryString();
 
@@ -42,7 +42,7 @@ class WorkCenterController extends Controller
      */
     public function store(StoreWorkCenterRequest $request)
     {
-        Gate::authorize('create_workcenter');
+        Gate::authorize('store_workcenter');
 
         $validated = $request->validated();
 
@@ -59,7 +59,7 @@ class WorkCenterController extends Controller
      */
     public function show(WorkCenter $workCenter)
     {
-        //
+        // Gate::authorize('show_workcenter');
     }
 
     /**
@@ -67,7 +67,7 @@ class WorkCenterController extends Controller
      */
     public function edit(WorkCenter $workCenter)
     {
-        Gate::authorize('update_workcenter');
+        Gate::authorize('edit_workcenter');
 
         return Inertia::render('work-center/edit', [
             'workCenter' => new WorkCenterResource($workCenter),

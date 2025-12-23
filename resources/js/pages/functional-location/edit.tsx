@@ -8,11 +8,11 @@ import { FormEventHandler } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Functional Locations',
-        href: '/functional-locations',
+        href: route('functional-locations.index'),
     },
     {
         title: 'Edit',
-        href: '/functional-locations/{id}/edit',
+        href: route('functional-locations.index'),
     },
 ];
 

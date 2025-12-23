@@ -26,17 +26,17 @@ const mainNavItems: NavItem[] = [
             {
                 title: 'Functional locations',
                 href: route('functional-locations.index'),
-                permission: 'read_functionallocation',
+                permission: 'index_functionallocation',
             },
             {
                 title: 'Equipments',
                 href: route('equipments.index'),
-                permission: 'read_equipment',
+                permission: 'index_equipment',
             },
             {
                 title: 'Materials',
                 href: route('materials.index'),
-                permission: 'read_material',
+                permission: 'index_material',
             },
         ],
     },
@@ -48,27 +48,27 @@ const mainNavItems: NavItem[] = [
             {
                 title: 'Equipment histories',
                 href: route('equipment-histories.index'),
-                permission: 'read_installdismantlehistory',
+                permission: 'index_installdismantlehistory',
             },
             {
                 title: 'Equipment classes',
                 href: route('equipment-classes.index'),
-                permission: 'read_equipmentclass',
+                permission: 'index_equipmentclass',
             },
             {
                 title: 'Equipment statuses',
                 href: route('equipment-statuses.index'),
-                permission: 'read_equipmentstatus',
+                permission: 'index_equipmentstatus',
             },
             {
                 title: 'Material unit',
                 href: route('units.index'),
-                permission: 'read_unit',
+                permission: 'index_unit',
             },
             {
                 title: 'Material type',
                 href: route('material-types.index'),
-                permission: 'read_materialtype',
+                permission: 'index_materialtype',
             },
         ],
     },
@@ -80,20 +80,20 @@ const mainNavItems: NavItem[] = [
             {
                 title: 'Reports',
                 href: '/reports',
-                permission: 'read_report',
+                permission: 'index_report',
             },
             {
                 title: 'Findings',
                 href: '/findings',
-                permission: 'read_finding',
+                permission: 'index_finding',
             },
         ],
     },
     {
         title: 'Repositories',
-        href: '/repositories',
+        href: route('repositories.index'),
         icon: File,
-        permission: 'read_repository',
+        permission: 'index_repository',
     },
 ];
 
@@ -102,19 +102,19 @@ const footerNavItems: NavItem[] = [
         title: 'Users',
         href: route('users.index'),
         icon: Users2,
-        permission: 'read_user',
+        permission: 'index_user',
     },
     {
         title: 'Roles',
         href: route('roles.index'),
         icon: BadgeCheck,
-        permission: 'read_role',
+        permission: 'index_role',
     },
     {
         title: 'Organizations',
         href: route('departments.index'),
         icon: Building2,
-        permission: 'read_department',
+        permission: 'index_department',
         children: [route('departments.index'), route('divisions.index'), route('work-centers.index')],
     },
 ];

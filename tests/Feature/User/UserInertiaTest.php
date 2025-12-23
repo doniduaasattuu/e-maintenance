@@ -4,9 +4,7 @@ use App\Models\User;
 use Database\Seeders\DepartmentSeeder;
 use Database\Seeders\DivisionSeeder;
 use Database\Seeders\PositionSeeder;
-use Database\Seeders\RoleSeeder;
 use Database\Seeders\WorkCenterSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Role;
@@ -14,10 +12,7 @@ use Spatie\Permission\Models\Role;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_user']);
-    Permission::create(['name' => 'read_user']);
-    Permission::create(['name' => 'update_user']);
-    Permission::create(['name' => 'delete_user']);
+    $this->generatePermissions(['User']);
 
     $this->seed(DivisionSeeder::class);
     $this->seed(DepartmentSeeder::class);

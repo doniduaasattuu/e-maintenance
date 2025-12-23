@@ -1,6 +1,6 @@
 import Heading from '@/components/heading';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
+import { cn, removeOrigin } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
@@ -8,17 +8,17 @@ import { type PropsWithChildren } from 'react';
 const tabItems: NavItem[] = [
     {
         title: 'Departments',
-        href: '/organizations/departments',
+        href: route('departments.index'),
         icon: null,
     },
     {
         title: 'Divisions',
-        href: '/organizations/divisions',
+        href: route('divisions.index'),
         icon: null,
     },
     {
         title: 'Work Centers',
-        href: '/organizations/work-centers',
+        href: route('work-centers.index'),
         icon: null,
     },
 ];
@@ -38,7 +38,7 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
             <div className="space-y-6">
                 <div className="sm:bg-muted text-muted-foreground flex flex-col gap-1 rounded-lg sm:inline-flex sm:flex-row sm:p-1">
                     {tabItems.map((item) => {
-                        const isActive = currentPath.includes(item.href);
+                        const isActive = currentPath.includes(removeOrigin(item.href));
 
                         return (
                             <Link

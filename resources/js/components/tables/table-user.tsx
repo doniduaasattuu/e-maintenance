@@ -14,6 +14,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import UserAvatar from '@/components/user-avatar';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
+import { tableCaption } from '@/lib/utils';
 import { Department, Meta, Position, User, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
 import { RefreshCcw, Trash2 } from 'lucide-react';
@@ -40,7 +41,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
     const [open, setOpen] = React.useState<boolean>(false);
     const can = usePermissions();
     const meta = users.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
 
     function handleDeleteUser(id: number) {
         router.delete(route('users.destroy', id));
@@ -70,7 +71,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
                 {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} />}
             </div>
             <Table>
-                <TableCaption className="text-sm">{tableCaption}</TableCaption>
+                <TableCaption className="text-sm">{caption}</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="text-muted-foreground">#</TableHead>
@@ -85,7 +86,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
                     {users.data.map((user: User) => {
                         return (
                             <TableRow key={user.id}>
-                                <TableCell className="w-[50px] truncate">
+                                <TableCell className="w-12.5 truncate">
                                     <UserAvatar user={user} />
                                 </TableCell>
 

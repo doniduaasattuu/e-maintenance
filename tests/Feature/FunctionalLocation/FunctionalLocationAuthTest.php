@@ -2,16 +2,12 @@
 
 use App\Models\FunctionalLocation;
 use Database\Seeders\FunctionalLocationSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_functionallocation']);
-    Permission::create(['name' => 'read_functionallocation']);
-    Permission::create(['name' => 'update_functionallocation']);
-    Permission::create(['name' => 'delete_functionallocation']);
+    $this->generatePermissions(['FunctionalLocation']);
 
     $this->seed(FunctionalLocationSeeder::class);
 });

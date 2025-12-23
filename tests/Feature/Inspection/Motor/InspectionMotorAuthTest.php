@@ -3,7 +3,6 @@
 use App\Models\Equipment;
 use App\Models\InspectionMotor;
 use Database\Seeders\EquipmentClassSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -11,11 +10,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed([EquipmentClassSeeder::class]);
 
-    Permission::create(['name' => 'create_inspection']);
-    Permission::create(['name' => 'create_inspectionmotor']);
-    Permission::create(['name' => 'read_inspectionmotor']);
-    Permission::create(['name' => 'update_inspectionmotor']);
-    Permission::create(['name' => 'delete_inspectionmotor']);
+    $this->generatePermissions(['Inspection', 'InspectionMotor']);
 });
 
 test('normal user cannot access inspection motor form', function () {

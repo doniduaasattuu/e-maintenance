@@ -19,7 +19,7 @@ class DepartmentController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_department');
+        Gate::authorize('index_department');
 
         $departments = Department::with('division')->search($request)->paginate()->withQueryString();
 
@@ -47,7 +47,7 @@ class DepartmentController extends Controller
      */
     public function store(StoreDepartmentRequest $request)
     {
-        Gate::authorize('create_department');
+        Gate::authorize('store_department');
 
         $validated = $request->validated();
 
@@ -65,7 +65,7 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        //
+        // Gate::authorize('show_department');
     }
 
     /**
@@ -73,7 +73,7 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
-        Gate::authorize('update_department');
+        Gate::authorize('edit_department');
 
         $divisions = Division::all();
 

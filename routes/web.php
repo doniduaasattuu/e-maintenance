@@ -4,7 +4,6 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\EquipmentClassController;
 use App\Http\Controllers\EquipmentController;
-// use App\Http\Controllers\EquipmentImageController;
 use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FunctionalLocationController;
@@ -16,6 +15,7 @@ use App\Http\Controllers\InspectionTransformerController;
 use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MaterialTypeController;
+use App\Http\Controllers\RepositoryController;
 use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UnitController;
@@ -149,6 +149,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'destroy',
         ]);
     });
+
+    Route::resource('repositories', RepositoryController::class);
+    Route::post('/repositories/{repository}', [RepositoryController::class, 'update'])->name('repositories.update');
 });
 
 Route::fallback(function () {

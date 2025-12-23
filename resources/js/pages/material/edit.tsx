@@ -33,7 +33,7 @@ export default function MaterialEdit({ material, units, materialTypes }: Materia
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<MaterialFormData>>({
         code: material.data.code,
         name: material.data.name,
-        price: material.data.price.toString(),
+        price: material.data.price?.toString(),
         unit_id: material.data.unit_id?.toString() ?? '',
         material_type_id: material.data.material_type_id?.toString() ?? '',
     });

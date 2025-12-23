@@ -6,6 +6,7 @@ import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
+import { tableCaption } from '@/lib/utils';
 import { Meta, Role } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
@@ -20,7 +21,7 @@ interface TableRoleProps {
 export default function TableRole({ roles }: TableRoleProps) {
     const can = usePermissions();
     const meta = roles.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
 
     function handleDeleteRole(id: number) {
         router.delete(route('roles.destroy', id));
@@ -33,7 +34,7 @@ export default function TableRole({ roles }: TableRoleProps) {
                 {can.create_role && <ButtonAdd tabIndex={2} route={route('roles.create')} />}
             </div>
             <Table>
-                <TableCaption className="text-sm">{tableCaption}</TableCaption>
+                <TableCaption className="text-sm">{caption}</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="text-muted-foreground">#</TableHead>
@@ -47,7 +48,7 @@ export default function TableRole({ roles }: TableRoleProps) {
                     {roles.data.map((role: Role, index: number) => {
                         return (
                             <TableRow key={role.id}>
-                                <TableCell className="w-[50px]">{meta.from + index}</TableCell>
+                                <TableCell className="w-12.5">{meta.from + index}</TableCell>
                                 <TableCell className="font-medium">
                                     {can.update_role ? (
                                         <TextLink href={route('roles.edit', role.id)}>{role.name}</TextLink>
@@ -55,8 +56,8 @@ export default function TableRole({ roles }: TableRoleProps) {
                                         <span>{role.name}</span>
                                     )}
                                 </TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{role.created_at}</TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{role.updated_at}</TableCell>
+                                <TableCell className="text-muted-foreground w-22.5">{role.created_at}</TableCell>
+                                <TableCell className="text-muted-foreground w-22.5">{role.updated_at}</TableCell>
 
                                 {can.delete_role && (
                                     <TableCell className="w-10 text-right">

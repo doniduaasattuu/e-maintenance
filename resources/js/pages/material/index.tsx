@@ -1,6 +1,6 @@
 import TableMaterial from '@/components/tables/table-material';
 import AppLayout from '@/layouts/app-layout';
-import { Material, Meta, type BreadcrumbItem } from '@/types';
+import { Material, MaterialType, Meta, Unit, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -15,14 +15,20 @@ interface MaterialIndexProps {
         data: Material[];
         meta: Meta;
     };
+    units: {
+        data: Unit[];
+    };
+    materialTypes: {
+        data: MaterialType[];
+    };
 }
 
-export default function MaterialIndex({ materials }: MaterialIndexProps) {
+export default function MaterialIndex({ materials, units, materialTypes }: MaterialIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Material" />
 
-            <TableMaterial materials={materials} />
+            <TableMaterial materials={materials} units={units} materialTypes={materialTypes} />
         </AppLayout>
     );
 }

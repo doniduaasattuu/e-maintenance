@@ -1,4 +1,5 @@
 import InspectionMotorForm, { InspectionMotorData } from '@/components/forms/inspection-motor-form';
+import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
 import { BreadcrumbItem, Equipment, InspectionMotor } from '@/types';
@@ -15,18 +16,19 @@ interface Props {
 }
 
 export default function InspectionMotorEdit({ inspectionMotor, equipment }: Props) {
+    const can = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
-            href: '/equipments',
+            href: route('equipments.index'),
         },
         {
             title: inspectionMotor.data.inspectionForm.equipment.code,
-            href: `/equipments/${inspectionMotor.data.inspectionForm.equipment.id}`,
+            href: route('equipments.show', inspectionMotor.data.inspectionForm.equipment.id),
         },
         {
             title: 'Inspection',
-            href: `/inspections/motor/${inspectionMotor.data.inspectionForm.equipment?.id}/edit`,
+            href: route('inspectionmotors.edit', inspectionMotor.data.inspectionForm.equipment?.id),
         },
     ];
 
@@ -68,6 +70,7 @@ export default function InspectionMotorEdit({ inspectionMotor, equipment }: Prop
                     submit={submit}
                     showSuccessMessage={true}
                     isEditing={true}
+                    canSubmit={can.update_inspection && can.update_inspectionmotor}
                 />
             </TableLayout>
         </AppLayout>

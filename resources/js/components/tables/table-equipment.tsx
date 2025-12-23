@@ -2,6 +2,7 @@ import { ActionConfirm } from '@/components/action-confirm';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
+import { tableCaption } from '@/lib/utils';
 import { Equipment, EquipmentClass, EquipmentStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
@@ -32,7 +33,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
     const [open, setOpen] = React.useState<boolean>(false);
     const can = usePermissions();
     const meta = equipments.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
 
     function handleDeleteEquipment(id: number) {
         router.delete(route('equipments.destroy', id));
@@ -52,7 +53,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                 {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={2} />}
             </div>
             <Table>
-                <TableCaption className="text-sm">{tableCaption}</TableCaption>
+                <TableCaption className="text-sm">{caption}</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="text-muted-foreground">Name</TableHead>
@@ -69,7 +70,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                             <TableRow key={equipment.id}>
                                 <TableCell className="flex-col align-top">
                                     <div className="flex max-w-sm flex-col items-start">
-                                        {can.read_equipment ? (
+                                        {can.show_equipment ? (
                                             <TextLink className="font-medium" href={route('equipments.show', equipment.id)}>
                                                 {equipment.code}
                                             </TextLink>

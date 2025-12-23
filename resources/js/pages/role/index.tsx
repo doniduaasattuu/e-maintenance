@@ -5,7 +5,7 @@ import { BreadcrumbItem, Meta, Role } from '@/types';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Roles',
-        href: '/roles',
+        href: route('roles.index'),
     },
 ];
 

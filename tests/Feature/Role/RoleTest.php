@@ -2,16 +2,12 @@
 
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_role']);
-    Permission::create(['name' => 'read_role']);
-    Permission::create(['name' => 'update_role']);
-    Permission::create(['name' => 'delete_role']);
+    $this->generatePermissions(['Role', 'User']);
 });
 
 test('admin can create role with valid data', function () {
@@ -21,7 +17,7 @@ test('admin can create role with valid data', function () {
         ->from(route('roles.create'))
         ->post('/roles', [
             'name' => 'Supervisor',
-            'selectedPermissions' => ['create_role', 'read_role']
+            'selectedPermissions' => ['index_role', 'show_role']
         ])
         ->assertRedirect(route('roles.create'));
 
@@ -47,7 +43,7 @@ test('admin cannot create duplicate role', function () {
         ->from(route('roles.create'))
         ->post('/roles', [
             'name' => 'Supervisor',
-            'selectedPermissions' => ['create_role']
+            'selectedPermissions' => ['delete_role']
         ])
         ->assertSessionHasErrors('name');
 });
@@ -61,7 +57,7 @@ test('admin can update role', function () {
         ->from($editPage)
         ->put("/roles/{$role->id}", [
             'name' => 'Department Head',
-            'selectedPermissions' => ['read_role']
+            'selectedPermissions' => ['show_role']
         ])
         ->assertRedirect($editPage);
 
@@ -117,7 +113,7 @@ test('non-admin cannot access role routes', function () {
     $this->actingAs($user)
         ->post('/roles', [
             'name' => 'Something',
-            'selectedPermissions' => ['create_role']
+            'selectedPermissions' => ['show_role']
         ])
         ->assertForbidden();
 

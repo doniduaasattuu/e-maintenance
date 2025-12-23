@@ -27,7 +27,7 @@ class StoreInspectionAirConditionerRequest extends FormRequest
             'is_drain_leaking' => ['nullable', 'boolean'],
             'current_load' => ['nullable', 'numeric', 'max:150'],
             'blowing_temperature' => ['nullable', 'numeric', 'max:40'],
-            'ambient_temperature' => ['nullable', 'numeric', 'max:40'],
+            'ambient_temperature' => ['nullable', 'numeric', 'max:50'],
             'is_filter_clean' => ['nullable', 'boolean'],
             'is_evaporator_clean' => ['nullable', 'boolean'],
             'is_condensor_clean' => ['nullable', 'boolean'],

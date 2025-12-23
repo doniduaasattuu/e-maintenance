@@ -44,7 +44,7 @@ export default function FunctionalLocationCreate() {
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.create_functionallocation}
+                    canSubmit={can.store_functionallocation}
                     buttonLabel="Submit"
                     successMessage="Created"
                 />

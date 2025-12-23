@@ -8,11 +8,11 @@ import React, { FormEventHandler } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Roles',
-        href: '/roles',
+        href: route('roles.index'),
     },
     {
         title: 'Edit',
-        href: '/roles/edit',
+        href: '#',
     },
 ];
 
@@ -44,7 +44,7 @@ export default function RoleEdit({ availablePermissions, role, currentPermission
             <RoleForm
                 availablePermissions={availablePermissions}
                 buttonLabel="Update"
-                canSubmit={can.update_role || selectedPermissions.length > 1}
+                canSubmit={can.update_role && selectedPermissions.length > 0}
                 data={data}
                 errors={errors}
                 processing={processing}

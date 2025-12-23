@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import usePermissions from '@/hooks/use-permissions';
 import { FormEventHandler } from 'react';
 
 export type InspectionMotorData = {
@@ -35,6 +34,7 @@ export type InspectionMotorFormProps = {
     recentlySuccessful: boolean;
     showSuccessMessage?: boolean;
     isEditing?: boolean;
+    canSubmit: boolean;
 };
 
 export default function InspectionMotorForm({
@@ -46,9 +46,8 @@ export default function InspectionMotorForm({
     recentlySuccessful,
     showSuccessMessage = false,
     isEditing = false,
+    canSubmit,
 }: InspectionMotorFormProps) {
-    const can = usePermissions();
-
     return (
         <form className="space-y-6" onSubmit={submit}>
             <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-2">
@@ -326,7 +325,7 @@ export default function InspectionMotorForm({
                 </div>
             </div>
 
-            {can.create_inspection && (
+            {canSubmit && (
                 <ButtonSubmit
                     tabIndex={16}
                     disabled={processing}

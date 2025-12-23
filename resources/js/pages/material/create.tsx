@@ -52,7 +52,7 @@ export default function MaterialCreate({ units, materialTypes }: MaterialCreateP
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.create_material}
+                    canSubmit={can.store_material}
                     buttonLabel="Submit"
                     successMessage="Created"
                     units={units.data}

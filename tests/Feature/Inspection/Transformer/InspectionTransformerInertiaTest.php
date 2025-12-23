@@ -4,7 +4,6 @@ use App\Models\Equipment;
 use App\Models\InspectionTransformer;
 use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\QualityRatingSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -13,11 +12,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed([EquipmentClassSeeder::class, QualityRatingSeeder::class]);
 
-    Permission::create(['name' => 'create_inspection']);
-    Permission::create(['name' => 'create_inspectiontransformer']);
-    Permission::create(['name' => 'read_inspectiontransformer']);
-    Permission::create(['name' => 'update_inspectiontransformer']);
-    Permission::create(['name' => 'delete_inspectiontransformer']);
+    $this->generatePermissions(['Inspection', 'InspectionTransformer']);
 });
 
 test('inspection transformer create form should be rendered', function () {

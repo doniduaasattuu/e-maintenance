@@ -20,7 +20,7 @@ class FunctionalLocationController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_functionallocation');
+        Gate::authorize('index_functionallocation');
 
         $functionalLocations = FunctionalLocation::search($request)->paginate()->withQueryString();
 
@@ -48,7 +48,7 @@ class FunctionalLocationController extends Controller
      */
     public function store(StoreFunctionalLocationRequest $request)
     {
-        Gate::authorize('create_functionallocation');
+        Gate::authorize('store_functionallocation');
 
         try {
             $validated = $request->validated();
@@ -69,7 +69,7 @@ class FunctionalLocationController extends Controller
      */
     public function show(FunctionalLocation $functionalLocation)
     {
-        //
+        // Gate::authorize('show_functionallocation');
     }
 
     /**
@@ -77,7 +77,7 @@ class FunctionalLocationController extends Controller
      */
     public function edit(FunctionalLocation $functionalLocation)
     {
-        Gate::authorize('update_functionallocation');
+        Gate::authorize('edit_functionallocation');
 
         return Inertia::render('functional-location/edit', [
             'functionalLocation' => new FunctionalLocationResource($functionalLocation),

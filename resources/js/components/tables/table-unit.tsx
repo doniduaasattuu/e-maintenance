@@ -6,6 +6,7 @@ import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
+import { tableCaption } from '@/lib/utils';
 import { Meta, Unit } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
@@ -20,7 +21,7 @@ interface TableUnitProps {
 export default function TableUnit({ units }: TableUnitProps) {
     const can = usePermissions();
     const meta = units.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
 
     function handleDeleteUnit(id: number | string) {
         router.delete(route('units.destroy', id));
@@ -34,7 +35,7 @@ export default function TableUnit({ units }: TableUnitProps) {
                 {can.create_unit && <ButtonAdd tabIndex={2} route={route('units.create')} />}
             </div>
             <Table>
-                <TableCaption className="text-sm">{tableCaption}</TableCaption>
+                <TableCaption className="text-sm">{caption}</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="text-muted-foreground">Name</TableHead>
@@ -48,7 +49,7 @@ export default function TableUnit({ units }: TableUnitProps) {
                         return (
                             <TableRow key={unit.id}>
                                 <TableCell>
-                                    {can.update_unit ? (
+                                    {can.edit_unit ? (
                                         <TextLink href={route('units.edit', unit.id)}>
                                             <span className="font-medium">{unit.name}</span>
                                         </TextLink>

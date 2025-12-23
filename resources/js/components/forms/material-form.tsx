@@ -128,13 +128,13 @@ export default function MaterialForm({
                     <SelectTrigger tabIndex={5} className="mt-1 truncate overflow-hidden whitespace-nowrap">
                         <SelectValue placeholder="Select a material type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-w-[calc(100vw-2rem)]">
                         <SelectGroup>
                             <SelectLabel className="text-muted-foreground">Type</SelectLabel>
                             {materialTypes.map((materialType: MaterialType) => {
                                 return (
                                     <SelectItem key={materialType.id} value={materialType.id.toString()}>
-                                        {materialType.code}
+                                        {materialType.code} - {materialType.description}
                                     </SelectItem>
                                 );
                             })}

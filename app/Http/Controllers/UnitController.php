@@ -18,7 +18,7 @@ class UnitController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_unit');
+        Gate::authorize('index_unit');
 
         $units = Unit::search($request)->paginate()->withQueryString();
 
@@ -42,7 +42,7 @@ class UnitController extends Controller
      */
     public function store(StoreUnitRequest $request)
     {
-        Gate::authorize('create_unit');
+        Gate::authorize('store_unit');
 
         try {
             $validated = $request->validated();
@@ -63,7 +63,7 @@ class UnitController extends Controller
      */
     public function show(Unit $unit)
     {
-        //
+        // Gate::authorize('show_unit');
     }
 
     /**
@@ -71,7 +71,7 @@ class UnitController extends Controller
      */
     public function edit(Unit $unit)
     {
-        Gate::authorize('update_unit');
+        Gate::authorize('edit_unit');
 
         return Inertia::render('unit/edit', [
             'unit' => new UnitResource($unit),

@@ -19,11 +19,11 @@ export default function EquipmentHistory({ equipment, histories }: EquipmentHist
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
-            href: '/equipments',
+            href: route('equipments.index'),
         },
         {
             title: equipment.data.code,
-            href: `/equipments/${equipment.data.id}`,
+            href: route('equipments.show', equipment.data.id),
         },
         {
             title: 'History',

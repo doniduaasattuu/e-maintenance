@@ -18,7 +18,7 @@ class MaterialTypeController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_materialtype');
+        Gate::authorize('index_materialtype');
 
         $material_types = MaterialType::search($request)->paginate()->withQueryString();
 
@@ -42,7 +42,7 @@ class MaterialTypeController extends Controller
      */
     public function store(StoreMaterialTypeRequest $request)
     {
-        Gate::authorize('create_materialtype');
+        Gate::authorize('store_materialtype');
 
         try {
             $validated = $request->validated();
@@ -66,7 +66,7 @@ class MaterialTypeController extends Controller
      */
     public function show(MaterialType $materialType)
     {
-        //
+        // Gate::authorize('show_materialtype');
     }
 
     /**
@@ -74,7 +74,7 @@ class MaterialTypeController extends Controller
      */
     public function edit(MaterialType $materialType)
     {
-        Gate::authorize('update_materialtype');
+        Gate::authorize('edit_materialtype');
 
         return Inertia::render('material-type/edit', [
             'materialType' => new MaterialTypeResource($materialType),

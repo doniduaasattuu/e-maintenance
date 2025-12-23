@@ -2,6 +2,7 @@ import { ActionConfirm } from '@/components/action-confirm';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
+import { tableCaption } from '@/lib/utils';
 import { Division, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
@@ -20,7 +21,7 @@ interface DivisionTableProps {
 export default function TableDivision({ divisions }: DivisionTableProps) {
     const can = usePermissions();
     const meta = divisions.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
 
     function handleDeleteDivision(id: number) {
         router.delete(route('divisions.destroy', id));
@@ -33,7 +34,7 @@ export default function TableDivision({ divisions }: DivisionTableProps) {
                 {can.create_division && <ButtonAdd route={route('divisions.create')} tabIndex={2} />}
             </div>
             <Table>
-                <TableCaption className="text-sm">{tableCaption}</TableCaption>
+                <TableCaption className="text-sm">{caption}</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="text-muted-foreground">#</TableHead>
@@ -48,7 +49,7 @@ export default function TableDivision({ divisions }: DivisionTableProps) {
                     {divisions.data.map((division: Division, index: number) => {
                         return (
                             <TableRow key={division.id}>
-                                <TableCell className="w-[50px]">{meta.from + index}</TableCell>
+                                <TableCell className="w-12.5">{meta.from + index}</TableCell>
                                 <TableCell className="font-medium">
                                     {can.update_division ? (
                                         <TextLink href={route('divisions.edit', division.id)}>{division.name}</TextLink>
@@ -57,8 +58,8 @@ export default function TableDivision({ divisions }: DivisionTableProps) {
                                     )}
                                 </TableCell>
                                 <TableCell className="font-medium">{division.code}</TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{division.created_at}</TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{division.updated_at}</TableCell>
+                                <TableCell className="text-muted-foreground w-22.5">{division.created_at}</TableCell>
+                                <TableCell className="text-muted-foreground w-22.5">{division.updated_at}</TableCell>
 
                                 {can.delete_division && (
                                     <TableCell className="w-10 text-right">

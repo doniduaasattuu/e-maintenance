@@ -17,8 +17,6 @@ interface MaterialTypeIndexProps {
 }
 
 export default function MaterialTypeIndex({ materialTypes }: MaterialTypeIndexProps) {
-    console.log(materialTypes);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableMaterialType materialTypes={materialTypes} />

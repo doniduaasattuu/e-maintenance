@@ -5,17 +5,13 @@ use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\EquipmentSeeder;
 use Database\Seeders\EquipmentStatusSeeder;
 use Database\Seeders\FunctionalLocationSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_image']);
-    Permission::create(['name' => 'read_image']);
-    Permission::create(['name' => 'update_image']);
-    Permission::create(['name' => 'delete_image']);
+    $this->generatePermissions(['Image']);
 
     $this->seed(FunctionalLocationSeeder::class);
     $this->seed(EquipmentClassSeeder::class);

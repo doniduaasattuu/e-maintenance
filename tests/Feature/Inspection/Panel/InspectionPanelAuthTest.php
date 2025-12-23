@@ -3,7 +3,6 @@
 use App\Models\Equipment;
 use App\Models\InspectionPanel;
 use Database\Seeders\EquipmentClassSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -11,11 +10,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed([EquipmentClassSeeder::class]);
 
-    Permission::create(['name' => 'create_inspection']);
-    Permission::create(['name' => 'create_inspectionpanel']);
-    Permission::create(['name' => 'read_inspectionpanel']);
-    Permission::create(['name' => 'update_inspectionpanel']);
-    Permission::create(['name' => 'delete_inspectionpanel']);
+    $this->generatePermissions(['Inspection', 'InspectionPanel']);
 });
 
 test('normal user cannot access inspection panel form', function () {

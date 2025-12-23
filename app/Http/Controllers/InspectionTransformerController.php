@@ -21,7 +21,7 @@ class InspectionTransformerController extends Controller
      */
     public function index()
     {
-        //
+        // Gate::authorize('index_inspectiontransformer');
     }
 
     /**
@@ -29,7 +29,7 @@ class InspectionTransformerController extends Controller
      */
     public function create()
     {
-        //
+        // Gate::authorize('create_inspectiontransformer');
     }
 
     /**
@@ -37,7 +37,7 @@ class InspectionTransformerController extends Controller
      */
     public function store(StoreInspectionTransformerRequest $request)
     {
-        Gate::authorize('create_inspectiontransformer');
+        Gate::authorize('store_inspectiontransformer');
         $validated = $request->validated();
 
         try {
@@ -73,7 +73,7 @@ class InspectionTransformerController extends Controller
      */
     public function show(InspectionTransformer $inspectionTransformer)
     {
-        //
+        // Gate::authorize('show_inspectiontransformer');
     }
 
     /**
@@ -81,7 +81,7 @@ class InspectionTransformerController extends Controller
      */
     public function edit(InspectionTransformer $inspectionTransformer)
     {
-        Gate::authorize('update_inspectiontransformer');
+        Gate::authorize('edit_inspectiontransformer');
         $inspectionTransformer->load('inspectionForm.equipment');
 
         return Inertia::render('inspection/transformer/edit', [
@@ -105,6 +105,6 @@ class InspectionTransformerController extends Controller
      */
     public function destroy(InspectionTransformer $inspectionTransformer)
     {
-        //
+        // Gate::authorize('delete_inspectiontransformer');
     }
 }

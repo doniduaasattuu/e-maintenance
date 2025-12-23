@@ -43,7 +43,7 @@ export default function UnitCreate() {
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.create_unit}
+                    canSubmit={can.store_unit}
                     buttonLabel="Create"
                     successMessage="Created"
                 />

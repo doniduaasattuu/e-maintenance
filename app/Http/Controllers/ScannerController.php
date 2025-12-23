@@ -22,7 +22,7 @@ class ScannerController extends Controller
      */
     public function create(Request $request, string $equipment_code)
     {
-        Gate::authorize('read_equipment');
+        Gate::authorize('show_equipment');
 
         $equipment = Equipment::where('code', $equipment_code)->first();
 
@@ -34,45 +34,5 @@ class ScannerController extends Controller
                 'description' => 'Equipment not found',
             ]);
         }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

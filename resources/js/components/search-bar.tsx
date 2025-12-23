@@ -41,7 +41,7 @@ export default function SearchBar({ tabIndex }: { tabIndex?: number }) {
     }, []);
 
     return (
-        <div className="relative min-w-[120px] sm:w-xs">
+        <div className="relative min-w-30 sm:w-xs">
             <Input
                 tabIndex={tabIndex}
                 className="w-full"

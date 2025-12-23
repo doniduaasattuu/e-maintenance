@@ -7,7 +7,6 @@ use App\Http\Requests\InspectionPanel\UpdateInspectionPanelRequest;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\InspectionPanelResource;
 use App\Models\InspectionPanel;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -21,7 +20,7 @@ class InspectionPanelController extends Controller
      */
     public function index()
     {
-        //
+        // Gate::authorize('index_inspectionpanel');
     }
 
     /**
@@ -29,7 +28,7 @@ class InspectionPanelController extends Controller
      */
     public function create()
     {
-        //
+        // Gate::authorize('create_inspectionpanel');
     }
 
     /**
@@ -37,7 +36,7 @@ class InspectionPanelController extends Controller
      */
     public function store(StoreInspectionPanelRequest $request)
     {
-        Gate::authorize('create_inspectionpanel');
+        Gate::authorize('store_inspectionpanel');
         $validated = $request->validated();
 
         try {
@@ -73,7 +72,7 @@ class InspectionPanelController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Gate::authorize('show_inspectionpanel');
     }
 
     /**
@@ -81,7 +80,7 @@ class InspectionPanelController extends Controller
      */
     public function edit(InspectionPanel $inspectionPanel)
     {
-        Gate::authorize('update_inspectionpanel');
+        Gate::authorize('edit_inspectionpanel');
         $inspectionPanel->load('inspectionForm.equipment');
 
         return Inertia::render('inspection/panel/edit', [
@@ -105,6 +104,6 @@ class InspectionPanelController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Gate::authorize('delete_inspectionpanel');
     }
 }

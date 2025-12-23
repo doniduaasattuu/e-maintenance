@@ -7,6 +7,7 @@ use App\Http\Resources\InstallDismantleHistoryResource;
 use App\Models\Equipment;
 use App\Models\InstallDismantleHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class InstallDismantleHistoryController extends Controller
@@ -16,6 +17,8 @@ class InstallDismantleHistoryController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('index_installdismantlehistory');
+
         $histories = InstallDismantleHistory::search($request)
             ->with(['equipment', 'equipment.equipmentClass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->orderBy('changed_at', 'DESC')
@@ -32,7 +35,7 @@ class InstallDismantleHistoryController extends Controller
      */
     public function create()
     {
-        //
+        // Gate::authorize('create_installdismantlehistory');
     }
 
     /**
@@ -40,7 +43,7 @@ class InstallDismantleHistoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Gate::authorize('store_installdismantlehistory');
     }
 
     /**
@@ -48,6 +51,8 @@ class InstallDismantleHistoryController extends Controller
      */
     public function show(Equipment $equipment)
     {
+        Gate::authorize('show_installdismantlehistory');
+
         $histories = InstallDismantleHistory::with(['equipment', 'equipment.equipmentClass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->where('equipment_id', $equipment->id)
             ->orderBy('changed_at', 'DESC')
@@ -65,7 +70,7 @@ class InstallDismantleHistoryController extends Controller
      */
     public function edit(InstallDismantleHistory $installDismantleHistory)
     {
-        //
+        // Gate::authorize('edit_installdismantlehistory');
     }
 
     /**
@@ -73,7 +78,7 @@ class InstallDismantleHistoryController extends Controller
      */
     public function update(Request $request, InstallDismantleHistory $installDismantleHistory)
     {
-        //
+        // Gate::authorize('update_installdismantlehistory');
     }
 
     /**
@@ -81,6 +86,6 @@ class InstallDismantleHistoryController extends Controller
      */
     public function destroy(InstallDismantleHistory $installDismantleHistory)
     {
-        //
+        // Gate::authorize('delete_installdismantlehistory');
     }
 }

@@ -5,17 +5,13 @@ use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
 use App\Models\FunctionalLocation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Permission;
 
 use function Pest\Laravel\assertDatabaseHas;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_equipment']);
-    Permission::create(['name' => 'read_equipment']);
-    Permission::create(['name' => 'update_equipment']);
-    Permission::create(['name' => 'delete_equipment']);
+    $this->generatePermissions(['Equipment']);
 });
 
 test('equipment index page accessible', function () {

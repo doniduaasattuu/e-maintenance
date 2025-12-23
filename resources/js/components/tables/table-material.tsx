@@ -6,22 +6,34 @@ import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
-import { formatCurrency } from '@/lib/utils';
-import { Material, Meta } from '@/types';
+import { formatCurrency, tableCaption } from '@/lib/utils';
+import { Material, MaterialType, Meta, Unit } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import React from 'react';
+import Filter from '../filter';
+import FilterMaterialType from '../filter-material-type';
+import FilterUnit from '../filter-unit';
+import { CommandSeparator } from '../ui/command';
 
 interface TableMaterialProps {
     materials: {
         data: Material[];
         meta: Meta;
     };
+    units: {
+        data: Unit[];
+    };
+    materialTypes: {
+        data: MaterialType[];
+    };
 }
 
-export default function TableMaterial({ materials }: TableMaterialProps) {
+export default function TableMaterial({ materials, units, materialTypes }: TableMaterialProps) {
     const can = usePermissions();
     const meta = materials.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
+    const [open, setOpen] = React.useState<boolean>(false);
 
     function handleDeleteMaterial(id: number | string) {
         router.delete(route('materials.destroy', id));
@@ -31,11 +43,16 @@ export default function TableMaterial({ materials }: TableMaterialProps) {
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
+                    <Filter open={open} setOpen={setOpen}>
+                        <FilterUnit units={units.data} setOpen={setOpen} />
+                        <CommandSeparator />
+                        <FilterMaterialType materialTypes={materialTypes.data} setOpen={setOpen} />
+                    </Filter>
                 </div>
                 {can.create_material && <ButtonAdd tabIndex={2} route={route('materials.create')} />}
             </div>
             <Table>
-                <TableCaption className="text-sm">{tableCaption}</TableCaption>
+                <TableCaption className="text-sm">{caption}</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="text-muted-foreground">Code</TableHead>
@@ -53,7 +70,7 @@ export default function TableMaterial({ materials }: TableMaterialProps) {
                         return (
                             <TableRow key={material.id}>
                                 <TableCell>
-                                    {can.read_material ? (
+                                    {can.show_material ? (
                                         <TextLink href={route('materials.show', material.id)}>
                                             <span className="font-medium">{material.code}</span>
                                         </TextLink>

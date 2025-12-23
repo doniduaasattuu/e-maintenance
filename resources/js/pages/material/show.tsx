@@ -42,7 +42,7 @@ export default function MaterialShow({ material }: MaterialShowProps) {
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Details" description="Material data and information." />
-                        {can.update_material && (
+                        {can.edit_material && (
                             <Link href={route('materials.edit', material.data.id)}>
                                 <Edit size={20} />
                             </Link>

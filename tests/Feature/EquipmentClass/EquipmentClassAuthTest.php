@@ -1,16 +1,12 @@
 <?php
 
 use App\Models\EquipmentClass;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_equipmentclass']);
-    Permission::create(['name' => 'read_equipmentclass']);
-    Permission::create(['name' => 'update_equipmentclass']);
-    Permission::create(['name' => 'delete_equipmentclass']);
+    $this->generatePermissions(['EquipmentClass']);
 
     $this->seed(EquipmentClassSeeder::class);
 });

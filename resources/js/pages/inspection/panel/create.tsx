@@ -1,5 +1,6 @@
 import InspectionPanelForm, { InspectionPanelData } from '@/components/forms/inspection-panel-form';
 import HeadingSmall from '@/components/heading-small';
+import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import { BreadcrumbItem, Equipment } from '@/types';
@@ -13,19 +14,20 @@ interface Props {
 }
 
 export default function InspectionPanelCreate({ equipment }: Props) {
+    const can = usePermissions();
     const equipmentClassName = equipment.data.equipmentClass?.name.toLocaleLowerCase();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
-            href: '/equipments',
+            href: route('equipments.index'),
         },
         {
             title: equipment.data.code,
-            href: `/equipments/${equipment.data.id}`,
+            href: route('equipments.show', equipment.data.id),
         },
         {
             title: 'Inspection',
-            href: `/equipments/${equipment.data.id}/inspection`,
+            href: route('inspections.create', equipment.data.id),
         },
     ];
 
@@ -82,6 +84,7 @@ export default function InspectionPanelCreate({ equipment }: Props) {
                         errors={errors}
                         recentlySuccessful={recentlySuccessful}
                         submit={submit}
+                        canSubmit={can.store_inspection && can.store_inspectionpanel}
                     />
                 </div>
             </EquipmentLayout>

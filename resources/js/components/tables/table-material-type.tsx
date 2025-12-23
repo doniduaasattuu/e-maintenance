@@ -6,6 +6,7 @@ import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
+import { tableCaption } from '@/lib/utils';
 import { MaterialType, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
@@ -20,7 +21,7 @@ interface TableMaterialTypeProps {
 export default function TableMaterialType({ materialTypes }: TableMaterialTypeProps) {
     const can = usePermissions();
     const meta = materialTypes.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
 
     function handleDeleteMaterialType(id: number | string) {
         router.delete(route('material-types.destroy', id));
@@ -34,7 +35,7 @@ export default function TableMaterialType({ materialTypes }: TableMaterialTypePr
                 {can.create_materialtype && <ButtonAdd tabIndex={2} route={route('material-types.create')} />}
             </div>
             <Table>
-                <TableCaption className="text-sm">{tableCaption}</TableCaption>
+                <TableCaption className="text-sm">{caption}</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="text-muted-foreground">Code</TableHead>
@@ -49,7 +50,7 @@ export default function TableMaterialType({ materialTypes }: TableMaterialTypePr
                         return (
                             <TableRow key={materialType.id}>
                                 <TableCell>
-                                    {can.update_materialtype ? (
+                                    {can.edit_materialtype ? (
                                         <TextLink href={route('material-types.edit', materialType.id)}>
                                             <span className="truncate font-medium">{materialType.code}</span>
                                         </TextLink>

@@ -9,11 +9,11 @@ import React, { FormEventHandler, useRef } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Users',
-        href: '/users',
+        href: route('users.index'),
     },
     {
         title: 'Create',
-        href: '/users/create',
+        href: route('users.create'),
     },
 ];
 
@@ -64,7 +64,7 @@ export default function UserCreate({ departments, positions, workCenters, availa
         <AppLayout breadcrumbs={breadcrumbs}>
             <UserForm
                 buttonLabel="Create"
-                canSubmit={can.create_user}
+                canSubmit={can.store_user}
                 data={data}
                 setData={setData}
                 errors={errors}

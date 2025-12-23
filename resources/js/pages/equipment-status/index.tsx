@@ -5,7 +5,7 @@ import { BreadcrumbItem, EquipmentStatus, Meta } from '@/types';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Equipment Statuses',
-        href: '/equipment-statuses',
+        href: route('equipment-statuses.index'),
     },
 ];
 

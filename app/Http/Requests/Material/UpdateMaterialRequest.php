@@ -32,7 +32,7 @@ class UpdateMaterialRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'max:50',
+                'max:200',
                 Rule::unique('materials', 'name')->ignore($this->material),
             ],
             'price' => ['nullable', 'numeric'],

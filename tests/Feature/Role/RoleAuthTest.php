@@ -1,17 +1,12 @@
 <?php
 
-use Database\Seeders\RoleSeeder;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_role']);
-    Permission::create(['name' => 'read_role']);
-    Permission::create(['name' => 'update_role']);
-    Permission::create(['name' => 'delete_role']);
+    $this->generatePermissions(['Role', 'User']);
 
     Role::create([
         'name' => 'Admin',

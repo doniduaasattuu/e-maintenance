@@ -9,11 +9,11 @@ import { FormEventHandler } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Divisions',
-        href: '/organizations/divisions',
+        href: route('divisions.index'),
     },
     {
         title: 'Create',
-        href: '/organizations/divisions/create',
+        href: route('divisions.create'),
     },
 ];
 
@@ -48,7 +48,7 @@ export default function DivisionCreate() {
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
                         submit={submit}
-                        canSubmit={can.create_division}
+                        canSubmit={can.store_division}
                         buttonLabel="Create"
                         successMessage="Created"
                     />

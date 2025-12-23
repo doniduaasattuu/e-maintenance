@@ -3,15 +3,15 @@
 use App\Models\WorkCenter;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_workcenter']);
-    Permission::create(['name' => 'read_workcenter']);
-    Permission::create(['name' => 'update_workcenter']);
-    Permission::create(['name' => 'delete_workcenter']);
+    foreach (config('permission.actions') as $action) {
+        Permission::firstOrCreate([
+            'name' => "{$action}_" . strtolower('workcenter')
+        ]);
+    }
 
     WorkCenter::factory()->count(20)->create();
 });

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Role\UpdateRoleRequest;
 use App\Http\Resources\RoleResource;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -20,7 +19,7 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_role');
+        Gate::authorize('index_role');
 
         $query = $request->query('query');
         $roles = Role::where('name', 'LIKE', "%{$query}%")->paginate()->withQueryString();
@@ -47,7 +46,7 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
-        Gate::authorize('create_role');
+        Gate::authorize('store_role');
 
         try {
             $validated = $request->validated();
@@ -70,7 +69,7 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        Gate::authorize('read_role');
+        Gate::authorize('show_role');
     }
 
     /**
@@ -78,7 +77,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        Gate::authorize('update_role');
+        Gate::authorize('edit_role');
         Gate::authorize('update', $role);
 
         return Inertia::render('role/edit', [

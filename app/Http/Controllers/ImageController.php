@@ -27,7 +27,7 @@ class ImageController extends Controller
      */
     public function index(string $model, string $id)
     {
-        Gate::authorize('read_image');
+        Gate::authorize('index_image');
 
         switch ($model) {
             case 'equipment':
@@ -58,7 +58,7 @@ class ImageController extends Controller
      */
     public function create()
     {
-        //
+        // Gate::authorize('create_image');
     }
 
     /**
@@ -66,7 +66,7 @@ class ImageController extends Controller
      */
     public function store(StoreImageRequest $request)
     {
-        Gate::authorize('create_image');
+        Gate::authorize('store_image');
 
         $this->imageService->store($request);
     }
@@ -76,7 +76,7 @@ class ImageController extends Controller
      */
     public function show(Image $image)
     {
-        //
+        // Gate::authorize('show_image');
     }
 
     /**
@@ -84,7 +84,7 @@ class ImageController extends Controller
      */
     public function edit(Image $image)
     {
-        //
+        // Gate::authorize('edit_image');
     }
 
     /**
@@ -92,7 +92,7 @@ class ImageController extends Controller
      */
     public function update(Request $request, Image $image)
     {
-        //
+        // Gate::authorize('update_image');
     }
 
     /**

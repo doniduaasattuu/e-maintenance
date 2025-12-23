@@ -62,6 +62,7 @@ export interface Department {
     name: string;
     division_id: number;
     division?: Division;
+    users: number;
     created_at: string;
     updated_at: string;
 }
@@ -332,6 +333,19 @@ export interface Material {
     unit: Unit | null;
     materialType: MaterialType | null;
     images: null | Image[];
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Repository {
+    id: number;
+    title: string;
+    path: string;
+    url: string;
+    extension: ?string;
+    mime_type: ?string;
+    uploaded_by: number | null;
+    uploadedBy: User | null;
     created_at: string;
     updated_at: string;
 }

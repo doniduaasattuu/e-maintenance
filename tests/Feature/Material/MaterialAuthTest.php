@@ -3,16 +3,12 @@
 use App\Models\Material;
 use Database\Seeders\MaterialTypeSeeder;
 use Database\Seeders\UnitSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_material']);
-    Permission::create(['name' => 'read_material']);
-    Permission::create(['name' => 'update_material']);
-    Permission::create(['name' => 'delete_material']);
+    $this->generatePermissions(['Material']);
 
     $this->seed(UnitSeeder::class);
     $this->seed(MaterialTypeSeeder::class);

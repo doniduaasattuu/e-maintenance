@@ -6,6 +6,7 @@ import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
+import { tableCaption } from '@/lib/utils';
 import { EquipmentStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
@@ -20,7 +21,7 @@ interface TableEquipmentStatusProps {
 export default function TableEquipmentStatus({ equipmentStatuses }: TableEquipmentStatusProps) {
     const can = usePermissions();
     const meta = equipmentStatuses.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
 
     function handleDeleteEquipmentStatus(id: number | string) {
         router.delete(route('equipment-statuses.destroy', id));
@@ -34,7 +35,7 @@ export default function TableEquipmentStatus({ equipmentStatuses }: TableEquipme
                 {can.create_equipmentstatus && <ButtonAdd tabIndex={2} route={route('equipment-statuses.create')} />}
             </div>
             <Table>
-                <TableCaption className="text-sm">{tableCaption}</TableCaption>
+                <TableCaption className="text-sm">{caption}</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="text-muted-foreground">Code</TableHead>

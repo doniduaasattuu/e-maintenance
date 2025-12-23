@@ -8,11 +8,11 @@ import React, { FormEventHandler } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Roles',
-        href: '/roles',
+        href: route('roles.index'),
     },
     {
         title: 'Create',
-        href: '/roles/create',
+        href: route('roles.create'),
     },
 ];
 
@@ -43,7 +43,7 @@ export default function RoleCreate({ availablePermissions }: RoleCreateProps) {
             <RoleForm
                 availablePermissions={availablePermissions}
                 buttonLabel="Create"
-                canSubmit={can.create_role}
+                canSubmit={can.store_role}
                 data={data}
                 errors={errors}
                 processing={processing}

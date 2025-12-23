@@ -1,18 +1,13 @@
 <?php
 
 use App\Models\EquipmentClass;
-use Database\Seeders\EquipmentClassSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_equipmentclass']);
-    Permission::create(['name' => 'read_equipmentclass']);
-    Permission::create(['name' => 'update_equipmentclass']);
-    Permission::create(['name' => 'delete_equipmentclass']);
+    $this->generatePermissions(['EquipmentClass']);
 
     EquipmentClass::factory()
         ->count(20)

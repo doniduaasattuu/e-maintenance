@@ -9,11 +9,11 @@ import { FormEventHandler } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Equipments',
-        href: '/equipments',
+        href: route('equipments.index'),
     },
     {
         title: 'Create',
-        href: '/equipments/create',
+        href: route('equipments.create'),
     },
 ];
 
@@ -62,7 +62,7 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.create_equipment}
+                    canSubmit={can.store_equipment}
                     buttonLabel="Create"
                     successMessage="Created"
                 />

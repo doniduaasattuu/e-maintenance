@@ -1,3 +1,4 @@
+import { Meta } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -18,4 +19,24 @@ export function formatCurrency(value: number, format: string = 'id-ID', currency
         style: 'currency',
         currency: currency,
     }).format(value);
+}
+
+export function removeOrigin(href: string): string {
+    try {
+        const url = new URL(href);
+        return url.pathname;
+    } catch (e: unknown) {
+        console.error(e);
+        return href;
+    }
+}
+
+export function tableCaption(meta: Meta) {
+    if (!meta || meta.total === 0) return 'Showing 0 to 0 of 0 results';
+
+    const from = meta.from ?? 0;
+    const to = meta.to ?? 0;
+    const total = meta.total ?? 0;
+
+    return `Showing ${from} to ${to} of ${total} results`;
 }

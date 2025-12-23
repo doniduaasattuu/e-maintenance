@@ -1,16 +1,12 @@
 <?php
 
 use App\Models\Equipment;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_equipment']);
-    Permission::create(['name' => 'read_equipment']);
-    Permission::create(['name' => 'update_equipment']);
-    Permission::create(['name' => 'delete_equipment']);
+    $this->generatePermissions(['Equipment']);
 });
 
 test('normal user cannot access equipment index page', function () {

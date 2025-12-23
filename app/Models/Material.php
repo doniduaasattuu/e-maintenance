@@ -32,6 +32,8 @@ class Material extends Model
     protected function scopeSearch(Builder $builder, Request $request): void
     {
         $search = trim($request->query('query'));
+        $unit = trim($request->query('unit'));
+        $type = trim($request->query('type'));
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
@@ -40,6 +42,14 @@ class Material extends Model
                     ->orWhere('name', 'LIKE', "%{$search}%")
                     ->orWhere('price', 'LIKE', "%{$search}%");
             });
+        }
+
+        if ($unit) {
+            $builder->whereRelation('unit', 'name', $unit);
+        }
+
+        if ($type) {
+            $builder->whereRelation('materialType', 'code', $type);
         }
     }
 
