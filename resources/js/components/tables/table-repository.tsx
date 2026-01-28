@@ -3,6 +3,7 @@ import SearchBar from '@/components/search-bar';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
+import { tableCaption } from '@/lib/utils';
 import { Meta, Repository } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { Download, Edit, Trash2, Upload } from 'lucide-react';
@@ -20,20 +21,25 @@ interface TableRepositoryProps {
         meta: Meta;
     };
     extensions?: string[];
+    renderable: string[];
 }
 
-export default function TableRepository({ repositories, extensions }: TableRepositoryProps) {
+export default function TableRepository({ repositories, extensions, renderable }: TableRepositoryProps) {
     const can = usePermissions();
     const meta = repositories.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
     const [open, setOpen] = React.useState<boolean>(false);
 
     function handleDeleteRepository(id: number) {
         router.delete(route('repositories.destroy', id));
     }
 
+    function handleDownloadRepository(id: number) {
+        window.open(route('repositories.show', id));
+    }
+
     return (
-        <TableLayout title="Repositories" description="Centralized document storage module">
+        <TableLayout title="Repositories" description="Centralized document storage module" className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
@@ -50,60 +56,71 @@ export default function TableRepository({ repositories, extensions }: TableRepos
                     </Link>
                 )}
             </div>
-            <Table>
-                <TableCaption className="text-sm">{tableCaption}</TableCaption>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className="text-muted-foreground">#</TableHead>
-                        <TableHead className="text-muted-foreground">Title</TableHead>
-                        <TableHead className="text-muted-foreground">Ext</TableHead>
-                        <TableHead className="text-muted-foreground">Mime</TableHead>
-                        <TableHead className="text-muted-foreground">Uploaded by</TableHead>
-                        <TableHead className="text-muted-foreground">Uploaded at</TableHead>
-                        <TableHead className="text-muted-foreground w-10 text-right"></TableHead>
-                        {can.update_repository && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
-                        {can.delete_repository && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {repositories.data.map((repository: Repository, index: number) => {
-                        return (
-                            <TableRow key={repository.id}>
-                                <TableCell className="w-[50px]">{meta.from + index}</TableCell>
-                                <TableCell className="font-medium">
-                                    <a
-                                        target="_blank"
-                                        className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                                        href={repository.url}
-                                    >
-                                        {repository.title}
-                                    </a>
-                                </TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">
-                                    <Badge variant="outline">{repository.extension}</Badge>
-                                </TableCell>
-                                <TableCell className="text-muted-foreground">{repository.mime_type}</TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{repository.uploadedBy?.name}</TableCell>
-                                <TableCell className="text-muted-foreground w-[90px]">{repository.created_at}</TableCell>
-                                <TableCell className="w-10 text-right">
-                                    <a href={`/repositories/${repository.id}`} title="Download">
-                                        <Download size={18} className="text-blue-500" />
-                                    </a>
-                                </TableCell>
-
-                                {can.update_repository && (
+            <div className="grid min-w-0 overflow-x-auto rounded-md">
+                <Table>
+                    <TableCaption className="text-sm">{caption}</TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="text-muted-foreground">#</TableHead>
+                            <TableHead className="text-muted-foreground">Title</TableHead>
+                            <TableHead className="text-muted-foreground">Ext</TableHead>
+                            <TableHead className="text-muted-foreground">Mime</TableHead>
+                            <TableHead className="text-muted-foreground">Uploaded by</TableHead>
+                            <TableHead className="text-muted-foreground">Uploaded at</TableHead>
+                            <TableHead className="text-muted-foreground w-10 text-right"></TableHead>
+                            {can.edit_repository && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
+                            {can.delete_repository && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {repositories.data.map((repository: Repository, index: number) => {
+                            return (
+                                <TableRow key={repository.id}>
+                                    <TableCell className="w-12.5">{meta.from + index}</TableCell>
+                                    <TableCell className="max-w-md truncate font-medium">
+                                        {renderable.includes(repository.extension ?? '') ? (
+                                            <a
+                                                target="_blank"
+                                                className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                                                href={repository.url}
+                                            >
+                                                {repository.title}
+                                            </a>
+                                        ) : (
+                                            <ActionConfirm
+                                                action={() => handleDownloadRepository(repository.id)}
+                                                title="Preview Not Available"
+                                                description="This file type cannot be previewed directly in your browser. Would you like to download it instead?"
+                                                actionLabel="Download"
+                                            >
+                                                <span className="text-foreground cursor-pointer underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current!">
+                                                    {repository.title}
+                                                </span>
+                                            </ActionConfirm>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="text-muted-foreground w-22.5">
+                                        <Badge variant="outline">{repository.extension}</Badge>
+                                    </TableCell>
+                                    <TableCell className="text-muted-foreground max-w-50 truncate">{repository.mime_type}</TableCell>
+                                    <TableCell className="text-muted-foreground w-22.5">{repository.uploadedBy?.name}</TableCell>
+                                    <TableCell className="text-muted-foreground w-22.5">{repository.created_at}</TableCell>
                                     <TableCell className="w-10 text-right">
-                                        {can.update_repository && (
+                                        <a href={`/repositories/${repository.id}`} title="Download">
+                                            <Download size={18} className="text-blue-500" />
+                                        </a>
+                                    </TableCell>
+
+                                    {can.edit_repository && (
+                                        <TableCell className="w-10 text-right">
                                             <TextLink title="Edit" href={route('repositories.edit', repository.id)}>
                                                 <Edit size={18} className="text-green-500" />
                                             </TextLink>
-                                        )}
-                                    </TableCell>
-                                )}
+                                        </TableCell>
+                                    )}
 
-                                {can.delete_repository && (
-                                    <TableCell title="Delete" className="w-10 cursor-pointer text-right">
-                                        {can.delete_repository && (
+                                    {can.delete_repository && (
+                                        <TableCell title="Delete" className="w-10 cursor-pointer text-right">
                                             <ActionConfirm
                                                 action={() => handleDeleteRepository(repository.id)}
                                                 title={`Delete Repository ${repository.title}?`}
@@ -111,14 +128,14 @@ export default function TableRepository({ repositories, extensions }: TableRepos
                                             >
                                                 <Trash2 size={18} className="text-red-500" />
                                             </ActionConfirm>
-                                        )}
-                                    </TableCell>
-                                )}
-                            </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
+            </div>
             <GeneratePagination meta={meta} />
         </TableLayout>
     );

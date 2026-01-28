@@ -62,7 +62,7 @@ export default function InspectionTransformerEdit({ inspectionTransformer, equip
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment transformer" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment transformer" className="max-w-xl">
                 <InspectionTransformerForm
                     data={data}
                     setData={setData}

@@ -27,7 +27,7 @@ class StoreRepositoryRequest extends FormRequest
 
         return [
             'title' => ['required', 'string'],
-            'file' => ['required', 'file', 'max:10240'],
+            'file' => ['required', 'file', 'max:' . config('app.maximum_file_upload')],
             'uploaded_by' => ['nullable', 'exists:users,id'],
         ];
     }

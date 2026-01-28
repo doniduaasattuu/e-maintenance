@@ -32,7 +32,7 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
     const currentPath = window.location.pathname;
 
     return (
-        <div className="max-w-7xl px-4 py-6">
+        <div className="px-4 py-6 md:max-w-7xl">
             <Heading title="Organizations" description="Manage organizations data and information" className="mb-8" />
 
             <div className="space-y-6">
@@ -58,7 +58,7 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
 
                 <Separator className="my-6 md:hidden" />
 
-                <section className="space-y-12">{children}</section>
+                <section className="max-w-3xl space-y-12">{children}</section>
             </div>
         </div>
     );

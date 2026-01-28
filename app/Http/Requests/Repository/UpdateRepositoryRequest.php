@@ -28,7 +28,7 @@ class UpdateRepositoryRequest extends FormRequest
 
         return [
             'title' => ['required', 'string', Rule::unique('repositories', 'title')->ignore($this->repository)],
-            'file' => ['nullable', 'file', 'max:10240'],
+            'file' => ['nullable', 'file', 'max:' . config('app.maximum_file_upload')],
             'uploaded_by' => ['nullable', 'exists:users,id'],
         ];
     }

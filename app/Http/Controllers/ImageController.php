@@ -25,23 +25,31 @@ class ImageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(string $model, string $id)
+    public function index(string $id, string $type)
     {
         Gate::authorize('index_image');
 
-        switch ($model) {
+        switch ($type) {
             case 'equipment':
                 $equipment = Equipment::find($id);
 
                 return Inertia::render('equipment/image/index', [
-                    'equipment' => new EquipmentResource($equipment->load('images')),
+                    'equipment' => new EquipmentResource($equipment->load([
+                        'images' => function ($query) {
+                            $query->latest();
+                        }
+                    ])),
                 ]);
                 break;
             case 'material':
                 $material = Material::find($id);
 
                 return Inertia::render('material/image/index', [
-                    'material' => new MaterialResource($material->load('images')),
+                    'material' => new MaterialResource($material->load([
+                        'images' => function ($query) {
+                            $query->latest();
+                        }
+                    ])),
                 ]);
                 break;
             default:

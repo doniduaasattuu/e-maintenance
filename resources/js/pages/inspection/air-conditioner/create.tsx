@@ -66,7 +66,7 @@ export default function InspectionAirConditionerCreate({ equipment }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Inspection" />
 
-            <EquipmentLayout equipment={equipment.data}>
+            <EquipmentLayout equipment={equipment.data} className="max-w-xl">
                 <div className="space-y-6">
                     <HeadingSmall title="Inspection" description={`Equipment inspection form ${equipmentClassName}.`} />
                     <InspectionAirConditionerForm

@@ -29,8 +29,8 @@ export default function MaterialImage({ material }: MaterialImageProps) {
             href: route('materials.show', material.data.id),
         },
         {
-            title: 'Image',
-            href: route('images.index', ['material', material.data.id]),
+            title: 'Images',
+            href: route('materials.show', material.data.id),
         },
     ];
 
@@ -49,9 +49,9 @@ export default function MaterialImage({ material }: MaterialImageProps) {
         e.preventDefault();
 
         post(
-            route('images.store', {
-                model: 'material',
+            route('images.material.store', {
                 id: material.data.id,
+                type: 'material',
             }),
             {
                 preserveScroll: true,
@@ -73,7 +73,7 @@ export default function MaterialImage({ material }: MaterialImageProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Image" />
 
-            <MaterialLayout material={material.data} width="md:max-w-6xl">
+            <MaterialLayout material={material.data} className="md:max-w-6xl">
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Image" description="Images of material uploaded by users." />

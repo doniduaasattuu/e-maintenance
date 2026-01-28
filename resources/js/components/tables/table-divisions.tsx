@@ -33,50 +33,52 @@ export default function TableDivision({ divisions }: DivisionTableProps) {
                 <SearchBar />
                 {can.create_division && <ButtonAdd route={route('divisions.create')} tabIndex={2} />}
             </div>
-            <Table>
-                <TableCaption className="text-sm">{caption}</TableCaption>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className="text-muted-foreground">#</TableHead>
-                        <TableHead className="text-muted-foreground">Name</TableHead>
-                        <TableHead className="text-muted-foreground">Code</TableHead>
-                        <TableHead className="text-muted-foreground">Created at</TableHead>
-                        <TableHead className="text-muted-foreground">Updated at</TableHead>
-                        {can.delete_division && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {divisions.data.map((division: Division, index: number) => {
-                        return (
-                            <TableRow key={division.id}>
-                                <TableCell className="w-12.5">{meta.from + index}</TableCell>
-                                <TableCell className="font-medium">
-                                    {can.update_division ? (
-                                        <TextLink href={route('divisions.edit', division.id)}>{division.name}</TextLink>
-                                    ) : (
-                                        <span>{division.name}</span>
-                                    )}
-                                </TableCell>
-                                <TableCell className="font-medium">{division.code}</TableCell>
-                                <TableCell className="text-muted-foreground w-22.5">{division.created_at}</TableCell>
-                                <TableCell className="text-muted-foreground w-22.5">{division.updated_at}</TableCell>
-
-                                {can.delete_division && (
-                                    <TableCell className="w-10 text-right">
-                                        <ActionConfirm
-                                            action={() => handleDeleteDivision(division.id)}
-                                            title={`Delete Division ${division.name}?`}
-                                            description="This action will remove this division from all users. This cannot be undone."
-                                        >
-                                            <Trash2 size={18} className="text-red-500" />
-                                        </ActionConfirm>
+            <div className="grid min-w-0 overflow-x-auto rounded-md">
+                <Table>
+                    <TableCaption className="text-sm">{caption}</TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="text-muted-foreground">#</TableHead>
+                            <TableHead className="text-muted-foreground">Name</TableHead>
+                            <TableHead className="text-muted-foreground">Code</TableHead>
+                            <TableHead className="text-muted-foreground">Created at</TableHead>
+                            <TableHead className="text-muted-foreground">Updated at</TableHead>
+                            {can.delete_division && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {divisions.data.map((division: Division, index: number) => {
+                            return (
+                                <TableRow key={division.id}>
+                                    <TableCell className="w-12.5">{meta.from + index}</TableCell>
+                                    <TableCell className="font-medium">
+                                        {can.update_division ? (
+                                            <TextLink href={route('divisions.edit', division.id)}>{division.name}</TextLink>
+                                        ) : (
+                                            <span>{division.name}</span>
+                                        )}
                                     </TableCell>
-                                )}
-                            </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
+                                    <TableCell className="font-medium">{division.code}</TableCell>
+                                    <TableCell className="text-muted-foreground w-22.5">{division.created_at}</TableCell>
+                                    <TableCell className="text-muted-foreground w-22.5">{division.updated_at}</TableCell>
+
+                                    {can.delete_division && (
+                                        <TableCell className="w-10 text-right">
+                                            <ActionConfirm
+                                                action={() => handleDeleteDivision(division.id)}
+                                                title={`Delete Division ${division.name}?`}
+                                                description="This action will remove this division from all users. This cannot be undone."
+                                            >
+                                                <Trash2 size={18} className="text-red-500" />
+                                            </ActionConfirm>
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
+            </div>
             <GeneratePagination meta={meta} />
         </React.Fragment>
     );

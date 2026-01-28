@@ -36,19 +36,18 @@ export default function FunctionalLocationCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
-                <FunctionalLocationForm
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    recentlySuccessful={recentlySuccessful}
-                    submit={submit}
-                    canSubmit={can.store_functionallocation}
-                    buttonLabel="Submit"
-                    successMessage="Created"
-                />
-            </div>
+            <FunctionalLocationForm
+                data={data}
+                setData={setData}
+                errors={errors}
+                processing={processing}
+                recentlySuccessful={recentlySuccessful}
+                submit={submit}
+                canSubmit={can.store_functionallocation}
+                buttonLabel="Submit"
+                successMessage="Created"
+                className="max-w-xl"
+            />
         </AppLayout>
     );
 }

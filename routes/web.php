@@ -16,6 +16,9 @@ use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MaterialTypeController;
 use App\Http\Controllers\RepositoryController;
+use App\Http\Controllers\RepositoryEquipmentController;
+use App\Http\Controllers\RepositoryMaterialController;
+use App\Http\Controllers\RepositoryRelationController;
 use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UnitController;
@@ -48,6 +51,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/functional-locations', FunctionalLocationController::class);
     Route::resource('/equipments', EquipmentController::class);
     Route::resource('/materials', MaterialController::class);
+
+    // EQUIPMENT
+    Route::prefix('equipments')->group(function () {
+        Route::get('/{id}/images/{type}', [ImageController::class, 'index'])->name('images.equipment.index');
+        Route::post('/{id}/images/{type}', [ImageController::class, 'store'])->name('images.equipment.store');
+
+        Route::get('/{equipment}/repositories', [RepositoryEquipmentController::class, 'show'])->name('equipments.repositories');
+    });
+
+    // MATERIAL
+    Route::prefix('materials')->group(function () {
+        Route::get('/{id}/images/{type}', [ImageController::class, 'index'])->name('images.material.index');
+        Route::post('/{id}/images/{type}', [ImageController::class, 'store'])->name('images.material.store');
+
+        Route::get('/{material}/repositories', [RepositoryMaterialController::class, 'show'])->name('materials.repositories');
+    });
+
+    Route::prefix('images')->group(function () {
+        Route::delete('/{image}', [ImageController::class, 'destroy'])->name('images.destroy');
+    });
 
     Route::get('/equipments/{equipment}/history', [InstallDismantleHistoryController::class, 'show'])->name('equipments.history');
     Route::resource('/equipment-histories', InstallDismantleHistoryController::class);
@@ -88,13 +111,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // UNIT
     Route::resource('units', UnitController::class);
-
-    // IMAGE CONTROLLER
-    Route::prefix('images')->group(function () {
-        Route::get('/{model}/{id}', [ImageController::class, 'index'])->name('images.index');
-        Route::post('/{model}/{id}', [ImageController::class, 'store'])->name('images.store');
-        Route::delete('/{image}', [ImageController::class, 'destroy'])->name('images.destroy');
-    });
 
     // ORGANIZATIONS
     Route::prefix('organizations')->group(function () {
@@ -150,8 +166,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     });
 
-    Route::resource('repositories', RepositoryController::class);
-    Route::post('/repositories/{repository}', [RepositoryController::class, 'update'])->name('repositories.update');
+    Route::resource('repositories', RepositoryController::class)->except(['update']);
+    Route::post('repositories/{repository}', [RepositoryController::class, 'update'])->name('repositories.update');
+
+    Route::prefix('repositories')->group(function () {
+        Route::get('/{repository}/relation', [RepositoryRelationController::class, 'index'])->name('repositories.relation');
+
+        Route::post('/{repository}/equipment/{equipment}', [RepositoryEquipmentController::class, 'store'])->name('repositories.equipment.store');
+        Route::delete('/{repository}/equipment/{equipment}', [RepositoryEquipmentController::class, 'destroy'])->name('repositories.equipment.destroy');
+
+        Route::post('/{repository}/material/{material}', [RepositoryMaterialController::class, 'store'])->name('repositories.material.store');
+        Route::delete('/{repository}/material/{material}', [RepositoryMaterialController::class, 'destroy'])->name('repositories.material.destroy');
+    });
 });
 
 Route::fallback(function () {

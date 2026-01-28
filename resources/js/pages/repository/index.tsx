@@ -4,7 +4,7 @@ import { BreadcrumbItem, Meta, Repository } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Roles',
+        title: 'Repositories',
         href: route('repositories.index'),
     },
 ];
@@ -15,11 +15,12 @@ type RepositoryIndexProps = {
         meta: Meta;
     };
     extensions?: string[];
+    renderable: string[];
 };
-export default function RoleIndex({ repositories, extensions }: RepositoryIndexProps) {
+export default function RoleIndex({ repositories, extensions, renderable }: RepositoryIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableRepository repositories={repositories} extensions={extensions} />
+            <TableRepository repositories={repositories} extensions={extensions} renderable={renderable} />
         </AppLayout>
     );
 }

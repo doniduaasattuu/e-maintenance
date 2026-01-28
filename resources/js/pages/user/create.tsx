@@ -79,6 +79,7 @@ export default function UserCreate({ departments, positions, workCenters, availa
                 submit={submit}
                 recentlySuccessful={recentlySuccessful}
                 successMessage="Created"
+                className="max-w-xl"
             />
         </AppLayout>
     );

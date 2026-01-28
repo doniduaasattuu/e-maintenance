@@ -28,7 +28,10 @@ test('authorized user can upload image material', function () {
     $this->assertCount(0, $material->images);
 
     $this->actingAs($admin)
-        ->post(route('images.store', ['material', $material->id]), [
+        ->post(route('images.material.store', [
+            'id' => $material->id,
+            'type' => 'material',
+        ]), [
             'image' => UploadedFile::fake()->image('test.jpg'),
         ])
         ->assertStatus(200)
@@ -51,7 +54,7 @@ test('upload image material fails validation', function () {
     $material = Material::first();
 
     $this->actingAs($admin)
-        ->post(route('images.store', ['material', $material->id]), [
+        ->post(route('images.material.store', ['material', $material->id]), [
             'image' => null,
         ])
         ->assertStatus(302)

@@ -123,4 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'maximum_file_upload' => env('MAXIMUM_FILE_UPLOAD', '40960')
 ];

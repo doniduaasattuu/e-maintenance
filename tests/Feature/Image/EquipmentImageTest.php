@@ -35,7 +35,10 @@ test('authorized user can upload image equipment', function () {
     $this->assertCount(0, $equipment->images);
 
     $this->actingAs($admin)
-        ->post(route('images.store', ['equipment', $equipment->id]), [
+        ->post(route('images.equipment.store', [
+            'id' => $equipment->id,
+            'type' => 'equipment',
+        ]), [
             'image' => UploadedFile::fake()->image('test.jpg'),
         ])
         ->assertStatus(200)
@@ -58,7 +61,10 @@ test('upload image equipment fails validation', function () {
     $equipment = Equipment::first();
 
     $this->actingAs($admin)
-        ->post(route('images.store', ['equipment', $equipment->id]), [
+        ->post(route('images.equipment.store', [
+            'id' => $equipment->id,
+            'type' => 'equipment',
+        ]), [
             'image' => null,
         ])
         ->assertStatus(302)

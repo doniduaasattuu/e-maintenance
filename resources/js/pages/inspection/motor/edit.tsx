@@ -60,7 +60,7 @@ export default function InspectionMotorEdit({ inspectionMotor, equipment }: Prop
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment motor" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment motor" className="max-w-xl">
                 <InspectionMotorForm
                     data={data}
                     errors={errors}

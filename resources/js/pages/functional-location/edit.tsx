@@ -39,18 +39,17 @@ export default function FunctionalLocationEdit({ functionalLocation }: Functiona
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
-                <FunctionalLocationForm
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    recentlySuccessful={recentlySuccessful}
-                    submit={submit}
-                    canSubmit={can.update_functionallocation}
-                    buttonLabel="Update"
-                />
-            </div>
+            <FunctionalLocationForm
+                data={data}
+                setData={setData}
+                errors={errors}
+                processing={processing}
+                recentlySuccessful={recentlySuccessful}
+                submit={submit}
+                canSubmit={can.update_functionallocation}
+                buttonLabel="Update"
+                className="max-w-xl"
+            />
         </AppLayout>
     );
 }

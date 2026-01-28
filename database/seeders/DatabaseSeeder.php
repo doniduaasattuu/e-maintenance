@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             MaterialSeeder::class,
             ImageSeeder::class,
             RepositorySeeder::class,
+            RepositoryEquipmentSeeder::class,
         ]);
     }
 }

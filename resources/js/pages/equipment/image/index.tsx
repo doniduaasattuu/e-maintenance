@@ -29,8 +29,8 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
             href: route('equipments.show', equipment.data.id),
         },
         {
-            title: 'Image',
-            href: route('images.index', ['equipment', equipment.data.id]),
+            title: 'Images',
+            href: route('equipments.show', equipment.data.id),
         },
     ];
 
@@ -48,9 +48,9 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
         e.preventDefault();
 
         post(
-            route('images.store', {
-                model: 'equipment',
+            route('images.equipment.store', {
                 id: equipment.data.id,
+                type: 'equipment',
             }),
             {
                 preserveScroll: true,
@@ -71,7 +71,7 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Image" />
 
-            <EquipmentLayout equipment={equipment.data} width="md:max-w-6xl">
+            <EquipmentLayout equipment={equipment.data} className="md:max-w-6xl">
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Image" description="Images of equipment uploaded by users." />
@@ -83,7 +83,7 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                                 }}
                             >
                                 <Edit />
-                                {canDelete ? 'Cancel' : 'Manage'}
+                                {canDelete ? 'Done' : 'Manage'}
                             </Button>
                         )}
                     </div>

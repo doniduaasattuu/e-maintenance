@@ -39,8 +39,8 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
 
             <QRCodeGenerator modelName="equipment" model={equipment.data} isQROpen={isQROpen} setIsQROpen={setIsQROpen} />
 
-            <EquipmentLayout equipment={equipment.data}>
-                <div className="space-y-6">
+            <EquipmentLayout equipment={equipment.data} className="max-w-2xl">
+                <div className="w-full max-w-xl space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Details" description="Equipment data and information." />
                         {can.edit_equipment && (
@@ -49,7 +49,7 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                             </TextLink>
                         )}
                     </div>
-                    <div className="max-w-2xl space-y-6">
+                    <div className="space-y-6">
                         <div className="grid gap-2">
                             <Label htmlFor="code">Code</Label>
                             <div className="mt-1 flex justify-between gap-2">

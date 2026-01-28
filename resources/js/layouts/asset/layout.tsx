@@ -5,12 +5,12 @@ import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
 interface Props {
-    width?: string;
     children: React.ReactNode | undefined;
     sidebarNavItems: NavItem[];
+    className?: string;
 }
 
-export default function AssetLayout({ width, children, sidebarNavItems }: Props) {
+export default function AssetLayout({ children, className, sidebarNavItems }: Props) {
     const { permissions } = usePage<SharedData>().props;
 
     // When server-side rendering, we only render the layout on the client...
@@ -21,7 +21,7 @@ export default function AssetLayout({ width, children, sidebarNavItems }: Props)
     return (
         <div className="space-y-6 px-4 py-6">
             <div className="flex flex-col space-y-6 lg:flex-row lg:space-x-12">
-                <aside className="w-full max-w-xl lg:w-48">
+                <aside className="max-w-xl lg:w-48">
                     <nav className="flex flex-col space-y-1 space-x-0">
                         {sidebarNavItems.map((item, index) => {
                             const shouldRender = !item.permission || permissions[item.permission] === true;
@@ -56,8 +56,8 @@ export default function AssetLayout({ width, children, sidebarNavItems }: Props)
 
                 <Separator className="md:hidden" />
 
-                <div className="flex-1 md:max-w-full">
-                    <section className={`${width ?? 'md:max-w-xl'} space-y-12`}>{children}</section>
+                <div className="flex-1 md:max-w-6xl">
+                    <section className={cn('space-y-12', className)}>{children}</section>
                 </div>
             </div>
         </div>

@@ -18,7 +18,7 @@ class RepositoryResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'path' => $this->path,
-            'extension' => '.' . $this->extension,
+            'extension' => $this->extension,
             'mime_type' => $this->mime_type,
             'url' => asset('storage/' . $this->path),
             'uploaded_by' => $this->uploaded_by,

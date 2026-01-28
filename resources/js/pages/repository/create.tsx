@@ -1,8 +1,9 @@
 import RepositoryForm, { RepositoryFormData } from '@/components/forms/repository-form';
+import Heading from '@/components/heading';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -43,18 +44,24 @@ export default function RepositoryCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <RepositoryForm
-                buttonLabel="Upload"
-                canSubmit={can.create_repository}
-                data={data}
-                setData={setData}
-                fileInputRef={fileInputRef}
-                errors={errors}
-                processing={processing}
-                submit={submit}
-                recentlySuccessful={recentlySuccessful}
-                successMessage="Uploaded"
-            />
+            <Head title="Upload" />
+
+            <div className="max-w-2xl space-y-6 px-4 py-6">
+                <Heading title="Upload" description="Upload file that can be download by everyone" />
+
+                <RepositoryForm
+                    buttonLabel="Upload"
+                    canSubmit={can.store_repository}
+                    data={data}
+                    setData={setData}
+                    fileInputRef={fileInputRef}
+                    errors={errors}
+                    processing={processing}
+                    submit={submit}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage="Uploaded"
+                />
+            </div>
         </AppLayout>
     );
 }

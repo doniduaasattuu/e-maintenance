@@ -3,11 +3,11 @@ import AssetLayout from '../asset/layout';
 
 interface Props {
     material: Material;
-    width?: string;
     children: React.ReactNode | undefined;
+    className?: string;
 }
 
-export default function MaterialLayout({ material, width, children }: Props) {
+export default function MaterialLayout({ material, children, className }: Props) {
     const sidebarNavItems: NavItem[] = [
         {
             title: 'Details',
@@ -15,15 +15,24 @@ export default function MaterialLayout({ material, width, children }: Props) {
             icon: null,
         },
         {
-            title: 'Image',
-            href: route('images.index', ['material', material.id]),
+            title: 'Images',
+            href: route('images.material.index', {
+                id: material.id,
+                type: 'material',
+            }),
             icon: null,
             permission: 'show_image',
+        },
+        {
+            title: 'Repositories',
+            href: route('materials.repositories', material.id),
+            icon: null,
+            permission: 'show_repository',
         },
     ];
 
     return (
-        <AssetLayout width={width} sidebarNavItems={sidebarNavItems}>
+        <AssetLayout sidebarNavItems={sidebarNavItems} className={className}>
             {children}
         </AssetLayout>
     );

@@ -16,7 +16,7 @@ export default function TableLayout({ title, description, className, action, chi
     }
 
     return (
-        <div className="space-y-6 px-4 py-6">
+        <div className="flex h-full flex-1 flex-col rounded-xl p-4">
             <div className="mb-8 flex items-center justify-between gap-2 align-top">
                 <div>
                     <Head title={title} />
@@ -25,9 +25,7 @@ export default function TableLayout({ title, description, className, action, chi
                 {action}
             </div>
 
-            <div className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 lg:space-x-12">
-                <div className={cn('flex-1 space-y-2', className ?? 'md:max-w-7xl')}>{children}</div>
-            </div>
+            <div className={cn('space-y-4', className)}>{children}</div>
         </div>
     );
 }

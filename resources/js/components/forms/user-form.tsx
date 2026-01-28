@@ -30,6 +30,7 @@ interface UserFormParams {
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     recentlySuccessful: boolean;
     successMessage?: string;
+    className?: string;
 }
 
 export type UserFormData = {
@@ -61,6 +62,7 @@ export default function UserForm({
     fileInputRef,
     recentlySuccessful,
     successMessage,
+    className,
 }: UserFormParams) {
     const [open, setOpen] = React.useState(false);
 
@@ -77,7 +79,7 @@ export default function UserForm({
     }, [selectedRoles, setData]);
 
     return (
-        <TableLayout title="Users" description="User management">
+        <TableLayout title="Users" description="User management" className={className}>
             <form className="space-y-6" onSubmit={submit}>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                     <div className="flex flex-col gap-2">

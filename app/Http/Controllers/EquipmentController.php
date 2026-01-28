@@ -7,6 +7,7 @@ use App\Http\Requests\Equipment\UpdateEquipmentRequest;
 use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
+use App\Http\Resources\RepositoryResource;
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
@@ -29,6 +30,10 @@ class EquipmentController extends Controller
         $equipments = Equipment::with(['functionalLocation', 'equipmentClass', 'equipmentStatus'])->search($request)->paginate(10)->withQueryString();
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
+
+        if ($request->expectsJson() && $request->filled('query')) {
+            return response()->json(EquipmentResource::collection($equipments));
+        }
 
         return Inertia::render('equipment/index', [
             'equipments' => EquipmentResource::collection($equipments),
@@ -77,7 +82,7 @@ class EquipmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Equipment $equipment)
+    public function show(Equipment $equipment)
     {
         Gate::authorize('show_equipment');
 

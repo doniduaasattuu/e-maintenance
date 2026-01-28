@@ -75,6 +75,7 @@ export default function UserEdit({ user, departments, positions, workCenters, av
                 fileInputRef={fileInputRef}
                 recentlySuccessful={recentlySuccessful}
                 submit={submit}
+                className="max-w-xl"
             />
         </AppLayout>
     );

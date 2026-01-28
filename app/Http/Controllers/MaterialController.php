@@ -28,6 +28,10 @@ class MaterialController extends Controller
 
         $materials = Material::with(['unit', 'materialType'])->search($request)->paginate()->withQueryString();
 
+        if ($request->expectsJson() && $request->filled('query')) {
+            return response()->json(MaterialResource::collection($materials));
+        }
+
         return Inertia::render('material/index', [
             'materials' => MaterialResource::collection($materials),
             'units' => UnitResource::collection(Unit::all()),

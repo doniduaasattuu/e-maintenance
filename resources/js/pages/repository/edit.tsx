@@ -1,8 +1,10 @@
 import RepositoryForm, { RepositoryFormData } from '@/components/forms/repository-form';
+import HeadingSmall from '@/components/heading-small';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import RepositoryLayout from '@/layouts/repository/layout';
 import { BreadcrumbItem, Repository } from '@/types';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -12,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Edit',
-        href: route('repositories.create'),
+        href: '#',
     },
 ];
 
@@ -46,19 +48,24 @@ export default function RepositoryEdit({ repository }: RepositoryProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <RepositoryForm
-                buttonLabel="Update"
-                canSubmit={can.create_repository}
-                data={data}
-                setData={setData}
-                fileInputRef={fileInputRef}
-                errors={errors}
-                processing={processing}
-                submit={submit}
-                editing={true}
-                recentlySuccessful={recentlySuccessful}
-                successMessage="Updated"
-            />
+            <Head title="Edit" />
+
+            <RepositoryLayout repository={repository.data} className="max-w-xl">
+                <HeadingSmall title="Edit" description="Update repository data and information." />
+                <RepositoryForm
+                    buttonLabel="Update"
+                    canSubmit={can.update_repository}
+                    data={data}
+                    setData={setData}
+                    fileInputRef={fileInputRef}
+                    errors={errors}
+                    processing={processing}
+                    submit={submit}
+                    editing={true}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage="Updated"
+                />
+            </RepositoryLayout>
         </AppLayout>
     );
 }

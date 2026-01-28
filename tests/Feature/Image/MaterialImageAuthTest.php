@@ -22,7 +22,10 @@ test('normal user cannot access material image page', function () {
     $material = Material::first();
 
     $this->actingAs($user)
-        ->get(route('images.index', ['material', $material->id]))
+        ->get(route('images.material.index', [
+            'id' => $material->id,
+            'type' => 'material',
+        ]))
         ->assertStatus(403);
 });
 
@@ -37,7 +40,10 @@ test('admin user cannot access material image page', function () {
     ]);
 
     $this->actingAs($admin)
-        ->get(route('images.index', ['material', $material->id]))
+        ->get(route('images.material.index', [
+            'id' => $material->id,
+            'type' => 'material',
+        ]))
         ->assertStatus(200);
 });
 
@@ -45,6 +51,9 @@ test('guest cannot access material image page', function () {
     $material = Material::first();
 
     $this
-        ->get(route('images.index', ['material', $material->id]))
+        ->get(route('images.material.index', [
+            'id' => $material->id,
+            'type' => 'material',
+        ]))
         ->assertRedirect(route('login'));
 });

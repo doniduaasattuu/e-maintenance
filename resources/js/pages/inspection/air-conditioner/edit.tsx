@@ -53,7 +53,7 @@ export default function InspectionAirConditionerEdit({ inspectionAirConditioner,
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment air conditioner" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment air conditioner" className="max-w-xl">
                 <InspectionAirConditionerForm
                     data={data}
                     errors={errors}

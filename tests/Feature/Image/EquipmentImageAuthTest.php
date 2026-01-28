@@ -24,7 +24,7 @@ test('normal user cannot access equipment image page', function () {
     $equipment = Equipment::first();
 
     $this->actingAs($user)
-        ->get(route('images.index', ['equipment', $equipment->id]))
+        ->get(route('images.equipment.index', ['equipment', $equipment->id]))
         ->assertStatus(403);
 });
 
@@ -39,7 +39,10 @@ test('admin user cannot access equipment image page', function () {
     ]);
 
     $this->actingAs($admin)
-        ->get(route('images.index', ['equipment', $equipment->id]))
+        ->get(route('images.equipment.index', [
+            'id' => $equipment->id,
+            'type' => 'equipment',
+        ]))
         ->assertStatus(200);
 });
 
@@ -47,6 +50,6 @@ test('guest cannot access equipment image page', function () {
     $equipment = Equipment::first();
 
     $this
-        ->get(route('images.index', ['equipment', $equipment->id]))
+        ->get(route('images.equipment.index', ['equipment', $equipment->id]))
         ->assertRedirect(route('login'));
 });

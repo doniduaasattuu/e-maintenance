@@ -1,10 +1,11 @@
 import MaterialForm, { MaterialFormData } from '@/components/forms/material-form';
 import HeadingSmall from '@/components/heading-small';
+import TextLink from '@/components/text-link';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
 import { BreadcrumbItem, Material, MaterialType, Unit } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface MaterialEditParams {
@@ -50,13 +51,13 @@ export default function MaterialEdit({ material, units, materialTypes }: Materia
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit" />
 
-            <MaterialLayout material={material.data}>
-                <div className="space-y-6">
+            <MaterialLayout material={material.data} className="max-w-xl">
+                <div className="w-full space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Edit" description="Update equipment data and information." />
-                        <Link className="text-foreground hover:text-muted-foreground text-sm" href={route('materials.show', material.data.id)}>
+                        <TextLink className="text-sm" href={route('materials.show', material.data.id)}>
                             Back
-                        </Link>
+                        </TextLink>
                     </div>
                     <MaterialForm
                         data={data}

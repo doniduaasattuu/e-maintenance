@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
 
 class Repository extends Model
@@ -55,5 +56,15 @@ class Repository extends Model
     public function uploadedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function equipments(): BelongsToMany
+    {
+        return $this->belongsToMany(Equipment::class);
+    }
+
+    public function materials(): BelongsToMany
+    {
+        return $this->belongsToMany(Material::class);
     }
 }

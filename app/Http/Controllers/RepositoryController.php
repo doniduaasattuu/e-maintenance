@@ -28,12 +28,13 @@ class RepositoryController extends Controller
     {
         Gate::authorize('index_repository');
 
-        $repositories = Repository::with('uploadedBy')->search($request)->paginate(14)->withQueryString();
+        $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate(14)->withQueryString();
         $extensions = Repository::distinct()->pluck('extension');
 
         return Inertia::render('repository/index', [
             'repositories' => RepositoryResource::collection($repositories),
             'extensions' => $extensions,
+            'renderable' => config('repository.renderable')
         ]);
     }
 
@@ -44,7 +45,9 @@ class RepositoryController extends Controller
     {
         Gate::authorize('create_repository');
 
-        return Inertia::render('repository/create');
+        return Inertia::render('repository/create', [
+            'maximum_file_upload' => config('app.maximum_file_upload'),
+        ]);
     }
 
     /**
@@ -75,7 +78,10 @@ class RepositoryController extends Controller
 
         if (Storage::disk('public')->exists($repository->path)) {
 
-            return Storage::disk('public')->download($repository->path, $repository->title);
+            $extension = pathinfo($repository->path, PATHINFO_EXTENSION);
+            $downloadName = $repository->title . '.' . $extension;
+
+            return Storage::disk('public')->download($repository->path, $downloadName);
         } else {
             return back()->with('message', [
                 'type' => 'alert',

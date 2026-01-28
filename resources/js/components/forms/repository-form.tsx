@@ -2,7 +2,7 @@ import ButtonSubmit from '@/components/button-submit';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import TableLayout from '@/layouts/table/layout';
+import { cn } from '@/lib/utils';
 import React, { FormEventHandler } from 'react';
 
 interface RepositoryFormParams {
@@ -17,6 +17,7 @@ interface RepositoryFormParams {
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     recentlySuccessful: boolean;
     successMessage?: string;
+    className?: string;
 }
 
 export type RepositoryFormData = {
@@ -36,56 +37,53 @@ export default function RepositoryForm({
     editing = false,
     recentlySuccessful,
     successMessage,
+    className,
 }: RepositoryFormParams) {
     return (
-        <React.Fragment>
-            <TableLayout title="Repositories" description="Upload file that can be download by everyone" className="md:max-w-2xl">
-                <form className="space-y-4" onSubmit={submit}>
-                    <div className="grid gap-2">
-                        <Label htmlFor="title">Title</Label>
-                        <div className="flex gap-2">
-                            <Input
-                                id="title"
-                                name="title"
-                                type="text"
-                                required
-                                autoFocus
-                                tabIndex={1}
-                                autoComplete="title"
-                                value={data.title}
-                                onChange={(e) => setData('title', e.target.value)}
-                                disabled={processing}
-                                placeholder="Schematic Diagram Panel Incoming 20kV Switchgear ENC"
-                            />
-                        </div>
-                        <InputError message={errors.title} />
-                    </div>
+        <form className={cn('space-y-4', className)} onSubmit={submit}>
+            <div className="grid gap-2">
+                <Label htmlFor="title">Title</Label>
+                <div className="flex gap-2">
+                    <Input
+                        id="title"
+                        name="title"
+                        type="text"
+                        required
+                        autoFocus
+                        tabIndex={1}
+                        autoComplete="title"
+                        value={data.title}
+                        onChange={(e) => setData('title', e.target.value)}
+                        disabled={processing}
+                        placeholder="Schematic Diagram Panel Incoming 20kV Switchgear ENC"
+                    />
+                </div>
+                <InputError message={errors.title} />
+            </div>
 
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="file">File</Label>
-                        <Input
-                            id="file"
-                            name="file"
-                            type="file"
-                            disabled={processing}
-                            ref={fileInputRef}
-                            tabIndex={2}
-                            onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
-                        />
-                        <InputError message={errors.file} />
-                    </div>
+            <div className="flex flex-col gap-2">
+                <Label htmlFor="file">File</Label>
+                <Input
+                    id="file"
+                    name="file"
+                    type="file"
+                    disabled={processing}
+                    ref={fileInputRef}
+                    tabIndex={2}
+                    onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
+                />
+                <InputError message={errors.file} />
+            </div>
 
-                    {canSubmit && (
-                        <ButtonSubmit
-                            label={buttonLabel}
-                            disabled={processing || data.title === '' || !editing ? data.file === null : !editing}
-                            tabIndex={3}
-                            recentlySuccessful={recentlySuccessful}
-                            successMessage={successMessage}
-                        />
-                    )}
-                </form>
-            </TableLayout>
-        </React.Fragment>
+            {canSubmit && (
+                <ButtonSubmit
+                    label={buttonLabel}
+                    disabled={processing || data.title === '' || !editing ? data.file === null : !editing}
+                    tabIndex={3}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage={successMessage}
+                />
+            )}
+        </form>
     );
 }

@@ -59,8 +59,8 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit" />
 
-            <EquipmentLayout equipment={equipment.data}>
-                <div className="space-y-6">
+            <EquipmentLayout equipment={equipment.data} className="max-w-xl">
+                <div className="w-full space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Edit" description="Update equipment data and information." />
                         <TextLink className="text-sm" href={route('equipments.show', equipment.data.id)}>
