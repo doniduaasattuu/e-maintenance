@@ -19,7 +19,7 @@ class RepositoryMaterialController extends Controller
 
             return back()->with('message', [
                 'type' => 'success',
-                'description' => 'Material attached successfully',
+                'description' => 'Material ' . $material->code .  ' attached successfully',
             ]);
         } catch (Throwable $e) {
             return back()->with('message', [
@@ -50,7 +50,7 @@ class RepositoryMaterialController extends Controller
 
             return back()->with('message', [
                 'type' => 'success',
-                'description' => 'Related material detached successfully',
+                'description' => 'Material ' . $material->code .  ' detached successfully',
             ]);
         } catch (Throwable $e) {
             return back()->with('message', [

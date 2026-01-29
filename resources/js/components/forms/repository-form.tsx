@@ -78,7 +78,7 @@ export default function RepositoryForm({
             {canSubmit && (
                 <ButtonSubmit
                     label={buttonLabel}
-                    disabled={processing || data.title === '' || !editing ? data.file === null : !editing}
+                    disabled={processing || (data.title === '' || !editing ? data.file === null : !editing)}
                     tabIndex={3}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}

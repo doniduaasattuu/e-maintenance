@@ -181,7 +181,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::fallback(function () {
-    return Inertia::render('errors/not-found', [], 404);
+    return abort(404);
 });
 
 require __DIR__ . '/settings.php';

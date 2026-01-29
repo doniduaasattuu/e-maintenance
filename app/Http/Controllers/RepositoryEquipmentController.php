@@ -19,7 +19,7 @@ class RepositoryEquipmentController extends Controller
 
             return back()->with('message', [
                 'type' => 'success',
-                'description' => 'Equipment attached successfully',
+                'description' => 'Equipment ' . $equipment->code .  ' attached successfully',
             ]);
         } catch (Throwable $e) {
             return back()->with('message', [
@@ -49,7 +49,7 @@ class RepositoryEquipmentController extends Controller
 
             return back()->with('message', [
                 'type' => 'success',
-                'description' => 'Related equipment detached successfully',
+                'description' => 'Equipment ' . $equipment->code .  ' detached successfully',
             ]);
         } catch (Throwable $e) {
             return back()->with('message', [
