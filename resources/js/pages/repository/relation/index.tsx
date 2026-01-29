@@ -1,5 +1,5 @@
 import HeadingSmall from '@/components/heading-small';
-import { Badge } from '@/components/ui/badge';
+import RemovableBadge from '@/components/removable-badge';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import { BreadcrumbItem, Equipment, Material, Repository } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
-import { Check, Plus, X } from 'lucide-react';
+import { Check, Plus } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface RepositoryRelationProps {
@@ -25,7 +25,7 @@ interface RepositoryRelationProps {
     };
 }
 
-export default function RepositoryEquipment({ repository, equipments, materials }: RepositoryRelationProps) {
+export default function RepositoryRelation({ repository, equipments, materials }: RepositoryRelationProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Repositories',
@@ -216,20 +216,11 @@ export default function RepositoryEquipment({ repository, equipments, materials 
                                 {equipments.data &&
                                     equipments.data.length > 0 &&
                                     equipments.data.map((equipment: Equipment) => (
-                                        <Badge
-                                            key={equipment.id}
-                                            variant="secondary"
-                                            className="flex cursor-pointer items-center gap-1"
-                                            onClick={() => {
-                                                router.visit(route('equipments.show', equipment.id));
-                                            }}
-                                        >
-                                            <span>{equipment.code}</span>
-                                            <X
-                                                onClick={() => handleDetachRelation(repository.data.id, equipment.id)}
-                                                className="ml-1 h-3 w-3 rounded bg-red-500"
-                                            />
-                                        </Badge>
+                                        <RemovableBadge
+                                            label={equipment.code}
+                                            onView={() => router.visit(route('equipments.show', equipment.id))}
+                                            onRemove={() => handleDetachRelation(repository.data.id, equipment.id)}
+                                        />
                                     ))}
                             </div>
                         </TabsContent>
@@ -238,20 +229,13 @@ export default function RepositoryEquipment({ repository, equipments, materials 
                                 {materials.data &&
                                     materials.data.length > 0 &&
                                     materials.data.map((material: Material) => (
-                                        <Badge
-                                            key={material.id}
-                                            variant="secondary"
-                                            className="flex cursor-pointer items-center gap-1"
-                                            onClick={() => {
+                                        <RemovableBadge
+                                            label={material.code}
+                                            onView={() => {
                                                 router.visit(route('materials.show', material.id));
                                             }}
-                                        >
-                                            <span>{material.code}</span>
-                                            <X
-                                                onClick={() => handleDetachRelation(repository.data.id, material.id)}
-                                                className="ml-1 h-3 w-3 rounded bg-red-500"
-                                            />
-                                        </Badge>
+                                            onRemove={() => handleDetachRelation(repository.data.id, material.id)}
+                                        />
                                     ))}
                             </div>
                         </TabsContent>
