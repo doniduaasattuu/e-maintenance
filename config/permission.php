@@ -199,4 +199,16 @@ return [
 
         'store' => 'default',
     ],
+
+    'actions' => [
+        'show',
+        'index',
+        'create',
+        'store',
+        'edit',
+        'update',
+        'delete',
+        'bulk_delete',
+        'restore',
+    ],
 ];

@@ -5,17 +5,13 @@ use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\EquipmentSeeder;
 use Database\Seeders\EquipmentStatusSeeder;
 use Database\Seeders\FunctionalLocationSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_image']);
-    Permission::create(['name' => 'read_image']);
-    Permission::create(['name' => 'update_image']);
-    Permission::create(['name' => 'delete_image']);
+    $this->generatePermissions(['Image']);
 
     $this->seed(FunctionalLocationSeeder::class);
     $this->seed(EquipmentClassSeeder::class);
@@ -28,7 +24,7 @@ test('normal user cannot access equipment image page', function () {
     $equipment = Equipment::first();
 
     $this->actingAs($user)
-        ->get(route('images.index', ['equipment', $equipment->id]))
+        ->get(route('images.equipment.index', ['equipment', $equipment->id]))
         ->assertStatus(403);
 });
 
@@ -43,7 +39,10 @@ test('admin user cannot access equipment image page', function () {
     ]);
 
     $this->actingAs($admin)
-        ->get(route('images.index', ['equipment', $equipment->id]))
+        ->get(route('images.equipment.index', [
+            'id' => $equipment->id,
+            'type' => 'equipment',
+        ]))
         ->assertStatus(200);
 });
 
@@ -51,6 +50,6 @@ test('guest cannot access equipment image page', function () {
     $equipment = Equipment::first();
 
     $this
-        ->get(route('images.index', ['equipment', $equipment->id]))
+        ->get(route('images.equipment.index', ['equipment', $equipment->id]))
         ->assertRedirect(route('login'));
 });

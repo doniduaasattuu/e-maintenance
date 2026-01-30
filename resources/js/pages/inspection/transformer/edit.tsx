@@ -1,4 +1,5 @@
 import InspectionTransformerForm, { InspectionTransformerData } from '@/components/forms/inspection-transformer-form';
+import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
 import { BreadcrumbItem, Equipment, InspectionTransformer } from '@/types';
@@ -15,18 +16,19 @@ interface Props {
 }
 
 export default function InspectionTransformerEdit({ inspectionTransformer, equipment }: Props) {
+    const can = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
-            href: '/equipments',
+            href: route('equipments.index'),
         },
         {
             title: inspectionTransformer.data.inspectionForm.equipment.code,
-            href: `/equipments/${inspectionTransformer.data.inspectionForm.equipment.id}`,
+            href: route('equipments.show', inspectionTransformer.data.inspectionForm.equipment.id),
         },
         {
             title: 'Inspection',
-            href: `/inspections/transformer/${inspectionTransformer.data.inspectionForm.equipment?.id}/edit`,
+            href: route('inspectiontransformers.edit', inspectionTransformer.data.inspectionForm.equipment?.id),
         },
     ];
 
@@ -60,7 +62,7 @@ export default function InspectionTransformerEdit({ inspectionTransformer, equip
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment transformer" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment transformer" className="max-w-xl">
                 <InspectionTransformerForm
                     data={data}
                     setData={setData}
@@ -70,6 +72,7 @@ export default function InspectionTransformerEdit({ inspectionTransformer, equip
                     submit={submit}
                     showSuccessMessage={true}
                     isEditing={true}
+                    canSubmit={can.update_inspection && can.update_inspectiontransformer}
                 />
             </TableLayout>
         </AppLayout>

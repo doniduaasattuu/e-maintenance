@@ -2,17 +2,13 @@
 
 use App\Models\MaterialType;
 use Database\Seeders\MaterialTypeSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_materialtype']);
-    Permission::create(['name' => 'read_materialtype']);
-    Permission::create(['name' => 'update_materialtype']);
-    Permission::create(['name' => 'delete_materialtype']);
+    $this->generatePermissions(['MaterialType']);
 
     $this->seed(MaterialTypeSeeder::class);
 });

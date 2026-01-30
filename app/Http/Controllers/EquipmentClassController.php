@@ -18,7 +18,7 @@ class EquipmentClassController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_equipmentclass');
+        Gate::authorize('index_equipmentclass');
 
         $equipmentClasses = EquipmentClass::search($request)->paginate()->withQueryString();
 
@@ -42,7 +42,7 @@ class EquipmentClassController extends Controller
      */
     public function store(StoreEquipmentClassRequest $request)
     {
-        Gate::authorize('create_equipmentclass');
+        Gate::authorize('store_equipmentclass');
 
         try {
             EquipmentClass::create($request->validated());
@@ -61,7 +61,7 @@ class EquipmentClassController extends Controller
      */
     public function show(EquipmentClass $equipmentClass)
     {
-        //
+        // Gate::authorize('show_equipmentclass');
     }
 
     /**
@@ -69,7 +69,7 @@ class EquipmentClassController extends Controller
      */
     public function edit(EquipmentClass $equipmentClass)
     {
-        Gate::authorize('update_equipmentclass');
+        Gate::authorize('edit_equipmentclass');
 
         return Inertia::render('equipment-class/edit', [
             'equipmentClass' => new EquipmentClassResource($equipmentClass),

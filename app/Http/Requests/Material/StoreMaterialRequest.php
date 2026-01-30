@@ -23,7 +23,7 @@ class StoreMaterialRequest extends FormRequest
     {
         return [
             'code' => ['required', 'numeric', 'digits:8', 'unique:materials,code'],
-            'name' => ['required', 'string', 'max:50', 'unique:materials,name'],
+            'name' => ['required', 'string', 'max:200', 'unique:materials,name'],
             'price' => ['nullable', 'numeric'],
             'unit_id' => ['nullable', 'exists:units,id'],
             'material_type_id' => ['nullable', 'exists:material_types,id'],

@@ -7,6 +7,7 @@ use App\Http\Requests\Equipment\UpdateEquipmentRequest;
 use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
+use App\Http\Resources\RepositoryResource;
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
@@ -24,11 +25,15 @@ class EquipmentController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_equipment');
+        Gate::authorize('index_equipment');
 
         $equipments = Equipment::with(['functionalLocation', 'equipmentClass', 'equipmentStatus'])->search($request)->paginate(10)->withQueryString();
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
+
+        if ($request->expectsJson() && $request->filled('query')) {
+            return response()->json(EquipmentResource::collection($equipments));
+        }
 
         return Inertia::render('equipment/index', [
             'equipments' => EquipmentResource::collection($equipments),
@@ -58,7 +63,7 @@ class EquipmentController extends Controller
      */
     public function store(StoreEquipmentRequest $request)
     {
-        Gate::authorize('create_equipment');
+        Gate::authorize('store_equipment');
 
         try {
             $validated = $request->validated();
@@ -77,9 +82,9 @@ class EquipmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Equipment $equipment)
+    public function show(Equipment $equipment)
     {
-        Gate::authorize('read_equipment');
+        Gate::authorize('show_equipment');
 
         return Inertia::render('equipment/show', [
             'equipment' => new EquipmentResource($equipment->load(['functionalLocation', 'equipmentClass', 'equipmentStatus'])),
@@ -91,7 +96,7 @@ class EquipmentController extends Controller
      */
     public function edit(Equipment $equipment)
     {
-        Gate::authorize('update_equipment');
+        Gate::authorize('edit_equipment');
 
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();

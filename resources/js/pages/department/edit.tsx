@@ -9,11 +9,11 @@ import { FormEventHandler } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Departments',
-        href: '/organizations/departments',
+        href: route('departments.index'),
     },
     {
         title: 'Edit',
-        href: '/organizations/departments/{id}/edit',
+        href: route('departments.index'),
     },
 ];
 

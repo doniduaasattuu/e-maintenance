@@ -4,20 +4,14 @@ use App\Models\Equipment;
 use App\Models\InspectionTransformer;
 use App\Models\QualityRating;
 use Database\Seeders\EquipmentClassSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Arr;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed([EquipmentClassSeeder::class, QualityRatingSeeder::class]);
 
-    Permission::create(['name' => 'create_inspection']);
-    Permission::create(['name' => 'create_inspectiontransformer']);
-    Permission::create(['name' => 'read_inspectiontransformer']);
-    Permission::create(['name' => 'update_inspectiontransformer']);
-    Permission::create(['name' => 'delete_inspectiontransformer']);
+    $this->generatePermissions(['Inspection', 'InspectionTransformer']);
 });
 
 test('store fails validation', function () {

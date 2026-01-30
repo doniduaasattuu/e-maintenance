@@ -24,12 +24,18 @@ class MaterialController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_material');
+        Gate::authorize('index_material');
 
         $materials = Material::with(['unit', 'materialType'])->search($request)->paginate()->withQueryString();
 
+        if ($request->expectsJson() && $request->filled('query')) {
+            return response()->json(MaterialResource::collection($materials));
+        }
+
         return Inertia::render('material/index', [
             'materials' => MaterialResource::collection($materials),
+            'units' => UnitResource::collection(Unit::all()),
+            'materialTypes' => MaterialTypeResource::collection(MaterialType::all()),
         ]);
     }
 
@@ -51,7 +57,7 @@ class MaterialController extends Controller
      */
     public function store(StoreMaterialRequest $request)
     {
-        Gate::authorize('create_material');
+        Gate::authorize('store_material');
 
         try {
             $validated = $request->validated();
@@ -78,7 +84,7 @@ class MaterialController extends Controller
      */
     public function show(Material $material)
     {
-        Gate::authorize('read_material');
+        Gate::authorize('show_material');
 
         return Inertia::render('material/show', [
             'material' => new MaterialResource($material->load(['unit', 'materialType'])),
@@ -90,7 +96,7 @@ class MaterialController extends Controller
      */
     public function edit(Material $material)
     {
-        Gate::authorize('update_material');
+        Gate::authorize('edit_material');
 
         return Inertia::render('material/edit', [
             'material' => new MaterialResource($material),

@@ -3,11 +3,11 @@ import AssetLayout from '../asset/layout';
 
 interface Props {
     equipment: Equipment;
-    width?: string;
+    className?: string;
     children: React.ReactNode | undefined;
 }
 
-export default function EquipmentLayout({ equipment, width, children }: Props) {
+export default function EquipmentLayout({ equipment, className, children }: Props) {
     const sidebarNavItems: NavItem[] = [
         {
             title: 'Details',
@@ -18,7 +18,7 @@ export default function EquipmentLayout({ equipment, width, children }: Props) {
             title: 'History',
             href: route('equipments.history', equipment.id), // http://127.0.0.1:8000/equipments/1/history
             icon: null,
-            permission: 'read_installdismantlehistory',
+            permission: 'show_installdismantlehistory',
         },
         {
             title: 'Inspection',
@@ -27,15 +27,24 @@ export default function EquipmentLayout({ equipment, width, children }: Props) {
             permission: 'create_inspection',
         },
         {
-            title: 'Image',
-            href: route('images.index', ['equipment', equipment.id]),
+            title: 'Images',
+            href: route('images.equipment.index', {
+                id: equipment.id,
+                type: 'equipment',
+            }),
             icon: null,
-            permission: 'read_image',
+            permission: 'show_image',
+        },
+        {
+            title: 'Repositories',
+            href: route('equipments.repositories', equipment.id),
+            icon: null,
+            permission: 'show_repository',
         },
     ];
 
     return (
-        <AssetLayout sidebarNavItems={sidebarNavItems} width={width}>
+        <AssetLayout sidebarNavItems={sidebarNavItems} className={className}>
             {children}
         </AssetLayout>
     );

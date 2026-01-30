@@ -8,10 +8,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_equipmentstatus']);
-    Permission::create(['name' => 'read_equipmentstatus']);
-    Permission::create(['name' => 'update_equipmentstatus']);
-    Permission::create(['name' => 'delete_equipmentstatus']);
+    $this->generatePermissions(['EquipmentStatus']);
 
     EquipmentStatus::factory()
         ->count(20)

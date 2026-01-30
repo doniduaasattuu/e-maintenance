@@ -22,11 +22,11 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
-            href: '/equipments',
+            href: route('equipments.index'),
         },
         {
             title: equipment.data.code,
-            href: `/equipments/${equipment.data.id}`,
+            href: route('equipments.index', equipment.data.id),
         },
     ];
 
@@ -39,17 +39,17 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
 
             <QRCodeGenerator modelName="equipment" model={equipment.data} isQROpen={isQROpen} setIsQROpen={setIsQROpen} />
 
-            <EquipmentLayout equipment={equipment.data}>
-                <div className="space-y-6">
+            <EquipmentLayout equipment={equipment.data} className="max-w-2xl">
+                <div className="w-full max-w-xl space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Details" description="Equipment data and information." />
-                        {can.update_equipment && (
+                        {can.edit_equipment && (
                             <TextLink className="text-sm" href={route('equipments.edit', equipment.data.id)}>
                                 Edit
                             </TextLink>
                         )}
                     </div>
-                    <div className="max-w-2xl space-y-6">
+                    <div className="space-y-6">
                         <div className="grid gap-2">
                             <Label htmlFor="code">Code</Label>
                             <div className="mt-1 flex justify-between gap-2">

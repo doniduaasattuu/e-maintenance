@@ -1,17 +1,13 @@
 <?php
 
 use App\Models\Equipment;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_equipment']);
-    Permission::create(['name' => 'read_equipment']);
-    Permission::create(['name' => 'update_equipment']);
-    Permission::create(['name' => 'delete_equipment']);
+    $this->generatePermissions(['Equipment']);
 });
 
 test('equipment index should be rendered', function () {

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -132,5 +131,10 @@ class User extends Authenticatable
     public function installDismantleHistories(): HasMany
     {
         return $this->hasMany(InstallDismantleHistory::class);
+    }
+
+    public function repositories(): HasMany
+    {
+        return $this->hasMany(Repository::class);
     }
 }

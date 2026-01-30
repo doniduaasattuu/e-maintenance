@@ -8,7 +8,7 @@ import OrganizationsLayout from '@/layouts/organizations/layout';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Divisions',
-        href: '/organizations/divisions',
+        href: route('divisions.index'),
     },
 ];
 

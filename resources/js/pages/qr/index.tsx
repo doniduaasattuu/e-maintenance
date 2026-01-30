@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'QR Scanner',
-        href: '/qr-scanner',
+        href: route('qr-scanner'),
     },
 ];
 

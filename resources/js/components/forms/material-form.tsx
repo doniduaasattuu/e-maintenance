@@ -2,6 +2,7 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import { MaterialType, Unit } from '@/types';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
@@ -18,6 +19,7 @@ interface MaterialFormProps {
     successMessage?: string;
     units: Unit[];
     materialTypes: MaterialType[];
+    className?: string;
 }
 
 export type MaterialFormData = {
@@ -40,9 +42,10 @@ export default function MaterialForm({
     successMessage,
     units,
     materialTypes,
+    className,
 }: MaterialFormProps) {
     return (
-        <form onSubmit={submit} className="space-y-6">
+        <form onSubmit={submit} className={cn('space-y-6', className)}>
             <div className="grid gap-2">
                 <Label htmlFor="code">Code</Label>
 
@@ -128,13 +131,13 @@ export default function MaterialForm({
                     <SelectTrigger tabIndex={5} className="mt-1 truncate overflow-hidden whitespace-nowrap">
                         <SelectValue placeholder="Select a material type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-w-[calc(100vw-2rem)]">
                         <SelectGroup>
                             <SelectLabel className="text-muted-foreground">Type</SelectLabel>
                             {materialTypes.map((materialType: MaterialType) => {
                                 return (
                                     <SelectItem key={materialType.id} value={materialType.id.toString()}>
-                                        {materialType.code}
+                                        {materialType.code} - {materialType.description}
                                     </SelectItem>
                                 );
                             })}

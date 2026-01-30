@@ -12,37 +12,37 @@ class ImageService
 {
     public function store(StoreImageRequest $request)
     {
-        $model = $request->model;
+        $type = $request->type;
         $id = $request->id;
 
-        switch ($model) {
+        switch ($type) {
             case 'equipment':
 
                 $equipment = Equipment::findOrFail($id);
-                $imagePath = $request->file('image')->store('images/' . $model, 'public');
+                $imagePath = $request->file('image')->store('images/' . $type, 'public');
 
                 Image::create([
                     'path' => $imagePath,
                     'imageable_id' => $equipment->id,
-                    'imageable_type' => $model,
+                    'imageable_type' => $type,
                 ]);
 
                 break;
             case 'material':
                 $material = Material::findOrFail($id);
-                $imagePath = $request->file('image')->store('images/' . $model, 'public');
+                $imagePath = $request->file('image')->store('images/' . $type, 'public');
 
                 Image::create([
                     'path' => $imagePath,
                     'imageable_id' => $material->id,
-                    'imageable_type' => $model,
+                    'imageable_type' => $type,
                 ]);
 
                 break;
             default:
                 return back()->with('message', [
                     'type' => 'error',
-                    'description' => 'Image model is not exists',
+                    'description' => 'Image type is not exists',
                 ]);
                 break;
         }

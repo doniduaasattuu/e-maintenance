@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import usePermissions from '@/hooks/use-permissions';
+import { cn } from '@/lib/utils';
 import { EquipmentClass, EquipmentStatus, FunctionalLocation } from '@/types';
 import { Info } from 'lucide-react';
 import { FormEventHandler } from 'react';
@@ -39,6 +40,7 @@ interface EquipmentFormProps {
     buttonLabel: string;
     successMessage?: string;
     isEditing?: boolean;
+    className?: string;
 }
 
 export default function EquipmentForm({
@@ -56,11 +58,12 @@ export default function EquipmentForm({
     recentlySuccessful,
     successMessage,
     isEditing,
+    className,
 }: EquipmentFormProps) {
     const can = usePermissions();
 
     return (
-        <form onSubmit={submit} className="space-y-6">
+        <form onSubmit={submit} className={cn('space-y-6', className)}>
             <div className="grid gap-2">
                 <Label htmlFor="code">Code</Label>
 

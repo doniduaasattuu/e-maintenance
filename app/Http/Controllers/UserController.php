@@ -25,7 +25,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_user');
+        Gate::authorize('index_user');
 
         $users = User::with(['department', 'position', 'workCenter'])->search($request)->paginate(10)->withQueryString();
         $departments = Department::all();
@@ -65,14 +65,14 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        Gate::authorize('create_user');
+        Gate::authorize('store_user');
 
         $validated = $request->validated();
 
         $user = User::create($validated);
 
         if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file(('avatar'))->store('avatars', 'public');
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
             $user->avatar = "/storage/" . $avatarPath;
         }
 
@@ -90,7 +90,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Gate::authorize('show_user');
     }
 
     /**
@@ -98,7 +98,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        Gate::authorize('update_user');
+        Gate::authorize('edit_user');
 
         $departments = Department::all();
         $positions = Position::all();

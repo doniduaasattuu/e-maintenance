@@ -1,4 +1,5 @@
 import InspectionPanelForm, { InspectionPanelData } from '@/components/forms/inspection-panel-form';
+import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
 import { BreadcrumbItem, Equipment, InspectionPanel } from '@/types';
@@ -15,18 +16,19 @@ interface Props {
 }
 
 export default function InspectionPanelEdit({ inspectionPanel, equipment }: Props) {
+    const can = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
-            href: '/equipments',
+            href: route('equipments.index'),
         },
         {
             title: inspectionPanel.data.inspectionForm.equipment.code,
-            href: `/equipments/${inspectionPanel.data.inspectionForm.equipment.id}`,
+            href: route('equipments.show', inspectionPanel.data.inspectionForm.equipment.id),
         },
         {
             title: 'Inspection',
-            href: `/inspections/panel/${inspectionPanel.data.inspectionForm.equipment?.id}/edit`,
+            href: route('inspectionpanels.edit', inspectionPanel.data.inspectionForm.equipment?.id),
         },
     ];
 
@@ -55,7 +57,7 @@ export default function InspectionPanelEdit({ inspectionPanel, equipment }: Prop
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment panel" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment panel" className="max-w-xl">
                 <InspectionPanelForm
                     data={data}
                     setData={setData}
@@ -65,6 +67,7 @@ export default function InspectionPanelEdit({ inspectionPanel, equipment }: Prop
                     submit={submit}
                     showSuccessMessage={true}
                     isEditing={true}
+                    canSubmit={can.update_inspection && can.update_inspectionpanel}
                 />
             </TableLayout>
         </AppLayout>

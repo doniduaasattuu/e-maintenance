@@ -3,17 +3,17 @@ import Heading from '@/components/heading';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, EquipmentClass, EquipmentStatus } from '@/types';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Equipments',
-        href: '/equipments',
+        href: route('equipments.index'),
     },
     {
         title: 'Create',
-        href: '/equipments/create',
+        href: route('equipments.create'),
     },
 ];
 
@@ -50,7 +50,8 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-6 px-4 py-6">
+            <Head title="Create" />
+            <div className="space-y-6 px-4 py-6">
                 <Heading title="Create" description="Insert new equipment." />
 
                 <EquipmentForm
@@ -62,9 +63,10 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.create_equipment}
+                    canSubmit={can.store_equipment}
                     buttonLabel="Create"
                     successMessage="Created"
+                    className="max-w-xl"
                 />
             </div>
         </AppLayout>

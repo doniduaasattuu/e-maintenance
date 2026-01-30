@@ -1,25 +1,18 @@
 <?php
 
 use App\Models\Material;
-use App\Models\MaterialClass;
-use App\Models\MaterialStatus;
-use App\Models\FunctionalLocation;
 use App\Models\MaterialType;
 use App\Models\Unit;
 use Database\Seeders\MaterialTypeSeeder;
 use Database\Seeders\UnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Permission;
 
 use function Pest\Laravel\assertDatabaseHas;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_material']);
-    Permission::create(['name' => 'read_material']);
-    Permission::create(['name' => 'update_material']);
-    Permission::create(['name' => 'delete_material']);
+    $this->generatePermissions(['Material']);
 
     $this->seed(UnitSeeder::class);
     $this->seed(MaterialTypeSeeder::class);

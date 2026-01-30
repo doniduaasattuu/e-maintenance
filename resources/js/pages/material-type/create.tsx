@@ -44,7 +44,7 @@ export default function MaterialTypeCreate() {
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.create_materialtype}
+                    canSubmit={can.store_materialtype}
                     buttonLabel="Submit"
                     successMessage="Created"
                 />

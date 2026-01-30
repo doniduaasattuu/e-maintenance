@@ -8,7 +8,6 @@ use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\EquipmentSeeder;
 use Database\Seeders\EquipmentStatusSeeder;
 use Database\Seeders\FunctionalLocationSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
@@ -17,14 +16,7 @@ use Illuminate\Support\Str;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_equipment']);
-    Permission::create(['name' => 'read_equipment']);
-    Permission::create(['name' => 'update_equipment']);
-    Permission::create(['name' => 'delete_equipment']);
-    Permission::create(['name' => 'create_image']);
-    Permission::create(['name' => 'read_image']);
-    Permission::create(['name' => 'update_image']);
-    Permission::create(['name' => 'delete_image']);
+    $this->generatePermissions(['Equipment', 'Image']);
 
     $this->seed(FunctionalLocationSeeder::class);
     $this->seed(EquipmentClassSeeder::class);
@@ -43,7 +35,10 @@ test('authorized user can upload image equipment', function () {
     $this->assertCount(0, $equipment->images);
 
     $this->actingAs($admin)
-        ->post(route('images.store', ['equipment', $equipment->id]), [
+        ->post(route('images.equipment.store', [
+            'id' => $equipment->id,
+            'type' => 'equipment',
+        ]), [
             'image' => UploadedFile::fake()->image('test.jpg'),
         ])
         ->assertStatus(200)
@@ -66,7 +61,10 @@ test('upload image equipment fails validation', function () {
     $equipment = Equipment::first();
 
     $this->actingAs($admin)
-        ->post(route('images.store', ['equipment', $equipment->id]), [
+        ->post(route('images.equipment.store', [
+            'id' => $equipment->id,
+            'type' => 'equipment',
+        ]), [
             'image' => null,
         ])
         ->assertStatus(302)

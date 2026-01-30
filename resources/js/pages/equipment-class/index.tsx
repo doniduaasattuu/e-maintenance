@@ -5,7 +5,7 @@ import { BreadcrumbItem, EquipmentClass, Meta } from '@/types';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Equipment Classes',
-        href: '/equipment-classes',
+        href: route('equipment-classes.index'),
     },
 ];
 

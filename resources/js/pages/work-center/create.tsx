@@ -9,11 +9,11 @@ import { FormEventHandler } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Work Centers',
-        href: '/organizations/work-centers',
+        href: route('work-centers.index'),
     },
     {
         title: 'Create',
-        href: '/organizations/work-centers/create',
+        href: route('work-centers.create'),
     },
 ];
 
@@ -48,7 +48,7 @@ export default function WorkCenterCreate() {
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
                         submit={submit}
-                        canSubmit={can.create_division}
+                        canSubmit={can.store_workcenter}
                         buttonLabel="Submit"
                         successMessage="Created"
                     />

@@ -1,4 +1,5 @@
 import InspectionAirConditionerForm, { InspectionAirConditionerData } from '@/components/forms/inspection-air-conditioner-form';
+import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
 import { BreadcrumbItem, Equipment, InspectionAirConditioner } from '@/types';
@@ -15,18 +16,19 @@ interface Props {
 }
 
 export default function InspectionAirConditionerEdit({ inspectionAirConditioner, equipment }: Props) {
+    const can = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',
-            href: '/equipments',
+            href: route('equipments.index'),
         },
         {
             title: inspectionAirConditioner.data.inspectionForm.equipment.code,
-            href: `/equipments/${inspectionAirConditioner.data.inspectionForm.equipment.id}`,
+            href: route('equipments.show', inspectionAirConditioner.data.inspectionForm.equipment.id),
         },
         {
             title: 'Inspection',
-            href: `/inspections/airconditioner/${inspectionAirConditioner.data.inspectionForm.equipment?.id}/edit`,
+            href: route('inspectionairconditioners.edit', inspectionAirConditioner.data.inspectionForm.equipment?.id),
         },
     ];
 
@@ -51,7 +53,7 @@ export default function InspectionAirConditionerEdit({ inspectionAirConditioner,
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment air conditioner" className="max-w-2xl">
+            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment air conditioner" className="max-w-xl">
                 <InspectionAirConditionerForm
                     data={data}
                     errors={errors}
@@ -61,6 +63,7 @@ export default function InspectionAirConditionerEdit({ inspectionAirConditioner,
                     submit={submit}
                     showSuccessMessage={true}
                     isEditing={true}
+                    canSubmit={can.update_inspection && can.update_inspectionairconditioner}
                 />
             </TableLayout>
         </AppLayout>

@@ -8,10 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_equipmentstatus']);
-    Permission::create(['name' => 'read_equipmentstatus']);
-    Permission::create(['name' => 'update_equipmentstatus']);
-    Permission::create(['name' => 'delete_equipmentstatus']);
+    $this->generatePermissions(['EquipmentStatus']);
 
     $this->seed(EquipmentStatusSeeder::class);
 });

@@ -5,7 +5,7 @@ import { BreadcrumbItem, FunctionalLocation, Meta } from '@/types';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Functional Locations',
-        href: '/functional-locations',
+        href: route('functional-locations.index'),
     },
 ];
 

@@ -5,7 +5,7 @@ import { BreadcrumbItem, Department, Meta, Position, User, WorkCenter } from '@/
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Users',
-        href: '/users',
+        href: route('users.index'),
     },
 ];
 

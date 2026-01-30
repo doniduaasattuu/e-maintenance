@@ -18,7 +18,7 @@ class DivisionController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_division');
+        Gate::authorize('index_division');
 
         $divisions = Division::search($request)
             ->paginate()
@@ -44,7 +44,7 @@ class DivisionController extends Controller
      */
     public function store(StoreDivisionRequest $request)
     {
-        Gate::authorize('create_division');
+        Gate::authorize('store_division');
 
         try {
             $validated = $request->validated();
@@ -68,7 +68,7 @@ class DivisionController extends Controller
      */
     public function show(Division $division)
     {
-        //
+        // Gate::authorize('show_division');
     }
 
     /**
@@ -76,7 +76,7 @@ class DivisionController extends Controller
      */
     public function edit(Division $division)
     {
-        Gate::authorize('update_division');
+        Gate::authorize('edit_division');
 
         return Inertia::render('division/edit', [
             'division' => new DivisionResource($division),

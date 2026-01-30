@@ -1,6 +1,6 @@
 import Heading from '@/components/heading';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
+import { cn, removeOrigin } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
@@ -8,17 +8,17 @@ import { type PropsWithChildren } from 'react';
 const tabItems: NavItem[] = [
     {
         title: 'Departments',
-        href: '/organizations/departments',
+        href: route('departments.index'),
         icon: null,
     },
     {
         title: 'Divisions',
-        href: '/organizations/divisions',
+        href: route('divisions.index'),
         icon: null,
     },
     {
         title: 'Work Centers',
-        href: '/organizations/work-centers',
+        href: route('work-centers.index'),
         icon: null,
     },
 ];
@@ -32,13 +32,13 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
     const currentPath = window.location.pathname;
 
     return (
-        <div className="max-w-7xl px-4 py-6">
+        <div className="px-4 py-6 md:max-w-7xl">
             <Heading title="Organizations" description="Manage organizations data and information" className="mb-8" />
 
             <div className="space-y-6">
                 <div className="sm:bg-muted text-muted-foreground flex flex-col gap-1 rounded-lg sm:inline-flex sm:flex-row sm:p-1">
                     {tabItems.map((item) => {
-                        const isActive = currentPath.includes(item.href);
+                        const isActive = currentPath.includes(removeOrigin(item.href));
 
                         return (
                             <Link
@@ -58,7 +58,7 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
 
                 <Separator className="my-6 md:hidden" />
 
-                <section className="space-y-12">{children}</section>
+                <section className="max-w-3xl space-y-12">{children}</section>
             </div>
         </div>
     );

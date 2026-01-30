@@ -10,10 +10,7 @@ use Spatie\Permission\Models\Permission;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_installdismantlehistory']);
-    Permission::create(['name' => 'read_installdismantlehistory']);
-    Permission::create(['name' => 'update_installdismantlehistory']);
-    Permission::create(['name' => 'delete_installdismantlehistory']);
+    $this->generatePermissions(['InstallDismantleHistory']);
 });
 
 test('install dismantle index page accessible', function () {

@@ -2,20 +2,12 @@
 
 use App\Models\Department;
 use App\Models\Division;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_division']);
-    Permission::create(['name' => 'read_division']);
-    Permission::create(['name' => 'update_division']);
-    Permission::create(['name' => 'delete_division']);
-    Permission::create(['name' => 'create_department']);
-    Permission::create(['name' => 'read_department']);
-    Permission::create(['name' => 'update_department']);
-    Permission::create(['name' => 'delete_department']);
+    $this->generatePermissions(['Department', 'Division']);
 });
 
 test('admin can create department with valid data', function () {

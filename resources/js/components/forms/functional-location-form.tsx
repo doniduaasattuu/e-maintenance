@@ -15,6 +15,7 @@ interface FunctionalLocationFormProps {
     canSubmit: boolean;
     buttonLabel: string;
     successMessage?: string;
+    className?: string;
 }
 
 export type FunctionalLocationFormData = {
@@ -32,9 +33,10 @@ export default function FunctionalLocationForm({
     canSubmit,
     buttonLabel,
     successMessage,
+    className,
 }: FunctionalLocationFormProps) {
     return (
-        <TableLayout title="Functional Locations" description="Overview and management of functional locations in the system">
+        <TableLayout title="Functional Locations" description="Overview and management of functional locations in the system" className={className}>
             <form onSubmit={submit} className="space-y-6">
                 <div className="grid gap-2">
                     <Label htmlFor="code">Code</Label>

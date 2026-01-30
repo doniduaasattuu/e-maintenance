@@ -1,4 +1,3 @@
-import usePermissions from '@/hooks/use-permissions';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 import InputError from '../input-error';
@@ -32,6 +31,7 @@ export type InspectionPanelFormProps = {
     recentlySuccessful: boolean;
     showSuccessMessage?: boolean;
     isEditing?: boolean;
+    canSubmit: boolean;
 };
 
 export default function InspectionPanelForm({
@@ -43,9 +43,8 @@ export default function InspectionPanelForm({
     recentlySuccessful,
     showSuccessMessage = false,
     isEditing = false,
+    canSubmit,
 }: InspectionPanelFormProps) {
-    const can = usePermissions();
-
     return (
         <form className="space-y-6" onSubmit={submit}>
             <div className="grid grid-cols-2 gap-2">
@@ -261,7 +260,7 @@ export default function InspectionPanelForm({
                 </div>
             </div>
 
-            {can.create_inspection && (
+            {canSubmit && (
                 <ButtonSubmit
                     tabIndex={13}
                     disabled={processing}

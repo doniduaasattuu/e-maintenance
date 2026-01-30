@@ -7,7 +7,6 @@ use App\Http\Requests\InspectionAirConditioner\UpdateInspectionAirConditionerReq
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\InspectionAirConditionResource;
 use App\Models\InspectionAirConditioner;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -21,7 +20,7 @@ class InspectionAirConditionerController extends Controller
      */
     public function index()
     {
-        //
+        // Gate::authorize('index_inspectionairconditioner');
     }
 
     /**
@@ -29,7 +28,7 @@ class InspectionAirConditionerController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create_inspectionairconditioner');
+        // Gate::authorize('create_inspectionairconditioner');
     }
 
     /**
@@ -37,7 +36,7 @@ class InspectionAirConditionerController extends Controller
      */
     public function store(StoreInspectionAirConditionerRequest $request)
     {
-        Gate::authorize('create_inspectionairconditioner');
+        Gate::authorize('store_inspectionairconditioner');
         $validated = $request->validated();
 
         try {
@@ -73,7 +72,7 @@ class InspectionAirConditionerController extends Controller
      */
     public function show(InspectionAirConditioner $inspectionAirConditioner)
     {
-        //
+        // Gate::authorize('show_inspectionairconditioner');
     }
 
     /**
@@ -81,7 +80,7 @@ class InspectionAirConditionerController extends Controller
      */
     public function edit(InspectionAirConditioner $inspectionAirConditioner)
     {
-        Gate::authorize('update_inspectionairconditioner');
+        Gate::authorize('edit_inspectionairconditioner');
         $inspectionAirConditioner->load('inspectionForm.equipment');
 
         return Inertia::render('inspection/air-conditioner/edit', [
@@ -105,6 +104,6 @@ class InspectionAirConditionerController extends Controller
      */
     public function destroy(InspectionAirConditioner $inspectionAirConditioner)
     {
-        //
+        // Gate::authorize('delete_inspectionairconditioner');
     }
 }

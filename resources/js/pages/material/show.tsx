@@ -1,5 +1,6 @@
 import HeadingSmall from '@/components/heading-small';
 import { QRCodeGenerator } from '@/components/qr-generator';
+import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,8 +8,8 @@ import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
 import { BreadcrumbItem, Material } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { Edit, QrCodeIcon } from 'lucide-react';
+import { Head } from '@inertiajs/react';
+import { QrCodeIcon } from 'lucide-react';
 import React from 'react';
 
 interface MaterialShowProps {
@@ -38,14 +39,14 @@ export default function MaterialShow({ material }: MaterialShowProps) {
 
             <QRCodeGenerator modelName="material" model={material.data} isQROpen={isQROpen} setIsQROpen={setIsQROpen} />
 
-            <MaterialLayout material={material.data}>
-                <div className="space-y-6">
+            <MaterialLayout material={material.data} className="max-w-2xl">
+                <div className="w-full max-w-xl space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Details" description="Material data and information." />
-                        {can.update_material && (
-                            <Link href={route('materials.edit', material.data.id)}>
-                                <Edit size={20} />
-                            </Link>
+                        {can.edit_material && (
+                            <TextLink className="text-sm" href={route('materials.edit', material.data.id)}>
+                                Edit
+                            </TextLink>
                         )}
                     </div>
                     <div className="max-w-2xl space-y-6">

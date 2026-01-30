@@ -2,17 +2,13 @@
 
 use App\Models\Unit;
 use Database\Seeders\UnitSeeder;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_unit']);
-    Permission::create(['name' => 'read_unit']);
-    Permission::create(['name' => 'update_unit']);
-    Permission::create(['name' => 'delete_unit']);
+    $this->generatePermissions(['Unit']);
 
     $this->seed(UnitSeeder::class);
 });

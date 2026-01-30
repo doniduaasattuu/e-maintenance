@@ -47,7 +47,7 @@ export default function MaterialTypeEdit({ materialType }: MaterialTypeEditProps
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.update_functionallocation}
+                    canSubmit={can.update_materialtype}
                     buttonLabel="Update"
                 />
             </div>

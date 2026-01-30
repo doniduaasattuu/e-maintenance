@@ -25,23 +25,31 @@ class ImageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(string $model, string $id)
+    public function index(string $id, string $type)
     {
-        Gate::authorize('read_image');
+        Gate::authorize('index_image');
 
-        switch ($model) {
+        switch ($type) {
             case 'equipment':
                 $equipment = Equipment::find($id);
 
                 return Inertia::render('equipment/image/index', [
-                    'equipment' => new EquipmentResource($equipment->load('images')),
+                    'equipment' => new EquipmentResource($equipment->load([
+                        'images' => function ($query) {
+                            $query->latest();
+                        }
+                    ])),
                 ]);
                 break;
             case 'material':
                 $material = Material::find($id);
 
                 return Inertia::render('material/image/index', [
-                    'material' => new MaterialResource($material->load('images')),
+                    'material' => new MaterialResource($material->load([
+                        'images' => function ($query) {
+                            $query->latest();
+                        }
+                    ])),
                 ]);
                 break;
             default:
@@ -58,7 +66,7 @@ class ImageController extends Controller
      */
     public function create()
     {
-        //
+        // Gate::authorize('create_image');
     }
 
     /**
@@ -66,7 +74,7 @@ class ImageController extends Controller
      */
     public function store(StoreImageRequest $request)
     {
-        Gate::authorize('create_image');
+        Gate::authorize('store_image');
 
         $this->imageService->store($request);
     }
@@ -76,7 +84,7 @@ class ImageController extends Controller
      */
     public function show(Image $image)
     {
-        //
+        // Gate::authorize('show_image');
     }
 
     /**
@@ -84,7 +92,7 @@ class ImageController extends Controller
      */
     public function edit(Image $image)
     {
-        //
+        // Gate::authorize('edit_image');
     }
 
     /**
@@ -92,7 +100,7 @@ class ImageController extends Controller
      */
     public function update(Request $request, Image $image)
     {
-        //
+        // Gate::authorize('update_image');
     }
 
     /**

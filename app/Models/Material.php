@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
 
 class Material extends Model
@@ -32,6 +33,8 @@ class Material extends Model
     protected function scopeSearch(Builder $builder, Request $request): void
     {
         $search = trim($request->query('query'));
+        $unit = trim($request->query('unit'));
+        $type = trim($request->query('type'));
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
@@ -40,6 +43,14 @@ class Material extends Model
                     ->orWhere('name', 'LIKE', "%{$search}%")
                     ->orWhere('price', 'LIKE', "%{$search}%");
             });
+        }
+
+        if ($unit) {
+            $builder->whereRelation('unit', 'name', $unit);
+        }
+
+        if ($type) {
+            $builder->whereRelation('materialType', 'code', $type);
         }
     }
 
@@ -56,5 +67,10 @@ class Material extends Model
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function repositories(): BelongsToMany
+    {
+        return $this->belongsToMany(Repository::class);
     }
 }

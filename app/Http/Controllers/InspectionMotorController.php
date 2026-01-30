@@ -6,9 +6,7 @@ use App\Http\Requests\InspectionMotor\StoreInspectionMotorRequest;
 use App\Http\Requests\InspectionMotor\UpdateInspectionMotorRequest;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\InspectionMotorResource;
-use App\Models\EquipmentInspectionForm;
 use App\Models\InspectionMotor;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -30,7 +28,7 @@ class InspectionMotorController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create_inspectionmotor');
+        // Gate::authorize('create_inspectionmotor');
     }
 
     /**
@@ -38,7 +36,7 @@ class InspectionMotorController extends Controller
      */
     public function store(StoreInspectionMotorRequest $request)
     {
-        Gate::authorize('create_inspectionmotor');
+        Gate::authorize('store_inspectionmotor');
         $validated = $request->validated();
 
         try {
@@ -74,7 +72,7 @@ class InspectionMotorController extends Controller
      */
     public function show(InspectionMotor $inspectionMotor)
     {
-        //
+        // Gate::authorize('show_inspectionmotor');
     }
 
     /**
@@ -82,7 +80,7 @@ class InspectionMotorController extends Controller
      */
     public function edit(InspectionMotor $inspectionMotor)
     {
-        Gate::authorize('update_inspectionmotor');
+        Gate::authorize('edit_inspectionmotor');
         $inspectionMotor->load('inspectionForm.equipment');
 
         return Inertia::render('inspection/motor/edit', [
@@ -106,6 +104,6 @@ class InspectionMotorController extends Controller
      */
     public function destroy(InspectionMotor $inspectionMotor)
     {
-        //
+        // Gate::authorize('delete_inspectionmotor');
     }
 }

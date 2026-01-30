@@ -8,6 +8,7 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+import { removeOrigin } from '@/lib/utils';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
@@ -25,11 +26,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                         <Collapsible
                             key={item.title}
                             className="group/collapsible"
-                            defaultOpen={item.subItems?.some(
-                                (subItem) =>
-                                    window.location.href.includes(subItem.href) ||
-                                    window.location.href.includes(subItem.href.replace(window.location.origin, '').slice(0, -1)),
-                            )}
+                            defaultOpen={item.subItems?.some((subItem) => window.location.pathname.startsWith(removeOrigin(subItem.href)))}
                         >
                             <SidebarMenuItem>
                                 <CollapsibleTrigger asChild>
@@ -44,9 +41,9 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                         <SidebarMenuSub>
                                             {item.subItems.map((subItem) => {
                                                 const shouldRender = !subItem.permission || permissions[subItem.permission] == true;
-                                                const endpoint = subItem.href.replace(window.location.origin, '');
                                                 const isActive =
-                                                    window.location.href.includes(endpoint) || window.location.href.includes(endpoint.slice(0, -1));
+                                                    window.location.pathname == removeOrigin(subItem.href) ||
+                                                    window.location.pathname.startsWith(removeOrigin(subItem.href));
 
                                                 return shouldRender ? (
                                                     <SidebarMenuSubItem key={subItem.title}>
@@ -69,7 +66,14 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                         </Collapsible>
                     ) : !item.permission || permissions[item.permission] == true ? (
                         <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild isActive={item.href === window.location.href} tooltip={{ children: item.title }}>
+                            <SidebarMenuButton
+                                asChild
+                                isActive={
+                                    removeOrigin(item.href) == window.location.pathname ||
+                                    window.location.pathname.startsWith(removeOrigin(item.href))
+                                }
+                                tooltip={{ children: item.title }}
+                            >
                                 <Link href={item.href} prefetch>
                                     {item.icon && <item.icon />}
                                     <span>{item.title}</span>

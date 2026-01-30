@@ -84,7 +84,7 @@ export default function FunctionalLocationSelect({
                         }
                     />
                 </SelectTrigger>
-                <SelectContent className="max-h-56">
+                <SelectContent className="max-w-xl">
                     <Command shouldFilter={false}>
                         <CommandInput placeholder="Search..." value={input} onValueChange={(e) => setInput(e.toUpperCase())} />
                         <CommandList>
@@ -104,7 +104,7 @@ export default function FunctionalLocationSelect({
                                         >
                                             <div className="flex gap-2">
                                                 {selected.current && selected.current?.id == loc.id && <Check />}
-                                                <div>
+                                                <div className="w-full">
                                                     <div className="font-medium">{loc.code}</div>
                                                     <div className="text-muted-foreground max-w-xs truncate text-sm sm:max-w-full">
                                                         {loc.description}

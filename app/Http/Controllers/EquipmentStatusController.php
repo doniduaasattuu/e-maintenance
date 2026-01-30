@@ -18,7 +18,7 @@ class EquipmentStatusController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('read_equipmentstatus');
+        Gate::authorize('index_equipmentstatus');
 
         $equipmentStatuses = EquipmentStatus::search($request)->paginate()->withQueryString();
 
@@ -42,7 +42,7 @@ class EquipmentStatusController extends Controller
      */
     public function store(StoreEquipmentStatusRequest $request)
     {
-        Gate::authorize('create_equipmentstatus');
+        Gate::authorize('store_equipmentstatus');
 
         try {
             EquipmentStatus::create($request->validated());
@@ -61,7 +61,7 @@ class EquipmentStatusController extends Controller
      */
     public function show(EquipmentStatus $equipmentStatus)
     {
-        //
+        // Gate::authorize('show_equipmentstatus');
     }
 
     /**
@@ -69,7 +69,7 @@ class EquipmentStatusController extends Controller
      */
     public function edit(EquipmentStatus $equipmentStatus)
     {
-        Gate::authorize('update_equipmentstatus');
+        Gate::authorize('edit_equipmentstatus');
 
         return Inertia::render('equipment-status/edit', [
             'equipmentStatus' => new EquipmentStatusResource($equipmentStatus),

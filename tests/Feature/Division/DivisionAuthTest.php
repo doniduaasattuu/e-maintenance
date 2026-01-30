@@ -1,17 +1,13 @@
 <?php
 
 use App\Models\Division;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::create(['name' => 'create_division']);
-    Permission::create(['name' => 'read_division']);
-    Permission::create(['name' => 'update_division']);
-    Permission::create(['name' => 'delete_division']);
+
+    $this->generatePermissions(['Division']);
 
     Division::factory()->count(20)->create();
 });

@@ -6,7 +6,7 @@ import { BreadcrumbItem, InstallDismantleHistory, Meta } from '@/types';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Equipment histories',
-        href: '/equipment-histories',
+        href: route('equipment-histories.index'),
     },
 ];
 
@@ -22,7 +22,8 @@ export default function InstallDismantleHistoryIndex({ histories }: InstallDisma
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout
                 title="Equipment histories"
-                description="Installation and dismantle history for equipments, including status and location changes"
+                description="Installation and dismantle history for equipments, including status and functional location changes"
+                className="md:max-w-7xl"
             >
                 <TableHistory histories={histories} />
             </TableLayout>

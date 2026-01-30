@@ -9,11 +9,11 @@ import { FormEventHandler } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Work Centers',
-        href: '/organizations/work-centers',
+        href: route('work-centers.index'),
     },
     {
         title: 'Edit',
-        href: '/organizations/work-centers/{id}/edit',
+        href: route('work-centers.index'),
     },
 ];
 
@@ -51,7 +51,7 @@ export default function WorkCenterEdit({ workCenter }: WorkCenterEditProps) {
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
                         submit={submit}
-                        canSubmit={can.update_division}
+                        canSubmit={can.update_workcenter}
                         buttonLabel="Update"
                     />
                 </div>
