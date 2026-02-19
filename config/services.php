@@ -35,4 +35,6 @@ return [
         ],
     ],
 
+    'registration_key' => env("REGISTRATION_KEY"),
+
 ];

@@ -48,6 +48,9 @@ class DepartmentSeeder extends Seeder
                 'division_id' => $eng->id,
                 'name' => 'Electric Instrument ENC',
             ],
+        ];
+
+        $mechanicals = [
             [
                 'code' => 'ME1',
                 'division_id' => $eng->id,
@@ -81,5 +84,6 @@ class DepartmentSeeder extends Seeder
         ];
 
         collect($electricals)->each(fn($e) => Department::create($e));
+        collect($mechanicals)->each(fn($e) => Department::create($e));
     }
 }

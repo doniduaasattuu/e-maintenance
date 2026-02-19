@@ -3,7 +3,6 @@ import { Separator } from '@/components/ui/separator';
 import { cn, removeOrigin } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { type PropsWithChildren } from 'react';
 
 const tabItems: NavItem[] = [
     {
@@ -23,7 +22,12 @@ const tabItems: NavItem[] = [
     },
 ];
 
-export default function OrganizationsLayout({ children }: PropsWithChildren) {
+interface Props {
+    className?: string;
+    children: React.ReactNode;
+}
+
+export default function OrganizationsLayout({ className, children }: Props) {
     // When server-side rendering, we only render the layout on the client...
     if (typeof window === 'undefined') {
         return null;
@@ -32,7 +36,7 @@ export default function OrganizationsLayout({ children }: PropsWithChildren) {
     const currentPath = window.location.pathname;
 
     return (
-        <div className="px-4 py-6 md:max-w-7xl">
+        <div className={cn('p-4', className)}>
             <Heading title="Organizations" description="Manage organizations data and information" className="mb-8" />
 
             <div className="space-y-6">

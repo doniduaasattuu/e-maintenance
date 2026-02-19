@@ -41,60 +41,59 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <Head title="Log in" />
 
             <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            required
-                            autoFocus
-                            tabIndex={1}
-                            autoComplete="email"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
-                            placeholder="email@example.com"
-                        />
-                        <InputError message={errors.email} />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <div className="flex items-center">
-                            <Label htmlFor="password">Password</Label>
-                            {canResetPassword && (
-                                <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={6}>
-                                    Forgot password?
-                                </TextLink>
-                            )}
-                        </div>
-                        <InputPassword
-                            id="password"
-                            required
-                            tabIndex={2}
-                            autoComplete="current-password"
-                            value={data.password}
-                            onChange={(e: { target: { value: string } }) => setData('password', e.target.value)}
-                            toggleTabIndex={3}
-                        />
-                        <InputError message={errors.password} />
-                    </div>
-
-                    <div className="flex items-center space-x-3">
-                        <Checkbox
-                            id="remember"
-                            name="remember"
-                            checked={data.remember}
-                            onClick={() => setData('remember', !data.remember)}
-                            tabIndex={4}
-                        />
-                        <Label htmlFor="remember">Remember me</Label>
-                    </div>
-
-                    <Button type="submit" className="mt-4 w-full" tabIndex={5} disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Log in
-                    </Button>
+                <div className="grid gap-2">
+                    <Label htmlFor="email">Email address</Label>
+                    <Input
+                        id="email"
+                        type="email"
+                        required
+                        autoFocus
+                        tabIndex={1}
+                        autoComplete="email"
+                        value={data.email}
+                        onChange={(e) => setData('email', e.target.value)}
+                        placeholder="email@example.com"
+                    />
+                    <InputError message={errors.email} />
                 </div>
+
+                <div className="grid gap-2">
+                    <div className="flex items-center">
+                        <Label htmlFor="password">Password</Label>
+                        {canResetPassword && (
+                            <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={6}>
+                                Forgot password?
+                            </TextLink>
+                        )}
+                    </div>
+                    <InputPassword
+                        id="password"
+                        required
+                        tabIndex={2}
+                        autoComplete="current-password"
+                        value={data.password}
+                        onChange={(e: { target: { value: string } }) => setData('password', e.target.value)}
+                        toggleTabIndex={3}
+                        placeholder="********"
+                    />
+                    <InputError message={errors.password} />
+                </div>
+
+                <div className="flex items-center space-x-3">
+                    <Checkbox
+                        id="remember"
+                        name="remember"
+                        checked={data.remember}
+                        onClick={() => setData('remember', !data.remember)}
+                        tabIndex={4}
+                    />
+                    <Label htmlFor="remember">Remember me</Label>
+                </div>
+
+                <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                    Log in
+                </Button>
 
                 <div className="text-muted-foreground text-center text-sm">
                     Don't have an account?{' '}

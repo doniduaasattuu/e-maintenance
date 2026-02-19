@@ -20,12 +20,29 @@ class RoleSeeder extends Seeder
 
     private function roleAdminSeeder(): void
     {
-        $adminRole = Role::create([
+        $adminRole = Role::firstOrcreate([
             'name' => 'Admin',
+        ]);
+
+        $viewerRole = Role::firstOrcreate([
+            'name' => 'Viewer',
         ]);
 
         // Mengambil semua permission
         $adminRole->givePermissionTo(Permission::all());
+        $viewerRole->givePermissionTo([
+            'index_department',
+            'index_division',
+            'index_workcenter',
+            'index_functionallocation',
+            'index_equipment',
+            'index_material',
+            'index_equipmentclass',
+            'index_equipmentstatus',
+            'index_repository',
+            'index_unit',
+            'index_materialtype',
+        ]);
 
         // Cari user admin dan assign role jika ditemukan
         $admin = User::where('email', 'admin@gmail.com')->first();

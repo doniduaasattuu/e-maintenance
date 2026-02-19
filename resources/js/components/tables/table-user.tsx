@@ -79,6 +79,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
                             <TableHead className="text-muted-foreground">Name</TableHead>
                             <TableHead className="text-muted-foreground">Contact</TableHead>
                             <TableHead className="text-muted-foreground">Department</TableHead>
+                            <TableHead className="text-muted-foreground">Work Center</TableHead>
                             <TableHead className={`text-muted-foreground ${can.delete_user ?? 'text-right'}`}>Created at</TableHead>
                             {can.delete_user && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                         </TableRow>
@@ -116,9 +117,15 @@ export default function TableUser({ users, departments, positions, workCenters, 
                                         </div>
                                     </TableCell>
                                     <TableCell className="flex-col align-top">
+                                        <div className="flex max-w-sm flex-col items-start truncate">
+                                            <span className="font-medium">{user.work_center?.code}</span>
+                                            <span className="text-muted-foreground">{user.work_center?.name}</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="flex-col align-top">
                                         <div className={`flex max-w-sm flex-col ${can.delete_user ? 'items-start' : 'items-end'} truncate`}>
-                                            <span className="text-muted-foreground">{user.work_center?.code}</span>
                                             <span className="text-muted-foreground">{user.created_at}</span>
+                                            <span className="text-muted-foreground">{user.updated_at}</span>
                                         </div>
                                     </TableCell>
                                     {can.delete_user && user.deleted_at === null ? (
