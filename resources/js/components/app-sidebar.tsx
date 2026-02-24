@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BadgeCheck, Building2, DatabaseIcon, FolderOpen, Layers, LayoutGrid, ScanQrCodeIcon, Users2 } from 'lucide-react';
+import { BadgeCheck, Building2, DatabaseIcon, FolderOpen, Layers, LayoutGrid, ScanQrCodeIcon, TextSearch, Users2 } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -70,25 +70,19 @@ const mainNavItems: NavItem[] = [
                 href: route('material-types.index'),
                 permission: 'index_materialtype',
             },
+            {
+                title: 'Finding status',
+                href: route('finding-statuses.index'),
+                permission: 'index_findingstatus',
+            },
         ],
     },
-    // {
-    //     title: 'Department',
-    //     href: '#',
-    //     icon: BuildingIcon,
-    //     subItems: [
-    //         {
-    //             title: 'Reports',
-    //             href: '#',
-    //             permission: 'index_report',
-    //         },
-    //         {
-    //             title: 'Findings',
-    //             href: '#',
-    //             permission: 'index_finding',
-    //         },
-    //     ],
-    // },
+    {
+        title: 'Findings',
+        href: route('users.index'),
+        icon: TextSearch,
+        permission: 'index_finding',
+    },
     {
         title: 'Repositories',
         href: route('repositories.index'),

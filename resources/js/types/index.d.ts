@@ -349,3 +349,11 @@ export interface Repository {
     created_at: string;
     updated_at: string;
 }
+
+export interface FindingStatus {
+    id: number;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
