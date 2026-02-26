@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Database\Query\Builder;
 
-class FindingStatus extends Model
+class FindingPriority extends Model
 {
-    /** @use HasFactory<\Database\Factories\FindingStatusFactory> */
+    /** @use HasFactory<\Database\Factories\FindingPriorityFactory> */
     use HasFactory;
 
-    protected $table = 'finding_statuses';
+    protected $table = 'finding_priorities';
 
     protected $fillable = [
-        'name',
-        'description',
+        "label",
+        "sla_resolution_hours",
+        "description",
     ];
 
     #[Scope]
@@ -27,7 +28,8 @@ class FindingStatus extends Model
         if ($search) {
             $builder->where(function ($query) use ($search) {
                 $query
-                    ->where('name', 'LIKE', "%{$search}%")
+                    ->where('label', 'LIKE', "%{$search}%")
+                    ->orWhere('sla_resolution_hours', 'LIKE', "%{$search}%")
                     ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }

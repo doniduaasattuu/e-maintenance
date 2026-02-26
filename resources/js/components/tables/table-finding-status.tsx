@@ -27,7 +27,7 @@ export default function TableFindingStatus({ findingStatuses }: TableFindingStat
         router.delete(route('finding-statuses.destroy', id));
     }
     return (
-        <TableLayout title="Finding Statuses" description="Overview and management of finding statuses" className="md:max-w-7xl">
+        <TableLayout title="Finding Status" description="Overview and management of finding status" className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
@@ -60,8 +60,8 @@ export default function TableFindingStatus({ findingStatuses }: TableFindingStat
                                         )}
                                     </TableCell>
                                     <TableCell className="max-w-75 truncate">{findingStatus.description}</TableCell>
-                                    <TableCell className="text-muted-foreground">{findingStatus.created_at}</TableCell>
-                                    <TableCell className={`text-muted-foreground ${can.delete_findingstatus ?? 'text-right'}`}>
+                                    <TableCell className="table-timestamp text-muted-foreground">{findingStatus.created_at}</TableCell>
+                                    <TableCell className={`table-timestamp text-muted-foreground ${can.delete_findingstatus ?? 'text-right'}`}>
                                         {findingStatus.updated_at}
                                     </TableCell>
                                     {can.delete_findingstatus && (

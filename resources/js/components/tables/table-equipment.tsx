@@ -108,13 +108,13 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                                     </TableCell>
                                     <TableCell className="flex-col align-top">
                                         <div className="flex max-w-sm flex-col items-start">
-                                            <span className="text-muted-foreground">{equipment.created_at}</span>
-                                            <span className="text-muted-foreground">{equipment.updated_at}</span>
+                                            <span className="table-timestamp text-muted-foreground">{equipment.created_at}</span>
+                                            <span className="table-timestamp text-muted-foreground">{equipment.updated_at}</span>
                                         </div>
                                     </TableCell>
 
                                     {can.delete_equipment && (
-                                        <TableCell className="w-10 text-right">
+                                        <TableCell className="table-icon">
                                             <ActionConfirm
                                                 action={() => handleDeleteEquipment(equipment.id)}
                                                 title={`Delete Equipment ${equipment.code}?`}

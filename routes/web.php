@@ -6,6 +6,7 @@ use App\Http\Controllers\EquipmentClassController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
+use App\Http\Controllers\FindingPriorityController;
 use App\Http\Controllers\FindingStatusController;
 use App\Http\Controllers\FunctionalLocationController;
 use App\Http\Controllers\ImageController;
@@ -181,7 +182,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // FINDING STATUS
-    Route::resource('/finding-statuses', FindingStatusController::class);
+    Route::resource('/finding-statuses', FindingStatusController::class)->except(['show']);
+
+    // FINDING PRIORITY
+    Route::resource('/finding-priorities', FindingPriorityController::class)->except(['show']);
 });
 
 Route::fallback(function () {

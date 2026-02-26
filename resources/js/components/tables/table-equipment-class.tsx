@@ -64,8 +64,8 @@ export default function TableEquipmentClass({ equipmentClasses }: TableEquipment
                                     <TableCell className="max-w-50 truncate">{equipmentClass.name}</TableCell>
                                     <TableCell>{equipmentClass.formable_type}</TableCell>
                                     <TableCell className="max-w-75 truncate">{equipmentClass.description}</TableCell>
-                                    <TableCell className="text-muted-foreground">{equipmentClass.created_at}</TableCell>
-                                    <TableCell className={`text-muted-foreground ${can.delete_equipmentclass ?? 'text-right'}`}>
+                                    <TableCell className="table-timestamp text-muted-foreground">{equipmentClass.created_at}</TableCell>
+                                    <TableCell className={`table-timestamp text-muted-foreground ${can.delete_equipmentclass ?? 'text-right'}`}>
                                         {equipmentClass.updated_at}
                                     </TableCell>
                                     {can.delete_equipmentclass && (

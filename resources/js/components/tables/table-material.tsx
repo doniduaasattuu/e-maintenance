@@ -61,8 +61,10 @@ export default function TableMaterial({ materials, units, materialTypes }: Table
                             <TableHead className="text-muted-foreground">Price</TableHead>
                             <TableHead className="text-muted-foreground">Unit</TableHead>
                             <TableHead className="text-muted-foreground">Type</TableHead>
-                            <TableHead className="text-muted-foreground">Created at</TableHead>
-                            <TableHead className={`text-muted-foreground ${can.delete_material ?? 'text-right'}`}>Updated at</TableHead>
+                            <TableHead className="table-timestamp text-muted-foreground">Created at</TableHead>
+                            <TableHead className={`table-timestamp text-muted-foreground ${can.delete_material ?? 'text-right'}`}>
+                                Updated at
+                            </TableHead>
                             {can.delete_material && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                         </TableRow>
                     </TableHeader>

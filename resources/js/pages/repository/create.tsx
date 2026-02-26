@@ -60,6 +60,7 @@ export default function RepositoryCreate() {
                     submit={submit}
                     recentlySuccessful={recentlySuccessful}
                     successMessage="Uploaded"
+                    className="max-w-xl"
                 />
             </div>
         </AppLayout>

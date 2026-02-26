@@ -3,10 +3,10 @@ import SearchBar from '@/components/search-bar';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
-import { tableCaption } from '@/lib/utils';
+import { copyTextToClipboard, tableCaption } from '@/lib/utils';
 import { Meta, Repository } from '@/types';
 import { Link, router } from '@inertiajs/react';
-import { Download, Edit, Trash2, Upload } from 'lucide-react';
+import { Copy, Download, Edit, Trash2, Upload } from 'lucide-react';
 import React from 'react';
 import { ActionConfirm } from '../action-confirm';
 import Filter from '../filter';
@@ -67,9 +67,10 @@ export default function TableRepository({ repositories, extensions, renderable }
                             <TableHead className="text-muted-foreground">Mime</TableHead>
                             <TableHead className="text-muted-foreground">Uploaded by</TableHead>
                             <TableHead className="text-muted-foreground">Uploaded at</TableHead>
-                            <TableHead className="text-muted-foreground w-10 text-right"></TableHead>
-                            {can.edit_repository && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
-                            {can.delete_repository && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
+                            <TableHead className="text-muted-foreground text-right"></TableHead>
+                            <TableHead className="text-muted-foreground text-right"></TableHead>
+                            {can.edit_repository && <TableHead className="text-muted-foreground text-right"></TableHead>}
+                            {can.delete_repository && <TableHead className="text-muted-foreground text-right"></TableHead>}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -105,14 +106,16 @@ export default function TableRepository({ repositories, extensions, renderable }
                                     <TableCell className="text-muted-foreground max-w-50 truncate">{repository.mime_type}</TableCell>
                                     <TableCell className="text-muted-foreground w-22.5">{repository.uploadedBy?.name}</TableCell>
                                     <TableCell className="text-muted-foreground w-22.5">{repository.created_at}</TableCell>
-                                    <TableCell className="w-10 text-right">
+                                    <TableCell className="table-icon text-right">
                                         <a href={`/repositories/${repository.id}`} title="Download">
                                             <Download size={18} className="text-blue-500" />
                                         </a>
                                     </TableCell>
-
+                                    <TableCell className="table-icon text-right">
+                                        <Copy size={18} onClick={() => copyTextToClipboard(repository.url)} />
+                                    </TableCell>
                                     {can.edit_repository && (
-                                        <TableCell className="w-10 text-right">
+                                        <TableCell className="table-icon text-right">
                                             <TextLink title="Edit" href={route('repositories.edit', repository.id)}>
                                                 <Edit size={18} className="text-green-500" />
                                             </TextLink>
@@ -120,7 +123,7 @@ export default function TableRepository({ repositories, extensions, renderable }
                                     )}
 
                                     {can.delete_repository && (
-                                        <TableCell title="Delete" className="w-10 cursor-pointer text-right">
+                                        <TableCell title="Delete" className="table-icon cursor-pointer text-right">
                                             <ActionConfirm
                                                 action={() => handleDeleteRepository(repository.id)}
                                                 title={`Delete Repository ${repository.title}?`}

@@ -58,8 +58,10 @@ export default function TableUnit({ units }: TableUnitProps) {
                                             <span className="font-medium">{unit.name}</span>
                                         )}
                                     </TableCell>
-                                    <TableCell className="text-muted-foreground">{unit.created_at}</TableCell>
-                                    <TableCell className={`text-muted-foreground ${can.delete_unit ?? 'text-right'}`}>{unit.updated_at}</TableCell>
+                                    <TableCell className="table-timestamp text-muted-foreground">{unit.created_at}</TableCell>
+                                    <TableCell className={`table-timestamp text-muted-foreground ${can.delete_unit ?? 'text-right'}`}>
+                                        {unit.updated_at}
+                                    </TableCell>
                                     {can.delete_unit && (
                                         <TableCell className="w-10 flex-col text-right align-top">
                                             <ActionConfirm

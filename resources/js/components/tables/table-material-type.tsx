@@ -60,8 +60,8 @@ export default function TableMaterialType({ materialTypes }: TableMaterialTypePr
                                         )}
                                     </TableCell>
                                     <TableCell className="max-w-sm truncate sm:max-w-md">{materialType.description}</TableCell>
-                                    <TableCell className="text-muted-foreground">{materialType.created_at}</TableCell>
-                                    <TableCell className={`text-muted-foreground ${can.delete_materialtype ?? 'text-right'}`}>
+                                    <TableCell className="table-timestamp text-muted-foreground">{materialType.created_at}</TableCell>
+                                    <TableCell className={`table-timestamp text-muted-foreground ${can.delete_materialtype ?? 'text-right'}`}>
                                         {materialType.updated_at}
                                     </TableCell>
                                     {can.delete_materialtype && (

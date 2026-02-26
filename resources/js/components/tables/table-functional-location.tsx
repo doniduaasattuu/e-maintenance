@@ -64,8 +64,8 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                                         )}
                                     </TableCell>
                                     <TableCell className="max-w-sm truncate sm:max-w-md">{functionalLocation.description}</TableCell>
-                                    <TableCell className="text-muted-foreground">{functionalLocation.created_at}</TableCell>
-                                    <TableCell className={`text-muted-foreground ${can.delete_functionallocation ?? 'text-right'}`}>
+                                    <TableCell className="table-timestamp text-muted-foreground">{functionalLocation.created_at}</TableCell>
+                                    <TableCell className={`table-timestamp text-muted-foreground ${can.delete_functionallocation ?? 'text-right'}`}>
                                         {functionalLocation.updated_at}
                                     </TableCell>
                                     {can.delete_functionallocation && (

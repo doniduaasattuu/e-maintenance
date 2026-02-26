@@ -42,8 +42,10 @@ export default function TableEquipmentStatus({ equipmentStatuses }: TableEquipme
                             <TableHead className="text-muted-foreground">Code</TableHead>
                             <TableHead className="text-muted-foreground">Name</TableHead>
                             <TableHead className="text-muted-foreground">Description</TableHead>
-                            <TableHead className="text-muted-foreground">Created at</TableHead>
-                            <TableHead className={`text-muted-foreground ${can.delete_equipmentstatus ?? 'text-right'}`}>Updated at</TableHead>
+                            <TableHead className="table-timestamp text-muted-foreground">Created at</TableHead>
+                            <TableHead className={`table-timestamp text-muted-foreground ${can.delete_equipmentstatus ?? 'text-right'}`}>
+                                Updated at
+                            </TableHead>
                             {can.delete_equipmentstatus && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                         </TableRow>
                     </TableHeader>

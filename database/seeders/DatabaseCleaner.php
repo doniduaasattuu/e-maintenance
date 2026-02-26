@@ -26,5 +26,6 @@ class DatabaseCleaner extends Seeder
         DB::table('permissions')->delete();
         DB::table('roles')->delete();
         DB::table('finding_statuses')->delete();
+        DB::table('finding_priorities')->delete();
     }
 }

@@ -75,6 +75,11 @@ const mainNavItems: NavItem[] = [
                 href: route('finding-statuses.index'),
                 permission: 'index_findingstatus',
             },
+            {
+                title: 'Finding priority',
+                href: route('finding-priorities.index'),
+                permission: 'index_findingpriority',
+            },
         ],
     },
     {

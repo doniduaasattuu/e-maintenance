@@ -357,3 +357,12 @@ export interface FindingStatus {
     created_at: string;
     updated_at: string;
 }
+
+export interface FindingPriority {
+    id: number;
+    label: string;
+    description: string;
+    sla_resolution_hours: ?string;
+    created_at: string;
+    updated_at: string;
+}

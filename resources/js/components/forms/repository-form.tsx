@@ -40,24 +40,22 @@ export default function RepositoryForm({
     className,
 }: RepositoryFormParams) {
     return (
-        <form className={cn('space-y-4', className)} onSubmit={submit}>
+        <form className={cn('space-y-6', className)} onSubmit={submit}>
             <div className="grid gap-2">
                 <Label htmlFor="title">Title</Label>
-                <div className="flex gap-2">
-                    <Input
-                        id="title"
-                        name="title"
-                        type="text"
-                        required
-                        autoFocus
-                        tabIndex={1}
-                        autoComplete="title"
-                        value={data.title}
-                        onChange={(e) => setData('title', e.target.value)}
-                        disabled={processing}
-                        placeholder="Schematic Diagram Panel Incoming 20kV Switchgear ENC"
-                    />
-                </div>
+                <Input
+                    id="title"
+                    name="title"
+                    type="text"
+                    required
+                    autoFocus
+                    tabIndex={1}
+                    autoComplete="title"
+                    value={data.title}
+                    onChange={(e) => setData('title', e.target.value)}
+                    disabled={processing}
+                    placeholder="Schematic Diagram Panel Incoming 20kV Switchgear ENC"
+                />
                 <InputError message={errors.title} />
             </div>
 

@@ -32,6 +32,7 @@ class PermissionSeeder extends Seeder
             'InspectionAirConditioner',
             'Report',
             'FindingStatus',
+            'FindingPriority',
             'Finding',
             'Repository',
             'Unit',
