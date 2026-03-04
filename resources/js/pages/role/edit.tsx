@@ -1,6 +1,7 @@
 import RoleForm, { RoleFormData } from '@/components/forms/role-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem, Role } from '@/types';
 import { useForm } from '@inertiajs/react';
 import React, { FormEventHandler } from 'react';
@@ -41,19 +42,22 @@ export default function RoleEdit({ availablePermissions, role, currentPermission
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <RoleForm
-                availablePermissions={availablePermissions}
-                buttonLabel="Update"
-                canSubmit={can.update_role && selectedPermissions.length > 0}
-                data={data}
-                errors={errors}
-                processing={processing}
-                selectedPermissions={selectedPermissions}
-                setSelectedPermissions={setSelectedPermissions}
-                setData={setData}
-                submit={submit}
-                recentlySuccessful={recentlySuccessful}
-            />
+            <FormLayout moduleKey="ROLE" mode="edit">
+                <RoleForm
+                    availablePermissions={availablePermissions}
+                    buttonLabel="Update"
+                    canSubmit={can.update_role && selectedPermissions.length > 0}
+                    data={data}
+                    errors={errors}
+                    processing={processing}
+                    selectedPermissions={selectedPermissions}
+                    setSelectedPermissions={setSelectedPermissions}
+                    setData={setData}
+                    submit={submit}
+                    recentlySuccessful={recentlySuccessful}
+                    className="max-w-xl"
+                />
+            </FormLayout>
         </AppLayout>
     );
 }

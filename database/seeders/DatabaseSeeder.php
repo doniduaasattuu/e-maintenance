@@ -27,8 +27,10 @@ class DatabaseSeeder extends Seeder
             ImageSeeder::class,
             RepositorySeeder::class,
             RepositoryEquipmentSeeder::class,
+            FindingClauseSeeder::class,
             FindingStatusSeeder::class,
             FindingPrioritySeeder::class,
+            FindingSeeder::class,
         ]);
     }
 }

@@ -1,6 +1,7 @@
 import MaterialTypeForm, { MaterialTypeFormData } from '@/components/forms/material-type-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem, MaterialType } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -39,7 +40,7 @@ export default function MaterialTypeEdit({ materialType }: MaterialTypeEditProps
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="MATERIAL_TYPE" mode="edit">
                 <MaterialTypeForm
                     data={data}
                     setData={setData}
@@ -49,8 +50,9 @@ export default function MaterialTypeEdit({ materialType }: MaterialTypeEditProps
                     submit={submit}
                     canSubmit={can.update_materialtype}
                     buttonLabel="Update"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

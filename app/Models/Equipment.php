@@ -102,4 +102,9 @@ class Equipment extends Model
     {
         return $this->belongsToMany(Repository::class);
     }
+
+    public function findings(): HasMany
+    {
+        return $this->hasMany(Finding::class);
+    }
 }

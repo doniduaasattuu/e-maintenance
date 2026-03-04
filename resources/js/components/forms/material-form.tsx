@@ -1,11 +1,11 @@
-import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { MaterialType, Unit } from '@/types';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
+import RequiredLabel from '../required-label';
+import { Field, FieldError, FieldLabel } from '../ui/field';
 
 interface MaterialFormProps {
     data: Required<MaterialFormData>;
@@ -46,14 +46,15 @@ export default function MaterialForm({
 }: MaterialFormProps) {
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
-            <div className="grid gap-2">
-                <Label htmlFor="code">Code</Label>
-
+            <Field>
+                <FieldLabel htmlFor="code">
+                    Code
+                    <RequiredLabel />
+                </FieldLabel>
                 <Input
                     tabIndex={1}
                     id="code"
                     type="numeric"
-                    className="mt-1 block w-full"
                     value={data.code}
                     autoFocus
                     onChange={(e) => setData('code', e.target.value.toUpperCase())}
@@ -62,17 +63,17 @@ export default function MaterialForm({
                     disabled={processing}
                     autoComplete="code"
                 />
+                <FieldError>{errors.code}</FieldError>
+            </Field>
 
-                <InputError message={errors.code} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
-
+            <Field>
+                <FieldLabel htmlFor="name">
+                    Name
+                    <RequiredLabel />
+                </FieldLabel>
                 <Input
                     tabIndex={2}
                     id="name"
-                    className="mt-1 block w-full"
                     value={data.name}
                     onChange={(e) => setData('name', e.target.value)}
                     placeholder="BEARING NU"
@@ -80,17 +81,14 @@ export default function MaterialForm({
                     disabled={processing}
                     autoComplete="name"
                 />
+                <FieldError>{errors.name}</FieldError>
+            </Field>
 
-                <InputError message={errors.name} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="price">Price</Label>
-
+            <Field>
+                <FieldLabel htmlFor="price">Price</FieldLabel>
                 <Input
                     tabIndex={3}
                     id="price"
-                    className="mt-1 block w-full"
                     value={data.price?.toString()}
                     onChange={(e) => setData('price', e.target.value)}
                     placeholder="50000"
@@ -99,14 +97,13 @@ export default function MaterialForm({
                     disabled={processing}
                     autoComplete="price"
                 />
+                <FieldError>{errors.price}</FieldError>
+            </Field>
 
-                <InputError message={errors.price} />
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <Label htmlFor="unit">Unit</Label>
+            <Field>
+                <FieldLabel htmlFor="unit">Unit</FieldLabel>
                 <Select disabled={processing} onValueChange={(e) => setData('unit_id', e)} value={data.unit_id}>
-                    <SelectTrigger tabIndex={4} className="mt-1 truncate overflow-hidden whitespace-nowrap">
+                    <SelectTrigger tabIndex={4} className="truncate overflow-hidden whitespace-nowrap">
                         <SelectValue placeholder="Select a unit" />
                     </SelectTrigger>
                     <SelectContent>
@@ -122,13 +119,13 @@ export default function MaterialForm({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <InputError message={errors.unit_id} />
-            </div>
+                <FieldError>{errors.unit_id}</FieldError>
+            </Field>
 
-            <div className="flex flex-col gap-2">
-                <Label htmlFor="material_type">Type</Label>
+            <Field>
+                <FieldLabel htmlFor="material_type">Type</FieldLabel>
                 <Select disabled={processing} onValueChange={(e) => setData('material_type_id', e)} value={data.material_type_id}>
-                    <SelectTrigger tabIndex={5} className="mt-1 truncate overflow-hidden whitespace-nowrap">
+                    <SelectTrigger tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
                         <SelectValue placeholder="Select a material type" />
                     </SelectTrigger>
                     <SelectContent className="max-w-[calc(100vw-2rem)]">
@@ -144,8 +141,8 @@ export default function MaterialForm({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <InputError message={errors.material_type_id} />
-            </div>
+                <FieldError>{errors.material_type_id}</FieldError>
+            </Field>
 
             {canSubmit && (
                 <ButtonSubmit

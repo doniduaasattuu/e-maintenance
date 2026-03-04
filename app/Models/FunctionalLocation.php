@@ -37,4 +37,9 @@ class FunctionalLocation extends Model
     {
         return $this->hasMany(Equipment::class);
     }
+
+    public function findings(): HasMany
+    {
+        return $this->hasMany(Finding::class);
+    }
 }

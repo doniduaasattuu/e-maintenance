@@ -2,12 +2,12 @@ import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
-import InputError from '@/components/input-error';
 import { InputPassword } from '@/components/input-password';
+import RequiredLabel from '@/components/required-label';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 
 type RegisterForm = {
@@ -39,9 +39,12 @@ export default function Register() {
     return (
         <AuthLayout title="Create an account" description="Enter your details below to create your account">
             <Head title="Register" />
-            <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-2">
-                    <Label htmlFor="employee_id">Employee ID</Label>
+            <form className="space-y-6" onSubmit={submit}>
+                <Field>
+                    <FieldLabel htmlFor="employee_id">
+                        Employee ID
+                        <RequiredLabel />
+                    </FieldLabel>
                     <Input
                         id="employee_id"
                         type="text"
@@ -54,11 +57,14 @@ export default function Register() {
                         disabled={processing}
                         placeholder="12345678"
                     />
-                    <InputError message={errors.employee_id} />
-                </div>
+                    <FieldError>{errors.employee_id}</FieldError>
+                </Field>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="name">Name</Label>
+                <Field>
+                    <FieldLabel htmlFor="name">
+                        Name
+                        <RequiredLabel />
+                    </FieldLabel>
                     <Input
                         id="name"
                         type="text"
@@ -70,11 +76,14 @@ export default function Register() {
                         disabled={processing}
                         placeholder="John Doe"
                     />
-                    <InputError message={errors.name} />
-                </div>
+                    <FieldError>{errors.name}</FieldError>
+                </Field>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="email">Email address</Label>
+                <Field>
+                    <FieldLabel htmlFor="email">
+                        Email address
+                        <RequiredLabel />
+                    </FieldLabel>
                     <Input
                         id="email"
                         type="email"
@@ -86,11 +95,14 @@ export default function Register() {
                         disabled={processing}
                         placeholder="john.doe@example.com"
                     />
-                    <InputError message={errors.email} />
-                </div>
+                    <FieldError>{errors.email}</FieldError>
+                </Field>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
+                <Field>
+                    <FieldLabel htmlFor="password">
+                        Password
+                        <RequiredLabel />
+                    </FieldLabel>
                     <InputPassword
                         id="password"
                         required
@@ -102,11 +114,14 @@ export default function Register() {
                         toggleTabIndex={5}
                         placeholder="********"
                     />
-                    <InputError message={errors.password} />
-                </div>
+                    <FieldError>{errors.password}</FieldError>
+                </Field>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="password_confirmation">Confirm password</Label>
+                <Field>
+                    <FieldLabel htmlFor="password_confirmation">
+                        Confirm password
+                        <RequiredLabel />
+                    </FieldLabel>
                     <InputPassword
                         id="password_confirmation"
                         required
@@ -118,11 +133,14 @@ export default function Register() {
                         placeholder="********"
                         toggleTabIndex={7}
                     />
-                    <InputError message={errors.password_confirmation} />
-                </div>
+                    <FieldError>{errors.password_confirmation}</FieldError>
+                </Field>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="registration_key">Register code</Label>
+                <Field>
+                    <FieldLabel htmlFor="registration_key">
+                        Register code
+                        <RequiredLabel />
+                    </FieldLabel>
                     <Input
                         id="registration_key"
                         type="text"
@@ -132,8 +150,8 @@ export default function Register() {
                         onChange={(e) => setData('registration_key', e.target.value)}
                         disabled={processing}
                     />
-                    <InputError message={errors.registration_key} />
-                </div>
+                    <FieldError>{errors.registration_key}</FieldError>
+                </Field>
 
                 <Button type="submit" className="mt-2 w-full" tabIndex={9} disabled={processing}>
                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}

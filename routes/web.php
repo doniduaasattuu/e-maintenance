@@ -6,6 +6,8 @@ use App\Http\Controllers\EquipmentClassController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
+use App\Http\Controllers\FindingClauseController;
+use App\Http\Controllers\FindingController;
 use App\Http\Controllers\FindingPriorityController;
 use App\Http\Controllers\FindingStatusController;
 use App\Http\Controllers\FunctionalLocationController;
@@ -181,11 +183,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{repository}/material/{material}', [RepositoryMaterialController::class, 'destroy'])->name('repositories.material.destroy');
     });
 
+    // FINDING ClAUSE
+    Route::resource('/finding-clauses', FindingClauseController::class)->except(['show']);
+
     // FINDING STATUS
     Route::resource('/finding-statuses', FindingStatusController::class)->except(['show']);
 
     // FINDING PRIORITY
     Route::resource('/finding-priorities', FindingPriorityController::class)->except(['show']);
+
+    Route::resource('/findings', FindingController::class);
 });
 
 Route::fallback(function () {

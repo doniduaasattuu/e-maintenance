@@ -1,9 +1,9 @@
 import MaterialForm, { MaterialFormData } from '@/components/forms/material-form';
-import Heading from '@/components/heading';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem, MaterialType, Unit } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -45,10 +45,7 @@ export default function MaterialCreate({ units, materialTypes }: MaterialCreateP
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Create" />
-            <div className="space-y-6 px-4 py-6">
-                <Heading title="Create" description="Insert new material." />
-
+            <FormLayout moduleKey="MATERIAL" mode="create">
                 <MaterialForm
                     data={data}
                     setData={setData}
@@ -63,9 +60,7 @@ export default function MaterialCreate({ units, materialTypes }: MaterialCreateP
                     materialTypes={materialTypes.data}
                     className="max-w-xl"
                 />
-            </div>
-
-            <div className="max-w-2xl space-y-4 p-4"></div>
+            </FormLayout>
         </AppLayout>
     );
 }

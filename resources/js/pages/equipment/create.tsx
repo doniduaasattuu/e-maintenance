@@ -1,9 +1,9 @@
 import EquipmentForm, { EquipmentFormData } from '@/components/forms/equipment-form';
-import Heading from '@/components/heading';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem, EquipmentClass, EquipmentStatus } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -50,10 +50,7 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Create" />
-            <div className="space-y-6 px-4 py-6">
-                <Heading title="Create" description="Insert new equipment." />
-
+            <FormLayout moduleKey="EQUIPMENT" mode="create">
                 <EquipmentForm
                     equipmentClasses={equipmentClasses}
                     equipmentStatuses={equipmentStatuses}
@@ -68,7 +65,7 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
                     successMessage="Created"
                     className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

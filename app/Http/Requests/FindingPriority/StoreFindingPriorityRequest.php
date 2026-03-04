@@ -33,6 +33,7 @@ class StoreFindingPriorityRequest extends FormRequest
                 'numeric',
             ],
             'description' => ['required', 'string', 'max:255'],
+            'color_code' => ['nullable', 'hex_color']
         ];
     }
 }

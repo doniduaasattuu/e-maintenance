@@ -1,10 +1,10 @@
-import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import { Division } from '@/types';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
+import { Field, FieldError, FieldLabel } from '../ui/field';
 
 export type DepartmentFormData = {
     code: string;
@@ -25,6 +25,7 @@ interface DepartmentFormProps {
     canSubmit: boolean;
     buttonLabel: string;
     successMessage?: string;
+    className?: string;
 }
 
 export default function DepartmentForm({
@@ -38,16 +39,15 @@ export default function DepartmentForm({
     buttonLabel,
     recentlySuccessful,
     successMessage,
+    className,
 }: DepartmentFormProps) {
     return (
-        <form onSubmit={submit} className="space-y-6">
-            <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
-
+        <form onSubmit={submit} className={cn('space-y-6', className)}>
+            <Field>
+                <FieldLabel htmlFor="name">Name</FieldLabel>
                 <Input
                     tabIndex={1}
                     id="name"
-                    className="mt-1 block w-full"
                     value={data.name}
                     autoFocus
                     onChange={(e) => setData('name', e.target.value)}
@@ -56,17 +56,14 @@ export default function DepartmentForm({
                     disabled={processing}
                     autoComplete="name"
                 />
+                <FieldError>{errors.name}</FieldError>
+            </Field>
 
-                <InputError message={errors.name} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="code">Code</Label>
-
+            <Field>
+                <FieldLabel htmlFor="code">Code</FieldLabel>
                 <Input
                     tabIndex={2}
                     id="code"
-                    className="mt-1 block w-full"
                     value={data.code}
                     onChange={(e) => setData('code', e.target.value.toUpperCase())}
                     placeholder="EI2"
@@ -74,12 +71,11 @@ export default function DepartmentForm({
                     disabled={processing}
                     autoComplete="code"
                 />
+                <FieldError>{errors.code}</FieldError>
+            </Field>
 
-                <InputError message={errors.code} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="division">Division</Label>
+            <Field>
+                <FieldLabel htmlFor="division">Division</FieldLabel>{' '}
                 <Select disabled={processing} onValueChange={(e) => setData('division_id', e)} value={data.division_id}>
                     <SelectTrigger tabIndex={3} className="truncate overflow-hidden whitespace-nowrap">
                         <SelectValue placeholder="Select a division" />
@@ -97,8 +93,8 @@ export default function DepartmentForm({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <InputError message={errors.division_id} />
-            </div>
+                <FieldError>{errors.division_id}</FieldError>
+            </Field>
 
             {canSubmit && (
                 <ButtonSubmit

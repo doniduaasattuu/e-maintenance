@@ -40,19 +40,18 @@ export default function DivisionCreate() {
             <Head title="Divisions" />
 
             <OrganizationsLayout>
-                <div className="max-w-2xl space-y-4">
-                    <DivisionForm
-                        data={data}
-                        setData={setData}
-                        errors={errors}
-                        processing={processing}
-                        recentlySuccessful={recentlySuccessful}
-                        submit={submit}
-                        canSubmit={can.store_division}
-                        buttonLabel="Create"
-                        successMessage="Created"
-                    />
-                </div>
+                <DivisionForm
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    submit={submit}
+                    canSubmit={can.store_division}
+                    buttonLabel="Create"
+                    successMessage="Created"
+                    className="max-w-xl"
+                />
             </OrganizationsLayout>
         </AppLayout>
     );

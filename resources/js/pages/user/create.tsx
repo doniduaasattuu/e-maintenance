@@ -4,6 +4,7 @@ import { useForm } from '@inertiajs/react';
 
 import UserForm, { UserFormData } from '@/components/forms/user-form';
 import usePermissions from '@/hooks/use-permissions';
+import FormLayout from '@/layouts/form/layout';
 import React, { FormEventHandler, useRef } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -62,25 +63,27 @@ export default function UserCreate({ departments, positions, workCenters, availa
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <UserForm
-                buttonLabel="Create"
-                canSubmit={can.store_user}
-                data={data}
-                setData={setData}
-                errors={errors}
-                processing={processing}
-                departments={departments}
-                positions={positions}
-                workCenters={workCenters}
-                availableRoles={availableRoles}
-                selectedRoles={selectedRoles}
-                setSelectedRoles={setSelectedRoles}
-                fileInputRef={fileInputRef}
-                submit={submit}
-                recentlySuccessful={recentlySuccessful}
-                successMessage="Created"
-                className="max-w-xl"
-            />
+            <FormLayout moduleKey="USER" mode="create">
+                <UserForm
+                    buttonLabel="Create"
+                    canSubmit={can.store_user}
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    departments={departments}
+                    positions={positions}
+                    workCenters={workCenters}
+                    availableRoles={availableRoles}
+                    selectedRoles={selectedRoles}
+                    setSelectedRoles={setSelectedRoles}
+                    fileInputRef={fileInputRef}
+                    submit={submit}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage="Created"
+                    className="max-w-xl"
+                />
+            </FormLayout>
         </AppLayout>
     );
 }

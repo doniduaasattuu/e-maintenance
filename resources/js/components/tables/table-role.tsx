@@ -10,6 +10,7 @@ import { tableCaption } from '@/lib/utils';
 import { Meta, Role } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import EmptyIcon from '../empty-icon';
 
 interface TableRoleProps {
     roles: {
@@ -34,50 +35,54 @@ export default function TableRole({ roles }: TableRoleProps) {
                 {can.create_role && <ButtonAdd tabIndex={2} route={route('roles.create')} />}
             </div>
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                <Table>
-                    <TableCaption className="text-sm">{caption}</TableCaption>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="text-muted-foreground">#</TableHead>
-                            <TableHead className="text-muted-foreground">Name</TableHead>
-                            <TableHead className="text-muted-foreground">Created at</TableHead>
-                            <TableHead className="text-muted-foreground">Updated at</TableHead>
-                            {can.delete_role && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {roles.data.map((role: Role, index: number) => {
-                            return (
-                                <TableRow key={role.id}>
-                                    <TableCell className="w-12.5">{meta.from + index}</TableCell>
-                                    <TableCell className="font-medium">
-                                        {can.update_role ? (
-                                            <TextLink href={route('roles.edit', role.id)}>{role.name}</TextLink>
-                                        ) : (
-                                            <span>{role.name}</span>
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="text-muted-foreground w-22.5">{role.created_at}</TableCell>
-                                    <TableCell className="text-muted-foreground w-22.5">{role.updated_at}</TableCell>
-
-                                    {can.delete_role && (
-                                        <TableCell className="w-10 text-right">
-                                            {can.delete_role && role.name !== 'Admin' && (
-                                                <ActionConfirm
-                                                    action={() => handleDeleteRole(role.id)}
-                                                    title={`Delete Role ${role.name}?`}
-                                                    description="This action will remove this role from all users. This cannot be undone."
-                                                >
-                                                    <Trash2 size={18} className="text-red-500" />
-                                                </ActionConfirm>
+                {roles.data.length > 0 ? (
+                    <Table>
+                        <TableCaption className="text-sm">{caption}</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="text-muted-foreground">#</TableHead>
+                                <TableHead className="text-muted-foreground">Name</TableHead>
+                                <TableHead className="text-muted-foreground">Created at</TableHead>
+                                <TableHead className="text-muted-foreground">Updated at</TableHead>
+                                {can.delete_role && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {roles.data.map((role: Role, index: number) => {
+                                return (
+                                    <TableRow key={role.id}>
+                                        <TableCell className="w-12.5">{meta.from + index}</TableCell>
+                                        <TableCell className="font-medium">
+                                            {can.update_role ? (
+                                                <TextLink href={route('roles.edit', role.id)}>{role.name}</TextLink>
+                                            ) : (
+                                                <span>{role.name}</span>
                                             )}
                                         </TableCell>
-                                    )}
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
+                                        <TableCell className="text-muted-foreground w-22.5">{role.created_at}</TableCell>
+                                        <TableCell className="text-muted-foreground w-22.5">{role.updated_at}</TableCell>
+
+                                        {can.delete_role && (
+                                            <TableCell className="w-10 text-right">
+                                                {can.delete_role && role.name !== 'Admin' && (
+                                                    <ActionConfirm
+                                                        action={() => handleDeleteRole(role.id)}
+                                                        title={`Delete Role ${role.name}?`}
+                                                        description="This action will remove this role from all users. This cannot be undone."
+                                                    >
+                                                        <Trash2 size={18} className="text-red-500" />
+                                                    </ActionConfirm>
+                                                )}
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <EmptyIcon />
+                )}
             </div>
             <GeneratePagination meta={meta} />
         </TableLayout>

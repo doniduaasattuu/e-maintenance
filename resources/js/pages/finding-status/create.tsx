@@ -1,6 +1,7 @@
 import FindingStatusForm, { FindingStatusFormData } from '@/components/forms/finding-status-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -36,7 +37,7 @@ export default function FindingStatusCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="FINDING_STATUS" mode="create">
                 <FindingStatusForm
                     data={data}
                     setData={setData}
@@ -47,8 +48,9 @@ export default function FindingStatusCreate() {
                     canSubmit={can.store_findingstatus}
                     buttonLabel="Create"
                     successMessage="Created"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

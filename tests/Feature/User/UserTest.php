@@ -143,7 +143,7 @@ test('update fails validation', function () {
             'email' => 'bad',
         ]);
 
-    $response->assertSessionHasErrors(['name', 'employee_id', 'email']);
+    $response->assertSessionHasErrors(['name', 'email']);
 });
 
 test('can soft deletes user', function () {

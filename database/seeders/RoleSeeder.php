@@ -42,6 +42,10 @@ class RoleSeeder extends Seeder
             'index_repository',
             'index_unit',
             'index_materialtype',
+            'index_finding_clause',
+            'index_finding_status',
+            'index_finding_priority',
+            'index_finding',
         ]);
 
         // Cari user admin dan assign role jika ditemukan

@@ -1,9 +1,9 @@
-import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import TableLayout from '@/layouts/table/layout';
+import { cn } from '@/lib/utils';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
+import RequiredLabel from '../required-label';
+import { Field, FieldError, FieldLabel } from '../ui/field';
 
 interface FindingPriorityFormProps {
     data: Required<FindingPriorityFormData>;
@@ -15,6 +15,7 @@ interface FindingPriorityFormProps {
     canSubmit: boolean;
     buttonLabel: string;
     successMessage?: string;
+    className?: string;
 }
 
 export type FindingPriorityFormData = {
@@ -33,73 +34,69 @@ export default function FindingPriorityForm({
     canSubmit,
     buttonLabel,
     successMessage,
+    className,
 }: FindingPriorityFormProps) {
     return (
-        <TableLayout title="Finding Priorities" description="Overview and management of finding priorities in the system">
-            <form onSubmit={submit} className="space-y-6">
-                <div className="grid gap-2">
-                    <Label htmlFor="label">Label</Label>
+        <form onSubmit={submit} className={cn('space-y-6', className)}>
+            <Field>
+                <FieldLabel htmlFor="label">
+                    Label
+                    <RequiredLabel />
+                </FieldLabel>
+                <Input
+                    tabIndex={1}
+                    id="label"
+                    value={data.label}
+                    onChange={(e) => setData('label', e.target.value)}
+                    placeholder="Recommendation"
+                    required
+                    disabled={processing}
+                    autoComplete="label"
+                />
+                <FieldError>{errors.label}</FieldError>
+            </Field>
 
-                    <Input
-                        tabIndex={1}
-                        id="label"
-                        className="mt-1 block w-full"
-                        value={data.label}
-                        onChange={(e) => setData('label', e.target.value)}
-                        placeholder="Recommendation"
-                        required
-                        disabled={processing}
-                        autoComplete="label"
-                    />
+            <Field>
+                <FieldLabel htmlFor="description">
+                    Description
+                    <RequiredLabel />
+                </FieldLabel>
+                <Input
+                    tabIndex={2}
+                    id="description"
+                    value={data.description ?? ''}
+                    onChange={(e) => setData('description', e.target.value)}
+                    placeholder="Suggestions for reliability or maintenance optimization."
+                    disabled={processing}
+                    autoComplete="description"
+                />
+                <FieldError>{errors.description}</FieldError>
+            </Field>
 
-                    <InputError message={errors.label} />
-                </div>
+            <div className="grid gap-2">
+                <FieldLabel htmlFor="sla_resolution_hours">SLA Resolution Hours</FieldLabel>
+                <Input
+                    tabIndex={3}
+                    id="sla_resolution_hours"
+                    value={data.sla_resolution_hours ?? ''}
+                    onChange={(e) => setData('sla_resolution_hours', e.target.value)}
+                    placeholder="24"
+                    disabled={processing}
+                    inputMode="numeric"
+                    autoComplete="sla_resolution_hours"
+                />
+                <FieldError>{errors.sla_resolution_hours}</FieldError>
+            </div>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="description">Description</Label>
-
-                    <Input
-                        tabIndex={2}
-                        id="description"
-                        className="mt-1 block w-full"
-                        value={data.description ?? ''}
-                        onChange={(e) => setData('description', e.target.value)}
-                        placeholder="Suggestions for reliability or maintenance optimization."
-                        disabled={processing}
-                        autoComplete="description"
-                    />
-
-                    <InputError message={errors.description} />
-                </div>
-
-                <div className="grid gap-2">
-                    <Label htmlFor="sla_resolution_hours">SLA Resolution Hours</Label>
-
-                    <Input
-                        tabIndex={3}
-                        id="sla_resolution_hours"
-                        className="mt-1 block w-full"
-                        value={data.sla_resolution_hours ?? ''}
-                        onChange={(e) => setData('sla_resolution_hours', e.target.value)}
-                        placeholder="24"
-                        disabled={processing}
-                        inputMode="numeric"
-                        autoComplete="sla_resolution_hours"
-                    />
-
-                    <InputError message={errors.sla_resolution_hours} />
-                </div>
-
-                {canSubmit && (
-                    <ButtonSubmit
-                        disabled={processing || data.label == '' || data.description == ''}
-                        tabIndex={4}
-                        recentlySuccessful={recentlySuccessful}
-                        successMessage={successMessage}
-                        label={buttonLabel}
-                    />
-                )}
-            </form>
-        </TableLayout>
+            {canSubmit && (
+                <ButtonSubmit
+                    disabled={processing || data.label == '' || data.description == ''}
+                    tabIndex={4}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage={successMessage}
+                    label={buttonLabel}
+                />
+            )}
+        </form>
     );
 }

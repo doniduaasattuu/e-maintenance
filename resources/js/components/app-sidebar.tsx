@@ -24,17 +24,17 @@ const mainNavItems: NavItem[] = [
         icon: DatabaseIcon,
         subItems: [
             {
-                title: 'Functional locations',
+                title: 'Functional Location',
                 href: route('functional-locations.index'),
                 permission: 'index_functionallocation',
             },
             {
-                title: 'Equipments',
+                title: 'Equipment',
                 href: route('equipments.index'),
                 permission: 'index_equipment',
             },
             {
-                title: 'Materials',
+                title: 'Material',
                 href: route('materials.index'),
                 permission: 'index_material',
             },
@@ -46,50 +46,55 @@ const mainNavItems: NavItem[] = [
         icon: Layers,
         subItems: [
             {
-                title: 'Equipment histories',
+                title: 'Equipment History',
                 href: route('equipment-histories.index'),
                 permission: 'index_installdismantlehistory',
             },
             {
-                title: 'Equipment classes',
+                title: 'Equipment Class',
                 href: route('equipment-classes.index'),
                 permission: 'index_equipmentclass',
             },
             {
-                title: 'Equipment statuses',
+                title: 'Equipment Status',
                 href: route('equipment-statuses.index'),
                 permission: 'index_equipmentstatus',
             },
             {
-                title: 'Material unit',
+                title: 'Material Unit',
                 href: route('units.index'),
                 permission: 'index_unit',
             },
             {
-                title: 'Material type',
+                title: 'Material Type',
                 href: route('material-types.index'),
                 permission: 'index_materialtype',
             },
             {
-                title: 'Finding status',
+                title: 'Finding Clause',
+                href: route('finding-clauses.index'),
+                permission: 'index_findingclause',
+            },
+            {
+                title: 'Finding Status',
                 href: route('finding-statuses.index'),
                 permission: 'index_findingstatus',
             },
             {
-                title: 'Finding priority',
+                title: 'Finding Priority',
                 href: route('finding-priorities.index'),
                 permission: 'index_findingpriority',
             },
         ],
     },
     {
-        title: 'Findings',
-        href: route('users.index'),
+        title: 'Finding',
+        href: route('findings.index'),
         icon: TextSearch,
         permission: 'index_finding',
     },
     {
-        title: 'Repositories',
+        title: 'Repository',
         href: route('repositories.index'),
         icon: FolderOpen,
         permission: 'index_repository',
@@ -98,19 +103,19 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Users',
+        title: 'User',
         href: route('users.index'),
         icon: Users2,
         permission: 'index_user',
     },
     {
-        title: 'Roles',
+        title: 'Role',
         href: route('roles.index'),
         icon: BadgeCheck,
         permission: 'index_role',
     },
     {
-        title: 'Organizations',
+        title: 'Organization',
         href: route('departments.index'),
         icon: Building2,
         permission: 'index_department',

@@ -19,6 +19,7 @@ class FindingPriorityResource extends JsonResource
             'label' => $this->label,
             'sla_resolution_hours' => $this->sla_resolution_hours,
             'description' => $this->description,
+            'color_code' => $this->color_code,
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
         ];

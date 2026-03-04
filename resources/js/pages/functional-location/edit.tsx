@@ -1,6 +1,7 @@
 import FunctionalLocationForm, { FunctionalLocationFormData } from '@/components/forms/functional-location-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem, FunctionalLocation } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -39,17 +40,19 @@ export default function FunctionalLocationEdit({ functionalLocation }: Functiona
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <FunctionalLocationForm
-                data={data}
-                setData={setData}
-                errors={errors}
-                processing={processing}
-                recentlySuccessful={recentlySuccessful}
-                submit={submit}
-                canSubmit={can.update_functionallocation}
-                buttonLabel="Update"
-                className="max-w-xl"
-            />
+            <FormLayout moduleKey="FUNCTIONAL_LOCATION" mode="edit">
+                <FunctionalLocationForm
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    submit={submit}
+                    canSubmit={can.update_functionallocation}
+                    buttonLabel="Update"
+                    className="max-w-xl"
+                />
+            </FormLayout>
         </AppLayout>
     );
 }

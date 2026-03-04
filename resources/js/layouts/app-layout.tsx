@@ -14,7 +14,7 @@ interface AppLayoutProps {
 
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
     const { appearance } = useAppearance();
-    const { message } = usePage<SharedData>().props;
+    const { message, auth } = usePage<SharedData>().props;
 
     React.useEffect(() => {
         if (message) {
@@ -48,7 +48,7 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
     }, [message]);
 
     return (
-        <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
+        <AppLayoutTemplate user={auth.user} breadcrumbs={breadcrumbs} {...props}>
             <Toaster theme={appearance === 'light' ? 'light' : appearance} />
             {children}
         </AppLayoutTemplate>

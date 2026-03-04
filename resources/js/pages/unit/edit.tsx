@@ -1,6 +1,7 @@
 import UnitForm, { UnitFormData } from '@/components/forms/unit-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem, Unit } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -37,7 +38,7 @@ export default function UnitEdit({ unit }: UnitEditProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="MATERIAL_UNIT" mode="edit">
                 <UnitForm
                     data={data}
                     setData={setData}
@@ -48,8 +49,9 @@ export default function UnitEdit({ unit }: UnitEditProps) {
                     canSubmit={can.update_unit}
                     buttonLabel="Update"
                     successMessage="Updated"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

@@ -350,6 +350,15 @@ export interface Repository {
     updated_at: string;
 }
 
+export interface FindingClause {
+    id: number;
+    code: string;
+    title: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface FindingStatus {
     id: number;
     name: string;
@@ -362,7 +371,42 @@ export interface FindingPriority {
     id: number;
     label: string;
     description: string;
-    sla_resolution_hours: ?string;
+    sla_resolution_hours?: string;
+    color_code?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Finding extends BaseResource {
+    id: number;
+    description: string;
+    notification: string;
+
+    // Relasi (Optional karena menggunakan whenLoaded di Resource)
+    clause?: FindingClause;
+    status?: FindingStatus;
+    priority?: FindingPriority;
+    equipment?: Equipment;
+    functionalLocation?: FunctionalLocation;
+
+    inspector?: User;
+    verifier?: User | null; // Bisa null jika belum diverifikasi
+
+    images?: FindingImage[];
+
+    // Timestamps
+    created_at: string;
+    updated_at: string;
+    closed_at: string | null;
+}
+
+export interface FindingImage {
+    id: number;
+    finding_id: number;
+    file_path: string;
+    url: string;
+    category: 'before' | 'after';
+    original_name: string;
     created_at: string;
     updated_at: string;
 }

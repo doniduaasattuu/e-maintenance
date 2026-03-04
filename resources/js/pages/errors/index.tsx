@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-import { ArrowLeft } from 'lucide-react';
+import { BreadcrumbItem, SharedData } from '@/types';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { KeySquare, LayoutGrid } from 'lucide-react';
 
 export default function ErrorPage({ status, title, description }: { status: number; title: string; description: string }) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -10,6 +10,9 @@ export default function ErrorPage({ status, title, description }: { status: numb
             href: '#',
         },
     ];
+
+    const { auth } = usePage<SharedData>().props;
+    const user = auth.user;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -24,13 +27,22 @@ export default function ErrorPage({ status, title, description }: { status: numb
                 </div>
 
                 <div className="mt-8">
-                    <button
-                        onClick={() => window.history.back()}
+                    <Link
+                        href={user ? route('dashboard') : route('login')}
                         className="bg-primary text-primary-foreground inline-flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold shadow-lg transition-all hover:scale-105 active:scale-95"
                     >
-                        <ArrowLeft />
-                        Back
-                    </button>
+                        {user ? (
+                            <>
+                                <LayoutGrid />
+                                Dashboard
+                            </>
+                        ) : (
+                            <>
+                                <KeySquare />
+                                Login
+                            </>
+                        )}
+                    </Link>
                 </div>
             </div>
         </AppLayout>

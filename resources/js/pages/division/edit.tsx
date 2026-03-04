@@ -43,18 +43,17 @@ export default function DivisionEdit({ division }: DivisionEditProps) {
             <Head title="Divisions" />
 
             <OrganizationsLayout>
-                <div className="max-w-2xl space-y-4">
-                    <DivisionForm
-                        data={data}
-                        setData={setData}
-                        errors={errors}
-                        processing={processing}
-                        recentlySuccessful={recentlySuccessful}
-                        submit={submit}
-                        canSubmit={can.update_division}
-                        buttonLabel="Update"
-                    />
-                </div>
+                <DivisionForm
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    submit={submit}
+                    canSubmit={can.update_division}
+                    buttonLabel="Update"
+                    className="max-w-xl"
+                />
             </OrganizationsLayout>
         </AppLayout>
     );

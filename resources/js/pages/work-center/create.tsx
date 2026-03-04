@@ -40,19 +40,18 @@ export default function WorkCenterCreate() {
             <Head title="Work Centers" />
 
             <OrganizationsLayout>
-                <div className="max-w-2xl space-y-4">
-                    <WorkCenterForm
-                        data={data}
-                        setData={setData}
-                        errors={errors}
-                        processing={processing}
-                        recentlySuccessful={recentlySuccessful}
-                        submit={submit}
-                        canSubmit={can.store_workcenter}
-                        buttonLabel="Submit"
-                        successMessage="Created"
-                    />
-                </div>
+                <WorkCenterForm
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    submit={submit}
+                    canSubmit={can.store_workcenter}
+                    buttonLabel="Submit"
+                    successMessage="Created"
+                    className="max-w-xl"
+                />
             </OrganizationsLayout>
         </AppLayout>
     );

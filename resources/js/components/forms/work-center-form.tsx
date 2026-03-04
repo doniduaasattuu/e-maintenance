@@ -1,8 +1,8 @@
-import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
+import { Field, FieldError, FieldLabel } from '../ui/field';
 
 export type WorkCenterFormData = {
     code: string;
@@ -19,6 +19,7 @@ interface WorkCenterFormProps {
     canSubmit: boolean;
     buttonLabel: string;
     successMessage?: string;
+    className?: string;
 }
 
 export default function WorkCenterForm({
@@ -31,16 +32,15 @@ export default function WorkCenterForm({
     recentlySuccessful,
     successMessage,
     buttonLabel,
+    className,
 }: WorkCenterFormProps) {
     return (
-        <form onSubmit={submit} className="space-y-6">
-            <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
-
+        <form onSubmit={submit} className={cn('space-y-6', className)}>
+            <Field>
+                <FieldLabel htmlFor="name">Name</FieldLabel>
                 <Input
                     tabIndex={1}
                     id="name"
-                    className="mt-1 block w-full"
                     value={data.name}
                     autoFocus
                     onChange={(e) => setData('name', e.target.value)}
@@ -49,17 +49,14 @@ export default function WorkCenterForm({
                     disabled={processing}
                     autoComplete="name"
                 />
+                <FieldError>{errors.name}</FieldError>
+            </Field>
 
-                <InputError message={errors.name} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="code">Code</Label>
-
+            <Field>
+                <FieldLabel htmlFor="code">Code</FieldLabel>
                 <Input
                     tabIndex={2}
                     id="code"
-                    className="mt-1 block w-full"
                     value={data.code}
                     onChange={(e) => setData('code', e.target.value.toUpperCase())}
                     placeholder="PME21001"
@@ -67,9 +64,8 @@ export default function WorkCenterForm({
                     disabled={processing}
                     autoComplete="code"
                 />
-
-                <InputError message={errors.code} />
-            </div>
+                <FieldError>{errors.code}</FieldError>
+            </Field>
 
             {canSubmit && (
                 <ButtonSubmit

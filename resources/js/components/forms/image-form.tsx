@@ -1,12 +1,10 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
 import { AxiosProgressEvent } from 'axios';
+import { Check } from 'lucide-react';
 import { ChangeEvent, FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
-import InputDescription from '../input-description';
-import InputError from '../input-error';
+import { Field, FieldDescription, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Progress } from '../ui/progress';
 
 interface ImageFormParams {
     submit: FormEventHandler;
@@ -19,9 +17,10 @@ interface ImageFormParams {
         image?: File | null;
     };
     recentlySuccessful: boolean;
+    className?: string;
 }
 
-export default function ImageForm({ submit, fileInputRef, processing, setData, progress, errors, data, recentlySuccessful }: ImageFormParams) {
+export default function ImageForm({ submit, fileInputRef, processing, setData, errors, data, recentlySuccessful, className }: ImageFormParams) {
     const compressImage = useImageCompressor();
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -39,23 +38,17 @@ export default function ImageForm({ submit, fileInputRef, processing, setData, p
 
     return (
         <form onSubmit={submit} className="space-y-6">
-            <div className="grid w-full gap-2 sm:max-w-xs">
-                <Label htmlFor="image">Upload</Label>
-                <Input
-                    className="mt-1"
-                    type="file"
-                    id="image"
-                    ref={fileInputRef}
-                    disabled={processing}
-                    onChange={handleFileChange}
-                    accept=".jpg,.jpeg,.png,.webp"
-                />
-                {progress && <Progress className="mt-1 h-1.5" value={progress.percentage} />}
-                <InputError message={errors.image} />
+            <Field className={className}>
+                <FieldLabel htmlFor="image">Upload</FieldLabel>
+                <Input type="file" id="image" ref={fileInputRef} disabled={processing} onChange={handleFileChange} accept=".jpg,.jpeg,.png,.webp" />
+                <FieldError>{errors.image}</FieldError>
                 {data.image && data.image.size > 1 && (
-                    <InputDescription message={`Compressed to ${(data.image?.size / 1024 / 1024).toFixed(2)} MB`} />
+                    <FieldDescription className="flex items-center gap-1">
+                        <Check className="h-4 w-4" />
+                        {`Compressed to ${(data.image?.size / 1024 / 1024).toFixed(2)} MB`}
+                    </FieldDescription>
                 )}
-            </div>
+            </Field>
             <ButtonSubmit
                 disabled={processing || fileInputRef.current == null || data.image == null}
                 showSuccessMessage={true}

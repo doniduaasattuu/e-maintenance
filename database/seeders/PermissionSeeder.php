@@ -31,6 +31,7 @@ class PermissionSeeder extends Seeder
             'InspectionTransformer',
             'InspectionAirConditioner',
             'Report',
+            'FindingClause',
             'FindingStatus',
             'FindingPriority',
             'Finding',

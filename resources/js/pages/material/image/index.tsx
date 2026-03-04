@@ -1,3 +1,4 @@
+import EmptyIcon from '@/components/empty-icon';
 import ImageForm from '@/components/forms/image-form';
 import HeadingSmall from '@/components/heading-small';
 import { ImageCarousel } from '@/components/image-carousel';
@@ -90,7 +91,11 @@ export default function MaterialImage({ material }: MaterialImageProps) {
                         )}
                     </div>
 
-                    {material.data.images && material.data.images.length > 0 && <ImageCarousel canDelete={canDelete} model={material.data} />}
+                    {material.data.images && material.data.images.length > 0 ? (
+                        <ImageCarousel canDelete={canDelete} model={material.data} />
+                    ) : (
+                        <EmptyIcon />
+                    )}
 
                     <Separator />
 
@@ -104,6 +109,7 @@ export default function MaterialImage({ material }: MaterialImageProps) {
                             errors={errors}
                             data={data}
                             recentlySuccessful={recentlySuccessful}
+                            className="max-w-xs"
                         />
                     )}
                 </div>

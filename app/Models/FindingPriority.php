@@ -6,18 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FindingPriority extends Model
 {
-    /** @use HasFactory<\Database\Factories\FindingPriorityFactory> */
-    use HasFactory;
 
     protected $table = 'finding_priorities';
 
     protected $fillable = [
         "label",
-        "sla_resolution_hours",
         "description",
+        "sla_resolution_hours",
+        "color_code",
     ];
 
     #[Scope]
@@ -30,13 +30,14 @@ class FindingPriority extends Model
                 $query
                     ->where('label', 'LIKE', "%{$search}%")
                     ->orWhere('sla_resolution_hours', 'LIKE', "%{$search}%")
+                    ->orWhere('color_code', 'LIKE', "%{$search}%")
                     ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }
     }
 
-    // public function findings(): HasMany
-    // {
-    //     return $this->hasMany(Finding::class);
-    // }
+    public function findings(): HasMany
+    {
+        return $this->hasMany(Finding::class);
+    }
 }

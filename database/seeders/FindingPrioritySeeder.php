@@ -18,26 +18,31 @@ class FindingPrioritySeeder extends Seeder
                 "label" => "Recommendation",
                 "description" => "Suggestions for reliability or maintenance optimization.",
                 "sla_resolution_hours" => null,
+                "color_code" =>  "#31e981",
             ],
             [
                 "label" => "Minor",
                 "description" => "Light anomaly or cosmetic finding with no impact on function.",
                 "sla_resolution_hours" => 720,
+                "color_code" => "#2563EB",
             ],
             [
                 "label" => "Major",
                 "description" => "Partial functional failure or significant performance degradation.",
                 "sla_resolution_hours" => 168,
+                "color_code" => "#CA8A04",
             ],
             [
                 "label" => "Critical",
                 "description" => "Severe anomaly threatening operational continuity.",
                 "sla_resolution_hours" => 24,
+                "color_code" => "#EA580C",
             ],
             [
                 "label" => "Emergency",
                 "description" => "Immediate threat to safety, environment, or risk of total asset failure.",
                 "sla_resolution_hours" => 4,
+                "color_code" => "#B91C1C",
             ],
         ];
 

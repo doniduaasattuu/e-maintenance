@@ -1,6 +1,7 @@
 import EquipmentClassForm, { EquipmentClassFormData } from '@/components/forms/equipment-class-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem, EquipmentClass } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -41,7 +42,7 @@ export default function EquipmentClassEdit({ equipmentClass }: EquipmentClassEdi
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="EQUIPMENT_CLASS" mode="edit">
                 <EquipmentClassForm
                     data={data}
                     setData={setData}
@@ -52,8 +53,9 @@ export default function EquipmentClassEdit({ equipmentClass }: EquipmentClassEdi
                     canSubmit={can.update_equipmentclass}
                     buttonLabel="Update"
                     isEditing={true}
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

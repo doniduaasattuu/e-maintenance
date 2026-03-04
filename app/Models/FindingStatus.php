@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FindingStatus extends Model
 {
-    /** @use HasFactory<\Database\Factories\FindingStatusFactory> */
-    use HasFactory;
-
     protected $table = 'finding_statuses';
 
     protected $fillable = [
@@ -33,8 +31,8 @@ class FindingStatus extends Model
         }
     }
 
-    // public function findings(): HasMany
-    // {
-    //     return $this->hasMany(Finding::class);
-    // }
+    public function findings(): HasMany
+    {
+        return $this->hasMany(Finding::class);
+    }
 }

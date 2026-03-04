@@ -1,6 +1,7 @@
 import UnitForm, { UnitFormData } from '@/components/forms/unit-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -35,7 +36,7 @@ export default function UnitCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="MATERIAL_UNIT" mode="create">
                 <UnitForm
                     data={data}
                     setData={setData}
@@ -46,8 +47,9 @@ export default function UnitCreate() {
                     canSubmit={can.store_unit}
                     buttonLabel="Create"
                     successMessage="Created"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

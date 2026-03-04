@@ -1,6 +1,7 @@
 import FindingPriorityForm, { FindingPriorityFormData } from '@/components/forms/finding-priority-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -37,7 +38,7 @@ export default function FindingPriorityCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="FINDING_PRIORITY" mode="create">
                 <FindingPriorityForm
                     data={data}
                     setData={setData}
@@ -48,8 +49,9 @@ export default function FindingPriorityCreate() {
                     canSubmit={can.store_findingstatus}
                     buttonLabel="Create"
                     successMessage="Created"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

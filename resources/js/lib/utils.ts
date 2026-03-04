@@ -59,3 +59,11 @@ export async function copyTextToClipboard(text: string) {
         toast.error('Failed copied text to clipboard');
     }
 }
+
+export function formatDateIndonesia(date: number) {
+    return new Intl.DateTimeFormat('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    }).format(date);
+}

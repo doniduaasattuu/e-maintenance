@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('finding_priorities', function (Blueprint $table) {
             $table->id();
-            $table->string("label", 50)->nullable(false);
-            $table->string("description")->nullable(false);
+            $table->string("label", 50);
+            $table->string("description");
+            $table->string("color_code", 50)->nullable(true);
             $table->integer("sla_resolution_hours")->nullable(true);
             $table->timestamps();
         });

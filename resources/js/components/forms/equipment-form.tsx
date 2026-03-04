@@ -1,6 +1,4 @@
-import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import usePermissions from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
@@ -9,8 +7,10 @@ import { Info } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 import FunctionalLocationSelect from '../functional-location-select';
+import RequiredLabel from '../required-label';
 import TextLink from '../text-link';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Field, FieldError, FieldLabel } from '../ui/field';
 
 export type EquipmentFormData = {
     code: string;
@@ -64,14 +64,15 @@ export default function EquipmentForm({
 
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
-            <div className="grid gap-2">
-                <Label htmlFor="code">Code</Label>
-
+            <Field>
+                <FieldLabel htmlFor="code">
+                    Code
+                    <RequiredLabel />
+                </FieldLabel>
                 <Input
                     tabIndex={1}
                     id="code"
                     maxLength={9}
-                    className="mt-1 block w-full"
                     value={data.code}
                     autoFocus
                     onChange={(e) => setData('code', e.target.value.toUpperCase())}
@@ -80,34 +81,31 @@ export default function EquipmentForm({
                     disabled={processing}
                     autoComplete="code"
                 />
+                <FieldError>{errors.code}</FieldError>
+            </Field>
 
-                <InputError message={errors.code} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="sort_field">Sort field</Label>
-
+            <Field>
+                <FieldLabel htmlFor="sort_field">Sort field</FieldLabel>
                 <Input
                     tabIndex={2}
                     id="sort_field"
-                    className="mt-1 block w-full"
                     value={data.sort_field}
                     onChange={(e) => setData('sort_field', e.target.value.toUpperCase())}
                     placeholder="PM1.BR.C2/P1/M"
                     disabled={processing}
                     autoComplete="sort_field"
                 />
+                <FieldError>{errors.sort_field}</FieldError>
+            </Field>
 
-                <InputError message={errors.sort_field} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="description">Description</Label>
-
+            <Field>
+                <FieldLabel htmlFor="description">
+                    Description
+                    <RequiredLabel />
+                </FieldLabel>
                 <Input
                     tabIndex={3}
                     id="description"
-                    className="mt-1 block w-full"
                     value={data.description}
                     onChange={(e) => setData('description', e.target.value.toUpperCase())}
                     placeholder="AC MOTOR;380V,50Hz,90kW,4P,280M,B3"
@@ -115,15 +113,12 @@ export default function EquipmentForm({
                     disabled={processing}
                     autoComplete="description"
                 />
+                <FieldError>{errors.description}</FieldError>
+            </Field>
 
-                <InputError message={errors.description} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="functional_location_id">Functional location</Label>
-
+            <Field>
+                <FieldLabel htmlFor="functional_location_id">Functional location</FieldLabel>
                 <FunctionalLocationSelect
-                    className="mt-1"
                     value={data.functional_location_id}
                     isEditing={isEditing}
                     processing={processing}
@@ -133,14 +128,16 @@ export default function EquipmentForm({
                     currentValue={functionalLocation}
                     onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
                 />
+                <FieldError>{errors.functional_location_id}</FieldError>
+            </Field>
 
-                <InputError message={errors.functional_location_id} />
-            </div>
-
-            <div className="grid gap-2">
-                <Label htmlFor="equipment_class_id">Equipment class</Label>
+            <Field>
+                <FieldLabel htmlFor="equipment_class_id">
+                    Equipment class
+                    <RequiredLabel />
+                </FieldLabel>
                 <Select disabled={processing} onValueChange={(e) => setData('equipment_class_id', e)} value={data.equipment_class_id}>
-                    <SelectTrigger tabIndex={5} className="mt-1 truncate overflow-hidden whitespace-nowrap">
+                    <SelectTrigger tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
                         <SelectValue placeholder="Select a equipment class" />
                     </SelectTrigger>
                     <SelectContent>
@@ -156,13 +153,16 @@ export default function EquipmentForm({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <InputError message={errors.equipment_class_id} />
-            </div>
+                <FieldError>{errors.equipment_class_id}</FieldError>
+            </Field>
 
-            <div className="grid gap-2">
-                <Label htmlFor="equipment_status_id">Equipment status</Label>
+            <Field>
+                <FieldLabel htmlFor="equipment_status_id">
+                    Equipment status
+                    <RequiredLabel />
+                </FieldLabel>
                 <Select disabled={processing} onValueChange={(e) => setData('equipment_status_id', e)} value={data.equipment_status_id}>
-                    <SelectTrigger tabIndex={6} className="mt-1 truncate overflow-hidden whitespace-nowrap">
+                    <SelectTrigger tabIndex={6} className="truncate overflow-hidden whitespace-nowrap">
                         <SelectValue placeholder="Select a equipment status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -178,8 +178,8 @@ export default function EquipmentForm({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <InputError message={errors.equipment_status_id} />
-            </div>
+                <FieldError>{errors.equipment_status_id}</FieldError>
+            </Field>
 
             {isEditing && (
                 <Alert>

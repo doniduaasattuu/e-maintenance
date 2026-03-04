@@ -1,6 +1,7 @@
 import MaterialTypeForm, { MaterialTypeFormData } from '@/components/forms/material-type-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -36,7 +37,7 @@ export default function MaterialTypeCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="MATERIAL_TYPE" mode="create">
                 <MaterialTypeForm
                     data={data}
                     setData={setData}
@@ -47,8 +48,9 @@ export default function MaterialTypeCreate() {
                     canSubmit={can.store_materialtype}
                     buttonLabel="Submit"
                     successMessage="Created"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

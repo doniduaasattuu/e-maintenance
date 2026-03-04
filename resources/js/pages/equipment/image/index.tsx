@@ -1,3 +1,4 @@
+import EmptyIcon from '@/components/empty-icon';
 import ImageForm from '@/components/forms/image-form';
 import HeadingSmall from '@/components/heading-small';
 import { ImageCarousel } from '@/components/image-carousel';
@@ -88,7 +89,11 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                         )}
                     </div>
 
-                    {equipment.data.images && equipment.data.images.length > 0 && <ImageCarousel canDelete={canDelete} model={equipment.data} />}
+                    {equipment.data.images && equipment.data.images.length > 0 ? (
+                        <ImageCarousel canDelete={canDelete} model={equipment.data} />
+                    ) : (
+                        <EmptyIcon />
+                    )}
 
                     <Separator />
 
@@ -102,6 +107,7 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                             errors={errors}
                             data={data}
                             recentlySuccessful={recentlySuccessful}
+                            className="max-w-xs"
                         />
                     )}
                 </div>

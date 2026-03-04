@@ -18,6 +18,7 @@ type Props = {
     processing: boolean;
     isEditing?: boolean;
     className?: string;
+    placeholder?: string;
 };
 
 export default function FunctionalLocationSelect({
@@ -30,6 +31,7 @@ export default function FunctionalLocationSelect({
     processing,
     isEditing,
     className,
+    placeholder,
 }: Props) {
     const [input, setInput] = useState('');
     const selected = useRef<FunctionalLocation | null>(null);
@@ -73,14 +75,16 @@ export default function FunctionalLocationSelect({
     return (
         <div className={cn('flex justify-between gap-2', className)}>
             <Select disabled={processing}>
-                <SelectTrigger tabIndex={tabIndex} id={id} className={`w-full ${selected.current || value ? '!text-foreground' : undefined}`}>
+                <SelectTrigger tabIndex={tabIndex} id={id} className={`w-full ${selected.current || value ? 'text-foreground!' : undefined}`}>
                     <SelectValue
                         placeholder={
                             value !== '' && currentValue && selected.current == null
                                 ? currentValue.code
                                 : selected.current
                                   ? selected.current.code
-                                  : 'Select functional location'
+                                  : placeholder
+                                    ? placeholder
+                                    : 'Select functional location'
                         }
                     />
                 </SelectTrigger>

@@ -1,4 +1,5 @@
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { removeOrigin } from '@/lib/utils';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { type ComponentPropsWithoutRef } from 'react';
@@ -24,7 +25,8 @@ export function NavFooter({
                             <SidebarMenuItem key={item.title}>
                                 <SidebarMenuButton
                                     isActive={
-                                        item.children ? item.children.some((target) => page.url.includes(target)) : page.url.includes(item.href)
+                                        window.location.pathname == removeOrigin(item.href) ||
+                                        window.location.pathname.startsWith(removeOrigin(item.href))
                                     }
                                     asChild
                                     className={`${page.url.includes(item.href) ? 'hover:text-neutral-800 dark:hover:text-neutral-100' : 'text-neutral-600 dark:text-neutral-300'}`}

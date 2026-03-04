@@ -8,6 +8,7 @@ import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import React from 'react';
 import ButtonAdd from '../button-add';
+import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterEquipmentClass from '../filter-equipment-class';
 import FilterEquipmentStatus from '../filter-equipment-status';
@@ -40,7 +41,11 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
     }
 
     return (
-        <TableLayout title="Equipments" description="Overview and management of equipments in the system" className="md:max-w-7xl">
+        <TableLayout
+            title="Equipments"
+            description="Represents a unique physical object tracked for maintenance, costing, and history."
+            className="md:max-w-7xl"
+        >
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
@@ -52,7 +57,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                 </div>
                 {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={2} />}
             </div>
-            <div className="grid min-w-0 overflow-x-auto rounded-md">
+            {equipments.data.length > 0 ? (
                 <Table>
                     <TableCaption className="text-sm">{caption}</TableCaption>
                     <TableHeader>
@@ -100,7 +105,6 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                                             ) : (
                                                 <span className="max-w-xs font-medium">{equipment.functionalLocation?.code}</span>
                                             )}
-
                                             <span className="text-muted-foreground max-w-sm truncate">
                                                 {equipment.functionalLocation?.description}
                                             </span>
@@ -129,7 +133,9 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                         })}
                     </TableBody>
                 </Table>
-            </div>
+            ) : (
+                <EmptyIcon />
+            )}
             <GeneratePagination meta={meta} />
         </TableLayout>
     );

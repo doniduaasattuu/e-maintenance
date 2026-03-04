@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('code', 8)->unique();
             $table->string('name');
             $table->integer('price')->nullable();
-            $table->foreignId('unit_id')->nullable()->constrained('units')->cascadeOnUpdate()->nullOnDelete();
-            $table->foreignId('material_type_id')->nullable()->constrained('material_types')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('unit_id')->nullable()->constrained('units')->cascadeOnUpdate()->restrictOnDelete();
+            $table->foreignId('material_type_id')->nullable()->constrained('material_types')->cascadeOnUpdate()->restrictOnDelete();
             $table->timestamps();
         });
     }
