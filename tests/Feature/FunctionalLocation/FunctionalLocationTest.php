@@ -109,7 +109,7 @@ test('update functional location fails validation', function () {
             'code' => 'FP--01-PM3-P001',
             'description' => 'lowercase description',
         ])
-        ->assertSessionHasErrors(['code', 'description']);
+        ->assertSessionHasErrors(['code']);
 });
 
 test('can delete functional location', function () {

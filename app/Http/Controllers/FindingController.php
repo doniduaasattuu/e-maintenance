@@ -250,9 +250,33 @@ class FindingController extends Controller
      */
     public function destroy(Finding $finding)
     {
-        return redirect(route("findings.index"))->with('message', [
-            'type' => 'success',
-            'description' => 'Finding deleted successfully',
-        ]);
+        Gate::authorize('delete_finding');
+
+        DB::beginTransaction();
+
+        try {
+            $directoryPath = 'images/findings/' . $finding->id;
+
+            $finding->images()->delete();
+            $finding->delete();
+
+            if (Storage::disk('public')->exists($directoryPath)) {
+                Storage::disk('public')->deleteDirectory($directoryPath);
+            }
+
+            DB::commit();
+
+            return redirect()->route('findings.index')->with('message', [
+                'type' => 'success',
+                'description' => 'The finding has been permanently removed.',
+            ]);
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => 'Failed to delete finding: ' . $e->getMessage(),
+            ]);
+        }
     }
 }

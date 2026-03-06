@@ -134,24 +134,27 @@ class EquipmentController extends Controller
     {
         Gate::authorize('delete_equipment');
 
+        DB::beginTransaction();
+
         try {
-            DB::transaction(function () use ($equipment) {
+            $directoryPath = 'images/equipments/' . $equipment->id;
 
-                foreach ($equipment->images as $image) {
-                    if ($image->path && Storage::disk('public')->exists($image->path)) {
-                        Storage::disk('public')->delete($image->path);
-                    }
-                    $image->delete();
-                }
+            $equipment->images()->delete();
+            $equipment->delete();
 
-                $equipment->delete();
-            });
+            if (Storage::disk('public')->exists($directoryPath)) {
+                Storage::disk('public')->deleteDirectory($directoryPath);
+            }
+
+            DB::commit();
 
             return back()->with('message', [
                 'type' => 'success',
                 'description' => 'Equipment deleted successfully',
             ]);
         } catch (Throwable $e) {
+            DB::rollBack();
+
             return back()->with('message', [
                 'type' => 'error',
                 'description' => 'Failed to delete equipment: ' . $e->getMessage(),
