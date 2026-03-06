@@ -22,7 +22,7 @@ export default function ButtonSubmit({
 }: ButtonSubmitProps) {
     return (
         <div className="mt-2 flex items-center gap-4">
-            <Button variant={variant ?? 'default'} type="submit" disabled={disabled} tabIndex={tabIndex}>
+            <Button size={'sm'} variant={variant ?? 'default'} type="submit" disabled={disabled} tabIndex={tabIndex}>
                 {label ?? 'Submit'}
             </Button>
 

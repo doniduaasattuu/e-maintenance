@@ -44,4 +44,9 @@ class Department extends Model
     {
         return $this->belongsTo(Division::class);
     }
+
+    public function findings(): HasMany
+    {
+        return $this->hasMany(Finding::class);
+    }
 }

@@ -34,6 +34,6 @@ class FindingClause extends Model
 
     public function findings(): HasMany
     {
-        return $this->hasMany(Finding::class);
+        return $this->hasMany(Finding::class, 'finding_clause_id', 'id');
     }
 }

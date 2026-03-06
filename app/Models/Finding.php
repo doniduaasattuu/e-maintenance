@@ -20,6 +20,7 @@ class Finding extends Model
         "finding_clause_id",
         "finding_status_id",
         "finding_priority_id",
+        "department_id",
         "equipment_id",
         "functional_location_id",
         "description",
@@ -56,11 +57,11 @@ class Finding extends Model
         }
 
         $builder->when($status, function ($query) use ($status) {
-            $query->whereRelation('findingStatus', 'name', $status);
+            $query->whereRelation('status', 'name', $status);
         });
 
         $builder->when($priority, function ($query) use ($priority) {
-            $query->whereRelation('findingPriority', 'label', $priority);
+            $query->whereRelation('priority', 'label', $priority);
         });
     }
 
@@ -74,37 +75,42 @@ class Finding extends Model
     //     return $this->hasMany(FindingImage::class)->where('category', 'after');
     // }
 
-    public function findingClause(): BelongsTo
+    public function clause(): BelongsTo
     {
-        return $this->belongsTo(FindingClause::class);
+        return $this->belongsTo(FindingClause::class, "finding_clause_id");
     }
 
-    public function findingStatus(): BelongsTo
+    public function status(): BelongsTo
     {
-        return $this->belongsTo(FindingStatus::class);
+        return $this->belongsTo(FindingStatus::class, "finding_status_id");
     }
 
-    public function findingPriority(): BelongsTo
+    public function priority(): BelongsTo
     {
-        return $this->belongsTo(FindingPriority::class);
+        return $this->belongsTo(FindingPriority::class, "finding_priority_id");
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function equipment(): BelongsTo
     {
-        return $this->belongsTo(Equipment::class);
+        return $this->belongsTo(Equipment::class, 'equipment_id');
     }
 
     public function functionalLocation(): BelongsTo
     {
-        return $this->belongsTo(FunctionalLocation::class);
+        return $this->belongsTo(FunctionalLocation::class, 'functional_location_id');
     }
 
-    public function inspectedBy(): BelongsTo
+    public function inspector(): BelongsTo
     {
         return $this->belongsTo(User::class, 'inspected_by');
     }
 
-    public function verifiedBy(): BelongsTo
+    public function verifier(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by');
     }

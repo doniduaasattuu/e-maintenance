@@ -140,11 +140,11 @@ class User extends Authenticatable
 
     public function inspectedFindings(): HasMany
     {
-        return $this->hasMany(Finding::class, 'inspected_by');
+        return $this->hasMany(Finding::class, 'inspected_by', 'id');
     }
 
     public function verifiedFindings(): HasMany
     {
-        return $this->hasMany(Finding::class, 'verified_by');
+        return $this->hasMany(Finding::class, 'verified_by', 'id');
     }
 }

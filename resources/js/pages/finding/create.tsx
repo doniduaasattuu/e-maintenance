@@ -2,7 +2,7 @@ import FindingForm, { FindingFormData } from '@/components/forms/finding-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
-import { BreadcrumbItem, FindingClause, FindingPriority, FindingStatus } from '@/types';
+import { BreadcrumbItem, Department, FindingClause, FindingPriority, FindingStatus } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -27,17 +27,21 @@ type FindingCreateProps = {
     findingPriorities: {
         data: FindingPriority[];
     };
+    departments: {
+        data: Department[];
+    };
 };
 
-export default function FindingCreate({ findingClauses, findingStatuses, findingPriorities }: FindingCreateProps) {
-    const findingStatusId = findingStatuses.data.find((s) => s.name.toLocaleLowerCase() === 'open')?.id?.toString() ?? '1';
-    const findingPriorityId = findingPriorities.data.find((p) => p.label.toLowerCase() === 'recommendation')?.id?.toString() ?? '1';
-
+export default function FindingCreate({ findingClauses, findingStatuses, findingPriorities, departments }: FindingCreateProps) {
+    const findingStatusId = findingStatuses?.data?.find((s) => s.name.toLocaleLowerCase() === 'open')?.id?.toString() ?? '1';
+    const findingPriorityId = findingPriorities?.data?.find((p) => p.label.toLowerCase() === 'recommendation')?.id?.toString() ?? '1';
     const can = usePermissions();
+
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<FindingFormData>>({
         finding_clause_id: '',
         finding_status_id: findingStatusId,
         finding_priority_id: findingPriorityId,
+        department_id: '',
         functional_location_id: '',
         equipment_id: '',
         description: '',
@@ -53,12 +57,13 @@ export default function FindingCreate({ findingClauses, findingStatuses, finding
             onSuccess: () => {
                 reset(
                     'finding_clause_id',
+                    'finding_status_id',
+                    'finding_priority_id',
+                    'department_id',
                     'functional_location_id',
                     'equipment_id',
                     'description',
                     'notification',
-                    'finding_status_id',
-                    'finding_priority_id',
                     'images',
                 );
             },
@@ -73,6 +78,7 @@ export default function FindingCreate({ findingClauses, findingStatuses, finding
                     findingClauses={findingClauses}
                     findingStatuses={findingStatuses}
                     findingPriorities={findingPriorities}
+                    departments={departments}
                     setData={setData}
                     errors={errors}
                     processing={processing}

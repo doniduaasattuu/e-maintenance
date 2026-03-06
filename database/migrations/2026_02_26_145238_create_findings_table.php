@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('finding_status_id')->constrained('finding_statuses')->cascadeOnUpdate()->restrictOnDelete();
             $table->foreignId('finding_priority_id')->constrained('finding_priorities')->cascadeOnUpdate()->restrictOnDelete();
             $table->foreignId('finding_clause_id')->constrained('finding_clauses')->cascadeOnUpdate()->restrictOnDelete();
-            $table->foreignId('equipment_id')->nullable(true)->constrained('equipments')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('functional_location_id')->constrained('functional_locations')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('department_id')->nullable(true)->constrained('departments')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('equipment_id')->nullable(true)->constrained('equipments')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('functional_location_id')->constrained('functional_locations')->cascadeOnUpdate()->restrictOnDelete();
             $table->text("description");
             $table->string("notification", 25)->nullable();
             $table->foreignId('inspected_by')->nullable(true)->constrained('users')->cascadeOnUpdate()->nullOnDelete();

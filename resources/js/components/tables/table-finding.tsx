@@ -29,9 +29,6 @@ export default function TableFinding({ findings, findingPriorities, findingStatu
     const meta = findings.meta;
     const caption = tableCaption(meta);
 
-    console.log(findingPriorities.data);
-    console.log(findingStatuses.data);
-
     function handleFindingOnclick(id: number) {
         router.get(route('findings.show', id));
     }
@@ -40,7 +37,7 @@ export default function TableFinding({ findings, findingPriorities, findingStatu
         <TableLayout
             title="Findings"
             description="Represents a unique physical object tracked for maintenance, costing, and history."
-            className="md:max-w-8xl"
+            className="md:max-w-full"
         >
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
@@ -53,7 +50,7 @@ export default function TableFinding({ findings, findingPriorities, findingStatu
                 {findings.data.length > 0 ? (
                     <div className="grid min-w-0 auto-rows-min gap-4 overflow-x-auto rounded-md sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                         {findings.data.map((finding: Finding) => {
-                            return <FindingCard finding={finding} onClick={handleFindingOnclick} />;
+                            return <FindingCard key={finding.id} finding={finding} onClick={handleFindingOnclick} />;
                         })}
                     </div>
                 ) : (

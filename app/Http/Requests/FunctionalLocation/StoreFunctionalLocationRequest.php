@@ -23,7 +23,7 @@ class StoreFunctionalLocationRequest extends FormRequest
     {
         return [
             'code' => ['required', 'uppercase', 'regex:/^([A-Z0-9]+-)*[A-Z0-9]+$/', 'unique:functional_locations,code'],
-            'description' => ['required', 'uppercase']
+            'description' => ['required']
         ];
     }
 }

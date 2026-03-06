@@ -1,6 +1,6 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
 import { cn } from '@/lib/utils';
-import { Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation } from '@/types';
+import { Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation } from '@/types';
 import { Info, Loader2 } from 'lucide-react';
 import React, { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import ButtonSubmit from '../button-submit';
@@ -14,8 +14,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Textarea } from '../ui/textarea';
 
 interface FindingFormProps {
-    equipment?: Equipment | null;
     functionalLocation?: FunctionalLocation | null;
+    equipment?: Equipment | null;
     data: Required<FindingFormData>;
     setData: <K extends keyof FindingFormData>(key: K, value: FindingFormData[K]) => void;
     errors: Partial<Record<keyof FindingFormData, string>>;
@@ -35,12 +35,18 @@ interface FindingFormProps {
     findingPriorities: {
         data: FindingPriority[];
     };
+    departments: {
+        data: Department[];
+    };
+    isEditing?: boolean;
+    closedStatusId?: string | number | null;
 }
 
 export type FindingFormData = {
     finding_clause_id: string;
     finding_status_id: string;
     finding_priority_id: string;
+    department_id: string;
     functional_location_id: string;
     equipment_id: string;
     description: string;
@@ -62,8 +68,11 @@ export default function FindingForm({
     findingClauses,
     findingStatuses,
     findingPriorities,
-    equipment,
+    departments,
     functionalLocation,
+    equipment,
+    isEditing = false,
+    closedStatusId,
 }: FindingFormProps) {
     const [clauseDescription, setClauseDescription] = React.useState<string | null>(null);
     const [clauseCode, setClauseCode] = React.useState<string | null>(null);
@@ -100,6 +109,8 @@ export default function FindingForm({
         }
     };
 
+    const isStatusClosed = data.finding_status_id == closedStatusId;
+
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
             <Field>
@@ -111,8 +122,8 @@ export default function FindingForm({
                     disabled={processing}
                     onValueChange={(e) => {
                         setData('finding_clause_id', e);
-                        setClauseDescription(findingClauses.data[Number(e) - 1].description);
-                        setClauseCode(findingClauses.data[Number(e) - 1].code);
+                        setClauseDescription(findingClauses?.data?.[parseInt(e) - 1].description);
+                        setClauseCode(findingClauses?.data?.[parseInt(e) - 1].code);
                     }}
                     value={data.finding_clause_id}
                 >
@@ -122,7 +133,7 @@ export default function FindingForm({
                     <SelectContent>
                         <SelectGroup>
                             <SelectLabel className="text-muted-foreground">Finding Clause</SelectLabel>
-                            {findingClauses.data.map((fc: FindingClause) => {
+                            {findingClauses?.data?.map((fc: FindingClause) => {
                                 return (
                                     <SelectItem key={fc.id} value={fc.id.toString()}>
                                         {fc.code} - {fc.title}
@@ -133,7 +144,6 @@ export default function FindingForm({
                     </SelectContent>
                 </Select>
                 <FieldError>{errors.finding_clause_id}</FieldError>
-                {/* {clauseDescription && <FieldDescription>{clauseDescription}</FieldDescription>} */}
                 {clauseCode && clauseDescription && (
                     <Alert>
                         <Info />
@@ -183,6 +193,7 @@ export default function FindingForm({
                     <RequiredLabel />
                 </FieldLabel>
                 <Textarea
+                    disabled={processing}
                     tabIndex={4}
                     id="description"
                     onChange={(val: React.ChangeEvent<HTMLTextAreaElement>) => setData('description', val.target.value)}
@@ -192,20 +203,43 @@ export default function FindingForm({
                 <FieldError>{errors.description}</FieldError>
             </Field>
 
-            <Field>
-                <FieldLabel htmlFor="notification">Notification</FieldLabel>
-                <Input
-                    tabIndex={5}
-                    id="notification"
-                    value={data.notification}
-                    onChange={(e) => setData('notification', e.target.value)}
-                    placeholder="80012233"
-                    inputMode="numeric"
-                    disabled={processing}
-                    autoComplete="notification"
-                />
-                <FieldError>{errors.notification}</FieldError>
-            </Field>
+            <div className="flex justify-between gap-2">
+                <Field>
+                    <FieldLabel htmlFor="department">Department</FieldLabel>
+                    <Select disabled={processing} onValueChange={(e) => setData('department_id', e)} value={data.department_id}>
+                        <SelectTrigger tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
+                            <SelectValue placeholder="Select a department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel className="text-muted-foreground">Departments</SelectLabel>
+                                {departments?.data?.map((d) => {
+                                    return (
+                                        <SelectItem key={d.id} value={d.id.toString()}>
+                                            {d.code + ' - ' + d.name}
+                                        </SelectItem>
+                                    );
+                                })}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <FieldError>{errors.department_id}</FieldError>
+                </Field>
+                <Field>
+                    <FieldLabel htmlFor="notification">Notification</FieldLabel>
+                    <Input
+                        tabIndex={6}
+                        id="notification"
+                        value={data.notification}
+                        onChange={(e) => setData('notification', e.target.value)}
+                        placeholder="80012233"
+                        inputMode="numeric"
+                        disabled={processing}
+                        autoComplete="notification"
+                    />
+                    <FieldError>{errors.notification}</FieldError>
+                </Field>
+            </div>
 
             <div className="flex justify-between gap-2">
                 <Field>
@@ -219,19 +253,20 @@ export default function FindingForm({
                         onValueChange={(e) => setData('finding_status_id', e)}
                         value={data.finding_status_id}
                     >
-                        <SelectTrigger tabIndex={6} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={7} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
                                 <SelectLabel className="text-muted-foreground">Finding Status</SelectLabel>
-                                {findingStatuses.data.map((fs) => {
-                                    return (
-                                        <SelectItem key={fs.id} value={fs.id.toString()}>
-                                            {fs.name}
-                                        </SelectItem>
-                                    );
-                                })}
+                                {findingStatuses?.data?.length > 0 &&
+                                    findingStatuses.data.map((fs) => {
+                                        return (
+                                            <SelectItem key={fs.id} value={fs.id.toString()}>
+                                                {fs.name}
+                                            </SelectItem>
+                                        );
+                                    })}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -248,13 +283,13 @@ export default function FindingForm({
                         onValueChange={(e) => setData('finding_priority_id', e)}
                         value={data.finding_priority_id}
                     >
-                        <SelectTrigger tabIndex={7} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={8} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select priority" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
                                 <SelectLabel className="text-muted-foreground">Finding Priority</SelectLabel>
-                                {findingPriorities.data.map((fp) => {
+                                {findingPriorities?.data?.map((fp) => {
                                     return (
                                         <SelectItem key={fp.id} value={fp.id.toString()}>
                                             {fp.label}
@@ -268,30 +303,43 @@ export default function FindingForm({
                 </Field>
             </div>
 
-            <Field>
-                <FieldLabel htmlFor="images">
-                    Photos
-                    <RequiredLabel />
-                </FieldLabel>
-                <Input
-                    tabIndex={8}
-                    type="file"
-                    id="images"
-                    multiple
-                    ref={fileInputRef}
-                    disabled={processing || isCompressing}
-                    onChange={handleFileChange}
-                    accept=".jpg,.jpeg,.png,.webp"
-                />
-                <FieldError>{errors.images || errorCompression}</FieldError>
-                <FieldDescription>Images will be automatically compressed to optimize upload speed and storage.</FieldDescription>
-                {isCompressing && (
-                    <div className="flex animate-pulse items-center gap-2 text-xs font-medium">
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                        Optimizing your images...
-                    </div>
-                )}
-            </Field>
+            {(isStatusClosed || !isEditing) && (
+                <Field>
+                    <FieldLabel htmlFor="images">
+                        Photos
+                        <RequiredLabel />
+                    </FieldLabel>
+                    <Input
+                        tabIndex={9}
+                        type="file"
+                        id="images"
+                        multiple
+                        ref={fileInputRef}
+                        disabled={processing || isCompressing}
+                        onChange={handleFileChange}
+                        accept=".jpg,.jpeg,.png,.webp"
+                    />
+                    <FieldError>{errors.images || errorCompression}</FieldError>
+                    <FieldDescription>
+                        <div className="space-y-1">
+                            <div className="text-muted-foreground flex items-center gap-2 text-xs">
+                                <Info className="text-muted-foreground size-3 shrink-0" />
+                                Upload between 2 to 5 photos.
+                            </div>
+                            <div className="text-muted-foreground flex items-center gap-2 text-xs">
+                                <Info className="text-muted-foreground size-3 shrink-0" />
+                                Images will be automatically compressed to optimize upload speed and storage.
+                            </div>
+                        </div>
+                    </FieldDescription>
+                    {isCompressing && (
+                        <div className="flex animate-pulse items-center gap-2 text-xs font-medium">
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                            Optimizing your images...
+                        </div>
+                    )}
+                </Field>
+            )}
 
             {canSubmit && (
                 <ButtonSubmit
@@ -300,9 +348,9 @@ export default function FindingForm({
                         data.finding_clause_id == '' ||
                         data.functional_location_id == '' ||
                         data.description == '' ||
-                        data.images == null
+                        (!isEditing ? data.images == null : isStatusClosed && data.images == null)
                     }
-                    tabIndex={9}
+                    tabIndex={10}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}
                     label={buttonLabel}

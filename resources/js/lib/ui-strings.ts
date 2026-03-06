@@ -156,6 +156,10 @@ export const UI_STRINGS = {
     FINDING: {
         label: 'Finding',
         plural: 'Findings',
+        show: {
+            header: 'Finding Details',
+            description: 'Finding data and information',
+        },
         create: {
             header: 'Create Finding',
             description: 'Record a new issue or observation discovered during inspection.',

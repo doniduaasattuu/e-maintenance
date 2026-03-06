@@ -192,7 +192,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // FINDING PRIORITY
     Route::resource('/finding-priorities', FindingPriorityController::class)->except(['show']);
 
-    Route::resource('/findings', FindingController::class);
+    Route::resource('/findings', FindingController::class)->except(['update']);
+    Route::post('/findings/{finding}', [FindingController::class, 'update'])->name('findings.update');
 });
 
 Route::fallback(function () {

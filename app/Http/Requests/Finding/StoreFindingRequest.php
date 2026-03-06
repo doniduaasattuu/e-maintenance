@@ -24,6 +24,7 @@ class StoreFindingRequest extends FormRequest
         return [
             'finding_clause_id'         => ['required', 'exists:finding_clauses,id'],
             'functional_location_id'    => ['required', 'exists:functional_locations,id'],
+            'department_id'              => ['nullable', 'exists:departments,id'],
             'equipment_id'              => ['nullable', 'exists:equipments,id'],
             'description'               => ['required', 'string', 'min:10'],
             'notification'              => ['nullable', 'string', 'max:25'],

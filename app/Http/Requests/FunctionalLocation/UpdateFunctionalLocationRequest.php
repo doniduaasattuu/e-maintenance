@@ -29,7 +29,7 @@ class UpdateFunctionalLocationRequest extends FormRequest
                 'regex:/^([A-Z0-9]+-)*[A-Z0-9]+$/',
                 Rule::unique('functional_locations', 'code')->ignore($this->functional_location),
             ],
-            'description' => ['required', 'uppercase']
+            'description' => ['required']
         ];
     }
 }

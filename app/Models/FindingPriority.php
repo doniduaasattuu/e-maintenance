@@ -38,6 +38,6 @@ class FindingPriority extends Model
 
     public function findings(): HasMany
     {
-        return $this->hasMany(Finding::class);
+        return $this->hasMany(Finding::class, 'finding_priority_id', 'id');
     }
 }

@@ -88,7 +88,7 @@ export default function FunctionalLocationSelect({
                         }
                     />
                 </SelectTrigger>
-                <SelectContent className="max-w-xl">
+                <SelectContent>
                     <Command shouldFilter={false}>
                         <CommandInput placeholder="Search..." value={input} onValueChange={(e) => setInput(e.toUpperCase())} />
                         <CommandList>

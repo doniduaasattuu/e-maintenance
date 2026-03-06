@@ -386,6 +386,7 @@ export interface Finding extends BaseResource {
     clause?: FindingClause;
     status?: FindingStatus;
     priority?: FindingPriority;
+    department?: Department;
     equipment?: Equipment;
     functionalLocation?: FunctionalLocation;
 
@@ -393,6 +394,10 @@ export interface Finding extends BaseResource {
     verifier?: User | null; // Bisa null jika belum diverifikasi
 
     images?: FindingImage[];
+
+    due_date: string;
+    due_date_readable: string;
+    is_overdue: boolean;
 
     // Timestamps
     created_at: string;

@@ -22,12 +22,21 @@ class UpdateFindingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'finding_status_id'   => 'sometimes|required|exists:finding_statuses,id',
-            'finding_priority_id' => 'sometimes|required|exists:finding_priorities,id',
-            'description'         => 'sometimes|required|string|min:10',
-            'notification'        => 'nullable|string|max:25',
-            'verified_by'         => 'required_if:status_name,Closed|exists:users,id',
-            'closed_at'           => 'required_if:status_name,Closed|date',
+            'finding_clause_id'      => ['required', 'exists:finding_clauses,id'],
+            'functional_location_id' => ['required', 'exists:functional_locations,id'],
+            'department_id'          => ['nullable', 'exists:departments,id'],
+            'equipment_id'           => ['nullable', 'exists:equipments,id'],
+            'description'            => ['required', 'string', 'min:10'],
+            'notification'           => ['nullable', 'string', 'max:25'],
+            'finding_status_id'      => ['required', 'exists:finding_statuses,id'],
+            'finding_priority_id'    => ['required', 'exists:finding_priorities,id'],
+
+            'images'                 => ['nullable', 'array', 'min:1', 'max:5'],
+            'images.*'               => [
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048'
+            ],
         ];
     }
 }
