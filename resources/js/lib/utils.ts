@@ -67,3 +67,10 @@ export function formatDateIndonesia(date: number) {
         year: 'numeric',
     }).format(date);
 }
+
+export default function truncateText(str: string, maxLength: number) {
+    if (str.length <= maxLength) {
+        return str;
+    }
+    return str.slice(0, maxLength) + '...';
+}

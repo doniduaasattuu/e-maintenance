@@ -1,8 +1,9 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
 import { AxiosProgressEvent } from 'axios';
 import { Check } from 'lucide-react';
-import { ChangeEvent, FormEventHandler } from 'react';
+import { ChangeEvent, FormEventHandler, useState } from 'react';
 import ButtonSubmit from '../button-submit';
+import CompressingDescription from '../compressing-description';
 import { Field, FieldDescription, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
 
@@ -22,17 +23,21 @@ interface ImageFormParams {
 
 export default function ImageForm({ submit, fileInputRef, processing, setData, errors, data, recentlySuccessful, className }: ImageFormParams) {
     const compressImage = useImageCompressor();
+    const [isCompressing, setIsCompressing] = useState<boolean>(false);
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
 
         if (!file) return;
+        setIsCompressing(true);
 
         try {
             const compressed = await compressImage(file);
             setData('image', compressed);
         } catch (error) {
             console.error('Compression failed: ', error);
+        } finally {
+            setIsCompressing(false);
         }
     };
 
@@ -48,6 +53,7 @@ export default function ImageForm({ submit, fileInputRef, processing, setData, e
                         {`Compressed to ${(data.image?.size / 1024 / 1024).toFixed(2)} MB`}
                     </FieldDescription>
                 )}
+                {isCompressing && <CompressingDescription />}
             </Field>
             <ButtonSubmit
                 disabled={processing || fileInputRef.current == null || data.image == null}

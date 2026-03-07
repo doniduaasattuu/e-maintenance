@@ -21,7 +21,6 @@ import {
     Info,
     Maximize2,
     RedoDot,
-    Tag,
     Trash2,
     TriangleAlert,
     User,
@@ -61,15 +60,15 @@ const PhotoGrid = ({ title, images, onSelect }: { title: string; images: Finding
 
 const Li = ({ title, children }: LiProps) => {
     return (
-        <li className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1">
             <span className="text-muted-foreground">{title}</span>
             <div className="flex gap-2">{children}</div>
-        </li>
+        </div>
     );
 };
 
 const Ul = ({ children }: { children: React.ReactNode }) => {
-    return <ul className="grid gap-2 space-y-3 py-2 text-sm">{children}</ul>;
+    return <div className="grid grid-rows-6 gap-2 space-y-3 text-sm">{children}</div>;
 };
 
 export default function FindingShow({ finding }: FindingShowProps) {
@@ -142,9 +141,9 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                             <RedoDot className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                             <span>{finding.data.is_overdue ? 'True' : 'False'}</span>
                                         </Li>
-                                        <Li title="Notification">
-                                            <Tag className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.notification ?? '-'}</span>
+                                        <Li title="Equipment">
+                                            <Box className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                                            <span>{finding.data.equipment?.code ?? '-'}</span>
                                         </Li>
                                         <Li title="Department">
                                             <BuildingIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
@@ -173,14 +172,14 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                             <CalendarFold className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                             <span>{finding.data.due_date_readable ?? '-'} </span>
                                         </Li>
-                                        <Li title="Equipment">
-                                            <Box className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.equipment?.code ?? '-'}</span>
-                                        </Li>
                                         <Li title="Closed Date">
                                             <CalendarCheck className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                             <span>{finding.data.closed_at ?? '-'}</span>
                                         </Li>
+                                        {/* <Li title="Notification">
+                                            <Tag className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                                            <span>{finding.data.notification ?? '-'}</span>
+                                        </Li> */}
                                     </Ul>
                                 </div>
                             </CardContent>

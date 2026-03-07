@@ -1,9 +1,11 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
-import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
+import truncateText, { cn } from '@/lib/utils';
 import { Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation } from '@/types';
-import { Info, Loader2 } from 'lucide-react';
+import { Info } from 'lucide-react';
 import React, { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import ButtonSubmit from '../button-submit';
+import CompressingDescription from '../compressing-description';
 import EquipmentSelect from '../equipment-select';
 import FunctionalLocationSelect from '../functional-location-select';
 import RequiredLabel from '../required-label';
@@ -110,6 +112,7 @@ export default function FindingForm({
     };
 
     const isStatusClosed = data.finding_status_id == closedStatusId;
+    const isMobile = useIsMobile();
 
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
@@ -132,11 +135,11 @@ export default function FindingForm({
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectLabel className="text-muted-foreground">Finding Clause</SelectLabel>
+                            <SelectLabel className="text-muted-foreground truncate">Finding Clause</SelectLabel>
                             {findingClauses?.data?.map((fc: FindingClause) => {
                                 return (
                                     <SelectItem key={fc.id} value={fc.id.toString()}>
-                                        {fc.code} - {fc.title}
+                                        {fc.code} - {isMobile ? truncateText(fc.description, 35) : fc.description}
                                     </SelectItem>
                                 );
                             })}
@@ -153,57 +156,42 @@ export default function FindingForm({
                 )}
             </Field>
 
-            <div className="flex justify-between gap-2">
-                <Field>
-                    <FieldLabel htmlFor="functional_location_id">
-                        Funcloc (Area)
-                        <RequiredLabel />
-                    </FieldLabel>
-                    <FunctionalLocationSelect
-                        value={data.functional_location_id ?? ''}
-                        processing={processing}
-                        recentlySuccessful={recentlySuccessful}
-                        tabIndex={2}
-                        id="functional_location_id"
-                        currentValue={functionalLocation}
-                        onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
-                        placeholder="Select funcloc"
-                    />
-                    <FieldError>{errors.functional_location_id}</FieldError>
-                </Field>
-
-                <Field>
-                    <FieldLabel htmlFor="equipment_id">Equipment</FieldLabel>
-                    <EquipmentSelect
-                        value={data.equipment_id ?? ''}
-                        processing={processing}
-                        recentlySuccessful={recentlySuccessful}
-                        tabIndex={3}
-                        id="equipment_id"
-                        currentValue={equipment}
-                        onChange={(val) => setData('equipment_id', val ? val.toString() : '')}
-                    />
-                    <FieldError>{errors.equipment_id}</FieldError>
-                </Field>
-            </div>
-
             <Field>
                 <FieldLabel htmlFor="description">
                     Description
                     <RequiredLabel />
                 </FieldLabel>
                 <Textarea
+                    className="text-sm"
                     disabled={processing}
                     tabIndex={4}
                     id="description"
                     onChange={(val: React.ChangeEvent<HTMLTextAreaElement>) => setData('description', val.target.value)}
                     value={data.description}
-                    placeholder="Explain the issue clearly (e.g., 'Oil leak detected on the main pump seal, dripping approx. 1 drop/sec. Requires seal replacement."
+                    placeholder="Explain the issue clearly (e.g., 'Oil leak detected on the main pump seal, dripping approx. 1 drop/sec. Requires seal replacement.')"
                 />
                 <FieldError>{errors.description}</FieldError>
             </Field>
 
-            <div className="flex justify-between gap-2">
+            <Field>
+                <FieldLabel htmlFor="functional_location_id">
+                    Funcloc (Area)
+                    <RequiredLabel />
+                </FieldLabel>
+                <FunctionalLocationSelect
+                    value={data.functional_location_id ?? ''}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    tabIndex={2}
+                    id="functional_location_id"
+                    currentValue={functionalLocation}
+                    onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
+                    placeholder="Select funcloc"
+                />
+                <FieldError>{errors.functional_location_id}</FieldError>
+            </Field>
+
+            <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
                 <Field>
                     <FieldLabel htmlFor="department">Department</FieldLabel>
                     <Select disabled={processing} onValueChange={(e) => setData('department_id', e)} value={data.department_id}>
@@ -226,6 +214,22 @@ export default function FindingForm({
                     <FieldError>{errors.department_id}</FieldError>
                 </Field>
                 <Field>
+                    <FieldLabel htmlFor="equipment_id">Equipment</FieldLabel>
+                    <EquipmentSelect
+                        value={data.equipment_id ?? ''}
+                        processing={processing}
+                        recentlySuccessful={recentlySuccessful}
+                        tabIndex={3}
+                        id="equipment_id"
+                        currentValue={equipment}
+                        onChange={(val) => setData('equipment_id', val ? val.toString() : '')}
+                    />
+                    <FieldError>{errors.equipment_id}</FieldError>
+                </Field>
+            </div>
+
+            {/*             
+                <Field>
                     <FieldLabel htmlFor="notification">Notification</FieldLabel>
                     <Input
                         tabIndex={6}
@@ -238,10 +242,9 @@ export default function FindingForm({
                         autoComplete="notification"
                     />
                     <FieldError>{errors.notification}</FieldError>
-                </Field>
-            </div>
+                </Field> */}
 
-            <div className="flex justify-between gap-2">
+            <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
                 <Field>
                     <FieldLabel htmlFor="finding_status_id">
                         Finding Status
@@ -332,12 +335,7 @@ export default function FindingForm({
                             </div>
                         </div>
                     </FieldDescription>
-                    {isCompressing && (
-                        <div className="flex animate-pulse items-center gap-2 text-xs font-medium">
-                            <Loader2 className="h-3 w-3 animate-spin" />
-                            Optimizing your images...
-                        </div>
-                    )}
+                    {isCompressing && <CompressingDescription />}
                 </Field>
             )}
 

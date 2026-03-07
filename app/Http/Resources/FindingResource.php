@@ -46,13 +46,13 @@ class FindingResource extends JsonResource
                 ];
             }),
 
-            'due_date' => $dueDate ? $dueDate->format('d/m/Y H:i') : null,
+            'due_date' => $dueDate ? $dueDate->format('d/m/Y') : null,
             'due_date_readable' => $dueDate ? $dueDate->diffForHumans() : '-',
             'is_overdue' => $dueDate ? $dueDate->isPast() : false,
 
-            'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('d/m/Y H:i') : $this->created_at,
+            'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('d/m/Y') : $this->created_at,
             'updated_at' => $this->updated_at?->toDateTimeString(),
-            'closed_at' => Carbon::parse($this->closed_at)->toDateTimeString(),
+            'closed_at' => Carbon::parse($this->closed_at)->format('d/m/Y'),
         ];
     }
 }
