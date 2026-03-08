@@ -23,7 +23,7 @@ export function UploadImageDialog({ children, finding }: UploadImageDialogProps)
     const { setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<UploadImageData>>({
         images: null,
     });
-
+    const [open, setOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const compressImage = useImageCompressor();
     const [errorCompression, setErrorCompression] = useState<string | null>(null);
@@ -64,12 +64,13 @@ export function UploadImageDialog({ children, finding }: UploadImageDialogProps)
             preserveScroll: true,
             onSuccess: () => {
                 reset('images');
+                setOpen(false);
             },
         });
     };
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent className="sm:max-w-sm">
                 <form onSubmit={submit} className="space-y-6">

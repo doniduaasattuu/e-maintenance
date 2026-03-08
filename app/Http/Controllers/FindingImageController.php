@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Finding;
 use App\Models\FindingImage;
+use App\Models\FindingStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -39,11 +40,26 @@ class FindingImageController extends Controller
                 'max:2048'
             ],
         ]);
+
         Gate::authorize('update_finding');
+
+        if ($finding->images()->where('category', 'after')->count() > 5) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => 'Number of photos exceeds the maximum limit (5).',
+            ]);
+        }
+
+        $statusReview = FindingStatus::where('name', 'Review')->firstOrFail();
 
         DB::beginTransaction();
 
         try {
+
+            $finding->update([
+                'finding_status_id' => $statusReview->id,
+            ]);
+
             foreach ($request->file('images') as $image) {
                 $path = $image->store('images/findings/' . $finding->id, 'public');
                 $uploadedPaths[] = $path;

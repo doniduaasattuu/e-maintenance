@@ -221,6 +221,13 @@ class FindingController extends Controller
     {
         Gate::authorize('update_finding');
 
+        if ($finding->images()->where('category', 'after')->count() > 5) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => 'Number of photos exceeds the maximum limit (5).',
+            ]);
+        }
+
         DB::beginTransaction();
 
         try {
