@@ -40,7 +40,7 @@ interface TableUserProps {
 
 export default function TableUser({ users, departments, positions, workCenters, roles }: TableUserProps) {
     const [open, setOpen] = React.useState<boolean>(false);
-    const can = usePermissions();
+    const {can} = usePermissions();
     const meta = users.meta;
     const caption = tableCaption(meta);
 

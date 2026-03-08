@@ -24,7 +24,7 @@ interface FindingClauseEditProps {
 }
 
 export default function FindingClauseEdit({ findingClause }: FindingClauseEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<FindingClauseFormData>>({
         code: findingClause.data.code,
         title: findingClause.data.title,

@@ -18,7 +18,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function RepositoryCreate() {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<Required<RepositoryFormData>>({
         title: '',
         file: null,

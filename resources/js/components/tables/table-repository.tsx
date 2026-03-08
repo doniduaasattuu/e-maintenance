@@ -26,7 +26,7 @@ interface TableRepositoryProps {
 }
 
 export default function TableRepository({ repositories, extensions, renderable }: TableRepositoryProps) {
-    const can = usePermissions();
+    const {can} = usePermissions();
     const meta = repositories.meta;
     const caption = tableCaption(meta);
     const [open, setOpen] = React.useState<boolean>(false);

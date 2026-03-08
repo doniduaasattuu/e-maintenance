@@ -20,7 +20,7 @@ interface TableMaterialTypeProps {
 }
 
 export default function TableMaterialType({ materialTypes }: TableMaterialTypeProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = materialTypes.meta;
     const caption = tableCaption(meta);
 

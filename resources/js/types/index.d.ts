@@ -2,6 +2,8 @@ import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
 export interface Auth {
+    roles: string[];
+    permissions: Record<string, boolean>;
     user: User;
 }
 
@@ -377,7 +379,7 @@ export interface FindingPriority {
     updated_at: string;
 }
 
-export interface Finding extends BaseResource {
+export interface Finding {
     id: number;
     description: string;
     notification: string;
@@ -394,6 +396,10 @@ export interface Finding extends BaseResource {
     verifier?: User | null; // Bisa null jika belum diverifikasi
 
     images?: FindingImage[];
+    gallery?: {
+        before: FindingImage[];
+        after: FindingImage[];
+    };
 
     due_date: string;
     due_date_readable: string;

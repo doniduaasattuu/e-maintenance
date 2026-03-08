@@ -20,7 +20,7 @@ class FindingImage extends Model
 
     public function finding(): BelongsTo
     {
-        return $this->belongsTo(Finding::class);
+        return $this->belongsTo(Finding::class, 'finding_id');
     }
 
     protected function url(): Attribute

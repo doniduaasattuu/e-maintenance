@@ -27,7 +27,7 @@ interface EquipmentCreateProps {
 }
 
 export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }: EquipmentCreateProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<EquipmentFormData>>({
         code: '',
         sort_field: '',

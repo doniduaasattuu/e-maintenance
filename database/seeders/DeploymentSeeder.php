@@ -13,7 +13,7 @@ class DeploymentSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            ElectricianSeeder::class,
+            // ElectricianSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
             EquipmentClassSeeder::class,

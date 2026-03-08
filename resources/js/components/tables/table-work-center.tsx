@@ -20,7 +20,7 @@ interface WorkCenterTableProps {
 }
 
 export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = workCenters.meta;
     const caption = tableCaption(meta);
 

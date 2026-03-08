@@ -24,7 +24,7 @@ interface MaterialTypeEditProps {
 }
 
 export default function MaterialTypeEdit({ materialType }: MaterialTypeEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<MaterialTypeFormData>>({
         code: materialType.data.code,
         description: materialType.data.description,

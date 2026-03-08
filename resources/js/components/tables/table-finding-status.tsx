@@ -20,7 +20,7 @@ interface TableFindingStatusProps {
 }
 
 export default function TableFindingStatus({ findingStatuses }: TableFindingStatusProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = findingStatuses.meta;
     const caption = tableCaption(meta);
 

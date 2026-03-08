@@ -20,7 +20,7 @@ interface TableRoleProps {
 }
 
 export default function TableRole({ roles }: TableRoleProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = roles.meta;
     const caption = tableCaption(meta);
 

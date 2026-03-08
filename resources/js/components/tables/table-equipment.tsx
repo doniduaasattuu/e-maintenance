@@ -32,7 +32,7 @@ interface EquipmentTableProps {
 
 export default function TableEquipment({ equipments, equipmentClasses, equipmentStatuses }: EquipmentTableProps) {
     const [open, setOpen] = React.useState<boolean>(false);
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = equipments.meta;
     const caption = tableCaption(meta);
 
@@ -57,7 +57,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                 </div>
                 {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={2} />}
             </div>
-            {equipments.data.length > 0 ? (
+            {equipments?.data?.length > 0 ? (
                 <Table>
                     <TableCaption className="text-sm">{caption}</TableCaption>
                     <TableHeader>
@@ -71,7 +71,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {equipments.data.map((equipment: Equipment) => {
+                        {equipments?.data?.map((equipment: Equipment) => {
                             return (
                                 <TableRow key={equipment.id}>
                                     <TableCell className="flex-col align-top">

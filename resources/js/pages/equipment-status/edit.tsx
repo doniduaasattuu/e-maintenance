@@ -24,7 +24,7 @@ interface EquipmentStatusEditProps {
 }
 
 export default function EquipmentStatusEdit({ equipmentStatus }: EquipmentStatusEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<EquipmentStatusFormData>>({
         code: equipmentStatus.data.code,
         name: equipmentStatus.data.name,

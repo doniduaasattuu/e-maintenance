@@ -30,7 +30,7 @@ export default function MaterialEdit({ material, units, materialTypes }: Materia
         },
     ];
 
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<MaterialFormData>>({
         code: material.data.code,
         name: material.data.name,

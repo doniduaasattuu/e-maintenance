@@ -19,7 +19,7 @@ interface EquipmentImageProps {
 }
 
 export default function EquipmentImage({ equipment }: EquipmentImageProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',

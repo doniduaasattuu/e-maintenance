@@ -16,7 +16,7 @@ interface Props {
 }
 
 export default function InspectionTransformerEdit({ inspectionTransformer, equipment }: Props) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',

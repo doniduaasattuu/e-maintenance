@@ -27,7 +27,7 @@ interface DepartmentEditProps {
 }
 
 export default function DepartmentEdit({ department, divisions }: DepartmentEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<DepartmentFormData>>({
         code: department.data.code,
         name: department.data.name,

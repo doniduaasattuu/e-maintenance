@@ -20,7 +20,7 @@ interface TableUnitProps {
 }
 
 export default function TableUnit({ units }: TableUnitProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = units.meta;
     const caption = tableCaption(meta);
 

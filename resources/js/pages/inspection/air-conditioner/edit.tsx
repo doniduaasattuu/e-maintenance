@@ -16,7 +16,7 @@ interface Props {
 }
 
 export default function InspectionAirConditionerEdit({ inspectionAirConditioner, equipment }: Props) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Equipments',

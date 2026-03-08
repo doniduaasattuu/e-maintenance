@@ -35,7 +35,7 @@ type FindingCreateProps = {
 export default function FindingCreate({ findingClauses, findingStatuses, findingPriorities, departments }: FindingCreateProps) {
     const findingStatusId = findingStatuses?.data?.find((s) => s.name.toLocaleLowerCase() === 'open')?.id?.toString() ?? '1';
     const findingPriorityId = findingPriorities?.data?.find((p) => p.label.toLowerCase() === 'recommendation')?.id?.toString() ?? '1';
-    const can = usePermissions();
+    const { can } = usePermissions();
 
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<FindingFormData>>({
         finding_clause_id: '',

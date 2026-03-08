@@ -211,4 +211,8 @@ return [
         'bulk_delete',
         'restore',
     ],
+
+    'custom_actions' => [
+        'Finding' => ['close'],
+    ],
 ];

@@ -25,7 +25,7 @@ interface RepositoryProps {
 }
 
 export default function RepositoryEdit({ repository }: RepositoryProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<Required<RepositoryFormData>>({
         title: repository.data.title,
         file: null,

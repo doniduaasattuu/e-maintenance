@@ -24,7 +24,7 @@ interface FindingStatusEditProps {
 }
 
 export default function FindingStatusEdit({ findingStatus }: FindingStatusEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<FindingStatusFormData>>({
         name: findingStatus.data.name,
         description: findingStatus.data?.description ?? '',

@@ -30,7 +30,7 @@ export default function MaterialShow({ material }: MaterialShowProps) {
         },
     ];
 
-    const can = usePermissions();
+    const { can } = usePermissions();
     const [isQROpen, setIsQROpen] = React.useState<boolean>(false);
 
     return (

@@ -24,7 +24,7 @@ interface DivisionEditProps {
 }
 
 export default function DivisionEdit({ division }: DivisionEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<DivisionFormData>>({
         code: division.data.code,
         name: division.data.name,

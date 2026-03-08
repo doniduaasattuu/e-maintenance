@@ -20,7 +20,7 @@ interface TableEquipmentClassProps {
 }
 
 export default function TableEquipmentClass({ equipmentClasses }: TableEquipmentClassProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = equipmentClasses.meta;
     const caption = tableCaption(meta);
 

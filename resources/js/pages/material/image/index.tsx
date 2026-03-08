@@ -19,7 +19,7 @@ interface MaterialImageProps {
 }
 
 export default function MaterialImage({ material }: MaterialImageProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Materials',

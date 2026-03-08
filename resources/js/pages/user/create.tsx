@@ -26,7 +26,7 @@ interface UserFormParams {
 }
 
 export default function UserCreate({ departments, positions, workCenters, availableRoles }: UserFormParams) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const [selectedRoles, setSelectedRoles] = React.useState<string[]>([]);
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<Required<UserFormData>>({
         name: '',

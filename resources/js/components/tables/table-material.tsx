@@ -31,7 +31,7 @@ interface TableMaterialProps {
 }
 
 export default function TableMaterial({ materials, units, materialTypes }: TableMaterialProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = materials.meta;
     const caption = tableCaption(meta);
     const [open, setOpen] = React.useState<boolean>(false);

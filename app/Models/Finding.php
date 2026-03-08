@@ -33,9 +33,12 @@ class Finding extends Model
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
     {
+        $clause = trim($request->query('clause'));
         $search = trim($request->query('query'));
         $status = trim($request->query('status'));
         $priority = trim($request->query('priority'));
+        $department = trim($request->query('department'));
+
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
@@ -56,12 +59,20 @@ class Finding extends Model
             });
         }
 
+        $builder->when($clause, function ($query) use ($clause) {
+            $query->whereRelation('clause', 'code', $clause);
+        });
+
         $builder->when($status, function ($query) use ($status) {
             $query->whereRelation('status', 'name', $status);
         });
 
         $builder->when($priority, function ($query) use ($priority) {
             $query->whereRelation('priority', 'label', $priority);
+        });
+
+        $builder->when($department, function ($query) use ($department) {
+            $query->whereRelation('department', 'code', $department);
         });
     }
 

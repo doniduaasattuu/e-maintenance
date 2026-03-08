@@ -36,7 +36,7 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
         },
     ];
 
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<EquipmentFormData>>({
         code: equipment.data.code,
         sort_field: equipment.data.sort_field,

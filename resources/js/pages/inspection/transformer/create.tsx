@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function InspectionTransformerCreate({ equipment }: Props) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const equipmentClassName = equipment.data.equipmentClass?.name.toLocaleLowerCase();
     const breadcrumbs: BreadcrumbItem[] = [
         {

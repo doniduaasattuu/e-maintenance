@@ -1,6 +1,7 @@
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import usePermissions from '@/hooks/use-permissions';
 import { removeOrigin } from '@/lib/utils';
-import { SharedData, type NavItem } from '@/types';
+import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { type ComponentPropsWithoutRef } from 'react';
 
@@ -12,7 +13,7 @@ export function NavFooter({
     items: NavItem[];
 }) {
     const page = usePage();
-    const { permissions } = usePage<SharedData>().props;
+    const { can } = usePermissions();
 
     return (
         <SidebarGroup {...props} className={`group-data-[collapsible=icon]:p-0 ${className || ''}`}>
@@ -20,7 +21,7 @@ export function NavFooter({
             <SidebarGroupContent>
                 <SidebarMenu>
                     {items.map((item) => {
-                        const shouldRender = !item.permission || permissions[item.permission] === true;
+                        const shouldRender = !item.permission || can[item.permission] === true;
                         return shouldRender ? (
                             <SidebarMenuItem key={item.title}>
                                 <SidebarMenuButton

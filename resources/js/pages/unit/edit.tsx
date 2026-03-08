@@ -24,7 +24,7 @@ interface UnitEditProps {
 }
 
 export default function UnitEdit({ unit }: UnitEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<UnitFormData>>({
         name: unit.data.name,
     });

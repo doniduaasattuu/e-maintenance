@@ -22,7 +22,7 @@ interface RoleCreateProps {
 }
 
 export default function RoleCreate({ availablePermissions }: RoleCreateProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const [selectedPermissions, setSelectedPermissions] = React.useState<string[]>([]);
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<Required<RoleFormData>>({
         name: '',

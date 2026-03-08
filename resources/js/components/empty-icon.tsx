@@ -1,9 +1,10 @@
+import { cn } from '@/lib/utils';
 import { Leaf } from 'lucide-react';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from './ui/empty';
 
 export default function EmptyIcon({ className }: { className?: string }) {
     return (
-        <Empty className={className}>
+        <Empty className={cn('h-100', className)}>
             <EmptyHeader>
                 <EmptyMedia variant="icon">
                     <Leaf />

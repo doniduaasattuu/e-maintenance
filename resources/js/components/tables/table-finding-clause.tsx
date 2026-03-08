@@ -20,7 +20,7 @@ interface TableFindingClauseProps {
 }
 
 export default function TableFindingClause({ findingClauses }: TableFindingClauseProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = findingClauses.meta;
     const caption = tableCaption(meta);
 

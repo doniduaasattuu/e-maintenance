@@ -8,6 +8,7 @@ use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FindingClauseController;
 use App\Http\Controllers\FindingController;
+use App\Http\Controllers\FindingImageController;
 use App\Http\Controllers\FindingPriorityController;
 use App\Http\Controllers\FindingStatusController;
 use App\Http\Controllers\FunctionalLocationController;
@@ -192,8 +193,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // FINDING PRIORITY
     Route::resource('/finding-priorities', FindingPriorityController::class)->except(['show']);
 
+    Route::post('/findings/{finding}/images', [FindingImageController::class, 'store'])->name('findings.images.store');
     Route::resource('/findings', FindingController::class)->except(['update']);
     Route::post('/findings/{finding}', [FindingController::class, 'update'])->name('findings.update');
+    Route::post('/findings/{finding}/close', [FindingController::class, 'close'])->name('findings.close');
 });
 
 Route::fallback(function () {

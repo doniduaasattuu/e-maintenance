@@ -52,7 +52,7 @@ class FindingResource extends JsonResource
 
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('d/m/Y') : $this->created_at,
             'updated_at' => $this->updated_at?->toDateTimeString(),
-            'closed_at' => Carbon::parse($this->closed_at)->format('d/m/Y'),
+            'closed_at' => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y') : null,
         ];
     }
 }

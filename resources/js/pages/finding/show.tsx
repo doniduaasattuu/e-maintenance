@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field } from '@/components/ui/field';
+import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Finding, FindingImage } from '@/types';
 import { Head, router } from '@inertiajs/react';
@@ -72,6 +73,7 @@ const Ul = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function FindingShow({ finding }: FindingShowProps) {
+    const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Findings',
@@ -176,26 +178,26 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                             <CalendarCheck className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                             <span>{finding.data.closed_at ?? '-'}</span>
                                         </Li>
-                                        {/* <Li title="Notification">
-                                            <Tag className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.notification ?? '-'}</span>
-                                        </Li> */}
                                     </Ul>
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col gap-3">
-                                <Button onClick={() => handleEditFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
-                                    <Edit className="size-4" /> Edit
-                                </Button>
-                                <ActionConfirm
-                                    action={() => handleDeleteFinding(finding.data.id)}
-                                    title={`Delete finding of ${finding.data.functionalLocation?.description}?`}
-                                    description="This action will remove this finding from database. This action cannot be undone."
-                                >
-                                    <Button variant="destructive" size="sm" className="w-full">
-                                        <Trash2 className="size-4" /> Delete
+                                {can.edit_finding && (
+                                    <Button onClick={() => handleEditFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
+                                        <Edit className="size-4" /> Edit
                                     </Button>
-                                </ActionConfirm>
+                                )}
+                                {can.delete_finding && (
+                                    <ActionConfirm
+                                        action={() => handleDeleteFinding(finding.data.id)}
+                                        title={`Delete finding of ${finding.data.functionalLocation?.description}?`}
+                                        description="This action will remove this finding from database. This action cannot be undone."
+                                    >
+                                        <Button variant="destructive" size="sm" className="w-full">
+                                            <Trash2 className="size-4" /> Delete
+                                        </Button>
+                                    </ActionConfirm>
+                                )}
                             </CardFooter>
                         </Card>
                     </div>

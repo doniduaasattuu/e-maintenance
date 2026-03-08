@@ -24,7 +24,7 @@ interface EquipmentClassEditProps {
 }
 
 export default function EquipmentClassEdit({ equipmentClass }: EquipmentClassEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<EquipmentClassFormData>>({
         code: equipmentClass.data.code,
         name: equipmentClass.data.name,

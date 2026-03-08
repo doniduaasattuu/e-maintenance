@@ -164,7 +164,7 @@ export default function FindingForm({
                 <Textarea
                     className="text-sm"
                     disabled={processing}
-                    tabIndex={4}
+                    tabIndex={2}
                     id="description"
                     onChange={(val: React.ChangeEvent<HTMLTextAreaElement>) => setData('description', val.target.value)}
                     value={data.description}
@@ -182,7 +182,7 @@ export default function FindingForm({
                     value={data.functional_location_id ?? ''}
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
-                    tabIndex={2}
+                    tabIndex={3}
                     id="functional_location_id"
                     currentValue={functionalLocation}
                     onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
@@ -195,7 +195,7 @@ export default function FindingForm({
                 <Field>
                     <FieldLabel htmlFor="department">Department</FieldLabel>
                     <Select disabled={processing} onValueChange={(e) => setData('department_id', e)} value={data.department_id}>
-                        <SelectTrigger tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={4} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select a department" />
                         </SelectTrigger>
                         <SelectContent>
@@ -219,7 +219,7 @@ export default function FindingForm({
                         value={data.equipment_id ?? ''}
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
-                        tabIndex={3}
+                        tabIndex={5}
                         id="equipment_id"
                         currentValue={equipment}
                         onChange={(val) => setData('equipment_id', val ? val.toString() : '')}
@@ -256,7 +256,7 @@ export default function FindingForm({
                         onValueChange={(e) => setData('finding_status_id', e)}
                         value={data.finding_status_id}
                     >
-                        <SelectTrigger tabIndex={7} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={6} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -286,7 +286,7 @@ export default function FindingForm({
                         onValueChange={(e) => setData('finding_priority_id', e)}
                         value={data.finding_priority_id}
                     >
-                        <SelectTrigger tabIndex={8} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={7} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select priority" />
                         </SelectTrigger>
                         <SelectContent>
@@ -313,7 +313,7 @@ export default function FindingForm({
                         <RequiredLabel />
                     </FieldLabel>
                     <Input
-                        tabIndex={9}
+                        tabIndex={8}
                         type="file"
                         id="images"
                         multiple
@@ -348,7 +348,7 @@ export default function FindingForm({
                         data.description == '' ||
                         (!isEditing ? data.images == null : isStatusClosed && data.images == null)
                     }
-                    tabIndex={10}
+                    tabIndex={9}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}
                     label={buttonLabel}

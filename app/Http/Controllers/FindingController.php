@@ -101,6 +101,7 @@ class FindingController extends Controller
                         'file_path'     => $path,
                         'category'      => 'before',
                         'original_name' => $originalName,
+                        'closed_at'     => null,
                     ]);
                 }
             }
@@ -179,6 +180,37 @@ class FindingController extends Controller
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
             'departments' => DepartmentResource::collection($departments),
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function close(Request $request, Finding $finding)
+    {
+        Gate::authorize('update_finding');
+        Gate::authorize('close_finding');
+
+        $statusClosed = FindingStatus::where('name', 'Closed')->firstOrFail();
+
+        if ($finding->images()->where('category', 'after')->count() === 0) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => 'Cannot close finding: Please upload "After" photos first as evidence of resolution.',
+            ]);
+        }
+
+        DB::transaction(function () use ($request, $finding, $statusClosed) {
+            $finding->update([
+                'finding_status_id' => $statusClosed->id,
+                'closed_at' => now(),
+                'verified_by' => $request->user()->id,
+            ]);
+        });
+
+        return back()->with('message', [
+            'type' => 'success',
+            'description' => "Finding {$finding->id} has been marked as Closed.",
         ]);
     }
 

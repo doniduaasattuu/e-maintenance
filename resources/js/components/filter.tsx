@@ -10,9 +10,10 @@ interface FilterProps {
     children: React.ReactNode;
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    className?: string;
 }
 
-export default function Filter({ children, open, setOpen }: FilterProps) {
+export default function Filter({ children, open, setOpen, className }: FilterProps) {
     const isMobile = useIsMobile();
     const align = isMobile ? 'end' : 'start';
 
@@ -23,8 +24,8 @@ export default function Filter({ children, open, setOpen }: FilterProps) {
                     <Settings2 />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent align={align} className="max-w-87.5 justify-between p-0 sm:w-full">
-                <Command>
+            <PopoverContent align={align} className="p-0">
+                <Command className={className}>
                     <CommandList>{children}</CommandList>
                     <CommandSeparator />
                     <TextLink

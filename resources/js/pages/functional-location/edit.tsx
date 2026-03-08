@@ -24,7 +24,7 @@ interface FunctionalLocationEditProps {
 }
 
 export default function FunctionalLocationEdit({ functionalLocation }: FunctionalLocationEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<FunctionalLocationFormData>>({
         code: functionalLocation.data.code,
         description: functionalLocation.data.description,

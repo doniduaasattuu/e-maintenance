@@ -23,7 +23,7 @@ interface MaterialCreateParams {
 }
 
 export default function MaterialCreate({ units, materialTypes }: MaterialCreateParams) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<MaterialFormData>>({
         code: '',
         name: '',

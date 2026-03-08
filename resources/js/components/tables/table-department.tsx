@@ -20,7 +20,7 @@ interface DepartmentTableProps {
 }
 
 export default function TableDepartment({ departments }: DepartmentTableProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = departments.meta;
     const caption = tableCaption(meta);
 

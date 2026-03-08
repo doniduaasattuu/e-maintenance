@@ -24,7 +24,7 @@ interface DepartmentCreateProps {
 }
 
 export default function DepartmentCreate({ divisions }: DepartmentCreateProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<DepartmentFormData>>({
         code: '',
         name: '',

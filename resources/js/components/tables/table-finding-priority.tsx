@@ -20,7 +20,7 @@ interface TableFindingPriorityProps {
 }
 
 export default function TableFindingPriority({ findingPriorities }: TableFindingPriorityProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = findingPriorities.meta;
     const caption = tableCaption(meta);
 
@@ -69,7 +69,7 @@ export default function TableFindingPriority({ findingPriorities }: TableFinding
                                             {findingPriority.updated_at}
                                         </TableCell>
                                         {can.delete_findingpriority && (
-                                            <TableCell className="table-icon">
+                                            <TableCell className="w-10 flex-col text-right align-top">
                                                 <ActionConfirm
                                                     action={() => handleDeleteFindingPriority(findingPriority.id)}
                                                     title={`Delete finding priority: ${findingPriority.label}?`}

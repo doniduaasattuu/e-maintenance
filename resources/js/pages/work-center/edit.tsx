@@ -24,7 +24,7 @@ interface WorkCenterEditProps {
 }
 
 export default function WorkCenterEdit({ workCenter }: WorkCenterEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<WorkCenterFormData>>({
         code: workCenter.data.code,
         name: workCenter.data.name,

@@ -26,7 +26,7 @@ interface RoleEditProps {
 }
 
 export default function RoleEdit({ availablePermissions, role, currentPermissions }: RoleEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const [selectedPermissions, setSelectedPermissions] = React.useState<string[]>(currentPermissions);
     const { data, setData, patch, processing, errors, recentlySuccessful } = useForm<Required<RoleFormData>>({
         name: role.data.name,

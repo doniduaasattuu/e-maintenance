@@ -15,12 +15,12 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            DivisionSeeder::class,
-            DepartmentSeeder::class,
-            PositionSeeder::class,
-            WorkCenterSeeder::class,
-        ]);
+        // $this->call([
+        //     DivisionSeeder::class,
+        //     DepartmentSeeder::class,
+        //     PositionSeeder::class,
+        //     WorkCenterSeeder::class,
+        // ]);
 
         User::factory()->create([
             'name' => 'Admin',

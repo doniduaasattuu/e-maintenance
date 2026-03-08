@@ -60,7 +60,7 @@ export default function EquipmentForm({
     isEditing,
     className,
 }: EquipmentFormProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
 
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>

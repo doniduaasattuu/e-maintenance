@@ -8,14 +8,15 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+import usePermissions from '@/hooks/use-permissions';
 import { removeOrigin } from '@/lib/utils';
-import { SharedData, type NavItem } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { type NavItem } from '@/types';
+import { Link } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
-    const { permissions } = usePage<SharedData>().props;
+    const { can } = usePermissions();
 
     return (
         <SidebarGroup className="px-2 py-0">
@@ -40,7 +41,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                     {
                                         <SidebarMenuSub>
                                             {item.subItems.map((subItem) => {
-                                                const shouldRender = !subItem.permission || permissions[subItem.permission] == true;
+                                                const shouldRender = !subItem.permission || can[subItem.permission] == true;
                                                 const isActive =
                                                     window.location.pathname == removeOrigin(subItem.href) ||
                                                     window.location.pathname.startsWith(removeOrigin(subItem.href));
@@ -64,7 +65,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 </CollapsibleContent>
                             </SidebarMenuItem>
                         </Collapsible>
-                    ) : !item.permission || permissions[item.permission] == true ? (
+                    ) : !item.permission || can[item.permission] == true ? (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 asChild

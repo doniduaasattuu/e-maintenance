@@ -20,7 +20,7 @@ interface TableFunctionalLocationProps {
 }
 
 export default function TableFunctionalLocation({ functionalLocations }: TableFunctionalLocationProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = functionalLocations.meta;
     const caption = tableCaption(meta);
 
@@ -40,7 +40,7 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                 {can.create_functionallocation && <ButtonAdd tabIndex={2} route={route('functional-locations.create')} />}
             </div>
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {functionalLocations.data.length > 0 ? (
+                {functionalLocations?.data?.length > 0 ? (
                     <Table>
                         <TableCaption className="text-sm">{caption}</TableCaption>
                         <TableHeader>

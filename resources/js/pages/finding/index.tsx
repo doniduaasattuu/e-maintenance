@@ -1,6 +1,6 @@
 import TableFinding from '@/components/tables/table-finding';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Finding, FindingPriority, FindingStatus, Meta } from '@/types';
+import { BreadcrumbItem, Department, Finding, FindingClause, FindingPriority, FindingStatus, Meta } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,18 +14,30 @@ type FindingProps = {
         data: Finding[];
         meta: Meta;
     };
+    findingClauses: {
+        data: FindingClause[];
+    };
     findingStatuses: {
         data: FindingStatus[];
     };
     findingPriorities: {
         data: FindingPriority[];
     };
+    departments: {
+        data: Department[];
+    };
 };
 
-export default function FindingIndex({ findings, findingPriorities, findingStatuses }: FindingProps) {
+export default function FindingIndex({ findings, findingPriorities, findingStatuses, departments, findingClauses }: FindingProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableFinding findings={findings} findingPriorities={findingPriorities} findingStatuses={findingStatuses} />
+            <TableFinding
+                findings={findings}
+                findingClauses={findingClauses}
+                findingPriorities={findingPriorities}
+                findingStatuses={findingStatuses}
+                departments={departments}
+            />
         </AppLayout>
     );
 }

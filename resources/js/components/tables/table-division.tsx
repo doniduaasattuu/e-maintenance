@@ -20,7 +20,7 @@ interface DivisionTableProps {
 }
 
 export default function TableDivision({ divisions }: DivisionTableProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = divisions.meta;
     const caption = tableCaption(meta);
 

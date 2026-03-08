@@ -20,7 +20,7 @@ interface TableEquipmentStatusProps {
 }
 
 export default function TableEquipmentStatus({ equipmentStatuses }: TableEquipmentStatusProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const meta = equipmentStatuses.meta;
     const caption = tableCaption(meta);
 

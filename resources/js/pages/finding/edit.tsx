@@ -40,7 +40,7 @@ export default function FindingEdit({ finding, findingClauses, findingStatuses, 
         },
     ];
 
-    const can = usePermissions();
+    const { can } = usePermissions();
     const closedStatusId = findingStatuses?.data?.find((s) => s.name.toLowerCase() === 'closed')?.id?.toString() ?? finding.data.status?.id;
 
     const { data, setData, post, errors, processing } = useForm<Required<FindingFormData>>({
