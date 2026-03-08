@@ -8,7 +8,7 @@ import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Findings',
+        title: 'Audit 5RK3',
         href: route('findings.index'),
     },
     {

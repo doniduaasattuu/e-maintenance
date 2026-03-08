@@ -69,7 +69,7 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
 
     return (
         <TableLayout
-            title="Findings"
+            title="Audit 5RK3"
             description="Represents a unique physical object tracked for maintenance, costing, and history."
             className="md:max-w-full"
         >

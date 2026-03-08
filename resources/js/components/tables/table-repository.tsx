@@ -26,7 +26,7 @@ interface TableRepositoryProps {
 }
 
 export default function TableRepository({ repositories, extensions, renderable }: TableRepositoryProps) {
-    const {can} = usePermissions();
+    const { can } = usePermissions();
     const meta = repositories.meta;
     const caption = tableCaption(meta);
     const [open, setOpen] = React.useState<boolean>(false);
@@ -40,7 +40,7 @@ export default function TableRepository({ repositories, extensions, renderable }
     }
 
     return (
-        <TableLayout title="Repositories" description="Centralized document storage module" className="md:max-w-7xl">
+        <TableLayout title="Document Control" description="Centralized document storage module" className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

@@ -76,7 +76,7 @@ export default function FindingShow({ finding }: FindingShowProps) {
     const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Findings',
+            title: 'Audit 5RK3',
             href: route('findings.index'),
         },
         {

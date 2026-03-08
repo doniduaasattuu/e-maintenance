@@ -88,13 +88,13 @@ const mainNavItems: NavItem[] = [
         ],
     },
     {
-        title: 'Finding',
+        title: 'Audit 5RK3',
         href: route('findings.index'),
         icon: TextSearch,
         permission: 'index_finding',
     },
     {
-        title: 'Repository',
+        title: 'Document Control',
         href: route('repositories.index'),
         icon: FolderOpen,
         permission: 'index_repository',

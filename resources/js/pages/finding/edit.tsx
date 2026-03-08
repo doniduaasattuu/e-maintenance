@@ -27,7 +27,7 @@ type FindingEditProps = {
 export default function FindingEdit({ finding, findingClauses, findingStatuses, findingPriorities, departments }: FindingEditProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Findings',
+            title: 'Audit 5RK3',
             href: route('findings.index'),
         },
         {

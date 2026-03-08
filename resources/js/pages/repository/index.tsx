@@ -4,7 +4,7 @@ import { BreadcrumbItem, Meta, Repository } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Repositories',
+        title: 'Document Control',
         href: route('repositories.index'),
     },
 ];
