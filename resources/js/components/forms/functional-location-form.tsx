@@ -76,6 +76,7 @@ export default function FunctionalLocationForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     label={buttonLabel}
                     disabled={processing || data.code == '' || data.description == ''}
                     tabIndex={3}

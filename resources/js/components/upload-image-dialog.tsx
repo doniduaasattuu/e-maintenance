@@ -113,14 +113,12 @@ export function UploadImageDialog({ children, finding }: UploadImageDialogProps)
                     </Field>
                     <DialogFooter>
                         <ButtonSubmit
+                            processing={processing}
                             disabled={processing || isCompressing || !setData}
                             label="Upload"
                             successMessage="Uploaded"
                             recentlySuccessful={recentlySuccessful}
                         />
-                        {/* <Button type="submit" disabled={processing || isCompressing || !setData}>
-                           {processing ? 'Uploading...' : 'Upload'}
-                        </Button> */}
                     </DialogFooter>
                 </form>
             </DialogContent>

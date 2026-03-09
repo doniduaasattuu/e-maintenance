@@ -134,6 +134,7 @@ export default function RoleForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     label={buttonLabel}
                     disabled={processing || selectedPermissions.length < 1 || data.name === ''}
                     tabIndex={3}

@@ -146,6 +146,7 @@ export default function MaterialForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     label={buttonLabel}
                     disabled={processing || data.code == '' || data.name == ''}
                     tabIndex={6}

@@ -58,6 +58,7 @@ export default function UnitForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     disabled={processing || data.name == ''}
                     tabIndex={2}
                     recentlySuccessful={recentlySuccessful}

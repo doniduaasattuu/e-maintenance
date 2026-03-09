@@ -51,6 +51,7 @@ export default function Register() {
                         required
                         autoFocus
                         tabIndex={1}
+                        maxLength={8}
                         autoComplete="employee_id"
                         value={data.employee_id}
                         onChange={(e) => setData('employee_id', e.target.value)}

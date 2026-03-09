@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { Division } from '@/types';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
+import RequiredLabel from '../required-label';
 import { Field, FieldError, FieldLabel } from '../ui/field';
 
 export type DepartmentFormData = {
@@ -44,7 +45,10 @@ export default function DepartmentForm({
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
             <Field>
-                <FieldLabel htmlFor="name">Name</FieldLabel>
+                <FieldLabel htmlFor="name">
+                    Name
+                    <RequiredLabel />
+                </FieldLabel>
                 <Input
                     tabIndex={1}
                     id="name"
@@ -60,7 +64,10 @@ export default function DepartmentForm({
             </Field>
 
             <Field>
-                <FieldLabel htmlFor="code">Code</FieldLabel>
+                <FieldLabel htmlFor="code">
+                    Code
+                    <RequiredLabel />
+                </FieldLabel>
                 <Input
                     tabIndex={2}
                     id="code"
@@ -98,6 +105,7 @@ export default function DepartmentForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     label={buttonLabel}
                     disabled={processing || data.code == '' || data.name == '' || data.division_id == ''}
                     tabIndex={4}

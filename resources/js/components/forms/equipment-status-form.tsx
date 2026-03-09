@@ -91,6 +91,7 @@ export default function EquipmentStatusForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     disabled={processing || data.code == '' || data.name == ''}
                     tabIndex={4}
                     recentlySuccessful={recentlySuccessful}

@@ -56,6 +56,7 @@ export default function ImageForm({ submit, fileInputRef, processing, setData, e
                 {isCompressing && <CompressingDescription />}
             </Field>
             <ButtonSubmit
+                processing={processing}
                 disabled={processing || fileInputRef.current == null || data.image == null}
                 showSuccessMessage={true}
                 successMessage="Saved"

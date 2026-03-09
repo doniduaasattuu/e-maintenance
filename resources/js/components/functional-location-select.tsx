@@ -70,55 +70,60 @@ export default function FunctionalLocationSelect({
 
     return (
         <div className={cn('flex w-full items-center gap-2', className)}>
-            <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                    <Button
-                        id={id}
-                        variant="ghost"
-                        role="combobox"
-                        aria-expanded={open}
-                        tabIndex={tabIndex}
-                        disabled={processing}
-                        className={cn('border-muted-background w-full justify-between border font-normal', !selectedLoc && 'text-muted-foreground')}
-                    >
-                        <span className="truncate">{selectedLoc ? selectedLoc.code : placeholder || 'Select location...'}</span>
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-                    <Command shouldFilter={false}>
-                        <CommandInput
-                            placeholder="Search..."
-                            value={input}
-                            onValueChange={(v) => setInput(v)}
-                            className="w-full text-base sm:text-sm"
-                        />
-                        <CommandList>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup>
-                                {options.map((loc) => (
-                                    <CommandItem
-                                        key={loc.id}
-                                        value={loc.code}
-                                        onSelect={() => {
-                                            onChange(loc.id);
-                                            setSelectedLoc(loc);
-                                            setOpen(false);
-                                            setInput('');
-                                        }}
-                                    >
-                                        <Check className={cn('mr-2 h-4 w-4', selectedLoc?.id === loc.id ? 'opacity-100' : 'opacity-0')} />
-                                        <div className="flex flex-col">
-                                            <span className="font-medium">{loc.code}</span>
-                                            <span className="text-muted-foreground line-clamp-1 text-xs">{loc.description}</span>
-                                        </div>
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        </CommandList>
-                    </Command>
-                </PopoverContent>
-            </Popover>
+            <div className="min-w-0 grow">
+                <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            id={id}
+                            variant="ghost"
+                            role="combobox"
+                            aria-expanded={open}
+                            tabIndex={tabIndex}
+                            disabled={processing}
+                            className={cn(
+                                'border-muted-background w-full justify-between border font-normal',
+                                !selectedLoc && 'text-muted-foreground',
+                            )}
+                        >
+                            <span className="truncate">{selectedLoc ? selectedLoc.code : placeholder || 'Select location...'}</span>
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                        <Command shouldFilter={false}>
+                            <CommandInput
+                                placeholder="Search..."
+                                value={input}
+                                onValueChange={(v) => setInput(v)}
+                                className="w-full text-base sm:text-sm"
+                            />
+                            <CommandList>
+                                <CommandEmpty>No results found.</CommandEmpty>
+                                <CommandGroup>
+                                    {options.map((loc) => (
+                                        <CommandItem
+                                            key={loc.id}
+                                            value={loc.code}
+                                            onSelect={() => {
+                                                onChange(loc.id);
+                                                setSelectedLoc(loc);
+                                                setOpen(false);
+                                                setInput('');
+                                            }}
+                                        >
+                                            <Check className={cn('mr-2 h-4 w-4', selectedLoc?.id === loc.id ? 'opacity-100' : 'opacity-0')} />
+                                            <div className="flex flex-col">
+                                                <span className="font-medium">{loc.code}</span>
+                                                <span className="text-muted-foreground line-clamp-1 text-xs">{loc.description}</span>
+                                            </div>
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
+            </div>
 
             {isEditing && value !== '' && (
                 <ActionConfirm
@@ -127,7 +132,7 @@ export default function FunctionalLocationSelect({
                     description="Dismantle equipment from this location."
                     actionLabel="Dismantle"
                 >
-                    <Button title="Dismantle" variant="outline" size="icon" className="shrink-0">
+                    <Button title="Dismantle" variant="outline" size="icon">
                         <ArrowUpRightFromSquareIcon className="size-4" />
                     </Button>
                 </ActionConfirm>

@@ -254,9 +254,9 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
                                                         >
                                                             <DropdownMenuItem
                                                                 onSelect={(e) => e.preventDefault()}
-                                                                className="text-red-600 focus:bg-red-50 focus:text-red-600"
+                                                                className="text-red-600 focus:bg-red-50 focus:text-red-700"
                                                             >
-                                                                <Trash2 className="h-4 w-4 text-red-500" />
+                                                                <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
                                                                 Delete
                                                             </DropdownMenuItem>
                                                         </ActionConfirm>
