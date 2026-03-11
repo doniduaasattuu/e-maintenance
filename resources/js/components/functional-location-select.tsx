@@ -75,6 +75,7 @@ export default function FunctionalLocationSelect({
                     <PopoverTrigger asChild>
                         <Button
                             id={id}
+                            size={'sm'}
                             variant="ghost"
                             role="combobox"
                             aria-expanded={open}
@@ -132,7 +133,7 @@ export default function FunctionalLocationSelect({
                     description="Dismantle equipment from this location."
                     actionLabel="Dismantle"
                 >
-                    <Button title="Dismantle" variant="outline" size="icon">
+                    <Button title="Dismantle" variant="outline" size={'sm'}>
                         <ArrowUpRightFromSquareIcon className="size-4" />
                     </Button>
                 </ActionConfirm>

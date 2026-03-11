@@ -8,10 +8,9 @@ import * as React from 'react';
 interface FilterWorkCenterProps {
     workCenters: WorkCenter[];
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    className?: string;
 }
 
-export default function FilterWorkCenter({ workCenters, setOpen }: FilterWorkCenterProps) {
+export default function FilterWorkCenter({ workCenters }: FilterWorkCenterProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('work-center') || '');
 
     const handleFilterWorkCenter = (dept: string | null) => {
@@ -44,7 +43,6 @@ export default function FilterWorkCenter({ workCenters, setOpen }: FilterWorkCen
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterWorkCenter(selectedValue);
                         }}
                     >

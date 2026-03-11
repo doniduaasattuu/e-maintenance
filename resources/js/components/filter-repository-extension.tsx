@@ -10,7 +10,7 @@ interface FilterRepositoryExtensionProps {
     className?: string;
 }
 
-export default function FilterRepositoryExtension({ extensions, setOpen }: FilterRepositoryExtensionProps) {
+export default function FilterRepositoryExtension({ extensions }: FilterRepositoryExtensionProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('ext') || '');
 
     const handleFilterRepositoryExtension = (ext: string) => {
@@ -43,7 +43,6 @@ export default function FilterRepositoryExtension({ extensions, setOpen }: Filte
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterRepositoryExtension(selectedValue);
                         }}
                     >

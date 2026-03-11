@@ -11,7 +11,7 @@ interface FilterMaterialTypeProps {
     unitName?: string;
 }
 
-export default function FilterMaterialType({ materialTypes, setOpen }: FilterMaterialTypeProps) {
+export default function FilterMaterialType({ materialTypes }: FilterMaterialTypeProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('type') || '');
 
     const handleFilterMaterialType = (type: string) => {
@@ -44,7 +44,6 @@ export default function FilterMaterialType({ materialTypes, setOpen }: FilterMat
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterMaterialType(selectedValue);
                         }}
                     >

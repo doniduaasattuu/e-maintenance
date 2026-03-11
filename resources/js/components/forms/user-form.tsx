@@ -244,6 +244,7 @@ export default function UserForm({
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild disabled={processing}>
                         <Button
+                            size={'sm'}
                             type="button"
                             id="roles"
                             variant="outline"

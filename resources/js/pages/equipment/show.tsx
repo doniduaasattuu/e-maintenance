@@ -53,7 +53,7 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                         <FieldLabel htmlFor="code">Code</FieldLabel>
                         <div className="flex justify-between gap-2">
                             <Input readOnly id="code" value={equipment.data.code} />
-                            <Button title="Show QR Code" variant="outline" onClick={() => setIsQROpen(true)}>
+                            <Button size={'sm'} title="Show QR Code" variant="outline" onClick={() => setIsQROpen(true)}>
                                 <QrCodeIcon />
                             </Button>
                         </div>

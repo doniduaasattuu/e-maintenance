@@ -71,6 +71,7 @@ export default function EquipmentSelect({
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
+                        size={'sm'}
                         id={id}
                         variant="ghost"
                         role="combobox"

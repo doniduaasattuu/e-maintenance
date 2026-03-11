@@ -11,7 +11,7 @@ interface FilterEquipmentClassProps {
     className?: string;
 }
 
-export default function FilterEquipmentClass({ equipmentClasses, setOpen }: FilterEquipmentClassProps) {
+export default function FilterEquipmentClass({ equipmentClasses }: FilterEquipmentClassProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('class') || '');
 
     const handleFilterEquipmentClass = (cls: string) => {
@@ -44,7 +44,6 @@ export default function FilterEquipmentClass({ equipmentClasses, setOpen }: Filt
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterEquipmentClass(selectedValue);
                         }}
                     >

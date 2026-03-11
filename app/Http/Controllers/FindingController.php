@@ -41,7 +41,16 @@ class FindingController extends Controller
             'inspector',
             'verifier',
             'images',
-        ])->orderBy('created_at', 'DESC')->search($request)->paginate(10)->withQueryString();
+        ])->orderBy('created_at', 'DESC')
+            ->when($request->start_date && $request->end_date, function ($query) use ($request) {
+                $query->whereBetween('created_at', [
+                    $request->start_date . ' 00:00:00',
+                    $request->end_date . ' 23:59:59'
+                ]);
+            })
+            ->search($request)
+            ->paginate(10)
+            ->withQueryString();
 
         $findingClauses = FindingClause::all();
         $findingStatuses = FindingStatus::all();
@@ -54,6 +63,7 @@ class FindingController extends Controller
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
             'departments' => DepartmentResource::collection($departments),
+            'filters' => $request->only(['start_date', 'end_date']),
         ]);
     }
 

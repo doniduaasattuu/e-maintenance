@@ -11,7 +11,7 @@ interface FilterUnitProps {
     unitName?: string;
 }
 
-export default function FilterUnit({ units, setOpen }: FilterUnitProps) {
+export default function FilterUnit({ units }: FilterUnitProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('unit') || '');
 
     const handleFilterUnit = (unit: string) => {
@@ -44,7 +44,6 @@ export default function FilterUnit({ units, setOpen }: FilterUnitProps) {
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterUnit(selectedValue);
                         }}
                     >

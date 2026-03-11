@@ -11,7 +11,7 @@ interface FilterFindingStatusProps {
     className?: string;
 }
 
-export default function FilterFindingStatus({ findingStatuses, setOpen }: FilterFindingStatusProps) {
+export default function FilterFindingStatus({ findingStatuses }: FilterFindingStatusProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('status') || '');
 
     const handleFilterFindingStatus = (status: string | null) => {
@@ -44,7 +44,6 @@ export default function FilterFindingStatus({ findingStatuses, setOpen }: Filter
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterFindingStatus(selectedValue);
                         }}
                     >

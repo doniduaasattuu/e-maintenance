@@ -41,7 +41,7 @@ export default function SearchBar({ tabIndex }: { tabIndex?: number }) {
     }, []);
 
     return (
-        <div className="relative md:w-xs">
+        <div className="relative md:w-64">
             <Input
                 tabIndex={tabIndex}
                 className="w-full"
@@ -49,6 +49,7 @@ export default function SearchBar({ tabIndex }: { tabIndex?: number }) {
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search..."
                 ref={searchBarRef}
+                type="small"
             />
             <p className="text-muted-foreground absolute top-1/2 right-2 -translate-y-1/2 p-0 text-xs" onClick={() => searchBarRef.current?.focus()}>
                 <kbd className="bg-muted text-muted-foreground pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">

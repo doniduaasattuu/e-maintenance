@@ -193,7 +193,7 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                         title={`Delete finding of ${finding.data.functionalLocation?.description}?`}
                                         description="This action will remove this finding from database. This action cannot be undone."
                                     >
-                                        <Button variant="destructive" size="sm" className="w-full">
+                                        <Button size="sm" className="w-full bg-red-600 text-red-100 hover:bg-red-500 hover:text-white">
                                             <Trash2 className="size-4" /> Delete
                                         </Button>
                                     </ActionConfirm>

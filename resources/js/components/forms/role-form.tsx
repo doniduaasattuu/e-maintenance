@@ -81,6 +81,7 @@ export default function RoleForm({
                     <Popover open={open} onOpenChange={setOpen}>
                         <PopoverTrigger asChild>
                             <Button
+                                size={'sm'}
                                 variant="outline"
                                 onClick={(e) => {
                                     e.preventDefault();

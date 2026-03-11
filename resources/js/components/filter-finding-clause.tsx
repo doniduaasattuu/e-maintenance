@@ -7,11 +7,11 @@ import * as React from 'react';
 
 interface FilterFindingClauseProps {
     findingClauses: FindingClause[];
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
     className?: string;
 }
 
-export default function FilterFindingClause({ findingClauses, setOpen }: FilterFindingClauseProps) {
+export default function FilterFindingClause({ findingClauses }: FilterFindingClauseProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('clause') || '');
 
     const handleFilterFindingClause = (clause: string | null) => {
@@ -44,7 +44,6 @@ export default function FilterFindingClause({ findingClauses, setOpen }: FilterF
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterFindingClause(selectedValue);
                         }}
                     >

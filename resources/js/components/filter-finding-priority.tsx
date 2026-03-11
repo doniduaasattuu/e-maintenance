@@ -11,7 +11,7 @@ interface FilterFindingPriorityProps {
     className?: string;
 }
 
-export default function FilterFindingPriority({ findingPriorities, setOpen }: FilterFindingPriorityProps) {
+export default function FilterFindingPriority({ findingPriorities }: FilterFindingPriorityProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('priority') || '');
 
     const handleFilterFindingPriority = (priority: string | null) => {
@@ -44,7 +44,6 @@ export default function FilterFindingPriority({ findingPriorities, setOpen }: Fi
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterFindingPriority(selectedValue);
                         }}
                     >

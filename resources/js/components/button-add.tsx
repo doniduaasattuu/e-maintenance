@@ -15,7 +15,7 @@ export default function ButtonAdd({ route, label, variant, tabIndex }: ButtonAdd
 
     return (
         <Link tabIndex={tabIndex} href={route}>
-            <Button variant={variant ?? 'outline'}>
+            <Button size={'sm'} variant={variant ?? 'outline'}>
                 <Plus /> {isMobile ? 'New' : (label ?? 'New')}
             </Button>
         </Link>

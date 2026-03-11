@@ -41,10 +41,6 @@ export function FindingCard({ finding, onClick }: FindingCardProps) {
                         <MapPin className="h-4 w-4" />
                         <span className="max-w-50 truncate text-xs">{finding.functionalLocation?.description}</span>
                     </div>
-                    {/* <div className="text-muted-foreground flex items-center gap-2">
-                        <Tag className="h-4 w-4" />
-                        <span className="truncate text-xs">{finding.notification}</span>
-                    </div> */}
                     <div className="text-muted-foreground flex items-center gap-2">
                         <Box className="h-4 w-4" />
                         <span className="truncate text-xs">{finding.equipment?.code}</span>

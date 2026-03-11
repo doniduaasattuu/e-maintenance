@@ -11,7 +11,7 @@ interface FilterEquipmentStatusProps {
     className?: string;
 }
 
-export default function FilterEquipmentStatus({ equipmentStatuses, setOpen }: FilterEquipmentStatusProps) {
+export default function FilterEquipmentStatus({ equipmentStatuses }: FilterEquipmentStatusProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('status') || '');
 
     const handleFilterEquipmentStatus = (cls: string) => {
@@ -44,7 +44,6 @@ export default function FilterEquipmentStatus({ equipmentStatuses, setOpen }: Fi
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterEquipmentStatus(selectedValue);
                         }}
                     >

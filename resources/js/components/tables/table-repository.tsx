@@ -5,16 +5,16 @@ import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
 import { copyTextToClipboard, tableCaption } from '@/lib/utils';
 import { Meta, Repository } from '@/types';
-import { Link, router } from '@inertiajs/react';
-import { Copy, Download, Edit, Trash2, Upload } from 'lucide-react';
+import { router } from '@inertiajs/react';
+import { Copy, Download, Edit, Trash2 } from 'lucide-react';
 import React from 'react';
 import { ActionConfirm } from '../action-confirm';
+import ButtonAdd from '../button-add';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterRepositoryExtension from '../filter-repository-extension';
 import TextLink from '../text-link';
 import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
 
 interface TableRepositoryProps {
     repositories: {
@@ -48,14 +48,7 @@ export default function TableRepository({ repositories, extensions, renderable }
                         <FilterRepositoryExtension extensions={extensions} setOpen={setOpen} />
                     </Filter>
                 </div>
-                {can.create_repository && (
-                    <Link href={route('repositories.create')}>
-                        <Button variant="outline">
-                            <Upload />
-                            Upload
-                        </Button>
-                    </Link>
-                )}
+                {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={2} />}
             </div>
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {repositories.data.length > 0 ? (

@@ -10,7 +10,7 @@ interface FilterRoleProps {
     className?: string;
 }
 
-export default function FilterRole({ roles, setOpen }: FilterRoleProps) {
+export default function FilterRole({ roles }: FilterRoleProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('role') || '');
 
     const handleFilterRole = (role: string | null) => {
@@ -43,7 +43,6 @@ export default function FilterRole({ roles, setOpen }: FilterRoleProps) {
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterRole(selectedValue);
                         }}
                     >

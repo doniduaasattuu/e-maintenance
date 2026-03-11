@@ -11,7 +11,7 @@ interface FilterPositionProps {
     className?: string;
 }
 
-export default function FilterPosition({ positions, setOpen }: FilterPositionProps) {
+export default function FilterPosition({ positions }: FilterPositionProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('position') || '');
 
     const handleFilterPosition = (pos: string | null) => {
@@ -44,7 +44,6 @@ export default function FilterPosition({ positions, setOpen }: FilterPositionPro
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterPosition(selectedValue);
                         }}
                     >

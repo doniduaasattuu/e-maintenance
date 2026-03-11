@@ -11,7 +11,7 @@ interface FilterDepartmentProps {
     className?: string;
 }
 
-export default function FilterDepartment({ departments, setOpen }: FilterDepartmentProps) {
+export default function FilterDepartment({ departments }: FilterDepartmentProps) {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('department') || '');
 
     const handleFilterDepartment = (dept: string | null) => {
@@ -44,7 +44,6 @@ export default function FilterDepartment({ departments, setOpen }: FilterDepartm
                         onSelect={(currentValue) => {
                             const selectedValue = currentValue === value ? '' : currentValue;
                             setValue(selectedValue);
-                            setOpen(false);
                             handleFilterDepartment(selectedValue);
                         }}
                     >
