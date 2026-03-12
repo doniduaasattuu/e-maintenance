@@ -100,7 +100,7 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
             {findings?.data?.length > 0 ? (
                 <div className="grid min-w-0 overflow-x-auto rounded-md">
                     <Table>
-                        <TableCaption className="pb-4">{caption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 {can.close_finding && <TableHead className="w-12.5"></TableHead>}

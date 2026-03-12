@@ -40,7 +40,7 @@ interface TableUserProps {
 
 export default function TableUser({ users, departments, positions, workCenters, roles }: TableUserProps) {
     const [open, setOpen] = React.useState<boolean>(false);
-    const {can} = usePermissions();
+    const { can } = usePermissions();
     const meta = users.meta;
     const caption = tableCaption(meta);
 
@@ -66,7 +66,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
                         <CommandSeparator />
                         <FilterRole roles={roles} setOpen={setOpen} />
                         <CommandSeparator />
-                        <FilterWithTrashed setOpen={setOpen} />
+                        <FilterWithTrashed />
                     </Filter>
                 </div>
                 {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} />}
@@ -74,7 +74,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {users.data.length > 0 ? (
                     <Table>
-                        <TableCaption className="text-sm">{caption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">#</TableHead>

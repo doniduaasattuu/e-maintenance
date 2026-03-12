@@ -37,7 +37,7 @@ export default function TableRole({ roles }: TableRoleProps) {
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {roles.data.length > 0 ? (
                     <Table>
-                        <TableCaption className="text-sm">{caption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">#</TableHead>

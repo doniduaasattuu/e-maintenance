@@ -14,7 +14,7 @@ interface HistoryTableProps {
 
 export default function TableHistory({ histories }: HistoryTableProps) {
     const meta = histories.meta;
-    const tableCaption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
 
     return (
         <React.Fragment>
@@ -24,7 +24,7 @@ export default function TableHistory({ histories }: HistoryTableProps) {
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {histories.data.length > 0 ? (
                     <Table>
-                        <TableCaption className="text-sm">{tableCaption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">Equipment</TableHead>

@@ -32,7 +32,7 @@ export default function RepositoryAssetLayout({ model, repositories, renderable,
                         <HeadingSmall title="Repositories" description={`Related ${model} document and repositories.`} />
                     </div>
                     <Table>
-                        <TableCaption className="text-sm">{caption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground w-7.5">#</TableHead>

@@ -59,7 +59,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
             </div>
             {equipments?.data?.length > 0 ? (
                 <Table>
-                    <TableCaption className="text-sm">{caption}</TableCaption>
+                    <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-muted-foreground">Name</TableHead>
