@@ -33,8 +33,8 @@ class Finding extends Model
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
     {
-        $clause = trim($request->query('clause'));
         $search = trim($request->query('query'));
+        $clause = trim($request->query('clause'));
         $status = trim($request->query('status'));
         $priority = trim($request->query('priority'));
         $department = trim($request->query('department'));

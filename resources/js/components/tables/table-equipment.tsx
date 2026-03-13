@@ -49,7 +49,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen}>
+                    <Filter open={open} setOpen={setOpen} keys={['class', 'status']}>
                         <FilterEquipmentClass equipmentClasses={equipmentClasses.data} setOpen={setOpen} />
                         <CommandSeparator />
                         <FilterEquipmentStatus equipmentStatuses={equipmentStatuses.data} setOpen={setOpen} />

@@ -57,7 +57,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen}>
+                    <Filter open={open} setOpen={setOpen} keys={['department', 'position', 'work-center', 'role']}>
                         <FilterDepartment departments={departments.data} setOpen={setOpen} />
                         <CommandSeparator />
                         <FilterPosition positions={positions.data} setOpen={setOpen} />

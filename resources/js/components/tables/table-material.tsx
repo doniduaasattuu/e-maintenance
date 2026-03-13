@@ -48,7 +48,7 @@ export default function TableMaterial({ materials, units, materialTypes }: Table
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen}>
+                    <Filter open={open} setOpen={setOpen} keys={['unit', 'type']}>
                         <FilterUnit units={units.data} setOpen={setOpen} />
                         <CommandSeparator />
                         <FilterMaterialType materialTypes={materialTypes.data} setOpen={setOpen} />
