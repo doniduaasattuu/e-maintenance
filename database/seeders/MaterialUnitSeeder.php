@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Unit;
+use App\Models\MaterialUnit;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class UnitSeeder extends Seeder
+class MaterialUnitSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -53,7 +53,7 @@ class UnitSeeder extends Seeder
         ];
 
         collect($units)->each(function ($u) {
-            Unit::firstOrCreate(['name' => $u]);
+            MaterialUnit::firstOrCreate(['name' => $u]);
         });
     }
 }

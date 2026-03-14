@@ -1,56 +1,27 @@
 import { CommandGroup, CommandItem } from '@/components/ui/command';
-import { cn } from '@/lib/utils';
+import { useFilterParam } from '@/hooks/use-filter-param';
+import truncateText, { cn } from '@/lib/utils';
 import { FindingPriority } from '@/types';
-import { router } from '@inertiajs/react';
 import { Check } from 'lucide-react';
-import * as React from 'react';
 
-interface FilterFindingPriorityProps {
+interface FilterFindingPrioritiesProps {
     findingPriorities: FindingPriority[];
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    className?: string;
 }
 
-export default function FilterFindingPriority({ findingPriorities }: FilterFindingPriorityProps) {
-    const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('priority') || '');
-
-    const handleFilterFindingPriority = (priority: string | null) => {
-        const searchParams = new URLSearchParams(window.location.search);
-
-        if (searchParams.has('page')) {
-            searchParams.set('page', '1');
-        }
-
-        if (priority) {
-            searchParams.set('priority', priority);
-        } else {
-            searchParams.delete('priority');
-        }
-
-        router.get(window.location.pathname, Object.fromEntries(searchParams.entries()), {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        });
-    };
+export default function FilterFindingPriority({ findingPriorities }: FilterFindingPrioritiesProps) {
+    const { selectedValues, toggleValue, handleClearAll } = useFilterParam('priority');
 
     return (
-        <CommandGroup heading="Priority">
-            {findingPriorities &&
-                findingPriorities.map((findingStatus) => (
-                    <CommandItem
-                        key={findingStatus.label}
-                        value={findingStatus.label}
-                        onSelect={(currentValue) => {
-                            const selectedValue = currentValue === value ? '' : currentValue;
-                            setValue(selectedValue);
-                            handleFilterFindingPriority(selectedValue);
-                        }}
-                    >
-                        <Check className={cn('mr-2 h-4 w-4', value === findingStatus.label ? 'opacity-100' : 'opacity-0')} />
-                        <span className="truncate text-nowrap">{findingStatus.label}</span>
-                    </CommandItem>
-                ))}
+        <CommandGroup heading="Finding Priority">
+            {findingPriorities?.map((findingPriority: FindingPriority) => (
+                <CommandItem key={findingPriority.id} value={findingPriority.label} onSelect={toggleValue}>
+                    <Check className={cn('mr-2 h-4 w-4', selectedValues.includes(findingPriority.label) ? 'opacity-100' : 'opacity-0')} />
+                    <span className="truncate text-nowrap">{`${findingPriority.label} - ${truncateText(findingPriority.description)}`}</span>
+                </CommandItem>
+            ))}
+            <p onClick={() => handleClearAll('priority')} className="text-muted-foreground cursor-default p-4 text-right text-sm hover:text-blue-400">
+                Reset
+            </p>
         </CommandGroup>
     );
 }

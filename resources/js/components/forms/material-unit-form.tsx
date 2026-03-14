@@ -6,9 +6,9 @@ import RequiredLabel from '../required-label';
 import { Field, FieldError, FieldLabel } from '../ui/field';
 
 interface UnitFormProps {
-    data: Required<UnitFormData>;
-    setData: <K extends keyof UnitFormData>(key: K, value: UnitFormData[K]) => void;
-    errors: Partial<Record<keyof UnitFormData, string>>;
+    data: Required<MaterialUnitFormData>;
+    setData: <K extends keyof MaterialUnitFormData>(key: K, value: MaterialUnitFormData[K]) => void;
+    errors: Partial<Record<keyof MaterialUnitFormData, string>>;
     processing: boolean;
     recentlySuccessful: boolean;
     submit: FormEventHandler;
@@ -19,11 +19,11 @@ interface UnitFormProps {
     className?: string;
 }
 
-export type UnitFormData = {
+export type MaterialUnitFormData = {
     name: string;
 };
 
-export default function UnitForm({
+export default function MaterialUnitForm({
     data,
     setData,
     errors,

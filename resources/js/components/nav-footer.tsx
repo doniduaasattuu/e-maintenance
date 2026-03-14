@@ -21,14 +21,18 @@ export function NavFooter({
             <SidebarGroupContent>
                 <SidebarMenu>
                     {items.map((item) => {
-                        const shouldRender = !item.permission || can[item.permission] === true;
+                        const multiple: boolean = item.children != undefined;
+                        const shouldRender: boolean = !item.permission || can[item.permission] === true;
+                        const isActive: boolean = !multiple
+                            ? window.location.pathname == removeOrigin(item.href) || window.location.pathname.startsWith(removeOrigin(item.href))
+                            : (item.children?.some(
+                                  (link) => removeOrigin(link) == window.location.pathname || window.location.pathname.startsWith(removeOrigin(link)),
+                              ) ?? false);
+
                         return shouldRender ? (
                             <SidebarMenuItem key={item.title}>
                                 <SidebarMenuButton
-                                    isActive={
-                                        window.location.pathname == removeOrigin(item.href) ||
-                                        window.location.pathname.startsWith(removeOrigin(item.href))
-                                    }
+                                    isActive={isActive}
                                     asChild
                                     className={`${page.url.includes(item.href) ? 'hover:text-neutral-800 dark:hover:text-neutral-100' : 'text-neutral-600 dark:text-neutral-300'}`}
                                 >

@@ -1,58 +1,27 @@
 import { CommandGroup, CommandItem } from '@/components/ui/command';
+import { useFilterParam } from '@/hooks/use-filter-param';
 import truncateText, { cn } from '@/lib/utils';
 import { FindingClause } from '@/types';
-import { router } from '@inertiajs/react';
 import { Check } from 'lucide-react';
-import * as React from 'react';
 
-interface FilterFindingClauseProps {
+interface FilterFindingPrioritiesProps {
     findingClauses: FindingClause[];
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-    className?: string;
 }
 
-export default function FilterFindingClause({ findingClauses }: FilterFindingClauseProps) {
-    const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('clause') || '');
-
-    const handleFilterFindingClause = (clause: string | null) => {
-        const searchParams = new URLSearchParams(window.location.search);
-
-        if (searchParams.has('page')) {
-            searchParams.set('page', '1');
-        }
-
-        if (clause) {
-            searchParams.set('clause', clause);
-        } else {
-            searchParams.delete('clause');
-        }
-
-        router.get(window.location.pathname, Object.fromEntries(searchParams.entries()), {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        });
-    };
+export default function FilterFindingClause({ findingClauses }: FilterFindingPrioritiesProps) {
+    const { selectedValues, toggleValue, handleClearAll } = useFilterParam('clause');
 
     return (
-        <CommandGroup heading="Clause">
-            {findingClauses &&
-                findingClauses.map((findingClause) => (
-                    <CommandItem
-                        key={findingClause.id}
-                        value={findingClause.code}
-                        onSelect={(currentValue) => {
-                            const selectedValue = currentValue === value ? '' : currentValue;
-                            setValue(selectedValue);
-                            handleFilterFindingClause(selectedValue);
-                        }}
-                    >
-                        <Check className={cn('mr-2 h-4 w-4', value === findingClause.code ? 'opacity-100' : 'opacity-0')} />
-                        <span className="truncate text-nowrap">
-                            {findingClause.code} - {truncateText(findingClause.description, 40)}
-                        </span>
-                    </CommandItem>
-                ))}
+        <CommandGroup heading="Finding Clause">
+            {findingClauses?.map((findingClause: FindingClause) => (
+                <CommandItem key={findingClause.id} value={findingClause.code} onSelect={toggleValue}>
+                    <Check className={cn('mr-2 h-4 w-4', selectedValues.includes(findingClause.code) ? 'opacity-100' : 'opacity-0')} />
+                    <span className="truncate text-nowrap">{`${findingClause.code} - ${truncateText(findingClause.description)}`}</span>
+                </CommandItem>
+            ))}
+            <p onClick={() => handleClearAll('clause')} className="text-muted-foreground cursor-default p-4 text-right text-sm hover:text-blue-400">
+                Reset
+            </p>
         </CommandGroup>
     );
 }

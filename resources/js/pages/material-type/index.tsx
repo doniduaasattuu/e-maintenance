@@ -4,7 +4,7 @@ import { MaterialType, Meta, type BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Material Type',
+        title: 'Material Types',
         href: route('material-types.index'),
     },
 ];

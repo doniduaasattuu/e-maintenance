@@ -3,6 +3,8 @@
 use App\Models\Equipment;
 use App\Models\Material;
 use App\Models\Repository;
+use Database\Seeders\MaterialTypeSeeder;
+use Database\Seeders\MaterialUnitSeeder;
 use Database\Seeders\RepositorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,7 +18,7 @@ beforeEach(function () {
     $this->generatePermissions(['Repository', 'Material']);
 
     $this->seed(RepositorySeeder::class);
-    $this->seed(UnitSeeder::class);
+    $this->seed(MaterialUnitSeeder::class);
     $this->seed(MaterialTypeSeeder::class);
 });
 

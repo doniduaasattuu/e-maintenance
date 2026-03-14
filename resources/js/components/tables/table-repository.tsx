@@ -45,7 +45,7 @@ export default function TableRepository({ repositories, extensions, renderable }
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
                     <Filter open={open} setOpen={setOpen} keys={['ext']}>
-                        <FilterRepositoryExtension extensions={extensions} setOpen={setOpen} />
+                        <FilterRepositoryExtension extensions={extensions} />
                     </Filter>
                 </div>
                 {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={2} />}

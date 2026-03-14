@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Unit\StoreUnitRequest;
-use App\Http\Requests\Unit\UpdateUnitRequest;
-use App\Http\Resources\UnitResource;
-use App\Models\Unit;
+use App\Http\Requests\MaterialUnit\StoreMaterialUnitRequest;
+use App\Http\Requests\MaterialUnit\UpdateMaterialUnitRequest;
+use App\Http\Resources\MaterialUnitResource;
+use App\Models\MaterialUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Throwable;
 
-class UnitController extends Controller
+class MaterialUnitController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        Gate::authorize('index_unit');
+        Gate::authorize('index_materialunit');
 
-        $units = Unit::search($request)->paginate()->withQueryString();
+        $materialUnits = MaterialUnit::search($request)->paginate()->withQueryString();
 
-        return Inertia::render('unit/index', [
-            'units' => UnitResource::collection($units),
+        return Inertia::render('material-unit/index', [
+            'materialUnits' => MaterialUnitResource::collection($materialUnits),
         ]);
     }
 
@@ -32,22 +32,22 @@ class UnitController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create_unit');
+        Gate::authorize('create_materialunit');
 
-        return Inertia::render('unit/create');
+        return Inertia::render('material-unit/create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUnitRequest $request)
+    public function store(StoreMaterialUnitRequest $request)
     {
-        Gate::authorize('store_unit');
+        Gate::authorize('store_materialunit');
 
         try {
             $validated = $request->validated();
 
-            Unit::create(['name' => $validated['name']]);
+            MaterialUnit::create(['name' => $validated['name']]);
 
             return back();
         } catch (Throwable $e) {
@@ -61,34 +61,34 @@ class UnitController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Unit $unit)
+    public function show(MaterialUnit $materialUnit)
     {
-        // Gate::authorize('show_unit');
+        // Gate::authorize('show_materialunit');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Unit $unit)
+    public function edit(MaterialUnit $materialUnit)
     {
-        Gate::authorize('edit_unit');
+        Gate::authorize('edit_materialunit');
 
-        return Inertia::render('unit/edit', [
-            'unit' => new UnitResource($unit),
+        return Inertia::render('material-unit/edit', [
+            'materialUnit' => new MaterialUnitResource($materialUnit),
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUnitRequest $request, Unit $unit)
+    public function update(UpdateMaterialUnitRequest $request, MaterialUnit $materialUnit)
     {
-        Gate::authorize('update_unit');
+        Gate::authorize('update_materialunit');
 
         try {
             $validated = $request->validated();
 
-            $unit->update([
+            $materialUnit->update([
                 'name' => $validated['name'],
             ]);
 
@@ -104,12 +104,12 @@ class UnitController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Unit $unit)
+    public function destroy(MaterialUnit $materialUnit)
     {
-        Gate::authorize('delete_unit');
+        Gate::authorize('delete_materialunit');
 
         try {
-            $unit->delete();
+            $materialUnit->delete();
 
             return back()->with('message', [
                 'type' => 'success',

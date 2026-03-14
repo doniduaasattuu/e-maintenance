@@ -28,7 +28,7 @@ export default function TableFindingPriority({ findingPriorities }: TableFinding
         router.delete(route('finding-priorities.destroy', id));
     }
     return (
-        <TableLayout title="Finding Priorities" description="Overview and management of finding priorities" className="md:max-w-7xl">
+        <TableLayout title="Finding Priority" description="Overview and management of finding priorities" className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

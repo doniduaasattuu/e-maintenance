@@ -1,56 +1,27 @@
 import { CommandGroup, CommandItem } from '@/components/ui/command';
+import { useFilterParam } from '@/hooks/use-filter-param';
 import { cn } from '@/lib/utils';
 import { Position } from '@/types';
-import { router } from '@inertiajs/react';
 import { Check } from 'lucide-react';
-import * as React from 'react';
 
 interface FilterPositionProps {
     positions: Position[];
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    className?: string;
 }
 
 export default function FilterPosition({ positions }: FilterPositionProps) {
-    const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('position') || '');
-
-    const handleFilterPosition = (pos: string | null) => {
-        const searchParams = new URLSearchParams(window.location.search);
-
-        if (searchParams.has('page')) {
-            searchParams.set('page', '1');
-        }
-
-        if (pos) {
-            searchParams.set('position', pos);
-        } else {
-            searchParams.delete('position');
-        }
-
-        router.get(window.location.pathname, Object.fromEntries(searchParams.entries()), {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        });
-    };
+    const { selectedValues, toggleValue, handleClearAll } = useFilterParam('position');
 
     return (
-        <CommandGroup heading="Positions">
-            {positions &&
-                positions.map((position) => (
-                    <CommandItem
-                        key={position.code}
-                        value={position.code}
-                        onSelect={(currentValue) => {
-                            const selectedValue = currentValue === value ? '' : currentValue;
-                            setValue(selectedValue);
-                            handleFilterPosition(selectedValue);
-                        }}
-                    >
-                        <Check className={cn('mr-2 h-4 w-4', value === String(position.code) ? 'opacity-100' : 'opacity-0')} />
-                        <span className="truncate text-nowrap">{position.code + ' - ' + position.name}</span>
-                    </CommandItem>
-                ))}
+        <CommandGroup heading="Position">
+            {positions?.map((position) => (
+                <CommandItem key={position.code} value={position.code} onSelect={toggleValue}>
+                    <Check className={cn('mr-2 h-4 w-4', selectedValues.includes(position.code) ? 'opacity-100' : 'opacity-0')} />
+                    <span className="truncate text-nowrap">{position.code + ' - ' + position.name}</span>
+                </CommandItem>
+            ))}
+            <p onClick={() => handleClearAll('position')} className="text-muted-foreground cursor-default p-4 text-right text-sm hover:text-blue-400">
+                Reset
+            </p>
         </CommandGroup>
     );
 }

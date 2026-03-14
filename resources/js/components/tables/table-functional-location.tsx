@@ -29,7 +29,7 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
     }
     return (
         <TableLayout
-            title="Functional Locations"
+            title="Functional Location"
             description="An organizational unit that structures technical systems, buildings, or equipment based on functional, spatial, or process criteria."
             className="md:max-w-7xl"
         >

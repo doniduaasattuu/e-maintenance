@@ -9,7 +9,7 @@ import { FormEventHandler, useRef } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Document Control',
+        title: 'Document Controls',
         href: route('repositories.index'),
     },
     {

@@ -36,7 +36,7 @@ class PermissionSeeder extends Seeder
             'FindingPriority',
             'Finding',
             'Repository',
-            'Unit',
+            'MaterialUnit',
             'MaterialType',
             'Image'
         ];

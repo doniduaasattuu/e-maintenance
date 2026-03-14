@@ -8,7 +8,7 @@ import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Material Type',
+        title: 'Material Types',
         href: route('material-types.index'),
     },
     {

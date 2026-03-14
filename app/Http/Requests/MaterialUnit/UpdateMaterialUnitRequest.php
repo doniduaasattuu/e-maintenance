@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Unit;
+namespace App\Http\Requests\MaterialUnit;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreUnitRequest extends FormRequest
+class UpdateMaterialUnitRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +23,12 @@ class StoreUnitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:15', 'unique:units,name'],
+            'name' => [
+                'required',
+                'string',
+                'max:15',
+                Rule::unique('material_units', 'name')->ignore($this->material_unit)
+            ],
         ];
     }
 }

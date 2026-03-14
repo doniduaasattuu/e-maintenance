@@ -3,6 +3,7 @@
 use App\Models\Material;
 use Database\Seeders\MaterialSeeder;
 use Database\Seeders\MaterialTypeSeeder;
+use Database\Seeders\MaterialUnitSeeder;
 use Database\Seeders\UnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -12,7 +13,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->generatePermissions(['Image']);
 
-    $this->seed(UnitSeeder::class);
+    $this->seed(MaterialUnitSeeder::class);
     $this->seed(MaterialTypeSeeder::class);
     $this->seed(MaterialSeeder::class);
 });

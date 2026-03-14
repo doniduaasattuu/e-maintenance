@@ -6,10 +6,10 @@ use App\Http\Requests\Material\StoreMaterialRequest;
 use App\Http\Requests\Material\UpdateMaterialRequest;
 use App\Http\Resources\MaterialResource;
 use App\Http\Resources\MaterialTypeResource;
-use App\Http\Resources\UnitResource;
+use App\Http\Resources\MaterialUnitResource;
 use App\Models\Material;
 use App\Models\MaterialType;
-use App\Models\Unit;
+use App\Models\MaterialUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -26,7 +26,7 @@ class MaterialController extends Controller
     {
         Gate::authorize('index_material');
 
-        $materials = Material::with(['unit', 'materialType'])->search($request)->paginate()->withQueryString();
+        $materials = Material::with(['unit', 'type'])->search($request)->paginate()->withQueryString();
 
         if ($request->expectsJson() && $request->filled('query')) {
             return response()->json(MaterialResource::collection($materials));
@@ -34,7 +34,7 @@ class MaterialController extends Controller
 
         return Inertia::render('material/index', [
             'materials' => MaterialResource::collection($materials),
-            'units' => UnitResource::collection(Unit::all()),
+            'materialUnits' => MaterialUnitResource::collection(MaterialUnit::all()),
             'materialTypes' => MaterialTypeResource::collection(MaterialType::all()),
         ]);
     }
@@ -47,7 +47,7 @@ class MaterialController extends Controller
         Gate::authorize('create_material');
 
         return Inertia::render('material/create', [
-            'units' => UnitResource::collection(Unit::all()),
+            'materialUnits' => MaterialUnitResource::collection(MaterialUnit::all()),
             'materialTypes' => MaterialTypeResource::collection(MaterialType::all()),
         ]);
     }
@@ -66,7 +66,7 @@ class MaterialController extends Controller
                 'code' => $validated['code'],
                 'name' => $validated['name'],
                 'price' => $validated['price'],
-                'unit_id' => $validated['unit_id'],
+                'material_unit_id' => $validated['material_unit_id'],
                 'material_type_id' => $validated['material_type_id'],
             ]);
 
@@ -87,7 +87,7 @@ class MaterialController extends Controller
         Gate::authorize('show_material');
 
         return Inertia::render('material/show', [
-            'material' => new MaterialResource($material->load(['unit', 'materialType'])),
+            'material' => new MaterialResource($material->load(['unit', 'type'])),
         ]);
     }
 
@@ -100,7 +100,7 @@ class MaterialController extends Controller
 
         return Inertia::render('material/edit', [
             'material' => new MaterialResource($material),
-            'units' => UnitResource::collection(Unit::all()),
+            'materialUnits' => MaterialUnitResource::collection(MaterialUnit::all()),
             'materialTypes' => MaterialTypeResource::collection(MaterialType::all()),
         ]);
     }
@@ -119,7 +119,7 @@ class MaterialController extends Controller
                 'code' => $validated['code'],
                 'name' => $validated['name'],
                 'price' => $validated['price'],
-                'unit_id' => $validated['unit_id'],
+                'material_unit_id' => $validated['material_unit_id'],
                 'material_type_id' => $validated['material_type_id'],
             ]);
 

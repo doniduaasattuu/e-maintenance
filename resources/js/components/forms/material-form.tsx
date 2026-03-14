@@ -1,7 +1,7 @@
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { MaterialType, Unit } from '@/types';
+import { MaterialType, MaterialUnit } from '@/types';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 import RequiredLabel from '../required-label';
@@ -17,7 +17,7 @@ interface MaterialFormProps {
     canSubmit: boolean;
     buttonLabel: string;
     successMessage?: string;
-    units: Unit[];
+    materialUnits: MaterialUnit[];
     materialTypes: MaterialType[];
     className?: string;
 }
@@ -26,7 +26,7 @@ export type MaterialFormData = {
     code: string;
     name: string;
     price: string | null;
-    unit_id: string | undefined;
+    material_unit_id: string | undefined;
     material_type_id: string | undefined;
 };
 
@@ -40,7 +40,7 @@ export default function MaterialForm({
     canSubmit,
     buttonLabel,
     successMessage,
-    units,
+    materialUnits,
     materialTypes,
     className,
 }: MaterialFormProps) {
@@ -102,24 +102,24 @@ export default function MaterialForm({
 
             <Field>
                 <FieldLabel htmlFor="unit">Unit</FieldLabel>
-                <Select disabled={processing} onValueChange={(e) => setData('unit_id', e)} value={data.unit_id}>
+                <Select disabled={processing} onValueChange={(e) => setData('material_unit_id', e)} value={data.material_unit_id}>
                     <SelectTrigger tabIndex={4} className="truncate overflow-hidden whitespace-nowrap">
                         <SelectValue placeholder="Select a unit" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                             <SelectLabel className="text-muted-foreground">Unit</SelectLabel>
-                            {units.map((unit: Unit) => {
+                            {materialUnits?.map((materialUnit: MaterialUnit) => {
                                 return (
-                                    <SelectItem key={unit.id} value={unit.id.toString()}>
-                                        {unit.name}
+                                    <SelectItem key={materialUnit.id} value={materialUnit.id.toString()}>
+                                        {materialUnit.name}
                                     </SelectItem>
                                 );
                             })}
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <FieldError>{errors.unit_id}</FieldError>
+                <FieldError>{errors.material_unit_id}</FieldError>
             </Field>
 
             <Field>

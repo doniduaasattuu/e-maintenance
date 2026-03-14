@@ -1,4 +1,4 @@
-import UnitForm, { UnitFormData } from '@/components/forms/unit-form';
+import UnitForm, { MaterialUnitFormData } from '@/components/forms/material-unit-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
@@ -8,25 +8,25 @@ import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Unit',
-        href: route('units.index'),
+        title: 'Material Units',
+        href: route('material-units.index'),
     },
     {
         title: 'Create',
-        href: route('units.create'),
+        href: route('material-units.create'),
     },
 ];
 
-export default function UnitCreate() {
+export default function MaterialUnitCreate() {
     const { can } = usePermissions();
-    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<UnitFormData>>({
+    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<MaterialUnitFormData>>({
         name: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('units.store'), {
+        post(route('material-units.store'), {
             preserveScroll: true,
             onSuccess: () => {
                 reset('name');
@@ -44,7 +44,7 @@ export default function UnitCreate() {
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.store_unit}
+                    canSubmit={can.store_materialunit}
                     buttonLabel="Create"
                     successMessage="Created"
                     className="max-w-xl"

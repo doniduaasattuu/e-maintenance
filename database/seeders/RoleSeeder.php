@@ -40,7 +40,7 @@ class RoleSeeder extends Seeder
             'index_equipmentclass',
             'index_equipmentstatus',
             'index_repository',
-            'index_unit',
+            'index_materialunit',
             'index_materialtype',
             'index_findingclause',
             'index_findingstatus',

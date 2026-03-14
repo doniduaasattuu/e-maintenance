@@ -75,9 +75,7 @@ export default function MaterialShow({ material }: MaterialShowProps) {
                         <Input
                             readOnly
                             id="type_id"
-                            value={
-                                material.data.materialType ? `${material.data.materialType?.code} - ${material.data.materialType?.description}` : ''
-                            }
+                            value={material.data.type ? `${material.data.type?.code} - ${material.data.type?.description}` : ''}
                         />
                     </Field>
                 </div>

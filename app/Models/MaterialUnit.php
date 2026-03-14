@@ -8,12 +8,12 @@ use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
-class Unit extends Model
+class MaterialUnit extends Model
 {
-    /** @use HasFactory<\Database\Factories\UnitFactory> */
+    /** @use HasFactory<\Database\Factories\MaterialUnitFactory> */
     use HasFactory;
 
-    protected $table = 'units';
+    protected $table = 'material_units';
 
     protected $fillable = [
         'name',
@@ -34,6 +34,6 @@ class Unit extends Model
 
     public function materials(): HasMany
     {
-        return $this->hasMany(Material::class);
+        return $this->hasMany(Material::class, 'material_unit_id', 'id');
     }
 }

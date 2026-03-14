@@ -29,7 +29,7 @@ class Repository extends Model
     protected function scopeSearch(Builder $builder, Request $request): void
     {
         $search = trim($request->query('query'));
-        $ext = trim($request->query('ext'));
+        $ext = $request->query('ext');
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
@@ -45,11 +45,10 @@ class Repository extends Model
                 });
         }
 
-        if ($ext) {
-            $builder->where(function ($query) use ($ext) {
-                $query
-                    ->where('extension', 'LIKE', $ext);
-            });
+        if ($ext && is_array($ext)) {
+            $builder->whereIn('extension', $ext);
+        } elseif ($ext) {
+            $builder->where('extension', $ext);
         }
     }
 

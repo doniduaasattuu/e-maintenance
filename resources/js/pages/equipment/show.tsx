@@ -75,9 +75,7 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                         <Input
                             readOnly
                             id="equipment_class_id"
-                            value={
-                                equipment.data.equipmentClass ? equipment.data.equipmentClass?.code + ' - ' + equipment.data.equipmentClass?.name : ''
-                            }
+                            value={equipment.data.eclass ? equipment.data.eclass?.code + ' - ' + equipment.data.eclass?.name : ''}
                         />
                     </Field>
                     <Field>
@@ -85,11 +83,7 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                         <Input
                             readOnly
                             id="equipment_status_id"
-                            value={
-                                equipment.data.equipmentStatus
-                                    ? equipment.data.equipmentStatus?.code + ' - ' + equipment.data.equipmentStatus?.name
-                                    : ''
-                            }
+                            value={equipment.data.status ? equipment.data.status?.code + ' - ' + equipment.data.status?.name : ''}
                         />
                     </Field>
                 </div>

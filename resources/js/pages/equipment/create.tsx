@@ -61,6 +61,7 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
                     canSubmit={can.store_equipment}
+                    funclocDismantleButton={true}
                     buttonLabel="Create"
                     successMessage="Created"
                     className="max-w-xl"

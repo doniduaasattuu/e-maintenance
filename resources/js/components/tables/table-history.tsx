@@ -42,7 +42,7 @@ export default function TableHistory({ histories }: HistoryTableProps) {
                                         <TableCell className="flex-col align-top">
                                             <div className="flex max-w-sm flex-col items-start truncate">
                                                 <span className="font-medium">{history.equipment.code}</span>
-                                                <span className="text-muted-foreground">{history.equipment.equipmentClass?.name}</span>
+                                                <span className="text-muted-foreground">{history.equipment.eclass?.name}</span>
                                             </div>
                                         </TableCell>
                                         <TableCell className="flex-col align-top">

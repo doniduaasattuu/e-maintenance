@@ -85,13 +85,13 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
                     <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
-                        <FilterFindingClause findingClauses={findingClauses.data} setOpen={setOpen} />
+                        <FilterFindingClause findingClauses={findingClauses.data} />
                         <CommandSeparator />
-                        <FilterFindingStatus findingStatuses={findingStatuses.data} setOpen={setOpen} />
+                        <FilterFindingStatus findingStatuses={findingStatuses.data} />
                         <CommandSeparator />
-                        <FilterFindingPriority findingPriorities={findingPriorities.data} setOpen={setOpen} />
+                        <FilterFindingPriority findingPriorities={findingPriorities.data} />
                         <CommandSeparator />
-                        <FilterDepartment departments={departments.data} setOpen={setOpen} />
+                        <FilterDepartment departments={departments.data} />
                     </Filter>
                     <DateRangePopover />
                 </div>

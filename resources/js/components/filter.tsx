@@ -18,14 +18,26 @@ export default function Filter({ children, open, setOpen, className, keys }: Fil
     const isMobile = useIsMobile();
     const align = isMobile ? 'center' : 'start';
 
-    const handleResetDate = () => {
-        const searchParams = new URLSearchParams(window.location.search);
+    const handleClearAll = () => {
+        const params = new URLSearchParams(window.location.search);
 
-        keys?.forEach((key) => {
-            searchParams.delete(key);
+        const keysToDelete: string[] = [];
+
+        keys?.forEach((e) => {
+            params.forEach((value, key) => {
+                if (key.startsWith(e)) {
+                    keysToDelete.push(key);
+                }
+            });
         });
 
-        router.get(window.location.pathname, Object.fromEntries(searchParams.entries()), {
+        keysToDelete.forEach((key) => params.delete(key));
+
+        if (params.has('page')) params.set('page', '1');
+
+        setOpen(false);
+
+        router.get(window.location.pathname, Object.fromEntries(params.entries()), {
             preserveState: true,
             preserveScroll: true,
             replace: true,
@@ -43,8 +55,8 @@ export default function Filter({ children, open, setOpen, className, keys }: Fil
                 <Command className={className}>
                     <CommandList>{children}</CommandList>
                     <CommandSeparator />
-                    <p onClick={handleResetDate} className="text-muted-foreground cursor-default p-4 text-right text-sm hover:text-blue-400">
-                        Reset
+                    <p onClick={handleClearAll} className="text-muted-foreground cursor-default p-4 text-right text-sm hover:text-blue-400">
+                        Reset all
                     </p>
                 </Command>
             </PopoverContent>

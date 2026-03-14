@@ -150,6 +150,7 @@ export default function Register() {
                         value={data.registration_key}
                         onChange={(e) => setData('registration_key', e.target.value)}
                         disabled={processing}
+                        placeholder="Enter the key provided by your admin"
                     />
                     <FieldError>{errors.registration_key}</FieldError>
                 </Field>

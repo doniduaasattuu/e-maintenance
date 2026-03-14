@@ -37,7 +37,7 @@ class Department extends Model
 
     public function users(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'department_id', 'id');
     }
 
     public function division(): BelongsTo
@@ -47,6 +47,6 @@ class Department extends Model
 
     public function findings(): HasMany
     {
-        return $this->hasMany(Finding::class);
+        return $this->hasMany(Finding::class, 'department_id', 'id');
     }
 }

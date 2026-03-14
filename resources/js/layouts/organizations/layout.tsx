@@ -6,17 +6,17 @@ import { Link } from '@inertiajs/react';
 
 const tabItems: NavItem[] = [
     {
-        title: 'Departments',
+        title: 'Department',
         href: route('departments.index'),
         icon: null,
     },
     {
-        title: 'Divisions',
+        title: 'Division',
         href: route('divisions.index'),
         icon: null,
     },
     {
-        title: 'Work Centers',
+        title: 'Work Center',
         href: route('work-centers.index'),
         icon: null,
     },

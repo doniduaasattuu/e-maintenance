@@ -1,56 +1,27 @@
 import { CommandGroup, CommandItem } from '@/components/ui/command';
+import { useFilterParam } from '@/hooks/use-filter-param';
 import { cn } from '@/lib/utils';
 import { EquipmentStatus } from '@/types';
-import { router } from '@inertiajs/react';
 import { Check } from 'lucide-react';
-import * as React from 'react';
 
 interface FilterEquipmentStatusProps {
     equipmentStatuses: EquipmentStatus[];
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    className?: string;
 }
 
 export default function FilterEquipmentStatus({ equipmentStatuses }: FilterEquipmentStatusProps) {
-    const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('status') || '');
-
-    const handleFilterEquipmentStatus = (cls: string) => {
-        const searchParams = new URLSearchParams(window.location.search);
-
-        if (searchParams.has('page')) {
-            searchParams.set('page', '1');
-        }
-
-        if (cls) {
-            searchParams.set('status', cls);
-        } else {
-            searchParams.delete('status');
-        }
-
-        router.get(window.location.pathname, Object.fromEntries(searchParams.entries()), {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        });
-    };
+    const { selectedValues, toggleValue, handleClearAll } = useFilterParam('status');
 
     return (
         <CommandGroup heading="Equipment Status">
-            {equipmentStatuses &&
-                equipmentStatuses.map((equipmentStatus) => (
-                    <CommandItem
-                        key={equipmentStatus.code}
-                        value={equipmentStatus.code}
-                        onSelect={(currentValue) => {
-                            const selectedValue = currentValue === value ? '' : currentValue;
-                            setValue(selectedValue);
-                            handleFilterEquipmentStatus(selectedValue);
-                        }}
-                    >
-                        <Check className={cn('mr-2 h-4 w-4', value === String(equipmentStatus.code) ? 'opacity-100' : 'opacity-0')} />
-                        <span className="truncate text-nowrap">{equipmentStatus.code + ' - ' + equipmentStatus.name}</span>
-                    </CommandItem>
-                ))}
+            {equipmentStatuses?.map((equipmentStatus: EquipmentStatus) => (
+                <CommandItem key={equipmentStatus.id} value={equipmentStatus.code} onSelect={toggleValue}>
+                    <Check className={cn('mr-2 h-4 w-4', selectedValues.includes(equipmentStatus.code) ? 'opacity-100' : 'opacity-0')} />
+                    <span className="truncate text-nowrap">{`${equipmentStatus.code} - ${equipmentStatus.name}`}</span>
+                </CommandItem>
+            ))}
+            <p onClick={() => handleClearAll('status')} className="text-muted-foreground cursor-default p-4 text-right text-sm hover:text-blue-400">
+                Reset
+            </p>
         </CommandGroup>
     );
 }

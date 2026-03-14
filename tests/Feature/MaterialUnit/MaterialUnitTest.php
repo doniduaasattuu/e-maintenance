@@ -1,35 +1,35 @@
 <?php
 
-use App\Models\Unit;
-use Database\Seeders\UnitSeeder;
+use App\Models\MaterialUnit;
+use Database\Seeders\MaterialUnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->generatePermissions(['Unit']);
+    $this->generatePermissions(['MaterialUnit']);
 
-    $this->seed(UnitSeeder::class);
+    $this->seed(MaterialUnitSeeder::class);
 });
 
 test('admin can create unit with valid data', function () {
     $admin = createAdminUser();
 
     $this->actingAs($admin)
-        ->from(route('units.create'))
-        ->post(route('units.store'), [
+        ->from(route('material-units.create'))
+        ->post(route('material-units.store'), [
             'name' => 'Mile',
         ])
-        ->assertRedirect(route('units.create'));
+        ->assertRedirect(route('material-units.create'));
 
-    $this->assertDatabaseHas('units', ['name' => 'Mile']);
+    $this->assertDatabaseHas('material_units', ['name' => 'Mile']);
 });
 
 test('admin cannot create unit with invalid data', function () {
     $admin = createAdminUser();
 
     $this->actingAs($admin)
-        ->post(route('units.store'), [
+        ->post(route('material-units.store'), [
             'name' => '',
         ])
         ->assertSessionHasErrors(['name']);
@@ -37,11 +37,11 @@ test('admin cannot create unit with invalid data', function () {
 
 test('admin cannot create duplicate unit', function () {
     $admin = createAdminUser();
-    Unit::create(['name' => 'Mile']);
+    MaterialUnit::create(['name' => 'Mile']);
 
     $this->actingAs($admin)
-        ->from(route('units.create'))
-        ->post(route('units.store'), [
+        ->from(route('material-units.create'))
+        ->post(route('material-units.store'), [
             'name' => 'Mile',
         ])
         ->assertSessionHasErrors('name');
@@ -49,26 +49,26 @@ test('admin cannot create duplicate unit', function () {
 
 test('admin can update unit', function () {
     $admin = createAdminUser();
-    $unit = Unit::create(['name' => 'Mile']);
-    $editPage = route('units.edit', $unit->id);
+    $unit = MaterialUnit::create(['name' => 'Mile']);
+    $editPage = route('material-units.edit', $unit->id);
 
     $this->actingAs($admin)
         ->from($editPage)
-        ->put(route('units.update', $unit->id), [
-            'name' => 'Miles',
+        ->put(route('material-units.update', $unit->id), [
+            'name' => 'Random',
         ])
         ->assertRedirect($editPage);
 
-    $this->assertDatabaseHas('units', ['name' => 'Miles']);
+    $this->assertDatabaseHas('material_units', ['name' => 'Random']);
 });
 
 test('admin can delete unit', function () {
     $admin = createAdminUser();
-    $unit = Unit::create(['name' => 'Mile']);
+    $unit = MaterialUnit::create(['name' => 'Mile']);
 
     $this->actingAs($admin)
-        ->from(route('units.index'))
-        ->delete(route('units.destroy', $unit->id))
+        ->from(route('material-units.index'))
+        ->delete(route('material-units.destroy', $unit->id))
         ->assertSessionHas('message', [
             'type' => 'success',
             'description' => 'Unit deleted successfully',
