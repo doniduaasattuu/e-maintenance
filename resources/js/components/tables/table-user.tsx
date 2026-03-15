@@ -53,7 +53,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
     }
 
     return (
-        <TableLayout title="User" description="User management" className="md:max-w-7xl">
+        <TableLayout moduleKey={'USER'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

@@ -28,7 +28,7 @@ export default function TableFindingClause({ findingClauses }: TableFindingClaus
         router.delete(route('finding-clauses.destroy', id));
     }
     return (
-        <TableLayout title="Finding Clause" description="Overview and management of finding clause" className="md:max-w-7xl">
+        <TableLayout moduleKey={'FINDING_CLAUSE'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

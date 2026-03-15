@@ -41,11 +41,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
     }
 
     return (
-        <TableLayout
-            title="Equipment"
-            description="Represents a unique physical object tracked for maintenance, costing, and history."
-            className="md:max-w-7xl"
-        >
+        <TableLayout moduleKey={'EQUIPMENT'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

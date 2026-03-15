@@ -12,8 +12,8 @@ interface FormLayoutProps {
 }
 
 export default function FormLayout({ className, children, moduleKey, mode }: FormLayoutProps) {
-    const module = UI_STRINGS[moduleKey] as any;
-    const content = mode === 'edit' ? module.edit : module.create;
+    const strings = UI_STRINGS[moduleKey] as any;
+    const content = mode === 'edit' ? strings.edit : strings.create;
 
     return (
         <div className={cn('flex h-full flex-1 flex-col space-y-6 rounded-xl p-4', className)}>

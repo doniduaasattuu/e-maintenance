@@ -2,13 +2,15 @@ import FindingClauseForm, { FindingClauseFormData } from '@/components/forms/fin
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, FindingClause } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Finding Clauses',
+        title: strings.FINDING_CLAUSE?.plural ?? 'Finding Clauses',
         href: route('finding-clauses.index'),
     },
     {

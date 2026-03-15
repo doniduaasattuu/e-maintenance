@@ -2,13 +2,15 @@ import RepositoryForm, { RepositoryFormData } from '@/components/forms/repositor
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Document Controls',
+        title: strings.REPOSITORY?.plural ?? 'Repositories',
         href: route('repositories.index'),
     },
     {

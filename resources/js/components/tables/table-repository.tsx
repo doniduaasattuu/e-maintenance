@@ -40,7 +40,7 @@ export default function TableRepository({ repositories, extensions, renderable }
     }
 
     return (
-        <TableLayout title="Document Control" description="Centralized document storage module" className="md:max-w-7xl">
+        <TableLayout moduleKey={'REPOSITORY'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

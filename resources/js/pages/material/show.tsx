@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Material } from '@/types';
 import { Head } from '@inertiajs/react';
 import { QrCodeIcon } from 'lucide-react';
@@ -19,9 +20,10 @@ interface MaterialShowProps {
 }
 
 export default function MaterialShow({ material }: MaterialShowProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Materials',
+            title: strings.MATERIAL?.plural ?? 'Materials',
             href: route('materials.index'),
         },
         {

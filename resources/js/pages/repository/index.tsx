@@ -1,10 +1,12 @@
 import TableRepository from '@/components/tables/table-repository';
 import AppLayout from '@/layouts/app-layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Meta, Repository } from '@/types';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Document Controls',
+        title: strings.REPOSITORY?.plural ?? 'Repositories',
         href: route('repositories.index'),
     },
 ];

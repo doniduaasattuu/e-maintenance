@@ -3,13 +3,15 @@ import HeadingSmall from '@/components/heading-small';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import RepositoryLayout from '@/layouts/repository/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Repository } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Document Controls',
+        title: strings.REPOSITORY?.plural ?? 'Repositories',
         href: route('repositories.index'),
     },
     {

@@ -2,6 +2,7 @@ import InspectionAirConditionerForm, { InspectionAirConditionerData } from '@/co
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, InspectionAirConditioner } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -17,9 +18,10 @@ interface Props {
 
 export default function InspectionAirConditionerEdit({ inspectionAirConditioner, equipment }: Props) {
     const { can } = usePermissions();
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
+            title: strings.EQUIPMENT?.plural ?? 'Equipments',
             href: route('equipments.index'),
         },
         {
@@ -53,7 +55,7 @@ export default function InspectionAirConditionerEdit({ inspectionAirConditioner,
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment air conditioner" className="max-w-xl">
+            <TableLayout title={equipment.data.code} moduleKey={'INSPECTION_AIR_CONDITIONER'} className="max-w-xl">
                 <InspectionAirConditionerForm
                     data={data}
                     errors={errors}

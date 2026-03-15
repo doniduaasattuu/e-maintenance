@@ -28,11 +28,7 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
         router.delete(route('functional-locations.destroy', id));
     }
     return (
-        <TableLayout
-            title="Functional Location"
-            description="An organizational unit that structures technical systems, buildings, or equipment based on functional, spatial, or process criteria."
-            className="md:max-w-7xl"
-        >
+        <TableLayout moduleKey={'FUNCTIONAL_LOCATION'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

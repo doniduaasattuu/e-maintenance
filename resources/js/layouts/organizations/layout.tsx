@@ -1,5 +1,6 @@
 import Heading from '@/components/heading';
 import { Separator } from '@/components/ui/separator';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { cn, removeOrigin } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
@@ -34,10 +35,15 @@ export default function OrganizationsLayout({ className, children }: Props) {
     }
 
     const currentPath = window.location.pathname;
+    const strings = UI_STRINGS;
 
     return (
         <div className={cn('p-4', className)}>
-            <Heading title="Organizations" description="Manage organizations data and information" className="mb-8" />
+            <Heading
+                title={strings.ORGANIZATION?.label ?? 'Organizations'}
+                description={strings.ORGANIZATION?.description ?? 'Manage organizations data and information'}
+                className="mb-8"
+            />
 
             <div className="space-y-6">
                 <div className="sm:bg-muted text-muted-foreground flex flex-col gap-1 rounded-lg sm:inline-flex sm:flex-row sm:p-1">

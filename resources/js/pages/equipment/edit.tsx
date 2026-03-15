@@ -4,6 +4,7 @@ import TextLink from '@/components/text-link';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, EquipmentClass, EquipmentStatus } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -21,9 +22,10 @@ interface EquipmentEditProps {
 }
 
 export default function EquipmentEdit({ equipment, equipmentClasses, equipmentStatuses }: EquipmentEditProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
+            title: strings.EQUIPMENT?.plural ?? 'Equipments',
             href: route('equipments.index'),
         },
         {

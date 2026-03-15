@@ -28,7 +28,7 @@ export default function TableFindingStatus({ findingStatuses }: TableFindingStat
         router.delete(route('finding-statuses.destroy', id));
     }
     return (
-        <TableLayout title="Finding Status" description="Overview and management of finding status" className="md:max-w-7xl">
+        <TableLayout moduleKey={'FINDING_STATUS'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

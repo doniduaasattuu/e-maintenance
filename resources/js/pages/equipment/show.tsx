@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment } from '@/types';
 import { Head } from '@inertiajs/react';
 import { QrCodeIcon } from 'lucide-react';
@@ -19,9 +20,10 @@ interface EquipmentShowProps {
 }
 
 export default function EquipmentShow({ equipment }: EquipmentShowProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
+            title: strings.EQUIPMENT?.plural ?? 'Equipments',
             href: route('equipments.index'),
         },
         {

@@ -1,11 +1,13 @@
 import TableMaterial from '@/components/tables/table-material';
 import AppLayout from '@/layouts/app-layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { Material, MaterialType, MaterialUnit, Meta, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Materials',
+        title: strings.MATERIAL?.plural ?? 'Materials',
         href: route('materials.index'),
     },
 ];

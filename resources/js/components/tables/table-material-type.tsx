@@ -28,7 +28,7 @@ export default function TableMaterialType({ materialTypes }: TableMaterialTypePr
         router.delete(route('material-types.destroy', id));
     }
     return (
-        <TableLayout title="Material Type" description="Overview and management of material type in the system" className="md:max-w-4xl">
+        <TableLayout moduleKey={'MATERIAL_TYPE'} className="md:max-w-4xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

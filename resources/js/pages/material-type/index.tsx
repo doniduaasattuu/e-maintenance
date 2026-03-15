@@ -1,10 +1,12 @@
 import TableMaterialType from '@/components/tables/table-material-type';
 import AppLayout from '@/layouts/app-layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { MaterialType, Meta, type BreadcrumbItem } from '@/types';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Material Types',
+        title: strings.MATERIAL_TYPE?.plural ?? 'Material Types',
         href: route('material-types.index'),
     },
 ];

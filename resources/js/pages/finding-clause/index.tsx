@@ -1,10 +1,12 @@
 import TableFindingClause from '@/components/tables/table-finding-clause';
 import AppLayout from '@/layouts/app-layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, FindingClause, Meta } from '@/types';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Finding Clauses',
+        title: strings.FINDING_CLAUSE?.plural ?? 'Finding Clauses',
         href: route('finding-clauses.index'),
     },
 ];

@@ -2,13 +2,15 @@ import FunctionalLocationForm, { FunctionalLocationFormData } from '@/components
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, FunctionalLocation } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Functional Locations',
+        title: strings.FUNCTIONAL_LOCATION?.plural ?? 'Functional Locations',
         href: route('functional-locations.index'),
     },
     {

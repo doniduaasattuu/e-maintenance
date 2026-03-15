@@ -2,6 +2,7 @@ import InspectionMotorForm, { InspectionMotorData } from '@/components/forms/ins
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, InspectionMotor } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -17,9 +18,10 @@ interface Props {
 
 export default function InspectionMotorEdit({ inspectionMotor, equipment }: Props) {
     const { can } = usePermissions();
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
+            title: strings.EQUIPMENT?.plural ?? 'Equipments',
             href: route('equipments.index'),
         },
         {
@@ -60,7 +62,7 @@ export default function InspectionMotorEdit({ inspectionMotor, equipment }: Prop
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment motor" className="max-w-xl">
+            <TableLayout title={equipment.data.code} moduleKey={'INSPECTION_MOTOR'} className="max-w-xl">
                 <InspectionMotorForm
                     data={data}
                     errors={errors}

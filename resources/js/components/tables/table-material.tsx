@@ -40,11 +40,7 @@ export default function TableMaterial({ materials, materialUnits, materialTypes 
         router.delete(route('materials.destroy', id));
     }
     return (
-        <TableLayout
-            title="Material"
-            description="The textual name or identifier assigned to a specific product, part, or raw material within the Material Master record."
-            className="md:max-w-7xl"
-        >
+        <TableLayout moduleKey={'MATERIAL'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

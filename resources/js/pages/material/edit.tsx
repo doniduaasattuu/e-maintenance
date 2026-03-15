@@ -4,6 +4,7 @@ import TextLink from '@/components/text-link';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Material, MaterialType, MaterialUnit } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -15,9 +16,10 @@ interface MaterialEditParams {
 }
 
 export default function MaterialEdit({ material, materialUnits, materialTypes }: MaterialEditParams) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Materials',
+            title: strings.MATERIAL?.plural ?? 'Materials',
             href: route('materials.index'),
         },
         {

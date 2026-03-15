@@ -1,10 +1,12 @@
 import TableFunctionalLocation from '@/components/tables/table-functional-location';
 import AppLayout from '@/layouts/app-layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, FunctionalLocation, Meta } from '@/types';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Functional Locations',
+        title: strings.FUNCTIONAL_LOCATION?.plural ?? 'Functional Locations',
         href: route('functional-locations.index'),
     },
 ];

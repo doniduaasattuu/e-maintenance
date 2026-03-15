@@ -1,6 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import RepositoryAssetLayout from '@/layouts/repository/asset/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, Meta, Repository } from '@/types';
 import { Head } from '@inertiajs/react';
 
@@ -17,9 +18,10 @@ interface EquipmentRepositoriesProps {
 }
 
 export default function EquipmentRepositories({ equipment, repositories, renderable, extensions }: EquipmentRepositoriesProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
+            title: strings.EQUIPMENT?.plural ?? 'Equipments',
             href: route('equipments.index'),
         },
         {

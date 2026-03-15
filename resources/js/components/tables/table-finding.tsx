@@ -76,11 +76,7 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
     }
 
     return (
-        <TableLayout
-            title="Audit 5RK3"
-            description="Represents a unique physical object tracked for maintenance, costing, and history."
-            className="md:max-w-full"
-        >
+        <TableLayout moduleKey={'FINDING'} className="md:max-w-full">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

@@ -2,13 +2,15 @@ import FindingPriorityForm, { FindingPriorityFormData } from '@/components/forms
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Finding Priorities',
+        title: strings.FINDING_PRIORITY?.plural ?? 'Finding Priorities',
         href: route('finding-priorities.index'),
     },
     {

@@ -1,10 +1,12 @@
 import TableFindingPriority from '@/components/tables/table-finding-priority';
 import AppLayout from '@/layouts/app-layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, FindingPriority, Meta } from '@/types';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Finding Priorities',
+        title: strings.FINDING_PRIORITY?.plural ?? 'Finding Priorities',
         href: route('finding-priorities.index'),
     },
 ];

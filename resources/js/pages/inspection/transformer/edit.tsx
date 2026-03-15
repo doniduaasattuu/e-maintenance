@@ -2,6 +2,7 @@ import InspectionTransformerForm, { InspectionTransformerData } from '@/componen
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, InspectionTransformer } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -17,9 +18,10 @@ interface Props {
 
 export default function InspectionTransformerEdit({ inspectionTransformer, equipment }: Props) {
     const { can } = usePermissions();
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
+            title: strings.EQUIPMENT?.plural ?? 'Equipments',
             href: route('equipments.index'),
         },
         {
@@ -62,7 +64,7 @@ export default function InspectionTransformerEdit({ inspectionTransformer, equip
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} description="Inspection edit form for equipment transformer" className="max-w-xl">
+            <TableLayout title={equipment.data.code} moduleKey={'INSPECTION_TRANSFORMER'} className="max-w-xl">
                 <InspectionTransformerForm
                     data={data}
                     setData={setData}

@@ -1,10 +1,12 @@
 import TableUser from '@/components/tables/table-user';
 import AppLayout from '@/layouts/app-layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Department, Meta, Position, User, WorkCenter } from '@/types';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
+        title: strings.USER?.plural ?? 'Users',
         href: route('users.index'),
     },
 ];

@@ -29,7 +29,7 @@ export default function TableRole({ roles }: TableRoleProps) {
     }
 
     return (
-        <TableLayout title="Role" description="Role permission management" className="md:max-w-2xl">
+        <TableLayout moduleKey={'ROLE'} className="md:max-w-2xl">
             <div className="flex justify-between gap-2">
                 <SearchBar tabIndex={1} />
                 {can.create_role && <ButtonAdd tabIndex={2} route={route('roles.create')} />}

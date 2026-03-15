@@ -2,6 +2,7 @@ import FindingForm, { FindingFormData } from '@/components/forms/finding-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Department, Finding, FindingClause, FindingPriority, FindingStatus } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -25,9 +26,10 @@ type FindingEditProps = {
 };
 
 export default function FindingEdit({ finding, findingClauses, findingStatuses, findingPriorities, departments }: FindingEditProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Audit 5RK3',
+            title: strings.FINDING?.plural ?? 'Findings',
             href: route('findings.index'),
         },
         {

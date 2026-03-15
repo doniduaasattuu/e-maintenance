@@ -28,7 +28,7 @@ export default function TableMaterialUnit({ materialUnits }: TableMaterialUnitPr
         router.delete(route('material-units.destroy', id));
     }
     return (
-        <TableLayout title="Material Unit" description="Overview and management of material unit" className="md:max-w-2xl">
+        <TableLayout moduleKey={'MATERIAL_UNIT'} className="md:max-w-2xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />

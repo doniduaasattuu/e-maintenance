@@ -28,7 +28,7 @@ export default function TableEquipmentClass({ equipmentClasses }: TableEquipment
         router.delete(route('equipment-classes.destroy', id));
     }
     return (
-        <TableLayout title="Equipment Class" description="Overview and management of equipment classes" className="md:max-w-7xl">
+        <TableLayout moduleKey={'EQUIPMENT_CLASS'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
