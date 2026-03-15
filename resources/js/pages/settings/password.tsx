@@ -2,12 +2,11 @@ import InputError from '@/components/input-error';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { type BreadcrumbItem } from '@/types';
-import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
+import ButtonSubmit from '@/components/button-submit';
 import HeadingSmall from '@/components/heading-small';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -61,6 +60,7 @@ export default function Password() {
                             <Label htmlFor="current_password">Current password</Label>
 
                             <Input
+                                tabIndex={1}
                                 id="current_password"
                                 ref={currentPasswordInput}
                                 value={data.current_password}
@@ -78,6 +78,7 @@ export default function Password() {
                             <Label htmlFor="password">New password</Label>
 
                             <Input
+                                tabIndex={2}
                                 id="password"
                                 ref={passwordInput}
                                 value={data.password}
@@ -95,6 +96,7 @@ export default function Password() {
                             <Label htmlFor="password_confirmation">Confirm password</Label>
 
                             <Input
+                                tabIndex={3}
                                 id="password_confirmation"
                                 value={data.password_confirmation}
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
@@ -108,17 +110,14 @@ export default function Password() {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save password</Button>
-
-                            <Transition
-                                show={recentlySuccessful}
-                                enter="transition ease-in-out"
-                                enterFrom="opacity-0"
-                                leave="transition ease-in-out"
-                                leaveTo="opacity-0"
-                            >
-                                <p className="text-sm text-neutral-600">Saved</p>
-                            </Transition>
+                            <ButtonSubmit
+                                tabIndex={4}
+                                processing={processing}
+                                label="Save password"
+                                disabled={processing || data.current_password == '' || data.password == '' || data.password_confirmation == ''}
+                                recentlySuccessful={recentlySuccessful}
+                                successMessage="Saved"
+                            />
                         </div>
                     </form>
                 </div>
