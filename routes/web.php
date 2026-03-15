@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\EquipmentClassController;
@@ -32,20 +33,13 @@ use App\Http\Controllers\WorkCenterController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('', function () {
-    // return Inertia::render('welcome');
-
-    return redirect('login');
-})->name('home');
-
-Route::get('test', function () {
-    return Inertia::render('test');
-});
-
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+
+    Route::get('/', function () {
+        return redirect('dashboard');
+    })->name('home');
+
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // SCANNER
     Route::get('qr-scanner', [ScannerController::class, 'index'])->name('qr-scanner');
