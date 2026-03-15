@@ -2,13 +2,15 @@ import EquipmentClassForm, { EquipmentClassFormData } from '@/components/forms/e
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, EquipmentClass } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Equipment Classes',
+        title: strings.EQUIPMENT_CLASS?.plural ?? 'Equipment Classes',
         href: route('equipment-classes.index'),
     },
     {

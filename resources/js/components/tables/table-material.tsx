@@ -7,14 +7,14 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
 import { formatCurrency, tableCaption } from '@/lib/utils';
-import { Material, MaterialType, Meta, Unit } from '@/types';
+import { Material, MaterialType, MaterialUnit, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import React from 'react';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterMaterialType from '../filter-material-type';
-import FilterUnit from '../filter-unit';
+import FilterMaterialUnit from '../filter-material-unit';
 import { CommandSeparator } from '../ui/command';
 
 interface TableMaterialProps {
@@ -22,15 +22,15 @@ interface TableMaterialProps {
         data: Material[];
         meta: Meta;
     };
-    units: {
-        data: Unit[];
+    materialUnits: {
+        data: MaterialUnit[];
     };
     materialTypes: {
         data: MaterialType[];
     };
 }
 
-export default function TableMaterial({ materials, units, materialTypes }: TableMaterialProps) {
+export default function TableMaterial({ materials, materialUnits, materialTypes }: TableMaterialProps) {
     const { can } = usePermissions();
     const meta = materials.meta;
     const caption = tableCaption(meta);
@@ -40,18 +40,14 @@ export default function TableMaterial({ materials, units, materialTypes }: Table
         router.delete(route('materials.destroy', id));
     }
     return (
-        <TableLayout
-            title="Material"
-            description="The textual name or identifier assigned to a specific product, part, or raw material within the Material Master record."
-            className="md:max-w-7xl"
-        >
+        <TableLayout moduleKey={'MATERIAL'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen}>
-                        <FilterUnit units={units.data} setOpen={setOpen} />
+                    <Filter open={open} setOpen={setOpen} keys={['unit', 'type']}>
+                        <FilterMaterialUnit materialUnits={materialUnits.data} />
                         <CommandSeparator />
-                        <FilterMaterialType materialTypes={materialTypes.data} setOpen={setOpen} />
+                        <FilterMaterialType materialTypes={materialTypes.data} />
                     </Filter>
                 </div>
                 {can.create_material && <ButtonAdd tabIndex={2} route={route('materials.create')} />}
@@ -59,7 +55,7 @@ export default function TableMaterial({ materials, units, materialTypes }: Table
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {materials.data.length > 0 ? (
                     <Table>
-                        <TableCaption className="text-sm">{caption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">Code</TableHead>
@@ -90,7 +86,7 @@ export default function TableMaterial({ materials, units, materialTypes }: Table
                                         <TableCell className="max-w-md truncate">{material.name}</TableCell>
                                         <TableCell>{formatCurrency(material.price)}</TableCell>
                                         <TableCell>{material.unit?.name}</TableCell>
-                                        <TableCell>{material.materialType?.code}</TableCell>
+                                        <TableCell>{material.type?.code}</TableCell>
                                         <TableCell className="text-muted-foreground">{material.created_at}</TableCell>
                                         <TableCell className={`text-muted-foreground ${can.delete_material ?? 'text-right'}`}>
                                             {material.updated_at}

@@ -25,7 +25,7 @@ class Material extends Model
         'code',
         'name',
         'price',
-        'unit_id',
+        'material_unit_id',
         'material_type_id',
     ];
 
@@ -33,8 +33,8 @@ class Material extends Model
     protected function scopeSearch(Builder $builder, Request $request): void
     {
         $search = trim($request->query('query'));
-        $unit = trim($request->query('unit'));
-        $type = trim($request->query('type'));
+        $unit = $request->query('unit');
+        $type = $request->query('type');
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
@@ -45,23 +45,31 @@ class Material extends Model
             });
         }
 
-        if ($unit) {
+        if ($unit && is_array($unit)) {
+            $builder->whereHas('unit', function ($query) use ($unit) {
+                $query->whereIn('name', $unit);
+            });
+        } elseif ($unit && is_string($unit)) {
             $builder->whereRelation('unit', 'name', $unit);
         }
 
-        if ($type) {
-            $builder->whereRelation('materialType', 'code', $type);
+        if ($type && is_array($type)) {
+            $builder->whereHas('type', function ($query) use ($type) {
+                $query->whereIn('code', $type);
+            });
+        } elseif ($type && is_string($type)) {
+            $builder->whereRelation('type', 'code', $type);
         }
     }
 
     public function unit(): BelongsTo
     {
-        return $this->belongsTo(Unit::class);
+        return $this->belongsTo(MaterialUnit::class, 'material_unit_id');
     }
 
-    public function materialType(): BelongsTo
+    public function type(): BelongsTo
     {
-        return $this->belongsTo(MaterialType::class);
+        return $this->belongsTo(MaterialType::class, 'material_type_id');
     }
 
     public function images()

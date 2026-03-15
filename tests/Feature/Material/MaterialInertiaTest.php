@@ -3,7 +3,7 @@
 use App\Models\Material;
 use Database\Seeders\MaterialSeeder;
 use Database\Seeders\MaterialTypeSeeder;
-use Database\Seeders\UnitSeeder;
+use Database\Seeders\MaterialUnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -12,7 +12,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->generatePermissions(['Material']);
 
-    $this->seed(UnitSeeder::class);
+    $this->seed(MaterialUnitSeeder::class);
     $this->seed(MaterialTypeSeeder::class);
     $this->seed(MaterialSeeder::class);
 });
@@ -46,7 +46,7 @@ test('material create form should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('material/create')
-                ->has('units')
+                ->has('materialUnits')
                 ->has('materialTypes')
         );
 });
@@ -65,7 +65,7 @@ test('material edit form should be rendered', function () {
                 ->has('material.data.code')
                 ->has('material.data.name')
                 ->has('material.data.price')
-                ->has('material.data.unit_id')
+                ->has('material.data.material_unit_id')
                 ->has('material.data.material_type_id')
         );
 });

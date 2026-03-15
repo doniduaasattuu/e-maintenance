@@ -4,20 +4,22 @@ import TextLink from '@/components/text-link';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
-import { BreadcrumbItem, Material, MaterialType, Unit } from '@/types';
+import { UI_STRINGS } from '@/lib/ui-strings';
+import { BreadcrumbItem, Material, MaterialType, MaterialUnit } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface MaterialEditParams {
     material: { data: Material };
-    units: { data: Unit[] };
+    materialUnits: { data: MaterialUnit[] };
     materialTypes: { data: MaterialType[] };
 }
 
-export default function MaterialEdit({ material, units, materialTypes }: MaterialEditParams) {
+export default function MaterialEdit({ material, materialUnits, materialTypes }: MaterialEditParams) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Material',
+            title: strings.MATERIAL?.plural ?? 'Materials',
             href: route('materials.index'),
         },
         {
@@ -35,7 +37,7 @@ export default function MaterialEdit({ material, units, materialTypes }: Materia
         code: material.data.code,
         name: material.data.name,
         price: material.data.price?.toString(),
-        unit_id: material.data.unit_id?.toString() ?? '',
+        material_unit_id: material.data.material_unit_id?.toString() ?? '',
         material_type_id: material.data.material_type_id?.toString() ?? '',
     });
 
@@ -69,7 +71,7 @@ export default function MaterialEdit({ material, units, materialTypes }: Materia
                         canSubmit={can.update_material}
                         buttonLabel="Update"
                         successMessage="Updated"
-                        units={units.data}
+                        materialUnits={materialUnits.data}
                         materialTypes={materialTypes.data}
                     />
                 </div>

@@ -74,6 +74,7 @@ export default function FindingStatusForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     disabled={processing || data.name == '' || data.description == ''}
                     tabIndex={3}
                     recentlySuccessful={recentlySuccessful}

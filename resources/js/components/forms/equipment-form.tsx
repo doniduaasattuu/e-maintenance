@@ -41,6 +41,7 @@ interface EquipmentFormProps {
     successMessage?: string;
     isEditing?: boolean;
     className?: string;
+    funclocDismantleButton?: boolean;
 }
 
 export default function EquipmentForm({
@@ -59,6 +60,7 @@ export default function EquipmentForm({
     successMessage,
     isEditing,
     className,
+    funclocDismantleButton,
 }: EquipmentFormProps) {
     const { can } = usePermissions();
 
@@ -116,11 +118,11 @@ export default function EquipmentForm({
                 <FieldError>{errors.description}</FieldError>
             </Field>
 
-            <Field>
+            <Field className="w-full">
                 <FieldLabel htmlFor="functional_location_id">Functional location</FieldLabel>
                 <FunctionalLocationSelect
                     value={data.functional_location_id}
-                    isEditing={isEditing}
+                    isEditing={funclocDismantleButton}
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     tabIndex={4}
@@ -194,6 +196,7 @@ export default function EquipmentForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     label={buttonLabel}
                     disabled={
                         processing || data.code == '' || data.description == '' || data.equipment_class_id == '' || data.equipment_status_id == ''

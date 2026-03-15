@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import usePermissions from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
-import { SharedData, type NavItem } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { type NavItem } from '@/types';
+import { Link } from '@inertiajs/react';
 
 interface Props {
     children: React.ReactNode | undefined;
@@ -11,9 +12,8 @@ interface Props {
 }
 
 export default function AssetLayout({ children, className, sidebarNavItems }: Props) {
-    const { permissions } = usePage<SharedData>().props;
+    const { can: permissions } = usePermissions();
 
-    // When server-side rendering, we only render the layout on the client...
     if (typeof window === 'undefined') {
         return null;
     }

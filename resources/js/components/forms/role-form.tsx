@@ -81,6 +81,7 @@ export default function RoleForm({
                     <Popover open={open} onOpenChange={setOpen}>
                         <PopoverTrigger asChild>
                             <Button
+                                size={'sm'}
                                 variant="outline"
                                 onClick={(e) => {
                                     e.preventDefault();
@@ -134,6 +135,7 @@ export default function RoleForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     label={buttonLabel}
                     disabled={processing || selectedPermissions.length < 1 || data.name === ''}
                     tabIndex={3}

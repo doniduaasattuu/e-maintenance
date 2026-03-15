@@ -90,6 +90,7 @@ export default function FindingPriorityForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     disabled={processing || data.label == '' || data.description == ''}
                     tabIndex={4}
                     recentlySuccessful={recentlySuccessful}

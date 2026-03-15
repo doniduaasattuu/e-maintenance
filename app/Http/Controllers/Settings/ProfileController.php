@@ -67,6 +67,12 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+        if ($user->hasRole('Admin')) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => 'Failed delete user with role Admin',
+            ]);
+        };
 
         Auth::logout();
 

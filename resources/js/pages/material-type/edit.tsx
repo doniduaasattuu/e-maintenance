@@ -2,13 +2,15 @@ import MaterialTypeForm, { MaterialTypeFormData } from '@/components/forms/mater
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, MaterialType } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Material Type',
+        title: strings.MATERIAL_TYPE?.plural ?? 'Material Types',
         href: route('material-types.index'),
     },
     {

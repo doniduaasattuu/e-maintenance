@@ -5,11 +5,13 @@ import { useForm } from '@inertiajs/react';
 import UserForm, { UserFormData } from '@/components/forms/user-form';
 import usePermissions from '@/hooks/use-permissions';
 import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import React, { FormEventHandler, useRef } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
+        title: strings.USER?.plural ?? 'Users',
         href: route('users.index'),
     },
     {

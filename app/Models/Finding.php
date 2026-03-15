@@ -33,12 +33,11 @@ class Finding extends Model
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
     {
-        $clause = trim($request->query('clause'));
         $search = trim($request->query('query'));
-        $status = trim($request->query('status'));
-        $priority = trim($request->query('priority'));
-        $department = trim($request->query('department'));
-
+        $clause = $request->query('clause');
+        $status = $request->query('status');
+        $priority = $request->query('priority');
+        $department = $request->query('department');
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
@@ -59,32 +58,38 @@ class Finding extends Model
             });
         }
 
-        $builder->when($clause, function ($query) use ($clause) {
-            $query->whereRelation('clause', 'code', $clause);
-        });
+        if ($clause && is_array($clause)) {
+            $builder->whereHas('clause', function ($query) use ($clause) {
+                $query->whereIn('code', $clause);
+            });
+        } elseif ($clause && is_string($clause)) {
+            $builder->whereRelation('clause', 'code', $clause);
+        }
 
-        $builder->when($status, function ($query) use ($status) {
-            $query->whereRelation('status', 'name', $status);
-        });
+        if ($status && is_array($status)) {
+            $builder->whereHas('status', function ($query) use ($status) {
+                $query->whereIn('name', $status);
+            });
+        } elseif ($status && is_string($status)) {
+            $builder->whereRelation('status', 'name', $status);
+        }
 
-        $builder->when($priority, function ($query) use ($priority) {
-            $query->whereRelation('priority', 'label', $priority);
-        });
+        if ($priority && is_array($priority)) {
+            $builder->whereHas('priority', function ($query) use ($priority) {
+                $query->whereIn('label', $priority);
+            });
+        } elseif ($priority && is_string($priority)) {
+            $builder->whereRelation('priority', 'label', $priority);
+        }
 
-        $builder->when($department, function ($query) use ($department) {
-            $query->whereRelation('department', 'code', $department);
-        });
+        if ($department && is_array($department)) {
+            $builder->whereHas('department', function ($query) use ($department) {
+                $query->whereIn('code', $department);
+            });
+        } elseif ($department && is_string($department)) {
+            $builder->whereRelation('department', 'code', $department);
+        }
     }
-
-    // public function imagesBefore(): HasMany
-    // {
-    //     return $this->hasMany(FindingImage::class)->where('category', 'before');
-    // }
-
-    // public function imagesAfter(): HasMany
-    // {
-    //     return $this->hasMany(FindingImage::class)->where('category', 'after');
-    // }
 
     public function clause(): BelongsTo
     {

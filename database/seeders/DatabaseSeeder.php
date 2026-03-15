@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             EquipmentStatusSeeder::class,
             EquipmentSeeder::class,
             QualityRatingSeeder::class,
-            UnitSeeder::class,
+            MaterialUnitSeeder::class,
             MaterialTypeSeeder::class,
             MaterialSeeder::class,
             ImageSeeder::class,

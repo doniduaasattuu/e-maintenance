@@ -111,6 +111,7 @@ export default function EquipmentClassForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     disabled={processing || data.code == '' || data.name == '' || data.formable_type == ''}
                     tabIndex={5}
                     recentlySuccessful={recentlySuccessful}

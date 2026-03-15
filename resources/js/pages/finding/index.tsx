@@ -1,10 +1,12 @@
 import TableFinding from '@/components/tables/table-finding';
 import AppLayout from '@/layouts/app-layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Department, Finding, FindingClause, FindingPriority, FindingStatus, Meta } from '@/types';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Findings',
+        title: strings.FINDING?.plural ?? 'Findings',
         href: route('findings.index'),
     },
 ];

@@ -3,6 +3,7 @@ import HeadingSmall from '@/components/heading-small';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -15,10 +16,11 @@ interface Props {
 
 export default function InspectionAirConditionerCreate({ equipment }: Props) {
     const { can } = usePermissions();
-    const equipmentClassName = equipment.data.equipmentClass?.name.toLocaleLowerCase();
+    const equipmentClassName = equipment.data.eclass?.name.toLocaleLowerCase();
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
+            title: strings.EQUIPMENT?.plural ?? 'Equipments',
             href: route('equipments.index'),
         },
         {

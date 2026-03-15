@@ -27,7 +27,7 @@ class EquipmentController extends Controller
     {
         Gate::authorize('index_equipment');
 
-        $equipments = Equipment::with(['functionalLocation', 'equipmentClass', 'equipmentStatus'])->search($request)->paginate(10)->withQueryString();
+        $equipments = Equipment::with(['functionalLocation', 'eclass', 'status'])->search($request)->paginate(10)->withQueryString();
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
 
@@ -87,7 +87,7 @@ class EquipmentController extends Controller
         Gate::authorize('show_equipment');
 
         return Inertia::render('equipment/show', [
-            'equipment' => new EquipmentResource($equipment->load(['functionalLocation', 'equipmentClass', 'equipmentStatus'])),
+            'equipment' => new EquipmentResource($equipment->load(['functionalLocation', 'eclass', 'status'])),
         ]);
     }
 

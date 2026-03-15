@@ -2,6 +2,7 @@ import HeadingSmall from '@/components/heading-small';
 import TableHistory from '@/components/tables/table-history';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, InstallDismantleHistory, Meta } from '@/types';
 import { Head } from '@inertiajs/react';
 
@@ -16,9 +17,10 @@ interface EquipmentHistoryProps {
 }
 
 export default function EquipmentHistory({ equipment, histories }: EquipmentHistoryProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
+            title: strings.EQUIPMENT?.plural ?? 'Equipments',
             href: route('equipments.index'),
         },
         {

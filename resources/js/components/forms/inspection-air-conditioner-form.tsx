@@ -193,6 +193,7 @@ export default function InspectionAirConditionerForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     tabIndex={9}
                     disabled={processing}
                     recentlySuccessful={recentlySuccessful}

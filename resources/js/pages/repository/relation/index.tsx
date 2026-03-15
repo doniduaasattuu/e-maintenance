@@ -6,6 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import RepositoryLayout from '@/layouts/repository/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { cn } from '@/lib/utils';
 import { BreadcrumbItem, Equipment, Material, Repository } from '@/types';
 import { Head, router } from '@inertiajs/react';
@@ -26,9 +27,10 @@ interface RepositoryRelationProps {
 }
 
 export default function RepositoryRelation({ repository, equipments, materials }: RepositoryRelationProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Repositories',
+            title: strings.REPOSITORY?.plural ?? 'Repositories',
             href: route('repositories.index'),
         },
         {

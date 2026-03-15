@@ -51,6 +51,7 @@ export default function Register() {
                         required
                         autoFocus
                         tabIndex={1}
+                        maxLength={8}
                         autoComplete="employee_id"
                         value={data.employee_id}
                         onChange={(e) => setData('employee_id', e.target.value)}
@@ -149,6 +150,7 @@ export default function Register() {
                         value={data.registration_key}
                         onChange={(e) => setData('registration_key', e.target.value)}
                         disabled={processing}
+                        placeholder="Enter the key provided by your admin"
                     />
                     <FieldError>{errors.registration_key}</FieldError>
                 </Field>

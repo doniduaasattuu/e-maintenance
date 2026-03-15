@@ -1,6 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
 import RepositoryAssetLayout from '@/layouts/repository/asset/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Material, Meta, Repository } from '@/types';
 import { Head } from '@inertiajs/react';
 
@@ -17,9 +18,10 @@ interface MaterialRepositoriesProps {
 }
 
 export default function MaterialRepositories({ material, repositories, renderable, extensions }: MaterialRepositoriesProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Materials',
+            title: strings.MATERIAL?.plural ?? 'Materials',
             href: route('materials.index'),
         },
         {

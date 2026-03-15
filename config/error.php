@@ -181,5 +181,5 @@ return [
 
     'renderable' => [401, 403, 404, 419, 429, 500, 503],
 
-    'enable' => env('ERROR_RENDERABLE', true),
+    'enable' => env('CUSTOM_ERROR_PAGE', true),
 ];

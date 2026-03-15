@@ -4,11 +4,11 @@ import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { Department, Finding, FindingClause, FindingImage, FindingPriority, FindingStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
-import { CommandSeparator } from 'cmdk';
 import { Edit, Info, MoreHorizontalIcon, Trash2, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
 import ButtonAdd from '../button-add';
+import { DateRangePopover } from '../date-range-popover';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterDepartment from '../filter-department';
@@ -21,6 +21,7 @@ import SearchBar from '../search-bar';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
+import { CommandSeparator } from '../ui/command';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { UploadImageDialog } from '../upload-image-dialog';
@@ -60,7 +61,14 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
     }
 
     function handleCloseFinding(id: number) {
-        router.post(route('findings.close', id));
+        router.post(
+            route('findings.close', id),
+            {},
+            {
+                preserveScroll: true,
+                preserveState: true,
+            },
+        );
     }
 
     function handleDeletefinding(id: number) {
@@ -68,30 +76,27 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
     }
 
     return (
-        <TableLayout
-            title="Findings"
-            description="Represents a unique physical object tracked for maintenance, costing, and history."
-            className="md:max-w-full"
-        >
+        <TableLayout moduleKey={'FINDING'} className="md:max-w-full">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen}>
-                        <FilterFindingClause findingClauses={findingClauses.data} setOpen={setOpen} />
+                    <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
+                        <FilterFindingClause findingClauses={findingClauses.data} />
                         <CommandSeparator />
-                        <FilterFindingStatus findingStatuses={findingStatuses.data} setOpen={setOpen} />
+                        <FilterFindingStatus findingStatuses={findingStatuses.data} />
                         <CommandSeparator />
-                        <FilterFindingPriority findingPriorities={findingPriorities.data} setOpen={setOpen} />
+                        <FilterFindingPriority findingPriorities={findingPriorities.data} />
                         <CommandSeparator />
-                        <FilterDepartment departments={departments.data} setOpen={setOpen} />
+                        <FilterDepartment departments={departments.data} />
                     </Filter>
+                    <DateRangePopover />
                 </div>
                 {can.create_finding && <ButtonAdd route={route('findings.create')} tabIndex={2} />}
             </div>
             {findings?.data?.length > 0 ? (
                 <div className="grid min-w-0 overflow-x-auto rounded-md">
                     <Table>
-                        <TableCaption className="pb-4">{caption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 {can.close_finding && <TableHead className="w-12.5"></TableHead>}
@@ -135,7 +140,7 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
                                     <TableCell className="align-center">
                                         <Badge
                                             variant={finding?.status?.name.toLowerCase() === 'open' ? 'destructive' : 'default'}
-                                            className={`text-[10px] tracking-wider uppercase ${finding?.status?.name.toLowerCase() === 'closed' && 'bg-green-400 text-black'}`}
+                                            className={`text-[10px] tracking-wider uppercase ${finding?.status?.name.toLowerCase() === 'closed' && 'bg-green-500 text-black'}`}
                                         >
                                             {finding.status?.name}
                                         </Badge>
@@ -254,9 +259,9 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
                                                         >
                                                             <DropdownMenuItem
                                                                 onSelect={(e) => e.preventDefault()}
-                                                                className="text-red-600 focus:bg-red-50 focus:text-red-600"
+                                                                className="text-red-600 focus:bg-red-50 focus:text-red-700"
                                                             >
-                                                                <Trash2 className="h-4 w-4 text-red-500" />
+                                                                <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
                                                                 Delete
                                                             </DropdownMenuItem>
                                                         </ActionConfirm>

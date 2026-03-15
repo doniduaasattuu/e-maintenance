@@ -42,7 +42,7 @@ class StoreUserRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:25', 'unique:users,name'],
-            'employee_id' => ['required', 'numeric', 'unique:users,employee_id'],
+            'employee_id' => ['required', 'numeric', 'max_digits:8', 'unique:users,employee_id'],
             'email' => ['required', 'string', 'email', 'unique:users,email'],
             'phone_number' => ['nullable', 'string', 'unique:users,phone_number'],
             'password' => ['required'],

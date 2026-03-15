@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Department, Position, WorkCenter } from '@/types';
 import { Check, ListChecks, X } from 'lucide-react';
 import React, { FormEventHandler } from 'react';
+import RequiredLabel from '../required-label';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Field, FieldError, FieldLabel } from '../ui/field';
@@ -80,7 +81,10 @@ export default function UserForm({
         <form onSubmit={submit} className={cn('space-y-6', className)}>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                 <Field>
-                    <FieldLabel htmlFor="name">Name</FieldLabel>
+                    <FieldLabel htmlFor="name">
+                        Name
+                        <RequiredLabel />
+                    </FieldLabel>
                     <Input
                         id="name"
                         type="text"
@@ -97,7 +101,10 @@ export default function UserForm({
                 </Field>
 
                 <Field>
-                    <FieldLabel htmlFor="employee_id">Employee ID</FieldLabel>
+                    <FieldLabel htmlFor="employee_id">
+                        Employee ID
+                        <RequiredLabel />
+                    </FieldLabel>
                     <Input
                         id="employee_id"
                         type="text"
@@ -115,7 +122,10 @@ export default function UserForm({
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                 <Field>
-                    <FieldLabel htmlFor="email">Email</FieldLabel>
+                    <FieldLabel htmlFor="email">
+                        Email
+                        <RequiredLabel />
+                    </FieldLabel>
                     <Input
                         id="email"
                         type="email"
@@ -234,6 +244,7 @@ export default function UserForm({
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild disabled={processing}>
                         <Button
+                            size={'sm'}
                             type="button"
                             id="roles"
                             variant="outline"
@@ -288,6 +299,7 @@ export default function UserForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     label={buttonLabel}
                     disabled={processing || data.name == '' || data.employee_id == '' || data.email == ''}
                     tabIndex={10}

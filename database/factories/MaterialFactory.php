@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\MaterialType;
-use App\Models\Unit;
+use App\Models\MaterialUnit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,7 +22,7 @@ class MaterialFactory extends Factory
             'code' => fake()->unique()->numerify('1001####'),
             'name' => fake()->unique()->sentence(),
             'price' => fake()->numberBetween(0, 1000) * 1000,
-            'unit_id' => Unit::all()->random()->id,
+            'material_unit_id' => MaterialUnit::all()->random()->id,
             'material_type_id' => MaterialType::all()->random()->id,
         ];
     }

@@ -52,8 +52,8 @@ test('show equipment page accessible', function () {
                 ->component('equipment/show')
                 ->has('equipment.data')
                 ->has('equipment.data.functionalLocation')
-                ->has('equipment.data.equipmentStatus')
-                ->has('equipment.data.equipmentStatus')
+                ->has('equipment.data.eclass')
+                ->has('equipment.data.status')
         );
 });
 

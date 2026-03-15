@@ -36,7 +36,7 @@ class UpdateMaterialRequest extends FormRequest
                 Rule::unique('materials', 'name')->ignore($this->material),
             ],
             'price' => ['nullable', 'numeric'],
-            'unit_id' => ['nullable', 'exists:units,id'],
+            'material_unit_id' => ['nullable', 'exists:material_units,id'],
             'material_type_id' => ['nullable', 'exists:material_types,id'],
         ];
     }

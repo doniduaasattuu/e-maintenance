@@ -15,11 +15,11 @@ class DeploymentSeeder extends Seeder
             UserSeeder::class,
             // ElectricianSeeder::class,
             PermissionSeeder::class,
-            RoleSeeder::class,
+            // RoleSeeder::class,
             EquipmentClassSeeder::class,
             EquipmentStatusSeeder::class,
             QualityRatingSeeder::class,
-            UnitSeeder::class,
+            MaterialUnitSeeder::class,
             MaterialTypeSeeder::class,
         ]);
     }

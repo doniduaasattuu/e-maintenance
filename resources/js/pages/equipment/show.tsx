@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment } from '@/types';
 import { Head } from '@inertiajs/react';
 import { QrCodeIcon } from 'lucide-react';
@@ -19,9 +20,10 @@ interface EquipmentShowProps {
 }
 
 export default function EquipmentShow({ equipment }: EquipmentShowProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Equipments',
+            title: strings.EQUIPMENT?.plural ?? 'Equipments',
             href: route('equipments.index'),
         },
         {
@@ -53,7 +55,7 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                         <FieldLabel htmlFor="code">Code</FieldLabel>
                         <div className="flex justify-between gap-2">
                             <Input readOnly id="code" value={equipment.data.code} />
-                            <Button title="Show QR Code" variant="outline" onClick={() => setIsQROpen(true)}>
+                            <Button size={'sm'} title="Show QR Code" variant="outline" onClick={() => setIsQROpen(true)}>
                                 <QrCodeIcon />
                             </Button>
                         </div>
@@ -75,9 +77,7 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                         <Input
                             readOnly
                             id="equipment_class_id"
-                            value={
-                                equipment.data.equipmentClass ? equipment.data.equipmentClass?.code + ' - ' + equipment.data.equipmentClass?.name : ''
-                            }
+                            value={equipment.data.eclass ? equipment.data.eclass?.code + ' - ' + equipment.data.eclass?.name : ''}
                         />
                     </Field>
                     <Field>
@@ -85,11 +85,7 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                         <Input
                             readOnly
                             id="equipment_status_id"
-                            value={
-                                equipment.data.equipmentStatus
-                                    ? equipment.data.equipmentStatus?.code + ' - ' + equipment.data.equipmentStatus?.name
-                                    : ''
-                            }
+                            value={equipment.data.status ? equipment.data.status?.code + ' - ' + equipment.data.status?.name : ''}
                         />
                     </Field>
                 </div>

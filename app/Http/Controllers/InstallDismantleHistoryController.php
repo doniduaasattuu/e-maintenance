@@ -20,7 +20,7 @@ class InstallDismantleHistoryController extends Controller
         Gate::authorize('index_installdismantlehistory');
 
         $histories = InstallDismantleHistory::search($request)
-            ->with(['equipment', 'equipment.equipmentClass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
+            ->with(['equipment', 'equipment.eclass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->orderBy('changed_at', 'DESC')
             ->paginate(10)
             ->withQueryString();
@@ -53,7 +53,7 @@ class InstallDismantleHistoryController extends Controller
     {
         Gate::authorize('show_installdismantlehistory');
 
-        $histories = InstallDismantleHistory::with(['equipment', 'equipment.equipmentClass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
+        $histories = InstallDismantleHistory::with(['equipment', 'equipment.eclass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->where('equipment_id', $equipment->id)
             ->orderBy('changed_at', 'DESC')
             ->paginate(10)

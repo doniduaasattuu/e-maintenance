@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Material } from '@/types';
 import { Head } from '@inertiajs/react';
 import { QrCodeIcon } from 'lucide-react';
@@ -19,9 +20,10 @@ interface MaterialShowProps {
 }
 
 export default function MaterialShow({ material }: MaterialShowProps) {
+    const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Materials',
+            title: strings.MATERIAL?.plural ?? 'Materials',
             href: route('materials.index'),
         },
         {
@@ -53,7 +55,7 @@ export default function MaterialShow({ material }: MaterialShowProps) {
                         <FieldLabel htmlFor="code">Code</FieldLabel>
                         <div className="flex justify-between gap-2">
                             <Input readOnly id="code" value={material.data.code} />
-                            <Button title="Show QR Code" variant="outline" onClick={() => setIsQROpen(true)}>
+                            <Button size={'sm'} title="Show QR Code" variant="outline" onClick={() => setIsQROpen(true)}>
                                 <QrCodeIcon />
                             </Button>
                         </div>
@@ -75,9 +77,7 @@ export default function MaterialShow({ material }: MaterialShowProps) {
                         <Input
                             readOnly
                             id="type_id"
-                            value={
-                                material.data.materialType ? `${material.data.materialType?.code} - ${material.data.materialType?.description}` : ''
-                            }
+                            value={material.data.type ? `${material.data.type?.code} - ${material.data.type?.description}` : ''}
                         />
                     </Field>
                 </div>

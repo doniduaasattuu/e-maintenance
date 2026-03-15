@@ -2,13 +2,15 @@ import EquipmentForm, { EquipmentFormData } from '@/components/forms/equipment-f
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, EquipmentClass, EquipmentStatus } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Equipments',
+        title: strings.EQUIPMENT?.plural ?? 'Equipments',
         href: route('equipments.index'),
     },
     {
@@ -61,6 +63,7 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
                     canSubmit={can.store_equipment}
+                    funclocDismantleButton={true}
                     buttonLabel="Create"
                     successMessage="Created"
                     className="max-w-xl"

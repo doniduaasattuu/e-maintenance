@@ -25,6 +25,7 @@ export interface NavItem {
     permission?: string;
     children?: string[];
     subItems?: NavItem[];
+    multiple?: boolean;
 }
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
@@ -178,9 +179,11 @@ export interface Equipment {
     equipment_class_id: number | null;
     equipment_status_id: number | null;
     functionalLocation: FunctionalLocation | null;
-    equipmentClass: EquipmentClass | null;
-    equipmentStatus: EquipmentStatus | null;
+
+    eclass: EquipmentClass | null;
+    status: EquipmentStatus | null;
     images: null | Image[];
+
     created_at: string;
     updated_at: string;
 }
@@ -310,7 +313,7 @@ export interface Image {
     updated_at: string;
 }
 
-export interface Unit {
+export interface MaterialUnit {
     id: number;
     name: string;
     created_at: string;
@@ -330,11 +333,13 @@ export interface Material {
     code: string;
     name: string;
     price: number;
-    unit_id: number | null;
+    material_unit_id: number | null;
     material_type_id: number | null;
-    unit: Unit | null;
-    materialType: MaterialType | null;
+
+    unit: MaterialUnit | null;
+    type: MaterialType | null;
     images: null | Image[];
+
     created_at: string;
     updated_at: string;
 }

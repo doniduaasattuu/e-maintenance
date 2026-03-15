@@ -1,44 +1,44 @@
-import UnitForm, { UnitFormData } from '@/components/forms/unit-form';
+import UnitForm, { MaterialUnitFormData } from '@/components/forms/material-unit-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
-import { BreadcrumbItem, Unit } from '@/types';
+import { UI_STRINGS } from '@/lib/ui-strings';
+import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Unit',
-        href: route('units.index'),
+        title: strings.MATERIAL_UNIT?.plural ?? 'Material Units',
+        href: route('material-units.index'),
     },
     {
-        title: 'Edit',
-        href: '#',
+        title: 'Create',
+        href: route('material-units.create'),
     },
 ];
 
-interface UnitEditProps {
-    unit: {
-        data: Unit;
-    };
-}
-
-export default function UnitEdit({ unit }: UnitEditProps) {
+export default function MaterialUnitCreate() {
     const { can } = usePermissions();
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<UnitFormData>>({
-        name: unit.data.name,
+    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<MaterialUnitFormData>>({
+        name: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(route('units.update', unit.data.id), {
+
+        post(route('material-units.store'), {
             preserveScroll: true,
+            onSuccess: () => {
+                reset('name');
+            },
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <FormLayout moduleKey="MATERIAL_UNIT" mode="edit">
+            <FormLayout moduleKey="MATERIAL_UNIT" mode="create">
                 <UnitForm
                     data={data}
                     setData={setData}
@@ -46,9 +46,9 @@ export default function UnitEdit({ unit }: UnitEditProps) {
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.update_unit}
-                    buttonLabel="Update"
-                    successMessage="Updated"
+                    canSubmit={can.store_materialunit}
+                    buttonLabel="Create"
+                    successMessage="Created"
                     className="max-w-xl"
                 />
             </FormLayout>

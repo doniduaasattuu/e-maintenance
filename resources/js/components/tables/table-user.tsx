@@ -5,7 +5,6 @@ import FilterDepartment from '@/components/filter-department';
 import FilterPosition from '@/components/filter-position';
 import FilterRole from '@/components/filter-role';
 import FilterWithTrashed from '@/components/filter-with-trashed';
-import FilterWorkCenter from '@/components/filter-work-center';
 import { GeneratePagination } from '@/components/generate-pagination';
 import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
@@ -20,6 +19,7 @@ import { router } from '@inertiajs/react';
 import { RefreshCcw, Trash2 } from 'lucide-react';
 import React from 'react';
 import EmptyIcon from '../empty-icon';
+import FilterWorkCenter from '../filter-work-center';
 
 interface TableUserProps {
     users: {
@@ -40,7 +40,7 @@ interface TableUserProps {
 
 export default function TableUser({ users, departments, positions, workCenters, roles }: TableUserProps) {
     const [open, setOpen] = React.useState<boolean>(false);
-    const {can} = usePermissions();
+    const { can } = usePermissions();
     const meta = users.meta;
     const caption = tableCaption(meta);
 
@@ -53,20 +53,20 @@ export default function TableUser({ users, departments, positions, workCenters, 
     }
 
     return (
-        <TableLayout title="Users" description="User management" className="md:max-w-7xl">
+        <TableLayout moduleKey={'USER'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen}>
-                        <FilterDepartment departments={departments.data} setOpen={setOpen} />
+                    <Filter open={open} setOpen={setOpen} keys={['department', 'position', 'work-center', 'role']}>
+                        <FilterDepartment departments={departments.data} />
                         <CommandSeparator />
-                        <FilterPosition positions={positions.data} setOpen={setOpen} />
+                        <FilterPosition positions={positions.data} />
                         <CommandSeparator />
-                        <FilterWorkCenter workCenters={workCenters.data} setOpen={setOpen} />
+                        <FilterWorkCenter workCenters={workCenters.data} />
                         <CommandSeparator />
-                        <FilterRole roles={roles} setOpen={setOpen} />
+                        <FilterRole roles={roles} />
                         <CommandSeparator />
-                        <FilterWithTrashed setOpen={setOpen} />
+                        <FilterWithTrashed />
                     </Filter>
                 </div>
                 {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} />}
@@ -74,7 +74,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {users.data.length > 0 ? (
                     <Table>
-                        <TableCaption className="text-sm">{caption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">#</TableHead>

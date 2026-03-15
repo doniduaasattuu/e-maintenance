@@ -4,7 +4,7 @@ use App\Models\Image;
 use App\Models\Material;
 use Database\Seeders\MaterialSeeder;
 use Database\Seeders\MaterialTypeSeeder;
-use Database\Seeders\UnitSeeder;
+use Database\Seeders\MaterialUnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
@@ -15,7 +15,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->generatePermissions(['Material', 'Image']);
 
-    $this->seed(UnitSeeder::class);
+    $this->seed(MaterialUnitSeeder::class);
     $this->seed(MaterialTypeSeeder::class);
     $this->seed(MaterialSeeder::class);
 });

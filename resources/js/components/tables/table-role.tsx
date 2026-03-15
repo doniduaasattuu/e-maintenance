@@ -29,7 +29,7 @@ export default function TableRole({ roles }: TableRoleProps) {
     }
 
     return (
-        <TableLayout title="Roles" description="Role permission management" className="md:max-w-2xl">
+        <TableLayout moduleKey={'ROLE'} className="md:max-w-2xl">
             <div className="flex justify-between gap-2">
                 <SearchBar tabIndex={1} />
                 {can.create_role && <ButtonAdd tabIndex={2} route={route('roles.create')} />}
@@ -37,7 +37,7 @@ export default function TableRole({ roles }: TableRoleProps) {
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {roles.data.length > 0 ? (
                     <Table>
-                        <TableCaption className="text-sm">{caption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">#</TableHead>

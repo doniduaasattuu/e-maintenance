@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -66,10 +65,10 @@ class User extends Authenticatable
     protected function scopeSearch(Builder $builder, Request $request): void
     {
         $search = trim($request->query('query'));
-        $departmentCode = trim($request->query('department'));
-        $positionCode = trim($request->query('position'));
+        $department = $request->query('department');
+        $position = $request->query('position');
         $workCenterCode = trim($request->query('work-center'));
-        $roleName = trim($request->query('role'));
+        $role = $request->query('role');
         $withTrashed = $request->boolean('withTrashed');
 
         if ($search) {
@@ -82,20 +81,28 @@ class User extends Authenticatable
             });
         }
 
-        if ($departmentCode) {
-            $builder->whereRelation('department', 'code', $departmentCode);
+        if ($department && is_array($department)) {
+            $builder->whereHas('department', function ($query) use ($department) {
+                $query->whereIn('code', $department);
+            });
+        } elseif ($department && is_string($department)) {
+            $builder->whereRelation('department', 'code', $department);
         }
 
-        if ($positionCode) {
-            $builder->whereRelation('position', 'code', $positionCode);
+        if ($position && is_array($position)) {
+            $builder->whereHas('position', function ($query) use ($position) {
+                $query->whereIn('code', $position);
+            });
+        } elseif ($position && is_string($position)) {
+            $builder->whereRelation('position', 'code', $position);
         }
 
         if ($workCenterCode) {
             $builder->whereRelation('workCenter', 'code', $workCenterCode);
         }
 
-        if (self::roleExists($roleName)) {
-            $builder->role($roleName);
+        if ($role && is_array($role)) {
+            $builder->role($role);
         }
 
         if ($withTrashed) {
@@ -103,14 +110,9 @@ class User extends Authenticatable
         }
     }
 
-    private static function roleExists(string $roleName): bool
-    {
-        return Role::where('name', $roleName)->where('guard_name', 'web')->exists();
-    }
-
     public function department(): BelongsTo
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function position(): BelongsTo

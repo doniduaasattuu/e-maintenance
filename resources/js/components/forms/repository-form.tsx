@@ -74,6 +74,7 @@ export default function RepositoryForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     label={buttonLabel}
                     disabled={processing || (data.title === '' || !editing ? data.file === null : !editing)}
                     tabIndex={3}

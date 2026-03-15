@@ -68,7 +68,7 @@ export function formatDateIndonesia(date: number) {
     }).format(date);
 }
 
-export default function truncateText(str: string, maxLength: number) {
+export default function truncateText(str: string, maxLength: number = 40) {
     if (str.length <= maxLength) {
         return str;
     }

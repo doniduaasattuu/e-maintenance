@@ -1,12 +1,11 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
-import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
+import ButtonSubmit from '@/components/button-submit';
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
@@ -63,6 +62,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <Label htmlFor="name">Name</Label>
 
                             <Input
+                                tabIndex={1}
                                 id="name"
                                 className="mt-1 block w-full"
                                 value={data.name}
@@ -79,6 +79,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <Label htmlFor="email">Email address</Label>
 
                             <Input
+                                tabIndex={2}
                                 id="email"
                                 type="email"
                                 className="mt-1 block w-full"
@@ -96,6 +97,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <Label htmlFor="avatar">Avatar</Label>
 
                             <Input
+                                tabIndex={3}
                                 id="avatar"
                                 type="file"
                                 ref={fileInputRef}
@@ -112,6 +114,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 <p className="text-muted-foreground -mt-4 text-sm">
                                     Your email address is unverified.{' '}
                                     <Link
+                                        tabIndex={4}
                                         href={route('verification.send')}
                                         method="post"
                                         as="button"
@@ -130,17 +133,14 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         )}
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save</Button>
-
-                            <Transition
-                                show={recentlySuccessful}
-                                enter="transition ease-in-out"
-                                enterFrom="opacity-0"
-                                leave="transition ease-in-out"
-                                leaveTo="opacity-0"
-                            >
-                                <p className="text-sm text-neutral-600">Saved</p>
-                            </Transition>
+                            <ButtonSubmit
+                                tabIndex={5}
+                                processing={processing}
+                                label="Save"
+                                disabled={processing || data.name == '' || data.email == ''}
+                                recentlySuccessful={recentlySuccessful}
+                                successMessage="Saved"
+                            />
                         </div>
                     </form>
                 </div>

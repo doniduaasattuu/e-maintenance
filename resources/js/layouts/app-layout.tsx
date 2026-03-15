@@ -48,7 +48,7 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
     }, [message]);
 
     return (
-        <AppLayoutTemplate user={auth.user} breadcrumbs={breadcrumbs} {...props}>
+        <AppLayoutTemplate user={auth?.user} breadcrumbs={breadcrumbs} {...props}>
             <Toaster theme={appearance === 'light' ? 'light' : appearance} />
             {children}
         </AppLayoutTemplate>

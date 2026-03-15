@@ -1,4 +1,4 @@
-import AppLogoIcon from '@/components/app-logo-icon';
+import LogoDisplay from '@/components/logo-display';
 import { ModeToggle } from '@/components/mode';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
@@ -19,10 +19,7 @@ export default function AuthSimpleLayout({ children, title, description }: Props
                             <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium">
                                 <div className="flex gap-3">
                                     <div className="mb-1 rounded-md">
-                                        <AppLogoIcon className="size-16" />
-                                    </div>
-                                    <div className="mb-1 rounded-md">
-                                        <img src="/manex.png" alt="App Logo" className="size-16" />
+                                        <LogoDisplay className="size-16" />
                                     </div>
                                 </div>
                                 <span className="sr-only">{title}</span>

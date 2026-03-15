@@ -93,6 +93,7 @@ export default function FindingClauseForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     disabled={processing || data.code == '' || data.title == '' || data.description == ''}
                     tabIndex={4}
                     recentlySuccessful={recentlySuccessful}

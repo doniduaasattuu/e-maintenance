@@ -5,16 +5,16 @@ import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
 import { copyTextToClipboard, tableCaption } from '@/lib/utils';
 import { Meta, Repository } from '@/types';
-import { Link, router } from '@inertiajs/react';
-import { Copy, Download, Edit, Trash2, Upload } from 'lucide-react';
+import { router } from '@inertiajs/react';
+import { Copy, Download, Edit, Trash2 } from 'lucide-react';
 import React from 'react';
 import { ActionConfirm } from '../action-confirm';
+import ButtonAdd from '../button-add';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterRepositoryExtension from '../filter-repository-extension';
 import TextLink from '../text-link';
 import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
 
 interface TableRepositoryProps {
     repositories: {
@@ -26,7 +26,7 @@ interface TableRepositoryProps {
 }
 
 export default function TableRepository({ repositories, extensions, renderable }: TableRepositoryProps) {
-    const {can} = usePermissions();
+    const { can } = usePermissions();
     const meta = repositories.meta;
     const caption = tableCaption(meta);
     const [open, setOpen] = React.useState<boolean>(false);
@@ -40,27 +40,20 @@ export default function TableRepository({ repositories, extensions, renderable }
     }
 
     return (
-        <TableLayout title="Repositories" description="Centralized document storage module" className="md:max-w-7xl">
+        <TableLayout moduleKey={'REPOSITORY'} className="md:max-w-7xl">
             <div className="flex justify-between gap-2">
                 <div className="flex justify-between gap-2">
                     <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen}>
-                        <FilterRepositoryExtension extensions={extensions} setOpen={setOpen} />
+                    <Filter open={open} setOpen={setOpen} keys={['ext']}>
+                        <FilterRepositoryExtension extensions={extensions} />
                     </Filter>
                 </div>
-                {can.create_repository && (
-                    <Link href={route('repositories.create')}>
-                        <Button variant="outline">
-                            <Upload />
-                            Upload
-                        </Button>
-                    </Link>
-                )}
+                {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={2} />}
             </div>
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {repositories.data.length > 0 ? (
                     <Table>
-                        <TableCaption className="text-sm">{caption}</TableCaption>
+                        <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">#</TableHead>

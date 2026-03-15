@@ -341,6 +341,7 @@ export default function FindingForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     disabled={
                         processing ||
                         data.finding_clause_id == '' ||
