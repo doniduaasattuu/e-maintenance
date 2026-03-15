@@ -1,7 +1,9 @@
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { KeySquare, LayoutGrid } from 'lucide-react';
+import { BreadcrumbItem, SharedData, User } from '@/types';
+import { Head, router, usePage } from '@inertiajs/react';
+import { KeySquare, LayoutGrid, LoaderCircle } from 'lucide-react';
+import { useState } from 'react';
 
 export default function ErrorPage({ status, title, description }: { status: number; title: string; description: string }) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -12,7 +14,19 @@ export default function ErrorPage({ status, title, description }: { status: numb
     ];
 
     const { auth } = usePage<SharedData>().props;
-    const user = auth.user;
+    const user: User | undefined = auth?.user;
+    const [processing, setProcessing] = useState<boolean>(false);
+
+    const handleActionButton = () => {
+        router.get(
+            user ? route('dashboard') : route('login'),
+            {},
+            {
+                onStart: () => setProcessing(true),
+                onFinish: () => setProcessing(false),
+            },
+        );
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -27,22 +41,19 @@ export default function ErrorPage({ status, title, description }: { status: numb
                 </div>
 
                 <div className="mt-8">
-                    <Link
-                        href={user ? route('dashboard') : route('login')}
-                        className="bg-primary text-primary-foreground inline-flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold shadow-lg transition-all hover:scale-105 active:scale-95"
-                    >
+                    <Button onClick={handleActionButton} disabled={processing}>
                         {user ? (
                             <>
-                                <LayoutGrid />
+                                {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LayoutGrid />}
                                 Dashboard
                             </>
                         ) : (
                             <>
-                                <KeySquare />
+                                {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <KeySquare />}
                                 Login
                             </>
                         )}
-                    </Link>
+                    </Button>
                 </div>
             </div>
         </AppLayout>
