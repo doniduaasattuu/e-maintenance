@@ -1,11 +1,13 @@
 import TableMaterial from '@/components/tables/table-material';
 import AppLayout from '@/layouts/app-layout';
-import { Material, MaterialType, Meta, Unit, type BreadcrumbItem } from '@/types';
+import { UI_STRINGS } from '@/lib/ui-strings';
+import { Material, MaterialType, MaterialUnit, Meta, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Material',
+        title: strings.MATERIAL?.plural ?? 'Materials',
         href: route('materials.index'),
     },
 ];
@@ -15,20 +17,20 @@ interface MaterialIndexProps {
         data: Material[];
         meta: Meta;
     };
-    units: {
-        data: Unit[];
+    materialUnits: {
+        data: MaterialUnit[];
     };
     materialTypes: {
         data: MaterialType[];
     };
 }
 
-export default function MaterialIndex({ materials, units, materialTypes }: MaterialIndexProps) {
+export default function MaterialIndex({ materials, materialUnits, materialTypes }: MaterialIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Material" />
 
-            <TableMaterial materials={materials} units={units} materialTypes={materialTypes} />
+            <TableMaterial materials={materials} materialUnits={materialUnits} materialTypes={materialTypes} />
         </AppLayout>
     );
 }

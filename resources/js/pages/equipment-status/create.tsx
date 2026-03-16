@@ -1,13 +1,16 @@
 import EquipmentStatusForm, { EquipmentStatusFormData } from '@/components/forms/equipment-status-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Equipment Statuses',
+        title: strings.EQUIPMENT_STATUS?.plural ?? 'Equipment Statuses',
         href: route('equipment-statuses.index'),
     },
     {
@@ -17,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function EquipmentStatusCreate() {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<EquipmentStatusFormData>>({
         code: '',
         name: '',
@@ -37,7 +40,7 @@ export default function EquipmentStatusCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="EQUIPMENT_STATUS" mode="create">
                 <EquipmentStatusForm
                     data={data}
                     setData={setData}
@@ -48,8 +51,9 @@ export default function EquipmentStatusCreate() {
                     canSubmit={can.store_equipmentclass}
                     buttonLabel="Create"
                     successMessage="Created"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

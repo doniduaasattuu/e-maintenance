@@ -1,7 +1,7 @@
 import { Division, Meta, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
-import TableDivision from '@/components/tables/table-divisions';
+import TableDivision from '@/components/tables/table-division';
 import AppLayout from '@/layouts/app-layout';
 import OrganizationsLayout from '@/layouts/organizations/layout';
 

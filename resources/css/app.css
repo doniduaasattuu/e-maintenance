@@ -157,3 +157,13 @@
         @apply bg-background text-foreground;
     }
 }
+
+@layer components {
+    .table-timestamp {
+        @apply w-22;
+    }
+
+    .table-icon {
+        @apply w-10 flex-col align-top;
+    }
+}

@@ -1,14 +1,16 @@
 import RepositoryForm, { RepositoryFormData } from '@/components/forms/repository-form';
-import Heading from '@/components/heading';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Repositories',
+        title: strings.REPOSITORY?.plural ?? 'Repositories',
         href: route('repositories.index'),
     },
     {
@@ -18,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function RepositoryCreate() {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<Required<RepositoryFormData>>({
         title: '',
         file: null,
@@ -44,11 +46,7 @@ export default function RepositoryCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Upload" />
-
-            <div className="max-w-2xl space-y-6 px-4 py-6">
-                <Heading title="Upload" description="Upload file that can be download by everyone" />
-
+            <FormLayout moduleKey="REPOSITORY" mode="create">
                 <RepositoryForm
                     buttonLabel="Upload"
                     canSubmit={can.store_repository}
@@ -60,8 +58,9 @@ export default function RepositoryCreate() {
                     submit={submit}
                     recentlySuccessful={recentlySuccessful}
                     successMessage="Uploaded"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

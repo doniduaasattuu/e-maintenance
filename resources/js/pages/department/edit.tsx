@@ -27,7 +27,7 @@ interface DepartmentEditProps {
 }
 
 export default function DepartmentEdit({ department, divisions }: DepartmentEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<DepartmentFormData>>({
         code: department.data.code,
         name: department.data.name,
@@ -48,19 +48,18 @@ export default function DepartmentEdit({ department, divisions }: DepartmentEdit
             <Head title="Departments" />
 
             <OrganizationsLayout>
-                <div className="max-w-2xl space-y-4">
-                    <DepartmentForm
-                        divisions={divisions}
-                        data={data}
-                        setData={setData}
-                        errors={errors}
-                        processing={processing}
-                        recentlySuccessful={recentlySuccessful}
-                        submit={submit}
-                        canSubmit={can.update_department}
-                        buttonLabel="Update"
-                    />
-                </div>
+                <DepartmentForm
+                    divisions={divisions}
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    submit={submit}
+                    canSubmit={can.update_department}
+                    buttonLabel="Update"
+                    className="max-w-xl"
+                />
             </OrganizationsLayout>
         </AppLayout>
     );

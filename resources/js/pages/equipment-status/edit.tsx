@@ -1,13 +1,16 @@
 import EquipmentStatusForm, { EquipmentStatusFormData } from '@/components/forms/equipment-status-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, EquipmentStatus } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Equipment Statuses',
+        title: strings.EQUIPMENT_STATUS?.plural ?? 'Equipment Statuses',
         href: route('equipment-statuses.index'),
     },
     {
@@ -23,7 +26,7 @@ interface EquipmentStatusEditProps {
 }
 
 export default function EquipmentStatusEdit({ equipmentStatus }: EquipmentStatusEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<EquipmentStatusFormData>>({
         code: equipmentStatus.data.code,
         name: equipmentStatus.data.name,
@@ -40,7 +43,7 @@ export default function EquipmentStatusEdit({ equipmentStatus }: EquipmentStatus
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="EQUIPMENT_STATUS" mode="edit">
                 <EquipmentStatusForm
                     data={data}
                     setData={setData}
@@ -50,8 +53,9 @@ export default function EquipmentStatusEdit({ equipmentStatus }: EquipmentStatus
                     submit={submit}
                     canSubmit={can.update_equipmentclass}
                     buttonLabel="Update"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

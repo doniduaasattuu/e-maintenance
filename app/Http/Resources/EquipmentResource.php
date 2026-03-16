@@ -22,9 +22,11 @@ class EquipmentResource extends JsonResource
             'functional_location_id' => $this->functional_location_id,
             'equipment_class_id' => $this->equipment_class_id,
             'equipment_status_id' => $this->equipment_status_id,
+
             'functionalLocation' => new FunctionalLocationResource($this->whenLoaded('functionalLocation')),
-            'equipmentClass' => new EquipmentClassResource($this->whenLoaded('equipmentClass')),
-            'equipmentStatus' => new EquipmentStatusResource($this->whenLoaded('equipmentStatus')),
+            'eclass' => new EquipmentClassResource($this->whenLoaded('eclass')),
+            'status' => new EquipmentStatusResource($this->whenLoaded('status')),
+
             'installDismantleHistories' => new InstallDismantleHistoryResource($this->whenLoaded('installDismantleHistories')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'created_at' => $this->created_at?->toFormattedDateString(),

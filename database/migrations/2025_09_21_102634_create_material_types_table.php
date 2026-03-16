@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('material_types', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 25);
+            $table->string('code', 25)->unique();
             $table->string('description');
             $table->timestamps();
         });

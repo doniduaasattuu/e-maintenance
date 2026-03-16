@@ -1,9 +1,9 @@
-import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import TableLayout from '@/layouts/table/layout';
+import { cn } from '@/lib/utils';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
+import RequiredLabel from '../required-label';
+import { Field, FieldError, FieldLabel } from '../ui/field';
 
 interface MaterialTypeFormProps {
     data: Required<MaterialTypeFormData>;
@@ -15,6 +15,7 @@ interface MaterialTypeFormProps {
     canSubmit: boolean;
     buttonLabel: string;
     successMessage?: string;
+    className?: string;
 }
 
 export type MaterialTypeFormData = {
@@ -32,57 +33,57 @@ export default function MaterialTypeForm({
     canSubmit,
     buttonLabel,
     successMessage,
+    className,
 }: MaterialTypeFormProps) {
     return (
-        <TableLayout title="Material Type" description="Overview and management of material types in the system">
-            <form onSubmit={submit} className="space-y-6">
-                <div className="grid gap-2">
-                    <Label htmlFor="code">Code</Label>
+        <form onSubmit={submit} className={cn('space-y-6', className)}>
+            <Field>
+                <FieldLabel htmlFor="code">
+                    Code
+                    <RequiredLabel />
+                </FieldLabel>
+                <Input
+                    tabIndex={1}
+                    id="code"
+                    value={data.code}
+                    autoFocus
+                    onChange={(e) => setData('code', e.target.value.toUpperCase())}
+                    placeholder="ND"
+                    required
+                    disabled={processing}
+                    autoComplete="code"
+                />
+                <FieldError>{errors.code}</FieldError>
+            </Field>
 
-                    <Input
-                        tabIndex={1}
-                        id="code"
-                        className="mt-1 block w-full"
-                        value={data.code}
-                        autoFocus
-                        onChange={(e) => setData('code', e.target.value.toUpperCase())}
-                        placeholder="ND"
-                        required
-                        disabled={processing}
-                        autoComplete="code"
-                    />
+            <Field>
+                <FieldLabel htmlFor="description">
+                    Description
+                    <RequiredLabel />
+                </FieldLabel>
+                <Input
+                    tabIndex={2}
+                    id="description"
+                    value={data.description}
+                    onChange={(e) => setData('description', e.target.value)}
+                    placeholder="No Planning"
+                    required
+                    disabled={processing}
+                    autoComplete="description"
+                />
+                <FieldError>{errors.description}</FieldError>
+            </Field>
 
-                    <InputError message={errors.code} />
-                </div>
-
-                <div className="grid gap-2">
-                    <Label htmlFor="description">Description</Label>
-
-                    <Input
-                        tabIndex={2}
-                        id="description"
-                        className="mt-1 block w-full"
-                        value={data.description}
-                        onChange={(e) => setData('description', e.target.value)}
-                        placeholder="No Planning"
-                        required
-                        disabled={processing}
-                        autoComplete="description"
-                    />
-
-                    <InputError message={errors.description} />
-                </div>
-
-                {canSubmit && (
-                    <ButtonSubmit
-                        label={buttonLabel}
-                        disabled={processing || data.code == '' || data.description == ''}
-                        tabIndex={3}
-                        recentlySuccessful={recentlySuccessful}
-                        successMessage={successMessage}
-                    />
-                )}
-            </form>
-        </TableLayout>
+            {canSubmit && (
+                <ButtonSubmit
+                    processing={processing}
+                    label={buttonLabel}
+                    disabled={processing || data.code == '' || data.description == ''}
+                    tabIndex={3}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage={successMessage}
+                />
+            )}
+        </form>
     );
 }

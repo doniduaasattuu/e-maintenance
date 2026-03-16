@@ -1,12 +1,13 @@
-import { Select, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { FunctionalLocation } from '@/types';
 import axios from 'axios';
-import { ArrowUpRightFromSquareIcon, Check } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowUpRightFromSquareIcon, Check, ChevronsUpDown } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActionConfirm } from './action-confirm';
-import { Button } from './ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
 
 type Props = {
     id: string;
@@ -18,6 +19,7 @@ type Props = {
     processing: boolean;
     isEditing?: boolean;
     className?: string;
+    placeholder?: string;
 };
 
 export default function FunctionalLocationSelect({
@@ -30,106 +32,109 @@ export default function FunctionalLocationSelect({
     processing,
     isEditing,
     className,
+    placeholder,
 }: Props) {
+    const [open, setOpen] = useState(false);
     const [input, setInput] = useState('');
-    const selected = useRef<FunctionalLocation | null>(null);
     const [options, setOptions] = useState<FunctionalLocation[]>([]);
+    // Gunakan state untuk UI yang reaktif, bukan Ref
+    const [selectedLoc, setSelectedLoc] = useState<FunctionalLocation | null>(currentValue || null);
 
     const fetchLocations = useCallback(async (search: string) => {
         try {
             const res = await axios.get(route('functional-locations.index'), { params: { query: search } });
             setOptions(res.data);
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (err: unknown) {
+        } catch (err) {
             setOptions([]);
         }
     }, []);
 
     useEffect(() => {
         if (input.length > 0) {
-            const delayDebounce = setTimeout(() => {
-                fetchLocations(input);
-            }, 300);
-
+            const delayDebounce = setTimeout(() => fetchLocations(input), 300);
             return () => clearTimeout(delayDebounce);
         } else {
-            if (selected.current) {
-                setOptions([selected.current]);
-            } else {
-                setOptions([]);
-            }
+            setOptions(selectedLoc ? [selectedLoc] : []);
         }
-    }, [input, fetchLocations]);
+    }, [input, fetchLocations, selectedLoc]);
 
+    // Reset state jika transaksi sukses (misal setelah simpan form)
     useEffect(() => {
-        selected.current = null;
+        if (recentlySuccessful) setSelectedLoc(null);
     }, [recentlySuccessful]);
 
     const handleDismantling = () => {
-        selected.current = null;
+        setSelectedLoc(null);
         onChange(null);
     };
 
     return (
-        <div className={cn('flex justify-between gap-2', className)}>
-            <Select disabled={processing}>
-                <SelectTrigger tabIndex={tabIndex} id={id} className={`w-full ${selected.current || value ? '!text-foreground' : undefined}`}>
-                    <SelectValue
-                        placeholder={
-                            value !== '' && currentValue && selected.current == null
-                                ? currentValue.code
-                                : selected.current
-                                  ? selected.current.code
-                                  : 'Select functional location'
-                        }
-                    />
-                </SelectTrigger>
-                <SelectContent className="max-w-xl">
-                    <Command shouldFilter={false}>
-                        <CommandInput placeholder="Search..." value={input} onValueChange={(e) => setInput(e.toUpperCase())} />
-                        <CommandList>
-                            {Array.isArray(options) && options.length > 0 ? (
+        <div className={cn('flex w-full items-center gap-2', className)}>
+            <div className="min-w-0 grow">
+                <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            id={id}
+                            size={'sm'}
+                            variant="ghost"
+                            role="combobox"
+                            aria-expanded={open}
+                            tabIndex={tabIndex}
+                            disabled={processing}
+                            className={cn(
+                                'border-muted-background w-full justify-between border font-normal',
+                                !selectedLoc && 'text-muted-foreground',
+                            )}
+                        >
+                            <span className="truncate">{selectedLoc ? selectedLoc.code : placeholder || 'Select location...'}</span>
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                        <Command shouldFilter={false}>
+                            <CommandInput
+                                placeholder="Search..."
+                                value={input}
+                                onValueChange={(v) => setInput(v)}
+                                className="w-full text-base sm:text-sm"
+                            />
+                            <CommandList>
+                                <CommandEmpty>No results found.</CommandEmpty>
                                 <CommandGroup>
                                     {options.map((loc) => (
                                         <CommandItem
                                             key={loc.id}
+                                            value={loc.code}
                                             onSelect={() => {
-                                                if (selected.current && selected.current.id == loc.id) {
-                                                    handleDismantling();
-                                                } else {
-                                                    onChange(loc.id);
-                                                    selected.current = loc;
-                                                }
+                                                onChange(loc.id);
+                                                setSelectedLoc(loc);
+                                                setOpen(false);
+                                                setInput('');
                                             }}
                                         >
-                                            <div className="flex gap-2">
-                                                {selected.current && selected.current?.id == loc.id && <Check />}
-                                                <div className="w-full">
-                                                    <div className="font-medium">{loc.code}</div>
-                                                    <div className="text-muted-foreground max-w-xs truncate text-sm sm:max-w-full">
-                                                        {loc.description}
-                                                    </div>
-                                                </div>
+                                            <Check className={cn('mr-2 h-4 w-4', selectedLoc?.id === loc.id ? 'opacity-100' : 'opacity-0')} />
+                                            <div className="flex flex-col">
+                                                <span className="font-medium">{loc.code}</span>
+                                                <span className="text-muted-foreground line-clamp-1 text-xs">{loc.description}</span>
                                             </div>
                                         </CommandItem>
                                     ))}
                                 </CommandGroup>
-                            ) : (
-                                <CommandEmpty>No results found.</CommandEmpty>
-                            )}
-                        </CommandList>
-                    </Command>
-                </SelectContent>
-            </Select>
+                            </CommandList>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
+            </div>
+
             {isEditing && value !== '' && (
                 <ActionConfirm
                     action={handleDismantling}
-                    title="Dismantle from this functional location?"
-                    description="This action will dismantling equipment from functional location."
+                    title="Dismantle?"
+                    description="Dismantle equipment from this location."
                     actionLabel="Dismantle"
                 >
-                    <Button title="Dismantle" variant="outline">
-                        <ArrowUpRightFromSquareIcon />
+                    <Button title="Dismantle" variant="outline" size={'sm'}>
+                        <ArrowUpRightFromSquareIcon className="size-4" />
                     </Button>
                 </ActionConfirm>
             )}

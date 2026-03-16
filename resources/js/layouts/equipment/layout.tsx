@@ -11,18 +11,18 @@ export default function EquipmentLayout({ equipment, className, children }: Prop
     const sidebarNavItems: NavItem[] = [
         {
             title: 'Details',
-            href: route('equipments.show', equipment.id), // http://127.0.0.1:8000/equipments/1
+            href: route('equipments.show', equipment.id),
             icon: null,
         },
         {
             title: 'History',
-            href: route('equipments.history', equipment.id), // http://127.0.0.1:8000/equipments/1/history
+            href: route('equipments.history', equipment.id),
             icon: null,
             permission: 'show_installdismantlehistory',
         },
         {
             title: 'Inspection',
-            href: route('inspections.create', equipment.id), // http://127.0.0.1:8000/equipments/1/inspection
+            href: route('inspections.create', equipment.id),
             icon: null,
             permission: 'create_inspection',
         },

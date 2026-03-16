@@ -42,8 +42,8 @@ class Equipment extends Model
     protected function scopeSearch(Builder $builder, Request $request): void
     {
         $search = trim($request->query('query'));
-        $class = trim($request->query('class'));
-        $status = trim($request->query('status'));
+        $class = $request->query('class');
+        $status = $request->query('status');
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
@@ -59,12 +59,20 @@ class Equipment extends Model
             });
         }
 
-        if ($class) {
-            $builder->whereRelation('equipmentClass', 'code', $class);
+        if ($class && is_array($class)) {
+            $builder->whereHas('eclass', function ($query) use ($class) {
+                $query->whereIn('code', $class);
+            });
+        } elseif ($class && is_string($class)) {
+            $builder->whereRelation('eclass', 'code', $class);
         }
 
-        if ($status) {
-            $builder->whereRelation('equipmentStatus', 'code', $status);
+        if ($status && is_array($status)) {
+            $builder->whereHas('status', function ($query) use ($status) {
+                $query->whereIn('code', $status);
+            });
+        } elseif ($status && is_string($status)) {
+            $builder->whereRelation('status', 'code', $status);
         }
     }
 
@@ -73,14 +81,14 @@ class Equipment extends Model
         return $this->belongsTo(FunctionalLocation::class);
     }
 
-    public function equipmentClass(): BelongsTo
+    public function eclass(): BelongsTo
     {
-        return $this->belongsTo(EquipmentClass::class);
+        return $this->belongsTo(EquipmentClass::class, 'equipment_class_id');
     }
 
-    public function equipmentStatus(): BelongsTo
+    public function status(): BelongsTo
     {
-        return $this->belongsTo(EquipmentStatus::class);
+        return $this->belongsTo(EquipmentStatus::class, 'equipment_status_id');
     }
 
     public function installDismantleHistories(): HasMany
@@ -101,5 +109,10 @@ class Equipment extends Model
     public function repositories(): BelongsToMany
     {
         return $this->belongsToMany(Repository::class);
+    }
+
+    public function findings(): HasMany
+    {
+        return $this->hasMany(Finding::class);
     }
 }

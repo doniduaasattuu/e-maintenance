@@ -358,6 +358,7 @@ export default function InspectionTransformerForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     tabIndex={18}
                     disabled={processing}
                     recentlySuccessful={recentlySuccessful}

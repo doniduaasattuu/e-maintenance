@@ -2,7 +2,7 @@
 
 use App\Models\Material;
 use Database\Seeders\MaterialTypeSeeder;
-use Database\Seeders\UnitSeeder;
+use Database\Seeders\MaterialUnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -10,7 +10,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->generatePermissions(['Material']);
 
-    $this->seed(UnitSeeder::class);
+    $this->seed(MaterialUnitSeeder::class);
     $this->seed(MaterialTypeSeeder::class);
 });
 

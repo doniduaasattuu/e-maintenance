@@ -179,5 +179,7 @@ return [
         ],
     ],
 
-    'renderable' => [401, 403, 404, 419, 429, 500, 503]
+    'renderable' => [401, 403, 404, 419, 429, 500, 503],
+
+    'enable' => env('CUSTOM_ERROR_PAGE', true),
 ];

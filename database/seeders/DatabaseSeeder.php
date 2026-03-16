@@ -21,12 +21,16 @@ class DatabaseSeeder extends Seeder
             EquipmentStatusSeeder::class,
             EquipmentSeeder::class,
             QualityRatingSeeder::class,
-            UnitSeeder::class,
+            MaterialUnitSeeder::class,
             MaterialTypeSeeder::class,
             MaterialSeeder::class,
             ImageSeeder::class,
             RepositorySeeder::class,
             RepositoryEquipmentSeeder::class,
+            FindingClauseSeeder::class,
+            FindingStatusSeeder::class,
+            FindingPrioritySeeder::class,
+            FindingSeeder::class,
         ]);
     }
 }

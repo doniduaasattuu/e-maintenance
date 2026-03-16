@@ -2,6 +2,8 @@ import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
 export interface Auth {
+    roles: string[];
+    permissions: Record<string, boolean>;
     user: User;
 }
 
@@ -23,6 +25,7 @@ export interface NavItem {
     permission?: string;
     children?: string[];
     subItems?: NavItem[];
+    multiple?: boolean;
 }
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
@@ -176,9 +179,11 @@ export interface Equipment {
     equipment_class_id: number | null;
     equipment_status_id: number | null;
     functionalLocation: FunctionalLocation | null;
-    equipmentClass: EquipmentClass | null;
-    equipmentStatus: EquipmentStatus | null;
+
+    eclass: EquipmentClass | null;
+    status: EquipmentStatus | null;
     images: null | Image[];
+
     created_at: string;
     updated_at: string;
 }
@@ -308,7 +313,7 @@ export interface Image {
     updated_at: string;
 }
 
-export interface Unit {
+export interface MaterialUnit {
     id: number;
     name: string;
     created_at: string;
@@ -328,11 +333,13 @@ export interface Material {
     code: string;
     name: string;
     price: number;
-    unit_id: number | null;
+    material_unit_id: number | null;
     material_type_id: number | null;
-    unit: Unit | null;
-    materialType: MaterialType | null;
+
+    unit: MaterialUnit | null;
+    type: MaterialType | null;
     images: null | Image[];
+
     created_at: string;
     updated_at: string;
 }
@@ -346,6 +353,76 @@ export interface Repository {
     mime_type: ?string;
     uploaded_by: number | null;
     uploadedBy: User | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface FindingClause {
+    id: number;
+    code: string;
+    title: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface FindingStatus {
+    id: number;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface FindingPriority {
+    id: number;
+    label: string;
+    description: string;
+    sla_resolution_hours?: string;
+    color_code?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Finding {
+    id: number;
+    description: string;
+    notification: string;
+
+    // Relasi (Optional karena menggunakan whenLoaded di Resource)
+    clause?: FindingClause;
+    status?: FindingStatus;
+    priority?: FindingPriority;
+    department?: Department;
+    equipment?: Equipment;
+    functionalLocation?: FunctionalLocation;
+
+    inspector?: User;
+    verifier?: User | null; // Bisa null jika belum diverifikasi
+
+    images?: FindingImage[];
+    gallery?: {
+        before: FindingImage[];
+        after: FindingImage[];
+    };
+
+    due_date: string;
+    due_date_readable: string;
+    is_overdue: boolean;
+
+    // Timestamps
+    created_at: string;
+    updated_at: string;
+    closed_at: string | null;
+}
+
+export interface FindingImage {
+    id: number;
+    finding_id: number;
+    file_path: string;
+    url: string;
+    category: 'before' | 'after';
+    original_name: string;
     created_at: string;
     updated_at: string;
 }

@@ -4,12 +4,7 @@ import { router } from '@inertiajs/react';
 import { Check } from 'lucide-react';
 import * as React from 'react';
 
-interface FilterWithTrashedProps {
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    className?: string;
-}
-
-export default function FilterWithTrashed({ setOpen }: FilterWithTrashedProps) {
+export default function FilterWithTrashed() {
     const [value, setValue] = React.useState<string>(new URLSearchParams(window.location.search).get('withTrashed') || '');
 
     const handleWithTrashed = (withTrashed: string | null) => {
@@ -40,7 +35,6 @@ export default function FilterWithTrashed({ setOpen }: FilterWithTrashedProps) {
                 onSelect={(currentValue) => {
                     const selectedValue = currentValue === value ? '' : currentValue;
                     setValue(selectedValue);
-                    setOpen(false);
                     handleWithTrashed(selectedValue);
                 }}
             >

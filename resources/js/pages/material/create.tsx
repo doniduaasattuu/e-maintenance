@@ -1,14 +1,16 @@
 import MaterialForm, { MaterialFormData } from '@/components/forms/material-form';
-import Heading from '@/components/heading';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, MaterialType, Unit } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
+import { BreadcrumbItem, MaterialType, MaterialUnit } from '@/types';
+import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Material',
+        title: strings.MATERIAL?.plural ?? 'Materials',
         href: route('materials.index'),
     },
     {
@@ -18,17 +20,21 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface MaterialCreateParams {
-    units: { data: Unit[] };
-    materialTypes: { data: MaterialType[] };
+    materialUnits: {
+        data: MaterialUnit[];
+    };
+    materialTypes: {
+        data: MaterialType[];
+    };
 }
 
-export default function MaterialCreate({ units, materialTypes }: MaterialCreateParams) {
-    const can = usePermissions();
+export default function MaterialCreate({ materialUnits, materialTypes }: MaterialCreateParams) {
+    const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<MaterialFormData>>({
         code: '',
         name: '',
         price: '',
-        unit_id: '',
+        material_unit_id: '',
         material_type_id: '',
     });
 
@@ -38,17 +44,14 @@ export default function MaterialCreate({ units, materialTypes }: MaterialCreateP
         post(route('materials.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                reset('code', 'name', 'price', 'unit_id', 'material_type_id');
+                reset('code', 'name', 'price', 'material_unit_id', 'material_type_id');
             },
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Create" />
-            <div className="space-y-6 px-4 py-6">
-                <Heading title="Create" description="Insert new material." />
-
+            <FormLayout moduleKey="MATERIAL" mode="create">
                 <MaterialForm
                     data={data}
                     setData={setData}
@@ -59,13 +62,11 @@ export default function MaterialCreate({ units, materialTypes }: MaterialCreateP
                     canSubmit={can.store_material}
                     buttonLabel="Submit"
                     successMessage="Created"
-                    units={units.data}
+                    materialUnits={materialUnits.data}
                     materialTypes={materialTypes.data}
                     className="max-w-xl"
                 />
-            </div>
-
-            <div className="max-w-2xl space-y-4 p-4"></div>
+            </FormLayout>
         </AppLayout>
     );
 }

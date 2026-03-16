@@ -1,5 +1,6 @@
 import { Meta } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
+import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -39,4 +40,37 @@ export function tableCaption(meta: Meta) {
     const total = meta.total ?? 0;
 
     return `Showing ${from} to ${to} of ${total} results`;
+}
+
+export async function copyTextToClipboard(text: string) {
+    try {
+        await navigator.clipboard.writeText(text);
+        toast.info('Copied to clipboard:', {
+            description: text,
+        });
+    } catch (e) {
+        if (e instanceof Error) {
+            toast.error('Failed copied text to clipboard', {
+                description: e.message,
+            });
+            return;
+        }
+
+        toast.error('Failed copied text to clipboard');
+    }
+}
+
+export function formatDateIndonesia(date: number) {
+    return new Intl.DateTimeFormat('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    }).format(date);
+}
+
+export default function truncateText(str: string, maxLength: number = 40) {
+    if (str.length <= maxLength) {
+        return str;
+    }
+    return str.slice(0, maxLength) + '...';
 }

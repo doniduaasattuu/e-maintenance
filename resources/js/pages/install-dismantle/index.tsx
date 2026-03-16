@@ -1,11 +1,13 @@
 import TableHistory from '@/components/tables/table-history';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, InstallDismantleHistory, Meta } from '@/types';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Equipment histories',
+        title: strings.EQUIPMENT_HISTORY?.plural ?? 'Equipment Histories',
         href: route('equipment-histories.index'),
     },
 ];
@@ -20,11 +22,7 @@ interface InstallDismantleHistoryProps {
 export default function InstallDismantleHistoryIndex({ histories }: InstallDismantleHistoryProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout
-                title="Equipment histories"
-                description="Installation and dismantle history for equipments, including status and functional location changes"
-                className="md:max-w-7xl"
-            >
+            <TableLayout moduleKey={'EQUIPMENT_HISTORY'} className="md:max-w-7xl">
                 <TableHistory histories={histories} />
             </TableLayout>
         </AppLayout>

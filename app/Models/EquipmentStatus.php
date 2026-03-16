@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\Database\Query\Builder;
 
 class EquipmentStatus extends Model
 {
@@ -37,6 +37,6 @@ class EquipmentStatus extends Model
 
     public function equipments(): HasMany
     {
-        return $this->hasMany(Equipment::class);
+        return $this->hasMany(Equipment::class, 'equipment_status_id', 'id');
     }
 }

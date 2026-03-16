@@ -24,7 +24,7 @@ interface WorkCenterEditProps {
 }
 
 export default function WorkCenterEdit({ workCenter }: WorkCenterEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<WorkCenterFormData>>({
         code: workCenter.data.code,
         name: workCenter.data.name,
@@ -43,18 +43,17 @@ export default function WorkCenterEdit({ workCenter }: WorkCenterEditProps) {
             <Head title="Work Centers" />
 
             <OrganizationsLayout>
-                <div className="max-w-2xl space-y-4">
-                    <WorkCenterForm
-                        data={data}
-                        setData={setData}
-                        errors={errors}
-                        processing={processing}
-                        recentlySuccessful={recentlySuccessful}
-                        submit={submit}
-                        canSubmit={can.update_workcenter}
-                        buttonLabel="Update"
-                    />
-                </div>
+                <WorkCenterForm
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    submit={submit}
+                    canSubmit={can.update_workcenter}
+                    buttonLabel="Update"
+                    className="max-w-xl"
+                />
             </OrganizationsLayout>
         </AppLayout>
     );

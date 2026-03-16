@@ -262,6 +262,7 @@ export default function InspectionPanelForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     tabIndex={13}
                     disabled={processing}
                     recentlySuccessful={recentlySuccessful}

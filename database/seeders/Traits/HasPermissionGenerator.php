@@ -13,9 +13,12 @@ trait HasPermissionGenerator
     public function generatePermissions(array $models): void
     {
         $actions = config('permission.actions');
+        $customActions = config('permission.custom_actions');
 
         foreach ($models as $model) {
-            foreach ($actions as $action) {
+            $modelActions = array_merge($actions, $customActions[$model] ?? []);
+
+            foreach ($modelActions as $action) {
                 Permission::firstOrCreate([
                     'name' => "{$action}_" . strtolower($model)
                 ]);

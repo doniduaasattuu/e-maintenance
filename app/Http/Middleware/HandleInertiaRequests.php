@@ -41,17 +41,17 @@ class HandleInertiaRequests extends Middleware
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
         $user = $request?->user()?->load('roles.permissions');
+        $roles = [];
         $permissions = [];
 
         if ($user) {
+            $roles = $user->roles->pluck('name')->unique()->toArray();
 
-            if ($user) {
-                $permissions = $user->roles
-                    ->flatMap->permissions
-                    ->pluck('name')
-                    ->unique()
-                    ->mapWithKeys(fn($permission) => [$permission => true]);
-            }
+            $permissions = $user->roles
+                ->flatMap->permissions
+                ->pluck('name')
+                ->unique()
+                ->mapWithKeys(fn($permission) => [$permission => true]);
         }
 
         return [
@@ -59,6 +59,8 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
+                'roles' => $roles,
+                'permissions' => $permissions,
                 'user' => $request->user(),
             ],
             'ziggy' => fn(): array => [
@@ -66,7 +68,6 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'permissions' => $permissions,
             'message' => $request->session()->get('message'),
         ];
     }

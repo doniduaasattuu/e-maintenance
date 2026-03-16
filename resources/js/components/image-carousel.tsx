@@ -1,12 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import { cn } from '@/lib/utils';
-import { Equipment, Material } from '@/types';
+import { Equipment, Image, Material } from '@/types';
 import { router } from '@inertiajs/react';
-import { X } from 'lucide-react';
+import { Maximize2, X } from 'lucide-react';
 import { useState } from 'react';
 import { ActionConfirm } from './action-confirm';
-import { ImageDialog } from './image-dialog';
+import Lightbox from './light-box';
 import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
@@ -17,12 +16,12 @@ interface ImageCarouselProps {
 
 export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
     const images = model.images;
-    const length = images?.length ?? 0;
-    const [open, setOpen] = useState<boolean>(false);
-    const [src, setSrc] = useState<string>();
+
     const handleDeleteImage = (imageId: number) => {
         router.delete(route('images.destroy', imageId));
     };
+
+    const [selectedImage, setSelectedImage] = useState<Image | null>(null);
 
     return (
         <Carousel className="w-full">
@@ -48,29 +47,22 @@ export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
                                     </ActionConfirm>
                                 </div>
                             )}
-                            <Card
-                                className="p-0"
-                                onClick={() => {
-                                    setOpen(true);
-                                    setSrc(image.url);
-                                }}
-                            >
-                                <CardContent
-                                    className={cn('relative aspect-square w-full overflow-hidden rounded-md p-0', { 'opacity-70': canDelete })}
-                                >
-                                    <span className="absolute top-0 left-3 z-10 py-2 text-center text-sm text-white">{`${length - index} of ${length}`}</span>
+                            <Card className="p-0" onClick={() => setSelectedImage(image)}>
+                                <CardContent className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-white/10">
                                     <img
-                                        className="absolute inset-0 h-full w-full object-cover"
                                         src={image.url}
-                                        alt={`${model.code} - ${image.id}`}
+                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                                        <Maximize2 className="size-4 text-white" />
+                                    </div>
                                 </CardContent>
                             </Card>
                         </CarouselItem>
                     ))}
             </CarouselContent>
 
-            <ImageDialog open={open} setOpen={setOpen} src={src} />
+            {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />}
         </Carousel>
     );
 }

@@ -2,9 +2,9 @@
 
 use App\Models\Material;
 use App\Models\MaterialType;
-use App\Models\Unit;
+use App\Models\MaterialUnit;
 use Database\Seeders\MaterialTypeSeeder;
-use Database\Seeders\UnitSeeder;
+use Database\Seeders\MaterialUnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Laravel\assertDatabaseHas;
@@ -12,9 +12,9 @@ use function Pest\Laravel\assertDatabaseHas;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->generatePermissions(['Material']);
+    $this->generatePermissions(['Material', 'MaterialUnit', 'MaterialType']);
 
-    $this->seed(UnitSeeder::class);
+    $this->seed(MaterialUnitSeeder::class);
     $this->seed(MaterialTypeSeeder::class);
 });
 
@@ -51,7 +51,7 @@ test('store material successfully', function () {
             'code' => '10018765',
             'name' => 'New american gospel',
             'price' => 1200000,
-            'unit_id' => Unit::first()->id,
+            'material_unit_id' => MaterialUnit::first()->id,
             'material_type_id' => MaterialType::first()->id,
         ]);
 
@@ -68,7 +68,7 @@ test('store fails validation', function () {
             'code' => '10018765s',
             'name' => '',
             'price' => 's',
-            'unit_id' => Unit::factory()->create()->id + 1,
+            'material_unit_id' => MaterialUnit::factory()->create()->id + 1,
             'material_type_id' => MaterialType::factory()->create()->id + 1,
         ]);
 
@@ -76,7 +76,7 @@ test('store fails validation', function () {
         'code',
         'name',
         'price',
-        'unit_id',
+        'material_unit_id',
         'material_type_id',
     ]);
 });
@@ -92,7 +92,7 @@ test('edit page accessible', function () {
             fn($page) => $page
                 ->component('material/edit')
                 ->has('material')
-                ->has('units')
+                ->has('materialUnits')
                 ->has('materialTypes')
         );
 });
@@ -109,7 +109,7 @@ test('update material successfully', function () {
             'code' => '90091110',
             'name' => 'Updated material name',
             'price' => 1200000,
-            'unit_id' => Unit::factory()->create()->id - 1,
+            'material_unit_id' => MaterialUnit::factory()->create()->id - 1,
             'material_type_id' => MaterialType::factory()->create()->id - 1,
         ])
         ->assertRedirect(route('materials.edit', $material->id));
@@ -127,14 +127,14 @@ test('update material fails validation', function () {
             'code' => '1001876s',
             'name' => '',
             'price' => 's',
-            'unit_id' => Unit::factory()->create()->id + 1,
+            'material_unit_id' => MaterialUnit::factory()->create()->id + 1,
             'material_type_id' => MaterialType::factory()->create()->id + 1,
         ])
         ->assertSessionHasErrors([
             'code',
             'name',
             'price',
-            'unit_id',
+            'material_unit_id',
             'material_type_id',
         ]);
 });

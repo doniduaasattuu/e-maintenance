@@ -24,7 +24,7 @@ interface DepartmentCreateProps {
 }
 
 export default function DepartmentCreate({ divisions }: DepartmentCreateProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<DepartmentFormData>>({
         code: '',
         name: '',
@@ -47,20 +47,19 @@ export default function DepartmentCreate({ divisions }: DepartmentCreateProps) {
             <Head title="Department" />
 
             <OrganizationsLayout>
-                <div className="max-w-2xl space-y-4">
-                    <DepartmentForm
-                        divisions={divisions}
-                        data={data}
-                        setData={setData}
-                        errors={errors}
-                        processing={processing}
-                        recentlySuccessful={recentlySuccessful}
-                        submit={submit}
-                        canSubmit={can.store_department}
-                        buttonLabel="Create"
-                        successMessage="Created"
-                    />
-                </div>
+                <DepartmentForm
+                    divisions={divisions}
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    submit={submit}
+                    canSubmit={can.store_department}
+                    buttonLabel="Create"
+                    successMessage="Created"
+                    className="max-w-xl"
+                />
             </OrganizationsLayout>
         </AppLayout>
     );

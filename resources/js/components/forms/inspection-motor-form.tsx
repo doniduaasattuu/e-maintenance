@@ -327,6 +327,7 @@ export default function InspectionMotorForm({
 
             {canSubmit && (
                 <ButtonSubmit
+                    processing={processing}
                     tabIndex={16}
                     disabled={processing}
                     recentlySuccessful={recentlySuccessful}

@@ -38,6 +38,7 @@ class UserController extends Controller
             'positions' => PositionResource::collection($positions),
             'workCenters' => WorkCenterResource::collection($workCenters),
             'roles' => Role::pluck('name'),
+            // 'filters' => $request->only(['query', 'department', 'position', 'role']),
         ]);
     }
 

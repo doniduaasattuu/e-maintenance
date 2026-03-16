@@ -37,7 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $title = config("error.code.$statusCode.title", "Error Occured");
             $description = config("error.code.$statusCode.description", "We are working to fix this issue. Please try again later.");
 
-            if (in_array($statusCode, config('error.renderable'))) {
+            if (config('error.enable') && in_array($statusCode, config('error.renderable'))) {
                 return Inertia::render("errors/index", [
                     'status' => $statusCode,
                     'title' => $title,

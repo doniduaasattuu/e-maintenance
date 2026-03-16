@@ -1,13 +1,16 @@
 import RoleForm, { RoleFormData } from '@/components/forms/role-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import React, { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Roles',
+        title: strings.ROLE?.plural ?? 'Roles',
         href: route('roles.index'),
     },
     {
@@ -21,7 +24,7 @@ interface RoleCreateProps {
 }
 
 export default function RoleCreate({ availablePermissions }: RoleCreateProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const [selectedPermissions, setSelectedPermissions] = React.useState<string[]>([]);
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<Required<RoleFormData>>({
         name: '',
@@ -40,20 +43,23 @@ export default function RoleCreate({ availablePermissions }: RoleCreateProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <RoleForm
-                availablePermissions={availablePermissions}
-                buttonLabel="Create"
-                canSubmit={can.store_role}
-                data={data}
-                errors={errors}
-                processing={processing}
-                selectedPermissions={selectedPermissions}
-                setSelectedPermissions={setSelectedPermissions}
-                setData={setData}
-                submit={submit}
-                recentlySuccessful={recentlySuccessful}
-                successMessage="Created"
-            />
+            <FormLayout moduleKey="ROLE" mode="create">
+                <RoleForm
+                    availablePermissions={availablePermissions}
+                    buttonLabel="Create"
+                    canSubmit={can.store_role}
+                    data={data}
+                    errors={errors}
+                    processing={processing}
+                    selectedPermissions={selectedPermissions}
+                    setSelectedPermissions={setSelectedPermissions}
+                    setData={setData}
+                    submit={submit}
+                    recentlySuccessful={recentlySuccessful}
+                    successMessage="Created"
+                    className="max-w-xl"
+                />
+            </FormLayout>
         </AppLayout>
     );
 }

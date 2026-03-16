@@ -36,7 +36,7 @@ class UpdateDepartmentRequest extends FormRequest
                 'uppercase',
                 Rule::unique('departments', 'code')->ignore($this->department),
             ],
-            'division_id' => ['required', 'exists:divisions,id'],
+            'division_id' => ['nullable', 'exists:divisions,id'],
         ];
     }
 }

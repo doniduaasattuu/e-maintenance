@@ -1,13 +1,16 @@
 import MaterialTypeForm, { MaterialTypeFormData } from '@/components/forms/material-type-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, MaterialType } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Material Type',
+        title: strings.MATERIAL_TYPE?.plural ?? 'Material Types',
         href: route('material-types.index'),
     },
     {
@@ -23,7 +26,7 @@ interface MaterialTypeEditProps {
 }
 
 export default function MaterialTypeEdit({ materialType }: MaterialTypeEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<MaterialTypeFormData>>({
         code: materialType.data.code,
         description: materialType.data.description,
@@ -39,7 +42,7 @@ export default function MaterialTypeEdit({ materialType }: MaterialTypeEditProps
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="MATERIAL_TYPE" mode="edit">
                 <MaterialTypeForm
                     data={data}
                     setData={setData}
@@ -49,8 +52,9 @@ export default function MaterialTypeEdit({ materialType }: MaterialTypeEditProps
                     submit={submit}
                     canSubmit={can.update_materialtype}
                     buttonLabel="Update"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

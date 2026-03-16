@@ -1,5 +1,7 @@
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { SharedData, type NavItem } from '@/types';
+import usePermissions from '@/hooks/use-permissions';
+import { removeOrigin } from '@/lib/utils';
+import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { type ComponentPropsWithoutRef } from 'react';
 
@@ -11,7 +13,7 @@ export function NavFooter({
     items: NavItem[];
 }) {
     const page = usePage();
-    const { permissions } = usePage<SharedData>().props;
+    const { can } = usePermissions();
 
     return (
         <SidebarGroup {...props} className={`group-data-[collapsible=icon]:p-0 ${className || ''}`}>
@@ -19,13 +21,18 @@ export function NavFooter({
             <SidebarGroupContent>
                 <SidebarMenu>
                     {items.map((item) => {
-                        const shouldRender = !item.permission || permissions[item.permission] === true;
+                        const multiple: boolean = item.children != undefined;
+                        const shouldRender: boolean = !item.permission || can[item.permission] === true;
+                        const isActive: boolean = !multiple
+                            ? window.location.pathname == removeOrigin(item.href) || window.location.pathname.startsWith(removeOrigin(item.href))
+                            : (item.children?.some(
+                                  (link) => removeOrigin(link) == window.location.pathname || window.location.pathname.startsWith(removeOrigin(link)),
+                              ) ?? false);
+
                         return shouldRender ? (
                             <SidebarMenuItem key={item.title}>
                                 <SidebarMenuButton
-                                    isActive={
-                                        item.children ? item.children.some((target) => page.url.includes(target)) : page.url.includes(item.href)
-                                    }
+                                    isActive={isActive}
                                     asChild
                                     className={`${page.url.includes(item.href) ? 'hover:text-neutral-800 dark:hover:text-neutral-100' : 'text-neutral-600 dark:text-neutral-300'}`}
                                 >

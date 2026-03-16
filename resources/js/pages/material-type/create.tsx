@@ -1,13 +1,16 @@
 import MaterialTypeForm, { MaterialTypeFormData } from '@/components/forms/material-type-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Material Type',
+        title: strings.MATERIAL_TYPE?.plural ?? 'Material Types',
         href: route('material-types.index'),
     },
     {
@@ -17,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function MaterialTypeCreate() {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<MaterialTypeFormData>>({
         code: '',
         description: '',
@@ -36,7 +39,7 @@ export default function MaterialTypeCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="MATERIAL_TYPE" mode="create">
                 <MaterialTypeForm
                     data={data}
                     setData={setData}
@@ -47,8 +50,9 @@ export default function MaterialTypeCreate() {
                     canSubmit={can.store_materialtype}
                     buttonLabel="Submit"
                     successMessage="Created"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

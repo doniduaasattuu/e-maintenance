@@ -1,13 +1,16 @@
 import EquipmentClassForm, { EquipmentClassFormData } from '@/components/forms/equipment-class-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Equipment Classes',
+        title: strings.EQUIPMENT_CLASS?.plural ?? 'Equipment Classes',
         href: route('equipment-classes.index'),
     },
     {
@@ -17,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function EquipmentClassCreate() {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<EquipmentClassFormData>>({
         code: '',
         name: '',
@@ -38,7 +41,7 @@ export default function EquipmentClassCreate() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="max-w-2xl space-y-4">
+            <FormLayout moduleKey="EQUIPMENT_CLASS" mode="create">
                 <EquipmentClassForm
                     data={data}
                     setData={setData}
@@ -49,8 +52,9 @@ export default function EquipmentClassCreate() {
                     canSubmit={can.store_equipmentclass}
                     buttonLabel="Create"
                     successMessage="Created"
+                    className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

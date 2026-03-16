@@ -1,14 +1,16 @@
 import EquipmentForm, { EquipmentFormData } from '@/components/forms/equipment-form';
-import Heading from '@/components/heading';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, EquipmentClass, EquipmentStatus } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Equipments',
+        title: strings.EQUIPMENT?.plural ?? 'Equipments',
         href: route('equipments.index'),
     },
     {
@@ -27,7 +29,7 @@ interface EquipmentCreateProps {
 }
 
 export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }: EquipmentCreateProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<EquipmentFormData>>({
         code: '',
         sort_field: '',
@@ -50,10 +52,7 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Create" />
-            <div className="space-y-6 px-4 py-6">
-                <Heading title="Create" description="Insert new equipment." />
-
+            <FormLayout moduleKey="EQUIPMENT" mode="create">
                 <EquipmentForm
                     equipmentClasses={equipmentClasses}
                     equipmentStatuses={equipmentStatuses}
@@ -64,11 +63,12 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
                     canSubmit={can.store_equipment}
+                    funclocDismantleButton={true}
                     buttonLabel="Create"
                     successMessage="Created"
                     className="max-w-xl"
                 />
-            </div>
+            </FormLayout>
         </AppLayout>
     );
 }

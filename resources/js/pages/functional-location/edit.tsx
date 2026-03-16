@@ -1,13 +1,16 @@
 import FunctionalLocationForm, { FunctionalLocationFormData } from '@/components/forms/functional-location-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, FunctionalLocation } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Functional Locations',
+        title: strings.FUNCTIONAL_LOCATION?.plural ?? 'Functional Locations',
         href: route('functional-locations.index'),
     },
     {
@@ -23,7 +26,7 @@ interface FunctionalLocationEditProps {
 }
 
 export default function FunctionalLocationEdit({ functionalLocation }: FunctionalLocationEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<FunctionalLocationFormData>>({
         code: functionalLocation.data.code,
         description: functionalLocation.data.description,
@@ -39,17 +42,19 @@ export default function FunctionalLocationEdit({ functionalLocation }: Functiona
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <FunctionalLocationForm
-                data={data}
-                setData={setData}
-                errors={errors}
-                processing={processing}
-                recentlySuccessful={recentlySuccessful}
-                submit={submit}
-                canSubmit={can.update_functionallocation}
-                buttonLabel="Update"
-                className="max-w-xl"
-            />
+            <FormLayout moduleKey="FUNCTIONAL_LOCATION" mode="edit">
+                <FunctionalLocationForm
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    recentlySuccessful={recentlySuccessful}
+                    submit={submit}
+                    canSubmit={can.update_functionallocation}
+                    buttonLabel="Update"
+                    className="max-w-xl"
+                />
+            </FormLayout>
         </AppLayout>
     );
 }

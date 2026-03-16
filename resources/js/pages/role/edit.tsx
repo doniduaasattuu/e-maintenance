@@ -1,13 +1,16 @@
 import RoleForm, { RoleFormData } from '@/components/forms/role-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Role } from '@/types';
 import { useForm } from '@inertiajs/react';
 import React, { FormEventHandler } from 'react';
 
+const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Roles',
+        title: strings.ROLE?.plural ?? 'Roles',
         href: route('roles.index'),
     },
     {
@@ -25,7 +28,7 @@ interface RoleEditProps {
 }
 
 export default function RoleEdit({ availablePermissions, role, currentPermissions }: RoleEditProps) {
-    const can = usePermissions();
+    const { can } = usePermissions();
     const [selectedPermissions, setSelectedPermissions] = React.useState<string[]>(currentPermissions);
     const { data, setData, patch, processing, errors, recentlySuccessful } = useForm<Required<RoleFormData>>({
         name: role.data.name,
@@ -41,19 +44,22 @@ export default function RoleEdit({ availablePermissions, role, currentPermission
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <RoleForm
-                availablePermissions={availablePermissions}
-                buttonLabel="Update"
-                canSubmit={can.update_role && selectedPermissions.length > 0}
-                data={data}
-                errors={errors}
-                processing={processing}
-                selectedPermissions={selectedPermissions}
-                setSelectedPermissions={setSelectedPermissions}
-                setData={setData}
-                submit={submit}
-                recentlySuccessful={recentlySuccessful}
-            />
+            <FormLayout moduleKey="ROLE" mode="edit">
+                <RoleForm
+                    availablePermissions={availablePermissions}
+                    buttonLabel="Update"
+                    canSubmit={can.update_role && selectedPermissions.length > 0}
+                    data={data}
+                    errors={errors}
+                    processing={processing}
+                    selectedPermissions={selectedPermissions}
+                    setSelectedPermissions={setSelectedPermissions}
+                    setData={setData}
+                    submit={submit}
+                    recentlySuccessful={recentlySuccessful}
+                    className="max-w-xl"
+                />
+            </FormLayout>
         </AppLayout>
     );
 }
