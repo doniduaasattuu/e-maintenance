@@ -32,7 +32,7 @@ class RepositoryEquipmentController extends Controller
     public function show(Request $request, Equipment $equipment)
     {
         $extensions = Repository::distinct()->pluck('extension');
-        $repositories = $equipment->repositories()->paginate(15);
+        $repositories = $equipment->repositories()->paginate(10);
 
         return Inertia::render('equipment/repositories', [
             'equipment' => new EquipmentResource($equipment),

@@ -10,13 +10,17 @@ import {
 } from '@/components/ui/sidebar';
 import usePermissions from '@/hooks/use-permissions';
 import { removeOrigin } from '@/lib/utils';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { SharedData, type NavItem } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
+import { Badge } from './ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const { can } = usePermissions();
+    const { notifications } = usePage<SharedData>().props;
+    const auditOpen = notifications.findings.audit_open;
+    const abnormalityOpen = notifications.findings.abnormality_open;
 
     return (
         <SidebarGroup className="px-2 py-0">
@@ -45,6 +49,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                                 const isActive =
                                                     window.location.pathname == removeOrigin(subItem.href) ||
                                                     window.location.pathname.startsWith(removeOrigin(subItem.href));
+                                                const finding = removeOrigin(subItem.href).replace('/', '');
 
                                                 return shouldRender ? (
                                                     <SidebarMenuSubItem key={subItem.title}>
@@ -54,7 +59,23 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                                             className={`${isActive ? 'font-medium' : undefined}`}
                                                         >
                                                             <Link prefetch href={subItem.href}>
-                                                                {subItem.title}
+                                                                {finding == 'audits' && auditOpen > 0 ? (
+                                                                    <>
+                                                                        {subItem.title}
+                                                                        <Badge variant={'destructive'} className="h-5 w-2 text-[12px]">
+                                                                            {auditOpen}
+                                                                        </Badge>{' '}
+                                                                    </>
+                                                                ) : finding == 'abnormalities' && abnormalityOpen > 0 ? (
+                                                                    <>
+                                                                        {subItem.title}
+                                                                        <Badge variant={'destructive'} className="h-5 w-2 text-[12px]">
+                                                                            {abnormalityOpen}
+                                                                        </Badge>{' '}
+                                                                    </>
+                                                                ) : (
+                                                                    <>{subItem.title}</>
+                                                                )}
                                                             </Link>
                                                         </SidebarMenuSubButton>
                                                     </SidebarMenuSubItem>

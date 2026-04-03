@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FindingClause\StoreFindingClauseRequest;
 use App\Http\Requests\FindingClause\UpdateFindingClauseRequest;
 use App\Http\Resources\FindingClauseResource;
+use App\Http\Resources\FindingTypeResource;
 use App\Models\FindingClause;
+use App\Models\FindingType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -33,8 +35,11 @@ class FindingClauseController extends Controller
     public function create()
     {
         Gate::authorize('create_findingclause');
+        $findingTypes = FindingType::get();
 
-        return Inertia::render('finding-clause/create');
+        return Inertia::render('finding-clause/create', [
+            'findingTypes' => FindingTypeResource::collection($findingTypes),
+        ]);
     }
 
     /**
@@ -100,6 +105,20 @@ class FindingClauseController extends Controller
      */
     public function destroy(FindingClause $findingClause)
     {
-        //
+        Gate::authorize('delete_findingclause');
+
+        try {
+            $findingClause->delete();
+
+            return back()->with('message', [
+                'type' => 'success',
+                'description' => 'Finding clause deleted successfully',
+            ]);
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Finding clause is not found',
+            ]);
+        }
     }
 }

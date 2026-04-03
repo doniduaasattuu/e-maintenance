@@ -32,7 +32,10 @@ class FindingImageController extends Controller
      */
     public function store(Request $request, Finding $finding)
     {
-        $request->validate([
+        Gate::authorize('resolve_finding');
+
+        $validated = $request->validate([
+            'rectification_action'   => ['required', 'string', 'min:10'],
             'images'                 => ['required', 'array', 'min:1', 'max:5'],
             'images.*'               => [
                 'image',
@@ -40,8 +43,6 @@ class FindingImageController extends Controller
                 'max:2048'
             ],
         ]);
-
-        Gate::authorize('update_finding');
 
         if ($finding->images()->where('category', 'after')->count() > 5) {
             return back()->with('message', [
@@ -57,7 +58,9 @@ class FindingImageController extends Controller
         try {
 
             $finding->update([
+                'rectification_action' => $validated['rectification_action'],
                 'finding_status_id' => $statusReview->id,
+                'rectified_by' => auth()->id(),
             ]);
 
             foreach ($request->file('images') as $image) {

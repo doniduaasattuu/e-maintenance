@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('finding_clauses', function (Blueprint $table) {
             $table->id();
             $table->string('code', 25)->unique();
+            $table->string('type', 25);
             $table->string('title', 50);
             $table->text('description');
             $table->timestamps();

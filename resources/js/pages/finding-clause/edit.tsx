@@ -54,6 +54,7 @@ export default function FindingClauseEdit({ findingClause }: FindingClauseEditPr
                     canSubmit={can.update_findingclause}
                     buttonLabel="Update"
                     className="max-w-xl"
+                    isEditing={true}
                 />
             </FormLayout>
         </AppLayout>

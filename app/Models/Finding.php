@@ -17,15 +17,19 @@ class Finding extends Model
     protected $table = 'findings';
 
     protected $fillable = [
+        "finding_type_id",
         "finding_clause_id",
         "finding_status_id",
         "finding_priority_id",
+        "cause_code_id",
         "department_id",
         "equipment_id",
         "functional_location_id",
         "description",
+        "rectification_action",
         "notification",
         "inspected_by",
+        "rectified_by",
         "verified_by",
         "closed_at",
     ];
@@ -35,6 +39,7 @@ class Finding extends Model
     {
         $search = trim($request->query('query'));
         $clause = $request->query('clause');
+        $causeCode = $request->query('causeCode');
         $status = $request->query('status');
         $priority = $request->query('priority');
         $department = $request->query('department');
@@ -66,6 +71,14 @@ class Finding extends Model
             $builder->whereRelation('clause', 'code', $clause);
         }
 
+        if ($causeCode && is_array($causeCode)) {
+            $builder->whereHas('causeCode', function ($query) use ($causeCode) {
+                $query->whereIn('code', $causeCode);
+            });
+        } elseif ($causeCode && is_string($causeCode)) {
+            $builder->whereRelation('causeCode', 'code', $causeCode);
+        }
+
         if ($status && is_array($status)) {
             $builder->whereHas('status', function ($query) use ($status) {
                 $query->whereIn('name', $status);
@@ -91,6 +104,38 @@ class Finding extends Model
         }
     }
 
+    #[Scope]
+    public function scopeForUserDepartment($query)
+    {
+        if (auth()->user()->hasRole('Admin')) {
+            return $query;
+        }
+
+        $userDeptId = auth()->user()->department_id;
+
+        return $query->where(function ($q) use ($userDeptId) {
+            $q->where('department_id', $userDeptId)
+                ->orWhereNull('department_id');
+        });
+    }
+
+    #[Scope]
+    public function scopeOfType($query, string $typeCode)
+    {
+        return $query->whereHas('type', fn($q) => $q->where('code', $typeCode));
+    }
+
+    #[Scope]
+    public function scopeOpen($query)
+    {
+        return $query->whereHas('status', fn($q) => $q->where('name', 'Open'));
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(FindingType::class, "finding_type_id");
+    }
+
     public function clause(): BelongsTo
     {
         return $this->belongsTo(FindingClause::class, "finding_clause_id");
@@ -104,6 +149,11 @@ class Finding extends Model
     public function priority(): BelongsTo
     {
         return $this->belongsTo(FindingPriority::class, "finding_priority_id");
+    }
+
+    public function causeCode(): BelongsTo
+    {
+        return $this->belongsTo(CauseCode::class, "cause_code_id");
     }
 
     public function department(): BelongsTo
@@ -124,6 +174,11 @@ class Finding extends Model
     public function inspector(): BelongsTo
     {
         return $this->belongsTo(User::class, 'inspected_by');
+    }
+
+    public function rectifier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'rectified_by');
     }
 
     public function verifier(): BelongsTo

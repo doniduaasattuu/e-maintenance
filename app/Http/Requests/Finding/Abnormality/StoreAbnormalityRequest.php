@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Finding;
+namespace App\Http\Requests\Finding\Abnormality;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreFindingRequest extends FormRequest
+class StoreAbnormalityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +23,16 @@ class StoreFindingRequest extends FormRequest
     {
         return [
             'finding_clause_id'         => ['required', 'exists:finding_clauses,id'],
-            'functional_location_id'    => ['required', 'exists:functional_locations,id'],
-            'department_id'              => ['nullable', 'exists:departments,id'],
-            'equipment_id'              => ['nullable', 'exists:equipments,id'],
+            'cause_code_id'             => ['required', 'exists:cause_codes,id'],
             'description'               => ['required', 'string', 'min:10'],
-            'notification'              => ['nullable', 'string', 'max:25'],
+            'functional_location_id'    => ['required', 'exists:functional_locations,id'],
+            'department_id'             => ['required', 'exists:departments,id'],
+            'equipment_id'              => ['required', 'exists:equipments,id'],
             'finding_status_id'         => ['required', 'exists:finding_statuses,id'],
-            'finding_priority_id'       =>  ['required', 'exists:finding_priorities,id'],
-            'images'                 => ['required', 'array', 'min:1', 'max:5'],
-            'images.*'               => [
+            'finding_priority_id'       => ['required', 'exists:finding_priorities,id'],
+            'images'                    => ['required', 'array', 'min:1', 'max:5'],
+            'images.*'                  =>
+            [
                 'image',
                 'mimes:jpg,jpeg,png,webp',
                 'max:2048'

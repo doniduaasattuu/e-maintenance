@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Finding;
-use App\Http\Requests\Finding\StoreFindingRequest;
-use App\Http\Requests\Finding\UpdateFindingRequest;
+use App\Http\Resources\CauseCodeResource;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\FindingClauseResource;
 use App\Http\Resources\FindingPriorityResource;
 use App\Http\Resources\FindingResource;
 use App\Http\Resources\FindingStatusResource;
+use App\Models\CauseCode;
 use App\Models\Department;
 use App\Models\FindingClause;
 use App\Models\FindingImage;
 use App\Models\FindingPriority;
 use App\Models\FindingStatus;
+use App\Models\FindingType;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,8 +23,15 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Throwable;
 
-class FindingController extends Controller
+abstract class FindingController extends Controller
 {
+    abstract protected function getTypeCode(): string;
+
+    protected $map = [
+        'AUD' => 'audit',
+        'ABN' => 'abnormality',
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -36,12 +44,15 @@ class FindingController extends Controller
             'status',
             'priority',
             'department',
+            'causeCode',
             'equipment',
             'functionalLocation',
             'inspector',
             'verifier',
             'images',
         ])->orderBy('created_at', 'DESC')
+            ->forUserDepartment()
+            ->whereHas('type', fn($q) => $q->where('code', $this->getTypeCode()))
             ->when($request->start_date && $request->end_date, function ($query) use ($request) {
                 $query->whereBetween('created_at', [
                     $request->start_date . ' 00:00:00',
@@ -56,14 +67,15 @@ class FindingController extends Controller
         $findingStatuses = FindingStatus::all();
         $findingPriorities = FindingPriority::all();
         $departments = Department::all();
+        $causeCodes = CauseCode::all();
 
-        return Inertia::render('finding/index', [
+        return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/index", [
             'findings' => FindingResource::collection($findings),
             'findingClauses' => FindingClauseResource::collection($findingClauses),
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
             'departments' => DepartmentResource::collection($departments),
-            'filters' => $request->only(['start_date', 'end_date']),
+            'causeCodes' => CauseCodeResource::collection($causeCodes),
         ]);
     }
 
@@ -77,12 +89,14 @@ class FindingController extends Controller
         $findingClauses = FindingClause::all();
         $findingStatuses = FindingStatus::all();
         $findingPriorities = FindingPriority::all();
+        $causeCodes = CauseCode::all();
         $departments = Department::all();
 
-        return Inertia::render('finding/create', [
+        return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/create", [
             'findingClauses' => FindingClauseResource::collection($findingClauses),
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
+            'causeCodes' => CauseCodeResource::collection($causeCodes),
             'departments' => DepartmentResource::collection($departments),
         ]);
     }
@@ -90,72 +104,55 @@ class FindingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFindingRequest $request)
+    protected function performStore(array $validatedData)
     {
-        Gate::authorize('store_finding');
+        return DB::transaction(function () use ($validatedData) {
+            $validatedData['inspected_by'] = auth()->id();
 
-        DB::beginTransaction();
+            $type = FindingType::where('code', $this->getTypeCode())->firstOrFail();
+            $validatedData['finding_type_id'] = $type->id;
 
-        try {
-            $validated = $request->validated();
-            $validated['inspected_by'] = auth()->id();
-            $finding = Finding::create($validated);
+            $finding = Finding::create($validatedData);
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $originalName = $image->getClientOriginalName();
+            if (request()->hasFile('images')) {
+                foreach (request()->file('images') as $image) {
                     $path = $image->store('images/findings/' . $finding->id, 'public');
-
                     FindingImage::create([
                         'finding_id'    => $finding->id,
                         'file_path'     => $path,
                         'category'      => 'before',
-                        'original_name' => $originalName,
+                        'original_name' => $image->getClientOriginalName(),
                         'closed_at'     => null,
                     ]);
                 }
             }
 
-            DB::commit();
-
-            return back()->with('message', [
-                'type' => 'success',
-                'description' => 'Finding and ' . count($request->file('images')) . ' photos saved successfully.',
-            ]);
-        } catch (Throwable $e) {
-            DB::rollBack();
-
-            if (isset($path)) {
-                Storage::disk('public')->deleteDirectory('images/findings/' . $finding->id);
-            }
-
-            return back()->with('message', [
-                'type' => 'error',
-                'description' => 'Failed creating finding: ' . $e->getMessage(),
-            ]);
-        }
+            return $finding;
+        });
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Finding $finding)
+    public function display(Finding $finding)
     {
-        Gate::authorize('show_finding');
+        Gate::authorize('view', $finding);
 
         $finding->load([
             'clause',
             'status',
             'priority',
+            'causeCode',
             'department',
             'equipment',
             'functionalLocation',
             'inspector',
             'verifier',
+            'rectifier',
             'images',
         ]);
 
-        return Inertia::render('finding/show', [
+        return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/show", [
             'finding' => new FindingResource($finding),
         ]);
     }
@@ -163,7 +160,7 @@ class FindingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Finding $finding)
+    public function revise(Finding $finding)
     {
         Gate::authorize('edit_finding');
 
@@ -171,6 +168,7 @@ class FindingController extends Controller
             'clause',
             'status',
             'priority',
+            'causeCode',
             'department',
             'equipment',
             'functionalLocation',
@@ -182,23 +180,25 @@ class FindingController extends Controller
         $findingClauses = FindingClause::all();
         $findingStatuses = FindingStatus::all();
         $findingPriorities = FindingPriority::all();
+        $causeCodes = CauseCode::all();
         $departments = Department::all();
 
-        return Inertia::render('finding/edit', [
+        return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/edit", [
             'finding' => new FindingResource($finding),
             'findingClauses' => FindingClauseResource::collection($findingClauses),
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
+            'causeCodes' => CauseCodeResource::collection($causeCodes),
             'departments' => DepartmentResource::collection($departments),
         ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mark finding as closed.
      */
-    public function close(Request $request, Finding $finding)
+    public function finish(Request $request, Finding $finding)
     {
-        Gate::authorize('update_finding');
+        Gate::authorize('close', $finding);
         Gate::authorize('close_finding');
 
         $statusClosed = FindingStatus::where('name', 'Closed')->firstOrFail();
@@ -227,83 +227,122 @@ class FindingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFindingRequest $request, Finding $finding)
-    {
-        Gate::authorize('update_finding');
+    // public function update(UpdateFindingRequest $request, Finding $finding)
+    // {
+    //     Gate::authorize('update_finding');
 
-        if ($finding->images()->where('category', 'after')->count() > 5) {
-            return back()->with('message', [
-                'type' => 'error',
-                'description' => 'Number of photos exceeds the maximum limit (5).',
-            ]);
+    //     if ($finding->images()->where('category', 'after')->count() > 5) {
+    //         return back()->with('message', [
+    //             'type' => 'error',
+    //             'description' => 'Number of photos exceeds the maximum limit (5).',
+    //         ]);
+    //     }
+
+    //     DB::beginTransaction();
+
+    //     try {
+    //         $validated = $request->validated();
+
+    //         $status = FindingStatus::find($validated['finding_status_id']);
+
+    //         if (strtolower($status->name) === 'closed') {
+    //             $validated['verified_by'] = auth()->id();
+    //             $validated['closed_at'] = now();
+    //         } else {
+    //             $validated['verified_by'] = null;
+    //             $validated['rectified_by'] = auth()->id();
+    //             $validated['closed_at'] = null;
+    //         }
+
+    //         $finding->update($validated);
+
+    //         if ($request->hasFile('images')) {
+    //             foreach ($request->file('images') as $image) {
+    //                 $originalName = $image->getClientOriginalName();
+
+    //                 $path = $image->store('images/findings/' . $finding->id, 'public');
+
+    //                 FindingImage::create([
+    //                     'finding_id'    => $finding->id,
+    //                     'file_path'     => $path,
+    //                     'category'      => 'after',
+    //                     'original_name' => $originalName,
+    //                 ]);
+    //             }
+    //         }
+
+    //         DB::commit();
+
+    //         return back()->with('message', [
+    //             'type' => 'success',
+    //             'description' => 'Finding updated successfully' . ($request->hasFile('images') ? ' with new photos.' : '.'),
+    //         ]);
+    //     } catch (\Throwable $e) {
+    //         DB::rollBack();
+
+    //         return back()->with('message', [
+    //             'type' => 'error',
+    //             'description' => 'Failed updating finding: ' . $e->getMessage(),
+    //         ]);
+    //     }
+    // }
+
+    protected function performUpdate(Request $request, Finding $finding, array $additionalData = [])
+    {
+        // 1. Validasi Limit Foto (Cek existing + new)
+        $newPhotosCount = $request->hasFile('images') ? count($request->file('images')) : 0;
+        $existingPhotosCount = $finding->images()->where('category', 'after')->count();
+
+        if (($existingPhotosCount + $newPhotosCount) > 5) {
+            throw new \Exception('Number of photos exceeds the maximum limit (5).');
         }
 
-        DB::beginTransaction();
+        return DB::transaction(function () use ($request, $finding, $additionalData) {
+            $validated = array_merge($request->validated(), $additionalData);
 
-        try {
-            $validated = $request->validated();
-
-            // 1. Logika Kondisional: Verified & Closed Date
-            // Kita berasumsi ID status "Closed" bisa dicek dari namanya
-            $status = FindingStatus::find($validated['finding_status_id']);
+            // 2. Logic Status: Closed vs Others
+            $status = FindingStatus::findOrFail($validated['finding_status_id']);
 
             if (strtolower($status->name) === 'closed') {
-                // Hanya tulis jika sebelumnya belum closed atau jika ingin update data verifikator terbaru
                 $validated['verified_by'] = auth()->id();
                 $validated['closed_at'] = now();
             } else {
-                // Jika status dirubah kembali ke Open/Progress, kosongkan data closing
+                // Jika teknisi mengisi perbaikan tapi status belum Closed
                 $validated['verified_by'] = null;
                 $validated['closed_at'] = null;
+
+                if ($request->filled('rectification_action')) {
+                    $validated['rectified_by'] = auth()->id();
+                }
             }
 
-            // 2. Update data Finding
             $finding->update($validated);
 
-            // 3. Penanganan Foto (Jika ada upload baru)
+            // 3. Image Upload Handling
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
-                    $originalName = $image->getClientOriginalName();
+                    $path = $image->store("images/findings/{$finding->id}", 'public');
 
-                    // Simpan file ke storage
-                    $path = $image->store('images/findings/' . $finding->id, 'public');
-
-                    // Tambahkan record baru ke tabel finding_images
-                    FindingImage::create([
-                        'finding_id'    => $finding->id,
+                    $finding->images()->create([
                         'file_path'     => $path,
                         'category'      => 'after',
-                        'original_name' => $originalName,
+                        'original_name' => $image->getClientOriginalName(),
                     ]);
                 }
             }
 
-            DB::commit();
-
-            return back()->with('message', [
-                'type' => 'success',
-                'description' => 'Finding updated successfully' . ($request->hasFile('images') ? ' with new photos.' : '.'),
-            ]);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-
-            return back()->with('message', [
-                'type' => 'error',
-                'description' => 'Failed updating finding: ' . $e->getMessage(),
-            ]);
-        }
+            return $finding;
+        });
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Finding $finding)
+    public function delete(Finding $finding)
     {
         Gate::authorize('delete_finding');
 
-        DB::beginTransaction();
-
-        try {
+        return DB::transaction(function () use ($finding) {
             $directoryPath = 'images/findings/' . $finding->id;
 
             $finding->images()->delete();
@@ -312,20 +351,28 @@ class FindingController extends Controller
             if (Storage::disk('public')->exists($directoryPath)) {
                 Storage::disk('public')->deleteDirectory($directoryPath);
             }
+        });
 
-            DB::commit();
+        // DB::beginTransaction();
 
-            return redirect()->route('findings.index')->with('message', [
-                'type' => 'success',
-                'description' => 'The finding has been permanently removed.',
-            ]);
-        } catch (Throwable $e) {
-            DB::rollBack();
+        // try {
+        //     $directoryPath = 'images/findings/' . $finding->id;
 
-            return back()->with('message', [
-                'type' => 'error',
-                'description' => 'Failed to delete finding: ' . $e->getMessage(),
-            ]);
-        }
+        //     $finding->images()->delete();
+        //     $finding->delete();
+
+        //     if (Storage::disk('public')->exists($directoryPath)) {
+        //         Storage::disk('public')->deleteDirectory($directoryPath);
+        //     }
+
+        //     DB::commit();
+        // } catch (Throwable $e) {
+        //     DB::rollBack();
+
+        //     return back()->with('message', [
+        //         'type' => 'error',
+        //         'description' => 'Failed to delete finding: ' . $e->getMessage(),
+        //     ]);
+        // }
     }
 }

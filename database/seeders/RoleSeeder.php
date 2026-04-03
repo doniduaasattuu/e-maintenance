@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -20,6 +21,13 @@ class RoleSeeder extends Seeder
 
     private function roleAdminSeeder(): void
     {
+        User::create([
+            'name' => 'Admin',
+            'employee_id' => '10011001',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('password'),
+        ]);
+
         $adminRole = Role::firstOrcreate([
             'name' => 'Admin',
         ]);
@@ -46,6 +54,9 @@ class RoleSeeder extends Seeder
             'index_findingstatus',
             'index_findingpriority',
             'index_finding',
+            'index_audit',
+            'index_abnormality',
+            'resolve_finding',
         ]);
 
         // Cari user admin dan assign role jika ditemukan

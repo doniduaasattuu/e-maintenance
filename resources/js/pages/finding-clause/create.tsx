@@ -3,7 +3,7 @@ import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, FindingType } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -19,10 +19,17 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function FindingClauseCreate() {
+interface FindingClauseCreateProps {
+    findingTypes: {
+        data: FindingType[];
+    };
+}
+
+export default function FindingClauseCreate({ findingTypes }: FindingClauseCreateProps) {
     const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<FindingClauseFormData>>({
         code: '',
+        type: '',
         title: '',
         description: '',
     });
@@ -52,6 +59,7 @@ export default function FindingClauseCreate() {
                     buttonLabel="Create"
                     successMessage="Created"
                     className="max-w-xl"
+                    findingTypes={findingTypes}
                 />
             </FormLayout>
         </AppLayout>

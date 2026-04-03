@@ -74,12 +74,13 @@ export default function MaterialImage({ material }: MaterialImageProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Image" />
 
-            <MaterialLayout material={material.data} className="md:max-w-6xl">
+            <MaterialLayout material={material.data} className="w-full max-w-6xl">
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Image" description="Images of material uploaded by users." />
                         {can.delete_image && (material?.data?.images?.length ?? 0) > 0 && (
                             <Button
+                                size={'sm'}
                                 variant={'outline'}
                                 onClick={() => {
                                     setCanDelete(!canDelete);

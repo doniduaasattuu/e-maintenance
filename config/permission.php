@@ -213,6 +213,9 @@ return [
     ],
 
     'custom_actions' => [
-        'Finding' => ['close'],
+        'Finding' => [
+            'close',
+            'resolve',
+        ],
     ],
 ];

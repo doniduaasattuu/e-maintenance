@@ -7,6 +7,7 @@ use App\Http\Requests\Equipment\UpdateEquipmentRequest;
 use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
+use App\Http\Resources\FindingResource;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
@@ -86,8 +87,20 @@ class EquipmentController extends Controller
     {
         Gate::authorize('show_equipment');
 
+        $equipment->load([
+            'functionalLocation',
+            'eclass',
+            'status',
+            'findings' => function ($query) {
+                $query->with(['status', 'priority', 'inspector'])
+                    ->orderBy('created_at', 'DESC')
+                    ->limit(10);
+            }
+        ]);
+
         return Inertia::render('equipment/show', [
-            'equipment' => new EquipmentResource($equipment->load(['functionalLocation', 'eclass', 'status'])),
+            'equipment' => new EquipmentResource($equipment),
+            'findings' => FindingResource::collection($equipment->findings),
         ]);
     }
 

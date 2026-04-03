@@ -9,18 +9,21 @@ import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import ButtonSubmit from './button-submit';
 import CompressingDescription from './compressing-description';
 import RequiredLabel from './required-label';
+import { Textarea } from './ui/textarea';
 
-interface UploadImageDialogProps {
+interface ActionFindingDialogProps {
     finding: Finding;
     children: React.ReactNode | undefined;
 }
 
 type UploadImageData = {
+    rectification_action?: string;
     images?: File[] | null;
 };
 
-export function UploadImageDialog({ children, finding }: UploadImageDialogProps) {
-    const { setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<UploadImageData>>({
+export function ActionFindingDialog({ children, finding }: ActionFindingDialogProps) {
+    const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<UploadImageData>>({
+        rectification_action: '',
         images: null,
     });
     const [open, setOpen] = useState(false);
@@ -63,7 +66,7 @@ export function UploadImageDialog({ children, finding }: UploadImageDialogProps)
             forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {
-                reset('images');
+                reset('rectification_action', 'images');
                 setOpen(false);
             },
         });
@@ -72,22 +75,40 @@ export function UploadImageDialog({ children, finding }: UploadImageDialogProps)
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-sm">
+            <DialogContent className="sm:max-w-lg">
                 <form onSubmit={submit} className="space-y-6">
                     <DialogHeader className="space-y-2">
                         <DialogTitle>Upload Completion Evidence</DialogTitle>
                         <DialogDescription>
-                            To finalize this finding and mark it as <strong>Closed</strong>, please upload the "After" photos as proof of resolution.
+                            To finalize this finding and mark it as <strong>Review</strong>, please upload the "After" photos as proof of resolution.
                             Ensure the images clearly show the corrected condition of the equipment.
                         </DialogDescription>
                     </DialogHeader>
+
+                    <Field>
+                        <FieldLabel htmlFor="rectification_action">
+                            Rectification Action
+                            <RequiredLabel />
+                        </FieldLabel>
+                        <Textarea
+                            className="text-sm"
+                            disabled={processing}
+                            tabIndex={1}
+                            id="rectification_action"
+                            onChange={(val: React.ChangeEvent<HTMLTextAreaElement>) => setData('rectification_action', val.target.value)}
+                            value={data.rectification_action}
+                            placeholder="Explain how the issue was fixed (e.g., 'Cleaned the electrical terminals, tightened all loose bolts to 50Nm, and verified stable temperature via thermal scan.')"
+                        />
+                        <FieldError>{errors.rectification_action}</FieldError>
+                    </Field>
+
                     <Field>
                         <FieldLabel htmlFor="images">
                             Photos
                             <RequiredLabel />
                         </FieldLabel>
                         <Input
-                            tabIndex={1}
+                            tabIndex={2}
                             type="file"
                             id="images"
                             multiple
@@ -101,7 +122,7 @@ export function UploadImageDialog({ children, finding }: UploadImageDialogProps)
                             <div className="space-y-1">
                                 <div className="text-muted-foreground flex items-center gap-2 text-xs">
                                     <Info className="text-muted-foreground size-3 shrink-0" />
-                                    Upload between 2 to 5 photos.
+                                    Upload between 1 to 5 photos.
                                 </div>
                                 <div className="text-muted-foreground flex items-center gap-2 text-xs">
                                     <Info className="text-muted-foreground size-3 shrink-0" />
@@ -113,8 +134,9 @@ export function UploadImageDialog({ children, finding }: UploadImageDialogProps)
                     </Field>
                     <DialogFooter>
                         <ButtonSubmit
+                            tabIndex={3}
                             processing={processing}
-                            disabled={processing || isCompressing || !setData}
+                            disabled={processing || isCompressing || !setData || data.rectification_action.length < 10 || data.images == null}
                             label="Upload"
                             successMessage="Uploaded"
                             recentlySuccessful={recentlySuccessful}

@@ -53,7 +53,7 @@ export default function MaterialEdit({ material, materialUnits, materialTypes }:
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit" />
 
-            <MaterialLayout material={material.data} className="max-w-xl">
+            <MaterialLayout material={material.data} className="w-full max-w-xl">
                 <div className="w-full space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Edit" description="Update equipment data and information." />

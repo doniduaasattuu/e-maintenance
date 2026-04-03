@@ -5,8 +5,10 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field } from '@/components/ui/field';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Finding, FindingImage } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import {
@@ -19,12 +21,16 @@ import {
     CalendarFold,
     CheckSquare,
     Edit,
+    HardHat,
     Info,
     Maximize2,
-    RedoDot,
+    Microscope,
+    ScanSearch,
+    Timer,
     Trash2,
     TriangleAlert,
     User,
+    UserPen,
 } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -73,15 +79,16 @@ const Ul = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function FindingShow({ finding }: FindingShowProps) {
+    const strings = UI_STRINGS;
     const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Audit 5RK3',
-            href: route('findings.index'),
+            title: strings.ABNORMALITY?.plural ?? 'Abnormalities',
+            href: route('abnormalities.index'),
         },
         {
-            title: finding.data.functionalLocation?.description ?? finding.data.id.toString(),
-            href: route('findings.index', finding.data.id),
+            title: finding.data.equipment?.code ?? finding.data.id.toString(),
+            href: route('abnormalities.index', finding.data.id),
         },
     ];
 
@@ -90,14 +97,21 @@ export default function FindingShow({ finding }: FindingShowProps) {
     const afterImages = finding.data?.images?.filter((img) => img.category === 'after') || [];
 
     const handleDeleteFinding = (id: number) => {
-        router.delete(route('findings.destroy', id));
+        router.delete(route('abnormalities.destroy', id));
     };
 
+    // const handleCloseFinding = (id: number) => {
+    //     router.post(route('audits.close', id));
+    // };
+
     const handleEditFinding = (id: number) => {
-        router.get(route('findings.edit', id));
+        router.get(route('abnormalities.edit', id));
     };
 
     const isClosed: boolean = finding.data.status?.name.toLocaleLowerCase() == 'closed';
+    const isInProgress: boolean = finding.data.status?.name.toLocaleLowerCase() == 'in progress';
+    const isInReview: boolean = finding.data.status?.name.toLocaleLowerCase() == 'review';
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Details" />
@@ -118,7 +132,7 @@ export default function FindingShow({ finding }: FindingShowProps) {
                         </Field>
                         <Card className="mx-auto w-full">
                             <CardHeader>
-                                <CardTitle className="text-md">{finding.data.functionalLocation?.description ?? 'Location'}</CardTitle>
+                                <CardTitle className="text-md">{finding.data.equipment?.code ?? 'Equipment'}</CardTitle>
                                 <CardDescription>{finding.data.description}</CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -132,16 +146,16 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                             <span>{finding.data.priority?.label ?? '-'}</span>
                                         </Li>
                                         <Li title="Inspector">
-                                            <User className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                                            <UserPen className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                             <span>{finding.data.inspector?.name ?? '-'}</span>
                                         </Li>
                                         <Li title="Issued Date">
                                             <Calendar className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                             <span>{finding.data.created_at ?? '-'}</span>
                                         </Li>
-                                        <Li title="Is Overdue">
-                                            <RedoDot className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.is_overdue ? 'True' : 'False'}</span>
+                                        <Li title="Action by">
+                                            <HardHat className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                                            <span>{finding.data.rectifier?.name ?? '-'}</span>
                                         </Li>
                                         <Li title="Equipment">
                                             <Box className="text-muted-foreground mt-0.5 size-4 shrink-0" />
@@ -156,6 +170,10 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                         <Li title="Status">
                                             {isClosed ? (
                                                 <CheckSquare className="mt-0.5 size-4 shrink-0 text-green-400" />
+                                            ) : isInProgress ? (
+                                                <Timer className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                                            ) : isInReview ? (
+                                                <ScanSearch className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                             ) : (
                                                 <TriangleAlert className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                             )}
@@ -178,6 +196,17 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                             <CalendarCheck className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                             <span>{finding.data.closed_at ?? '-'}</span>
                                         </Li>
+                                        <Li title="Cause Code">
+                                            <Microscope className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                                            <span>
+                                                <Tooltip>
+                                                    <TooltipTrigger className="text-left">
+                                                        {finding.data.causeCode?.description ?? '-'}
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>{finding.data.causeCode?.code ?? '-'}</TooltipContent>
+                                                </Tooltip>
+                                            </span>
+                                        </Li>
                                     </Ul>
                                 </div>
                             </CardContent>
@@ -187,10 +216,15 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                         <Edit className="size-4" /> Edit
                                     </Button>
                                 )}
+                                {/* {can.close_finding && (
+                                    <Button onClick={() => handleCloseFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
+                                        <CheckSquare className="size-4" /> Mark as Closed
+                                    </Button>
+                                )} */}
                                 {can.delete_finding && (
                                     <ActionConfirm
                                         action={() => handleDeleteFinding(finding.data.id)}
-                                        title={`Delete finding of ${finding.data.functionalLocation?.description}?`}
+                                        title={`Delete finding of ${finding.data.equipment?.code}?`}
                                         description="This action will remove this finding from database. This action cannot be undone."
                                     >
                                         <Button size="sm" className="w-full bg-red-600 text-red-100 hover:bg-red-500 hover:text-white">

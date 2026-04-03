@@ -69,6 +69,22 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'message' => $request->session()->get('message'),
+            'notifications' => [
+                'findings' => [
+                    'audit_open' => $request->user() && !$request->user()->hasRole('Admin')
+                        ? \App\Models\Finding::forUserDepartment()
+                        ->ofType('AUD')
+                        ->open()
+                        ->count()
+                        : 0,
+                    'abnormality_open' => $request->user() && !$request->user()->hasRole('Admin')
+                        ? \App\Models\Finding::forUserDepartment()
+                        ->ofType('ABN')
+                        ->open()
+                        ->count()
+                        : 0,
+                ]
+            ],
         ];
     }
 }

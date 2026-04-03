@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\FindingClause;
 
+use App\Models\FindingType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class StoreFindingClauseRequest extends FormRequest
 {
@@ -21,12 +24,18 @@ class StoreFindingClauseRequest extends FormRequest
      */
     public function rules(): array
     {
+        $typeCodes = FindingType::pluck('code');
+
         return [
             'code' => [
                 'required',
                 'string',
                 'max:25',
                 'unique:finding_clauses,code'
+            ],
+            'type' => [
+                'required',
+                Rule::in($typeCodes)
             ],
             'title' => [
                 'required',

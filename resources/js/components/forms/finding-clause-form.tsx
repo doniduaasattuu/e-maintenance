@@ -1,9 +1,11 @@
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { FindingType } from '@/types';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 import RequiredLabel from '../required-label';
 import { Field, FieldError, FieldLabel } from '../ui/field';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface FindingClauseFormProps {
     data: Required<FindingClauseFormData>;
@@ -16,10 +18,15 @@ interface FindingClauseFormProps {
     buttonLabel: string;
     successMessage?: string;
     className?: string;
+    isEditing?: boolean;
+    findingTypes: {
+        data: FindingType[];
+    };
 }
 
 export type FindingClauseFormData = {
     code: string;
+    type: string;
     title: string;
     description: string;
 };
@@ -35,6 +42,8 @@ export default function FindingClauseForm({
     buttonLabel,
     successMessage,
     className,
+    isEditing,
+    findingTypes,
 }: FindingClauseFormProps) {
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
@@ -57,18 +66,38 @@ export default function FindingClauseForm({
             </Field>
 
             <Field>
+                <FieldLabel>
+                    Type
+                    <RequiredLabel />
+                </FieldLabel>
+                <Select onValueChange={(e) => setData('type', e)}>
+                    <SelectTrigger tabIndex={2}>
+                        <SelectValue placeholder="Clause type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            {findingTypes?.data?.map((e) => (
+                                <SelectItem value={e.code}>{e.name}</SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                <FieldError>{errors.type}</FieldError>
+            </Field>
+
+            <Field>
                 <FieldLabel htmlFor="title">
                     Title
                     <RequiredLabel />
                 </FieldLabel>
                 <Input
-                    tabIndex={2}
+                    tabIndex={3}
                     id="title"
-                    value={data.title}
-                    onChange={(e) => setData('title', e.target.value)}
-                    placeholder="5R K3"
-                    required
-                    disabled={processing}
+                    disabled={isEditing || processing}
+                    value={data.title ?? ''}
+                    onChange={(e) => setData('title', e.target.value.toLowerCase())}
+                    placeholder="Abnormality"
+                    required={!isEditing}
                     autoComplete="title"
                 />
                 <FieldError>{errors.title}</FieldError>
@@ -80,7 +109,7 @@ export default function FindingClauseForm({
                     <RequiredLabel />
                 </FieldLabel>
                 <Input
-                    tabIndex={3}
+                    tabIndex={4}
                     id="description"
                     value={data.description ?? ''}
                     onChange={(e) => setData('description', e.target.value)}
@@ -94,8 +123,8 @@ export default function FindingClauseForm({
             {canSubmit && (
                 <ButtonSubmit
                     processing={processing}
-                    disabled={processing || data.code == '' || data.title == '' || data.description == ''}
-                    tabIndex={4}
+                    disabled={processing || data.code == '' || data.type == '' || data.title == '' || data.description == ''}
+                    tabIndex={5}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}
                     label={buttonLabel}

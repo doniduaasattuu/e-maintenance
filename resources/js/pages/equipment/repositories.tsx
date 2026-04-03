@@ -42,7 +42,7 @@ export default function EquipmentRepositories({ equipment, repositories, rendera
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Repositories" />
 
-            <EquipmentLayout equipment={equipment.data} className="max-w-xl lg:max-w-3xl">
+            <EquipmentLayout equipment={equipment.data} className="w-full max-w-4xl">
                 <RepositoryAssetLayout
                     handleDownloadRepository={handleDownloadRepository}
                     renderable={renderable}

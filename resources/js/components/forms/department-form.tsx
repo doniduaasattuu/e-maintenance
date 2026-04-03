@@ -107,7 +107,7 @@ export default function DepartmentForm({
                 <ButtonSubmit
                     processing={processing}
                     label={buttonLabel}
-                    disabled={processing || data.code == '' || data.name == '' || data.division_id == ''}
+                    disabled={processing || data.code == '' || data.name == ''}
                     tabIndex={4}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}

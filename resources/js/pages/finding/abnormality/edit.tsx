@@ -3,7 +3,7 @@ import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, Department, Finding, FindingClause, FindingPriority, FindingStatus } from '@/types';
+import { BreadcrumbItem, CauseCode, Department, Finding, FindingClause, FindingPriority, FindingStatus } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -20,25 +20,28 @@ type FindingEditProps = {
     findingPriorities: {
         data: FindingPriority[];
     };
+    causeCodes: {
+        data: CauseCode[];
+    };
     departments: {
         data: Department[];
     };
 };
 
-export default function FindingEdit({ finding, findingClauses, findingStatuses, findingPriorities, departments }: FindingEditProps) {
+export default function FindingEdit({ finding, findingClauses, findingStatuses, findingPriorities, causeCodes, departments }: FindingEditProps) {
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: strings.FINDING?.plural ?? 'Findings',
-            href: route('findings.index'),
+            title: strings.ABNORMALITY?.plural ?? 'Abnormalities',
+            href: route('abnormalities.index'),
         },
         {
             title: 'Current',
-            href: route('findings.show', finding.data.id),
+            href: route('abnormalities.show', finding.data.id),
         },
         {
             title: 'Edit',
-            href: route('findings.index'),
+            href: route('abnormalities.index'),
         },
     ];
 
@@ -49,6 +52,7 @@ export default function FindingEdit({ finding, findingClauses, findingStatuses, 
         finding_clause_id: finding.data.clause?.id.toString() ?? '',
         finding_status_id: finding.data.status?.id.toString() ?? '',
         finding_priority_id: finding.data.priority?.id.toString() ?? '',
+        cause_code_id: finding.data.causeCode?.id.toString() ?? '',
         department_id: finding.data.department?.id.toString() ?? '',
         functional_location_id: finding.data.functionalLocation?.id.toString() ?? '',
         equipment_id: finding.data.equipment?.id.toString() ?? '',
@@ -60,14 +64,14 @@ export default function FindingEdit({ finding, findingClauses, findingStatuses, 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('findings.update', finding.data.id), {
+        post(route('abnormalities.update', finding.data.id), {
             preserveScroll: true,
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <FormLayout moduleKey="FINDING" mode="edit">
+            <FormLayout moduleKey="ABNORMALITY" mode="edit">
                 <FindingForm
                     data={data}
                     findingClauses={findingClauses}
@@ -87,6 +91,8 @@ export default function FindingEdit({ finding, findingClauses, findingStatuses, 
                     functionalLocation={finding.data?.functionalLocation}
                     equipment={finding.data?.equipment}
                     isEditing={true}
+                    causeCodes={causeCodes}
+                    type="ABN"
                 />
             </FormLayout>
         </AppLayout>

@@ -24,7 +24,7 @@ class StoreDepartmentRequest extends FormRequest
         return [
             'name' => ['required', 'max:50', 'string', 'unique:departments,name'],
             'code' => ['required', 'max:5', 'string', 'uppercase', 'unique:departments,code'],
-            'division_id' => ['exists:divisions,id'],
+            'division_id' => ['nullable', 'exists:divisions,id'],
         ];
     }
 }

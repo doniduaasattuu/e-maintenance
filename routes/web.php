@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\AbnormalityController;
+use App\Http\Controllers\Audit5RK3Controller;
+use App\Http\Controllers\AuditController;
+use App\Http\Controllers\CauseCodeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
@@ -9,9 +13,11 @@ use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\FindingClauseController;
 use App\Http\Controllers\FindingController;
+use App\Http\Controllers\FindingEquipmentController;
 use App\Http\Controllers\FindingImageController;
 use App\Http\Controllers\FindingPriorityController;
 use App\Http\Controllers\FindingStatusController;
+use App\Http\Controllers\FindingTypeController;
 use App\Http\Controllers\FunctionalLocationController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InspectionAirConditionerController;
@@ -61,6 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('{id}/images/{type}', [ImageController::class, 'store'])->name('images.equipment.store');
 
         Route::get('{equipment}/repositories', [RepositoryEquipmentController::class, 'show'])->name('equipments.repositories');
+        Route::get('{equipment}/findings', [FindingEquipmentController::class, 'show'])->name('equipments.findings');
     });
 
     // MATERIAL
@@ -182,6 +189,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('{repository}/material/{material}', [RepositoryMaterialController::class, 'destroy'])->name('repositories.material.destroy');
     });
 
+    // FINDING TYPE
+    Route::resource('finding-types', FindingTypeController::class)->except(['show']);
+
     // FINDING ClAUSE
     Route::resource('finding-clauses', FindingClauseController::class)->except(['show']);
 
@@ -191,10 +201,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // FINDING PRIORITY
     Route::resource('finding-priorities', FindingPriorityController::class)->except(['show']);
 
+    // CAUSE CODE
+    Route::resource('cause-codes', CauseCodeController::class)->except('show');
     Route::post('findings/{finding}/images', [FindingImageController::class, 'store'])->name('findings.images.store');
-    Route::resource('findings', FindingController::class)->except(['update']);
-    Route::post('findings/{finding}', [FindingController::class, 'update'])->name('findings.update');
-    Route::post('findings/{finding}/close', [FindingController::class, 'close'])->name('findings.close');
+    // Route::resource('findings', FindingController::class)->except(['update']);
+    // Route::post('findings/{finding}', [FindingController::class, 'update'])->name('findings.update');
+
+    Route::resource('audits', AuditController::class)->except('update');
+    Route::post('audits/{finding}', [AuditController::class, 'update'])->name('audits.update');
+    Route::post('audits/{finding}/close', [AuditController::class, 'close'])->name('audits.close');
+
+    Route::resource('abnormalities', AbnormalityController::class)->except('update');
+    Route::post('abnormalities/{finding}', [AbnormalityController::class, 'update'])->name('abnormalities.update');
+    Route::post('abnormalities/{finding}/close', [AbnormalityController::class, 'close'])->name('abnormalities.close');
 });
 
 Route::fallback(function () {

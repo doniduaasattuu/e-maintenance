@@ -42,6 +42,7 @@ export default function TableFindingClause({ findingClauses }: TableFindingClaus
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">Code</TableHead>
+                                <TableHead className="text-muted-foreground">Type</TableHead>
                                 <TableHead className="text-muted-foreground">Title</TableHead>
                                 <TableHead className="text-muted-foreground">Description</TableHead>
                                 <TableHead className="text-muted-foreground">Created at</TableHead>
@@ -62,6 +63,7 @@ export default function TableFindingClause({ findingClauses }: TableFindingClaus
                                                 <span className="font-medium">{findingClause.code}</span>
                                             )}
                                         </TableCell>
+                                        <TableCell className="max-w-75 truncate">{findingClause.type}</TableCell>
                                         <TableCell className="max-w-75 truncate">{findingClause.title}</TableCell>
                                         <TableCell className="max-w-75 truncate">{findingClause.description}</TableCell>
                                         <TableCell className="table-timestamp text-muted-foreground">{findingClause.created_at}</TableCell>

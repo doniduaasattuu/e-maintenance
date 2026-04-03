@@ -37,7 +37,7 @@ export default function EquipmentHistory({ equipment, histories }: EquipmentHist
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="History" />
 
-            <EquipmentLayout equipment={equipment.data}>
+            <EquipmentLayout equipment={equipment.data} className="w-full max-w-6xl">
                 <div className="space-y-6">
                     <HeadingSmall
                         title="History"

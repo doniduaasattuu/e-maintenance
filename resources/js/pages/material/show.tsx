@@ -41,7 +41,7 @@ export default function MaterialShow({ material }: MaterialShowProps) {
 
             <QRCodeGenerator modelName="material" model={material.data} isQROpen={isQROpen} setIsQROpen={setIsQROpen} />
 
-            <MaterialLayout material={material.data} className="max-w-xl">
+            <MaterialLayout material={material.data} className="w-full max-w-xl">
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Details" description="Material data and information." />

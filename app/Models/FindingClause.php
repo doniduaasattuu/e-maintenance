@@ -13,6 +13,7 @@ class FindingClause extends Model
 
     protected $fillable = [
         'code',
+        'type',
         'title',
         'description',
     ];
@@ -26,6 +27,7 @@ class FindingClause extends Model
             $builder->where(function ($query) use ($search) {
                 $query
                     ->where('code', 'LIKE', "%{$search}%")
+                    ->orWhere('type', 'LIKE', "%{$search}%")
                     ->orWhere('title', 'LIKE', "%{$search}%")
                     ->orWhere('description', 'LIKE', "%{$search}%");
             });

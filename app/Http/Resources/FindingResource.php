@@ -25,16 +25,20 @@ class FindingResource extends JsonResource
         return [
             'id' => $this->id,
             'description' => $this->description,
+            'rectification_action' => $this->rectification_action,
             'notification' => $this->notification,
 
+            'type' => new FindingTypeResource($this->whenLoaded('type')),
             'clause' => new FindingClauseResource($this->whenLoaded('clause')),
             'status' => new FindingStatusResource($this->whenLoaded('status')),
             'priority' => new FindingPriorityResource($this->whenLoaded('priority')),
+            'causeCode' => new CauseCodeResource($this->whenLoaded('causeCode')),
             'department' => new DepartmentResource($this->whenLoaded('department')),
             'equipment' => new EquipmentResource($this->whenLoaded('equipment')),
             'functionalLocation' => new FunctionalLocationResource($this->whenLoaded('functionalLocation')),
 
             'inspector' => new UserResource($this->whenLoaded('inspector')),
+            'rectifier' => new UserResource($this->whenLoaded('rectifier')),
             'verifier' => new UserResource($this->whenLoaded('verifier')),
 
             'images' => FindingImageResource::collection($this->whenLoaded('images')),
@@ -47,7 +51,7 @@ class FindingResource extends JsonResource
             }),
 
             'due_date' => $dueDate ? $dueDate->format('d/m/Y') : null,
-            'due_date_readable' => $dueDate ? $dueDate->diffForHumans() : '-',
+            'due_date_readable' => $dueDate ? $dueDate->diffForHumans() : 'Tanpa batas waktu',
             'is_overdue' => $dueDate ? $dueDate->isPast() : false,
 
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('d/m/Y') : $this->created_at,

@@ -21,7 +21,7 @@ class FindingPolicy
      */
     public function view(User $user, Finding $finding): bool
     {
-        return false;
+        return $user->hasRole('Admin') || $user->department_id === $finding->department_id && $user->hasPermissionTo('show_finding');
     }
 
     /**
@@ -38,6 +38,14 @@ class FindingPolicy
     public function update(User $user, Finding $finding): bool
     {
         return false;
+    }
+
+    /**
+     * Determine whether the user can close the finding.
+     */
+    public function close(User $user, Finding $finding): bool
+    {
+        return $user->hasRole(['Admin', 'Verifier']) || $user->department_id == $finding->department_id;
     }
 
     /**

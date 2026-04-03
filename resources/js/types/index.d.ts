@@ -48,6 +48,12 @@ export interface SharedData {
     sidebarOpen: boolean;
     permissions: Record<string, boolean>;
     message: Message;
+    notifications: {
+        findings: {
+            audit_open: number;
+            abnormality_open: number;
+        };
+    };
     [key: string]: unknown;
 }
 
@@ -357,9 +363,19 @@ export interface Repository {
     updated_at: string;
 }
 
+export interface FindingType {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface FindingClause {
     id: number;
     code: string;
+    type: string;
     title: string;
     description: string;
     created_at: string;
@@ -384,20 +400,32 @@ export interface FindingPriority {
     updated_at: string;
 }
 
+export interface CauseCode {
+    id: number;
+    code: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface Finding {
     id: number;
     description: string;
+    rectification_action?: string;
     notification: string;
 
     // Relasi (Optional karena menggunakan whenLoaded di Resource)
+    type?: FindingType;
     clause?: FindingClause;
     status?: FindingStatus;
     priority?: FindingPriority;
+    causeCode?: CauseCode;
     department?: Department;
     equipment?: Equipment;
     functionalLocation?: FunctionalLocation;
 
-    inspector?: User;
+    inspector?: User | null;
+    rectifier?: USer | null;
     verifier?: User | null; // Bisa null jika belum diverifikasi
 
     images?: FindingImage[];

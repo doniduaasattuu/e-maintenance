@@ -129,6 +129,20 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         },
     },
 
+    FINDING_TYPE: {
+        label: 'Finding Type',
+        plural: 'Finding Types',
+        description: 'Categorizes findings based on their source or discovery method, such as formal Audit 5RK3 or spontaneous Abnormality reports.',
+        create: {
+            header: 'Create Finding Type',
+            description: 'Define a new category for inspection findings to improve data grouping and reporting accuracy.',
+        },
+        edit: {
+            header: 'Edit Finding Type',
+            description: 'Modify existing finding categories to align with updated operational or audit classification systems.',
+        },
+    },
+
     FINDING_CLAUSE: {
         label: 'Finding Clause',
         plural: 'Finding Clauses',
@@ -174,6 +188,21 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         },
     },
 
+    CAUSE_CODE: {
+        label: 'Cause Code',
+        plural: 'Cause Codes',
+        description:
+            'A standardized classification used to identify the root cause of an equipment failure, operational error, or maintenance incident.',
+        create: {
+            header: 'Create Cause Code',
+            description: 'Add a new failure cause classification to the system for root cause analysis.',
+        },
+        edit: {
+            header: 'Edit Cause Code',
+            description: 'Update the cause code identifier or description to ensure accurate reporting and analytics.',
+        },
+    },
+
     FINDING: {
         label: 'Finding',
         plural: 'Findings',
@@ -184,6 +213,35 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         },
         edit: {
             header: 'Edit Finding',
+            description: 'Update the finding details, evidence, or current resolution progress.',
+        },
+    },
+
+    AUDIT: {
+        label: 'Audit 5RK3',
+        plural: 'Audits 5RK3',
+        description:
+            'A formal evaluation of workplace standards based on the 5RK3 criteria (Ringkas, Rapi, Resik, Rawat, Rajin, K3) to ensure operational compliance.',
+        create: {
+            header: 'Create Audit Finding',
+            description: 'Record a new non-compliance finding discovered during a formal 5RK3 audit session.',
+        },
+        edit: {
+            header: 'Edit Audit Finding',
+            description: 'Update the audit observation, clause reference, or evidence for the selected finding.',
+        },
+    },
+
+    ABNORMALITY: {
+        label: 'Abnormality',
+        plural: 'Abnormalities',
+        description: 'Represents any deviation from established standards, procedures, or specifications.',
+        create: {
+            header: 'Create Abnormality Finding',
+            description: 'Record a new issue or observation discovered during inspection.',
+        },
+        edit: {
+            header: 'Edit Abnormality Finding',
             description: 'Update the finding details, evidence, or current resolution progress.',
         },
     },

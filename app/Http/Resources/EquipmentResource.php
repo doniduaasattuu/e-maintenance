@@ -27,6 +27,8 @@ class EquipmentResource extends JsonResource
             'eclass' => new EquipmentClassResource($this->whenLoaded('eclass')),
             'status' => new EquipmentStatusResource($this->whenLoaded('status')),
 
+            'findings' => FindingResource::collection($this->whenLoaded('findings')),
+
             'installDismantleHistories' => new InstallDismantleHistoryResource($this->whenLoaded('installDismantleHistories')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'created_at' => $this->created_at?->toFormattedDateString(),

@@ -15,6 +15,12 @@ export default function EquipmentLayout({ equipment, className, children }: Prop
             icon: null,
         },
         {
+            title: 'Findings',
+            href: route('equipments.findings', equipment.id),
+            icon: null,
+            permission: 'show_finding',
+        },
+        {
             title: 'History',
             href: route('equipments.history', equipment.id),
             icon: null,
