@@ -38,6 +38,7 @@ class FindingEquipmentController extends Controller
                 'causeCode',
                 'inspector',
                 'verifier',
+                'images',
             ])
             ->latest()
             ->paginate(10);
