@@ -93,7 +93,7 @@ export default function FindingCreate({ findingClauses, findingStatuses, finding
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
                     submit={submit}
-                    canSubmit={can.store_findingstatus}
+                    canSubmit={can.store_audit}
                     buttonLabel="Create"
                     successMessage="Created"
                     className="max-w-xl"

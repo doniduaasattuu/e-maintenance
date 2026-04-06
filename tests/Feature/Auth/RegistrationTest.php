@@ -9,6 +9,7 @@
 //     $this->seed(RoleSeeder::class);
 // });
 
+use App\Models\Department;
 
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');
@@ -43,6 +44,24 @@ test('new users cannot register if register key is wrong', function () {
 });
 
 test('new users can register', function () {
+    $department = Department::factory()->create();
+
+    $response = $this->post('/register', [
+        'employee_id' => (string) fake()->randomNumber(8, true),
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'department_id' => $department->id,
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'registration_key' => config('services.registration_key'),
+    ]);
+
+    $response->assertSessionHasNoErrors(['registration_key', 'department_id']);
+});
+
+test('new users cannot register if department is blank', function () {
+    $department = Department::factory()->create();
+
     $response = $this->post('/register', [
         'employee_id' => (string) fake()->randomNumber(8, true),
         'name' => 'Test User',
@@ -52,5 +71,5 @@ test('new users can register', function () {
         'registration_key' => config('services.registration_key'),
     ]);
 
-    $response->assertSessionHasNoErrors(['registration_key']);
+    $response->assertSessionHasErrors(['department_id']);
 });

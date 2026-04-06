@@ -83,7 +83,7 @@ export default function FindingEdit({ finding, findingClauses, findingStatuses, 
                     processing={processing}
                     recentlySuccessful={false}
                     submit={submit}
-                    canSubmit={can.store_findingstatus}
+                    canSubmit={can.store_audit}
                     buttonLabel="Update"
                     successMessage="Updated"
                     className="max-w-xl"

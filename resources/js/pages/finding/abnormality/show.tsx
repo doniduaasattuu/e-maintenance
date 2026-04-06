@@ -211,17 +211,17 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col gap-3">
-                                {can.edit_finding && (
+                                {can.edit_abnormality && (
                                     <Button onClick={() => handleEditFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
                                         <Edit className="size-4" /> Edit
                                     </Button>
                                 )}
-                                {/* {can.close_finding && (
+                                {/* {can.close_abnormality && (
                                     <Button onClick={() => handleCloseFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
                                         <CheckSquare className="size-4" /> Mark as Closed
                                     </Button>
                                 )} */}
-                                {can.delete_finding && (
+                                {can.delete_abnormality && (
                                     <ActionConfirm
                                         action={() => handleDeleteFinding(finding.data.id)}
                                         title={`Delete finding of ${finding.data.equipment?.code}?`}

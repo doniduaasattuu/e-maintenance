@@ -8,22 +8,32 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AuthLayout from '@/layouts/auth-layout';
+import { Department } from '@/types';
 
 type RegisterForm = {
     employee_id: string;
     name: string;
     email: string;
+    department_id: string;
     password: string;
     password_confirmation: string;
     registration_key: string;
 };
 
-export default function Register() {
+interface RegisterProps {
+    departments: {
+        data: Department[];
+    };
+}
+
+export default function Register({ departments }: RegisterProps) {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         employee_id: '',
         name: '',
         email: '',
+        department_id: '',
         password: '',
         password_confirmation: '',
         registration_key: '',
@@ -100,42 +110,69 @@ export default function Register() {
                 </Field>
 
                 <Field>
-                    <FieldLabel htmlFor="password">
-                        Password
+                    <FieldLabel htmlFor="department_id">
+                        Department
                         <RequiredLabel />
                     </FieldLabel>
-                    <InputPassword
-                        id="password"
-                        required
-                        tabIndex={4}
-                        autoComplete="password"
-                        value={data.password}
-                        onChange={(e) => setData('password', e.target.value)}
-                        disabled={processing}
-                        toggleTabIndex={5}
-                        placeholder="********"
-                    />
-                    <FieldError>{errors.password}</FieldError>
+                    <Select required disabled={processing} onValueChange={(e) => setData('department_id', e)} value={data.department_id}>
+                        <SelectTrigger tabIndex={4} className="truncate overflow-hidden whitespace-nowrap">
+                            <SelectValue placeholder="Select your department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel className="text-muted-foreground">Department</SelectLabel>
+                                {departments.data.map((p) => {
+                                    return (
+                                        <SelectItem key={p.id} value={p.id.toString()}>
+                                            {p.code + ' - ' + p.name}
+                                        </SelectItem>
+                                    );
+                                })}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <FieldError>{errors.department_id}</FieldError>
                 </Field>
 
-                <Field>
-                    <FieldLabel htmlFor="password_confirmation">
-                        Confirm password
-                        <RequiredLabel />
-                    </FieldLabel>
-                    <InputPassword
-                        id="password_confirmation"
-                        required
-                        tabIndex={6}
-                        autoComplete="password"
-                        value={data.password_confirmation}
-                        onChange={(e) => setData('password_confirmation', e.target.value)}
-                        disabled={processing}
-                        placeholder="********"
-                        toggleTabIndex={7}
-                    />
-                    <FieldError>{errors.password_confirmation}</FieldError>
-                </Field>
+                <div className="space-y-6 sm:grid sm:grid-cols-2 sm:gap-2 sm:space-y-0">
+                    <Field>
+                        <FieldLabel htmlFor="password">
+                            Password
+                            <RequiredLabel />
+                        </FieldLabel>
+                        <InputPassword
+                            id="password"
+                            required
+                            tabIndex={5}
+                            autoComplete="password"
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                            disabled={processing}
+                            toggleTabIndex={6}
+                            placeholder="********"
+                        />
+                        <FieldError>{errors.password}</FieldError>
+                    </Field>
+
+                    <Field>
+                        <FieldLabel htmlFor="password_confirmation">
+                            Confirm password
+                            <RequiredLabel />
+                        </FieldLabel>
+                        <InputPassword
+                            id="password_confirmation"
+                            required
+                            tabIndex={7}
+                            autoComplete="password"
+                            value={data.password_confirmation}
+                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                            disabled={processing}
+                            placeholder="********"
+                            toggleTabIndex={8}
+                        />
+                        <FieldError>{errors.password_confirmation}</FieldError>
+                    </Field>
+                </div>
 
                 <Field>
                     <FieldLabel htmlFor="registration_key">
@@ -146,7 +183,7 @@ export default function Register() {
                         id="registration_key"
                         type="text"
                         required
-                        tabIndex={8}
+                        tabIndex={9}
                         value={data.registration_key}
                         onChange={(e) => setData('registration_key', e.target.value)}
                         disabled={processing}
@@ -155,14 +192,28 @@ export default function Register() {
                     <FieldError>{errors.registration_key}</FieldError>
                 </Field>
 
-                <Button type="submit" className="mt-2 w-full" tabIndex={9} disabled={processing}>
+                <Button
+                    type="submit"
+                    className="mt-2 w-full"
+                    tabIndex={10}
+                    disabled={
+                        processing ||
+                        data.employee_id == '' ||
+                        data.name == '' ||
+                        data.email == '' ||
+                        data.department_id == '' ||
+                        data.password == '' ||
+                        data.password_confirmation == '' ||
+                        data.registration_key == ''
+                    }
+                >
                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                     Create account
                 </Button>
 
                 <div className="text-muted-foreground text-center text-sm">
                     Already have an account?{' '}
-                    <TextLink href={route('login')} tabIndex={10}>
+                    <TextLink href={route('login')} tabIndex={11}>
                         Log in
                     </TextLink>
                 </div>

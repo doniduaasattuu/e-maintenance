@@ -49,6 +49,7 @@ class Finding extends Model
                 $query
                     ->where('description', 'LIKE', "%{$search}%")
                     ->orWhere('notification', 'LIKE', "%{$search}%")
+                    ->orWhere('rectification_action', 'LIKE', "%{$search}%")
                     ->orwhereRelation('equipment', function (Builder $q) use ($search) {
                         $q
                             ->where('code', 'LIKE', "%{$search}%")
