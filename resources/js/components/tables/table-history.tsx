@@ -1,6 +1,5 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { InstallDismantleHistory, Meta } from '@/types';
-import React from 'react';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
 import SearchBar from '../search-bar';
@@ -17,12 +16,12 @@ export default function TableHistory({ histories }: HistoryTableProps) {
     const caption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
 
     return (
-        <React.Fragment>
+        <>
             <div className="flex justify-between gap-2">
                 <SearchBar />
             </div>
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {histories.data.length > 0 ? (
+                {histories.data && histories.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -85,6 +84,6 @@ export default function TableHistory({ histories }: HistoryTableProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </React.Fragment>
+        </>
     );
 }

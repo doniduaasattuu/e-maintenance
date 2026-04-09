@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { FindingClause, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableFindingClauseProps {
         data: FindingClause[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableFindingClause({ findingClauses }: TableFindingClauseProps) {
+export default function TableFindingClause({ findingClauses, withHeader = true }: TableFindingClauseProps) {
     const { can } = usePermissions();
     const meta = findingClauses.meta;
     const caption = tableCaption(meta);
@@ -28,15 +28,17 @@ export default function TableFindingClause({ findingClauses }: TableFindingClaus
         router.delete(route('finding-clauses.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'FINDING_CLAUSE'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                    </div>
+                    {can.create_findingclause && <ButtonAdd tabIndex={2} route={route('finding-clauses.create')} />}
                 </div>
-                {can.create_findingclause && <ButtonAdd tabIndex={2} route={route('finding-clauses.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {findingClauses.data.length > 0 ? (
+                {findingClauses.data && findingClauses.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -91,6 +93,6 @@ export default function TableFindingClause({ findingClauses }: TableFindingClaus
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

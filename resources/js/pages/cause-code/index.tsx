@@ -1,5 +1,6 @@
 import TableCauseCode from '@/components/tables/table-cause-code';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, CauseCode, Meta } from '@/types';
 
@@ -21,7 +22,9 @@ interface CauseCodeProps {
 export default function CauseCodeIndex({ causeCodes }: CauseCodeProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableCauseCode causeCodes={causeCodes} />
+            <TableLayout moduleKey={'CAUSE_CODE'} className="md:max-w-7xl">
+                <TableCauseCode causeCodes={causeCodes} />
+            </TableLayout>
         </AppLayout>
     );
 }

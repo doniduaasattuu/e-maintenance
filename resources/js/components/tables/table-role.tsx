@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { Meta, Role } from '@/types';
 import { router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableRoleProps {
         data: Role[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableRole({ roles }: TableRoleProps) {
+export default function TableRole({ roles, withHeader = true }: TableRoleProps) {
     const { can } = usePermissions();
     const meta = roles.meta;
     const caption = tableCaption(meta);
@@ -29,11 +29,13 @@ export default function TableRole({ roles }: TableRoleProps) {
     }
 
     return (
-        <TableLayout moduleKey={'ROLE'} className="md:max-w-2xl">
-            <div className="flex justify-between gap-2">
-                <SearchBar tabIndex={1} />
-                {can.create_role && <ButtonAdd tabIndex={2} route={route('roles.create')} />}
-            </div>
+        <>
+            {withHeader && (
+                <div className="flex justify-between gap-2">
+                    <SearchBar tabIndex={1} />
+                    {can.create_role && <ButtonAdd tabIndex={2} route={route('roles.create')} />}
+                </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {roles.data.length > 0 ? (
                     <Table>
@@ -85,6 +87,6 @@ export default function TableRole({ roles }: TableRoleProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

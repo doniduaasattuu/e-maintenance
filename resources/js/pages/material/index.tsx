@@ -1,8 +1,8 @@
 import TableMaterial from '@/components/tables/table-material';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { Material, MaterialType, MaterialUnit, Meta, type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
 
 const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,9 +28,9 @@ interface MaterialIndexProps {
 export default function MaterialIndex({ materials, materialUnits, materialTypes }: MaterialIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Material" />
-
-            <TableMaterial materials={materials} materialUnits={materialUnits} materialTypes={materialTypes} />
+            <TableLayout moduleKey={'MATERIAL'} className="md:max-w-7xl">
+                <TableMaterial materials={materials} materialUnits={materialUnits} materialTypes={materialTypes} />
+            </TableLayout>
         </AppLayout>
     );
 }

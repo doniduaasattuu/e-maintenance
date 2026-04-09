@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { EquipmentClass, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableEquipmentClassProps {
         data: EquipmentClass[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableEquipmentClass({ equipmentClasses }: TableEquipmentClassProps) {
+export default function TableEquipmentClass({ equipmentClasses, withHeader = true }: TableEquipmentClassProps) {
     const { can } = usePermissions();
     const meta = equipmentClasses.meta;
     const caption = tableCaption(meta);
@@ -28,15 +28,17 @@ export default function TableEquipmentClass({ equipmentClasses }: TableEquipment
         router.delete(route('equipment-classes.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'EQUIPMENT_CLASS'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                    </div>
+                    {can.create_equipmentclass && <ButtonAdd tabIndex={2} route={route('equipment-classes.create')} />}
                 </div>
-                {can.create_equipmentclass && <ButtonAdd tabIndex={2} route={route('equipment-classes.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {equipmentClasses.data.length > 0 ? (
+                {equipmentClasses.data && equipmentClasses.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -91,6 +93,6 @@ export default function TableEquipmentClass({ equipmentClasses }: TableEquipment
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

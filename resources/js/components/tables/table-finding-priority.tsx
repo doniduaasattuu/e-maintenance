@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { FindingPriority, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableFindingPriorityProps {
         data: FindingPriority[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableFindingPriority({ findingPriorities }: TableFindingPriorityProps) {
+export default function TableFindingPriority({ findingPriorities, withHeader = true }: TableFindingPriorityProps) {
     const { can } = usePermissions();
     const meta = findingPriorities.meta;
     const caption = tableCaption(meta);
@@ -28,15 +28,18 @@ export default function TableFindingPriority({ findingPriorities }: TableFinding
         router.delete(route('finding-priorities.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'FINDING_PRIORITY'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                    </div>
+                    {can.create_findingpriority && <ButtonAdd tabIndex={2} route={route('finding-priorities.create')} />}
                 </div>
-                {can.create_findingpriority && <ButtonAdd tabIndex={2} route={route('finding-priorities.create')} />}
-            </div>
+            )}
+
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {findingPriorities.data.length > 0 ? (
+                {findingPriorities.data && findingPriorities.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -89,6 +92,6 @@ export default function TableFindingPriority({ findingPriorities }: TableFinding
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

@@ -241,7 +241,7 @@ export default function TableFinding({
                     {can.create_finding && <ButtonAdd route={route(`${endpoint}.create`)} tabIndex={2} />}
                 </div>
             )}
-            {findings?.data?.length > 0 ? (
+            {findings.data && findings.data.length > 0 ? (
                 <div className="grid min-w-0 overflow-x-auto rounded-md">
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>

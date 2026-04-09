@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { MaterialUnit, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableMaterialUnitProps {
         data: MaterialUnit[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableMaterialUnit({ materialUnits }: TableMaterialUnitProps) {
+export default function TableMaterialUnit({ materialUnits, withHeader = true }: TableMaterialUnitProps) {
     const { can } = usePermissions();
     const meta = materialUnits.meta;
     const caption = tableCaption(meta);
@@ -28,15 +28,17 @@ export default function TableMaterialUnit({ materialUnits }: TableMaterialUnitPr
         router.delete(route('material-units.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'MATERIAL_UNIT'} className="md:max-w-2xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                    </div>
+                    {can.create_materialunit && <ButtonAdd tabIndex={2} route={route('material-units.create')} />}
                 </div>
-                {can.create_materialunit && <ButtonAdd tabIndex={2} route={route('material-units.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {materialUnits.data.length > 0 ? (
+                {materialUnits.data && materialUnits.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -85,6 +87,6 @@ export default function TableMaterialUnit({ materialUnits }: TableMaterialUnitPr
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

@@ -6,7 +6,6 @@ import { tableCaption } from '@/lib/utils';
 import { Division, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
-import React from 'react';
 import ButtonAdd from '../button-add';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
@@ -17,9 +16,10 @@ interface DivisionTableProps {
         data: Division[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableDivision({ divisions }: DivisionTableProps) {
+export default function TableDivision({ divisions, withHeader = true }: DivisionTableProps) {
     const { can } = usePermissions();
     const meta = divisions.meta;
     const caption = tableCaption(meta);
@@ -29,13 +29,15 @@ export default function TableDivision({ divisions }: DivisionTableProps) {
     }
 
     return (
-        <React.Fragment>
-            <div className="flex justify-between gap-2">
-                <SearchBar />
-                {can.create_division && <ButtonAdd route={route('divisions.create')} tabIndex={2} />}
-            </div>
+        <>
+            {withHeader && (
+                <div className="flex justify-between gap-2">
+                    <SearchBar />
+                    {can.create_division && <ButtonAdd route={route('divisions.create')} tabIndex={2} />}
+                </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {divisions.data.length > 0 ? (
+                {divisions.data && divisions.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -85,6 +87,6 @@ export default function TableDivision({ divisions }: DivisionTableProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </React.Fragment>
+        </>
     );
 }

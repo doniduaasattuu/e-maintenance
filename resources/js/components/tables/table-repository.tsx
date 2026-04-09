@@ -2,7 +2,6 @@ import { GeneratePagination } from '@/components/generate-pagination';
 import SearchBar from '@/components/search-bar';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { copyTextToClipboard, tableCaption } from '@/lib/utils';
 import { Meta, Repository } from '@/types';
 import { router } from '@inertiajs/react';
@@ -23,9 +22,10 @@ interface TableRepositoryProps {
     };
     extensions?: string[];
     renderable: string[];
+    withHeader?: boolean;
 }
 
-export default function TableRepository({ repositories, extensions, renderable }: TableRepositoryProps) {
+export default function TableRepository({ repositories, extensions, renderable, withHeader = true }: TableRepositoryProps) {
     const { can } = usePermissions();
     const meta = repositories.meta;
     const caption = tableCaption(meta);
@@ -40,18 +40,20 @@ export default function TableRepository({ repositories, extensions, renderable }
     }
 
     return (
-        <TableLayout moduleKey={'REPOSITORY'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['ext']}>
-                        <FilterRepositoryExtension extensions={extensions} />
-                    </Filter>
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                        <Filter open={open} setOpen={setOpen} keys={['ext']}>
+                            <FilterRepositoryExtension extensions={extensions} />
+                        </Filter>
+                    </div>
+                    {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={2} />}
                 </div>
-                {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={2} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {repositories.data.length > 0 ? (
+                {repositories.data && repositories.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -138,6 +140,6 @@ export default function TableRepository({ repositories, extensions, renderable }
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

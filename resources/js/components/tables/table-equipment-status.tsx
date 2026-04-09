@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { EquipmentStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableEquipmentStatusProps {
         data: EquipmentStatus[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableEquipmentStatus({ equipmentStatuses }: TableEquipmentStatusProps) {
+export default function TableEquipmentStatus({ equipmentStatuses, withHeader = true }: TableEquipmentStatusProps) {
     const { can } = usePermissions();
     const meta = equipmentStatuses.meta;
     const caption = tableCaption(meta);
@@ -28,15 +28,17 @@ export default function TableEquipmentStatus({ equipmentStatuses }: TableEquipme
         router.delete(route('equipment-statuses.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'EQUIPMENT_STATUS'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                    </div>
+                    {can.create_equipmentstatus && <ButtonAdd tabIndex={2} route={route('equipment-statuses.create')} />}
                 </div>
-                {can.create_equipmentstatus && <ButtonAdd tabIndex={2} route={route('equipment-statuses.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {equipmentStatuses.data.length > 0 ? (
+                {equipmentStatuses.data && equipmentStatuses.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -91,6 +93,6 @@ export default function TableEquipmentStatus({ equipmentStatuses }: TableEquipme
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

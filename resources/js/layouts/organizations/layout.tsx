@@ -68,7 +68,7 @@ export default function OrganizationsLayout({ className, children }: Props) {
 
                 <Separator className="my-6 md:hidden" />
 
-                <section className="max-w-3xl space-y-12">{children}</section>
+                <section className="max-w-3xl space-y-4">{children}</section>
             </div>
         </div>
     );

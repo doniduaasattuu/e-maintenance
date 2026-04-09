@@ -1,5 +1,6 @@
 import TableFindingClause from '@/components/tables/table-finding-clause';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, FindingClause, Meta } from '@/types';
 
@@ -21,7 +22,9 @@ interface FindingClauseProps {
 export default function FindingClauseIndex({ findingClauses }: FindingClauseProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableFindingClause findingClauses={findingClauses} />
+            <TableLayout moduleKey={'FINDING_CLAUSE'} className="md:max-w-7xl">
+                <TableFindingClause findingClauses={findingClauses} />
+            </TableLayout>
         </AppLayout>
     );
 }

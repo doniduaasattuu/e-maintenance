@@ -56,7 +56,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {equipments?.data?.length > 0 ? (
+                {equipments.data && equipments.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>

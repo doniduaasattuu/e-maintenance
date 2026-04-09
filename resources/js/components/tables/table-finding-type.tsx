@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { FindingType, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableFindingTypeProps {
         data: FindingType[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableFindingType({ findingTypes }: TableFindingTypeProps) {
+export default function TableFindingType({ findingTypes, withHeader = true }: TableFindingTypeProps) {
     const { can } = usePermissions();
     const meta = findingTypes.meta;
     const caption = tableCaption(meta);
@@ -28,15 +28,17 @@ export default function TableFindingType({ findingTypes }: TableFindingTypeProps
         router.delete(route('finding-types.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'FINDING_TYPE'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                    </div>
+                    {can.create_findingtype && <ButtonAdd tabIndex={2} route={route('finding-types.create')} />}
                 </div>
-                {can.create_findingtype && <ButtonAdd tabIndex={2} route={route('finding-types.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {findingTypes.data.length > 0 ? (
+                {findingTypes.data && findingTypes.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -89,6 +91,6 @@ export default function TableFindingType({ findingTypes }: TableFindingTypeProps
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

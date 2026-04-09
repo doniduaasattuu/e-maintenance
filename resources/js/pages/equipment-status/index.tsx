@@ -1,5 +1,6 @@
 import TableEquipmentStatus from '@/components/tables/table-equipment-status';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, EquipmentStatus, Meta } from '@/types';
 
@@ -21,7 +22,9 @@ interface EquipmentStatusProps {
 export default function EquipmentStatusIndex({ equipmentStatuses }: EquipmentStatusProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableEquipmentStatus equipmentStatuses={equipmentStatuses} />
+            <TableLayout moduleKey={'EQUIPMENT_STATUS'} className="md:max-w-7xl">
+                <TableEquipmentStatus equipmentStatuses={equipmentStatuses} />
+            </TableLayout>
         </AppLayout>
     );
 }

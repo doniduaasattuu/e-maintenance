@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { FunctionalLocation, Meta } from '@/types';
 import { Link, router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableFunctionalLocationProps {
         data: FunctionalLocation[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableFunctionalLocation({ functionalLocations }: TableFunctionalLocationProps) {
+export default function TableFunctionalLocation({ functionalLocations, withHeader = true }: TableFunctionalLocationProps) {
     const { can } = usePermissions();
     const meta = functionalLocations.meta;
     const caption = tableCaption(meta);
@@ -28,15 +28,17 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
         router.delete(route('functional-locations.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'FUNCTIONAL_LOCATION'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                    </div>
+                    {can.create_functionallocation && <ButtonAdd tabIndex={2} route={route('functional-locations.create')} />}
                 </div>
-                {can.create_functionallocation && <ButtonAdd tabIndex={2} route={route('functional-locations.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {functionalLocations?.data?.length > 0 ? (
+                {functionalLocations.data && functionalLocations.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -97,6 +99,6 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

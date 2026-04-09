@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { formatCurrency, tableCaption } from '@/lib/utils';
 import { Material, MaterialType, MaterialUnit, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -28,9 +27,10 @@ interface TableMaterialProps {
     materialTypes: {
         data: MaterialType[];
     };
+    withHeader?: boolean;
 }
 
-export default function TableMaterial({ materials, materialUnits, materialTypes }: TableMaterialProps) {
+export default function TableMaterial({ materials, materialUnits, materialTypes, withHeader = true }: TableMaterialProps) {
     const { can } = usePermissions();
     const meta = materials.meta;
     const caption = tableCaption(meta);
@@ -40,20 +40,22 @@ export default function TableMaterial({ materials, materialUnits, materialTypes 
         router.delete(route('materials.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'MATERIAL'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['unit', 'type']}>
-                        <FilterMaterialUnit materialUnits={materialUnits.data} />
-                        <CommandSeparator />
-                        <FilterMaterialType materialTypes={materialTypes.data} />
-                    </Filter>
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                        <Filter open={open} setOpen={setOpen} keys={['unit', 'type']}>
+                            <FilterMaterialUnit materialUnits={materialUnits.data} />
+                            <CommandSeparator />
+                            <FilterMaterialType materialTypes={materialTypes.data} />
+                        </Filter>
+                    </div>
+                    {can.create_material && <ButtonAdd tabIndex={2} route={route('materials.create')} />}
                 </div>
-                {can.create_material && <ButtonAdd tabIndex={2} route={route('materials.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {materials.data.length > 0 ? (
+                {materials.data && materials.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -112,6 +114,6 @@ export default function TableMaterial({ materials, materialUnits, materialTypes 
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

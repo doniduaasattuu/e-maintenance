@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { CauseCode, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableCauseCodeProps {
         data: CauseCode[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableCauseCode({ causeCodes }: TableCauseCodeProps) {
+export default function TableCauseCode({ causeCodes, withHeader = true }: TableCauseCodeProps) {
     const { can } = usePermissions();
     const meta = causeCodes.meta;
     const caption = tableCaption(meta);
@@ -28,15 +28,17 @@ export default function TableCauseCode({ causeCodes }: TableCauseCodeProps) {
         router.delete(route('cause-codes.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'CAUSE_CODE'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                    </div>
+                    {can.create_causecode && <ButtonAdd tabIndex={2} route={route('cause-codes.create')} />}
                 </div>
-                {can.create_causecode && <ButtonAdd tabIndex={2} route={route('cause-codes.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {causeCodes.data.length > 0 ? (
+                {causeCodes.data && causeCodes.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -87,6 +89,6 @@ export default function TableCauseCode({ causeCodes }: TableCauseCodeProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

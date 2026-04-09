@@ -5,7 +5,6 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { FindingStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -17,9 +16,10 @@ interface TableFindingStatusProps {
         data: FindingStatus[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableFindingStatus({ findingStatuses }: TableFindingStatusProps) {
+export default function TableFindingStatus({ findingStatuses, withHeader = true }: TableFindingStatusProps) {
     const { can } = usePermissions();
     const meta = findingStatuses.meta;
     const caption = tableCaption(meta);
@@ -28,15 +28,17 @@ export default function TableFindingStatus({ findingStatuses }: TableFindingStat
         router.delete(route('finding-statuses.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'FINDING_STATUS'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                    </div>
+                    {can.create_findingstatus && <ButtonAdd tabIndex={2} route={route('finding-statuses.create')} />}
                 </div>
-                {can.create_findingstatus && <ButtonAdd tabIndex={2} route={route('finding-statuses.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {findingStatuses.data.length > 0 ? (
+                {findingStatuses.data && findingStatuses.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -87,6 +89,6 @@ export default function TableFindingStatus({ findingStatuses }: TableFindingStat
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

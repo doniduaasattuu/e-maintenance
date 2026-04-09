@@ -6,7 +6,6 @@ import { tableCaption } from '@/lib/utils';
 import { Meta, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
-import React from 'react';
 import ButtonAdd from '../button-add';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
@@ -17,9 +16,10 @@ interface WorkCenterTableProps {
         data: WorkCenter[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
+export default function TableWorkCenter({ workCenters, withHeader = true }: WorkCenterTableProps) {
     const { can } = usePermissions();
     const meta = workCenters.meta;
     const caption = tableCaption(meta);
@@ -29,11 +29,13 @@ export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
     }
 
     return (
-        <React.Fragment>
-            <div className="flex justify-between gap-2">
-                <SearchBar />
-                {can.create_workcenter && <ButtonAdd route={route('work-centers.create')} tabIndex={2} />}
-            </div>
+        <>
+            {withHeader && (
+                <div className="flex justify-between gap-2">
+                    <SearchBar />
+                    {can.create_workcenter && <ButtonAdd route={route('work-centers.create')} tabIndex={2} />}
+                </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {workCenters.data.length > 0 ? (
                     <Table>
@@ -85,6 +87,6 @@ export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </React.Fragment>
+        </>
     );
 }

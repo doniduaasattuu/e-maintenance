@@ -1,5 +1,6 @@
 import TableFindingStatus from '@/components/tables/table-finding-status';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, FindingStatus, Meta } from '@/types';
 
@@ -21,7 +22,9 @@ interface FindingStatusProps {
 export default function FindingStatusIndex({ findingStatuses }: FindingStatusProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableFindingStatus findingStatuses={findingStatuses} />
+            <TableLayout moduleKey={'FINDING_STATUS'} className="md:max-w-7xl">
+                <TableFindingStatus findingStatuses={findingStatuses} />
+            </TableLayout>
         </AppLayout>
     );
 }

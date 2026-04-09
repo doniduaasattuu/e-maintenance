@@ -6,7 +6,6 @@ import { tableCaption } from '@/lib/utils';
 import { Department, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
-import React from 'react';
 import ButtonAdd from '../button-add';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
@@ -17,9 +16,10 @@ interface DepartmentTableProps {
         data: Department[];
         meta: Meta;
     };
+    withHeader?: boolean;
 }
 
-export default function TableDepartment({ departments }: DepartmentTableProps) {
+export default function TableDepartment({ departments, withHeader = true }: DepartmentTableProps) {
     const { can } = usePermissions();
     const meta = departments.meta;
     const caption = tableCaption(meta);
@@ -29,13 +29,15 @@ export default function TableDepartment({ departments }: DepartmentTableProps) {
     }
 
     return (
-        <React.Fragment>
-            <div className="flex justify-between gap-2">
-                <SearchBar />
-                {can.create_department && <ButtonAdd route={route('departments.create')} tabIndex={2} />}
-            </div>
+        <>
+            {withHeader && (
+                <div className="flex justify-between gap-2">
+                    <SearchBar />
+                    {can.create_department && <ButtonAdd route={route('departments.create')} tabIndex={2} />}
+                </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {departments.data.length > 0 ? (
+                {departments.data && departments.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -89,6 +91,6 @@ export default function TableDepartment({ departments }: DepartmentTableProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </React.Fragment>
+        </>
     );
 }

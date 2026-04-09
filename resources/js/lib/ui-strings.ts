@@ -344,6 +344,7 @@ const TENANT_OVERRIDES: Record<string, Partial<Record<string, Partial<UIEntry>>>
         FINDING: {
             label: 'Audit 5RK3',
             plural: 'Audit 5RK3',
+            description: 'Centralized document storage module',
             create: {
                 header: 'Create Finding',
                 description: 'Record a new issue or observation discovered during inspection.',
@@ -356,6 +357,7 @@ const TENANT_OVERRIDES: Record<string, Partial<Record<string, Partial<UIEntry>>>
         REPOSITORY: {
             label: 'Document Control',
             plural: 'Document Controls',
+            description: 'Centralized document storage module',
             create: {
                 header: 'Upload to Repository',
                 description: 'Upload a new technical document, manual, or reference file.',

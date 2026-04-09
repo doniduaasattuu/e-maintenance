@@ -12,7 +12,6 @@ import { CommandSeparator } from '@/components/ui/command';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import UserAvatar from '@/components/user-avatar';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { Department, Meta, Position, User, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
@@ -36,9 +35,10 @@ interface TableUserProps {
         data: WorkCenter[];
     };
     roles: string[];
+    withHeader?: boolean;
 }
 
-export default function TableUser({ users, departments, positions, workCenters, roles }: TableUserProps) {
+export default function TableUser({ users, departments, positions, workCenters, roles, withHeader = true }: TableUserProps) {
     const [open, setOpen] = React.useState<boolean>(false);
     const { can } = usePermissions();
     const meta = users.meta;
@@ -53,26 +53,28 @@ export default function TableUser({ users, departments, positions, workCenters, 
     }
 
     return (
-        <TableLayout moduleKey={'USER'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['department', 'position', 'work-center', 'role']}>
-                        <FilterDepartment departments={departments.data} />
-                        <CommandSeparator />
-                        <FilterPosition positions={positions.data} />
-                        <CommandSeparator />
-                        <FilterWorkCenter workCenters={workCenters.data} />
-                        <CommandSeparator />
-                        <FilterRole roles={roles} />
-                        <CommandSeparator />
-                        <FilterWithTrashed />
-                    </Filter>
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                        <Filter open={open} setOpen={setOpen} keys={['department', 'position', 'work-center', 'role']}>
+                            <FilterDepartment departments={departments.data} />
+                            <CommandSeparator />
+                            <FilterPosition positions={positions.data} />
+                            <CommandSeparator />
+                            <FilterWorkCenter workCenters={workCenters.data} />
+                            <CommandSeparator />
+                            <FilterRole roles={roles} />
+                            <CommandSeparator />
+                            <FilterWithTrashed />
+                        </Filter>
+                    </div>
+                    {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} />}
                 </div>
-                {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {users.data.length > 0 ? (
+                {users.data && users.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -165,6 +167,6 @@ export default function TableUser({ users, departments, positions, workCenters, 
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }
