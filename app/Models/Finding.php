@@ -132,6 +132,21 @@ class Finding extends Model
         return $query->whereHas('status', fn($q) => $q->where('name', 'Open'));
     }
 
+    #[Scope]
+    public function scopeWithDefaultRelations($query)
+    {
+        return $query->with([
+            'type',
+            'clause',
+            'status',
+            'priority',
+            'causeCode',
+            'inspector',
+            'verifier',
+            'images',
+        ]);
+    }
+
     public function type(): BelongsTo
     {
         return $this->belongsTo(FindingType::class, "finding_type_id");

@@ -29,23 +29,12 @@ class FindingEquipmentController extends Controller
 
     public function show(Request $request, Equipment $equipment)
     {
-
-        $findings = $equipment->findings()
-            ->with([
-                'clause',
-                'status',
-                'priority',
-                'causeCode',
-                'inspector',
-                'verifier',
-                'images',
-            ])
-            ->latest()
-            ->paginate(10);
-
         return Inertia::render('equipment/findings', [
             'equipment' => new EquipmentResource($equipment),
-            'findings' => FindingResource::collection($findings),
+            'findings' => FindingResource::collection($equipment->findings()
+                ->withDefaultRelations()
+                ->latest()
+                ->paginate(10)),
         ]);
     }
 

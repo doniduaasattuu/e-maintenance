@@ -1,3 +1,4 @@
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { Equipment, type NavItem } from '@/types';
 import AssetLayout from '../asset/layout';
 
@@ -8,6 +9,9 @@ interface Props {
 }
 
 export default function EquipmentLayout({ equipment, className, children }: Props) {
+    const strings = UI_STRINGS;
+    const repoTitle = strings.REPOSITORY?.label ?? 'Repository';
+
     const sidebarNavItems: NavItem[] = [
         {
             title: 'Details',
@@ -42,10 +46,16 @@ export default function EquipmentLayout({ equipment, className, children }: Prop
             permission: 'show_image',
         },
         {
-            title: 'Repositories',
+            title: repoTitle,
             href: route('equipments.repositories', equipment.id),
             icon: null,
             permission: 'show_repository',
+        },
+        {
+            title: 'Material',
+            href: route('equipments.materials', equipment.id),
+            icon: null,
+            permission: 'show_equipment',
         },
     ];
 

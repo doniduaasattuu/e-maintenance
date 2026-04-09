@@ -26,6 +26,8 @@ use App\Http\Controllers\InspectionPanelController;
 use App\Http\Controllers\InspectionTransformerController;
 use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\MaterialEquipmentController;
+use App\Http\Controllers\MaterialRelationController;
 use App\Http\Controllers\MaterialTypeController;
 use App\Http\Controllers\RepositoryController;
 use App\Http\Controllers\RepositoryEquipmentController;
@@ -37,7 +39,6 @@ use App\Http\Controllers\MaterialUnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkCenterController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -68,6 +69,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('{equipment}/repositories', [RepositoryEquipmentController::class, 'show'])->name('equipments.repositories');
         Route::get('{equipment}/findings', [FindingEquipmentController::class, 'show'])->name('equipments.findings');
+        Route::get('{equipment}/materials', [MaterialEquipmentController::class, 'show'])->name('equipments.materials');
     });
 
     // MATERIAL
@@ -76,6 +78,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('{id}/images/{type}', [ImageController::class, 'store'])->name('images.material.store');
 
         Route::get('{material}/repositories', [RepositoryMaterialController::class, 'show'])->name('materials.repositories');
+        Route::get('{material}/relation', [MaterialRelationController::class, 'index'])->name('materials.relation');
+
+        // RELATION EQUIPMENT
+        Route::post('{material}/equipment/{equipment}', [MaterialEquipmentController::class, 'store'])->name('materials.equipment.store');
+        Route::delete('{material}/equipment/{equipment}', [MaterialEquipmentController::class, 'destroy'])->name('materials.equipment.destroy');
     });
 
     Route::prefix('images')->group(function () {
@@ -182,9 +189,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('repositories')->group(function () {
         Route::get('{repository}/relation', [RepositoryRelationController::class, 'index'])->name('repositories.relation');
 
+        // RELATION EQUIPMENT
         Route::post('{repository}/equipment/{equipment}', [RepositoryEquipmentController::class, 'store'])->name('repositories.equipment.store');
         Route::delete('{repository}/equipment/{equipment}', [RepositoryEquipmentController::class, 'destroy'])->name('repositories.equipment.destroy');
 
+        // RELATION MATERIAL
         Route::post('{repository}/material/{material}', [RepositoryMaterialController::class, 'store'])->name('repositories.material.store');
         Route::delete('{repository}/material/{material}', [RepositoryMaterialController::class, 'destroy'])->name('repositories.material.destroy');
     });

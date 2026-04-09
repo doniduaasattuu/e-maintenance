@@ -40,8 +40,6 @@ export default function RepositoryRelation({ repository, equipments, materials }
     ];
 
     const [activeTab, setActiveTab] = useState('equipment');
-    const [open, setOpen] = useState(false);
-
     const [input, setInput] = useState('');
     const selected = useRef<Equipment | null>(null);
     const [options, setOptions] = useState<Equipment[]>([]);
@@ -151,7 +149,7 @@ export default function RepositoryRelation({ repository, equipments, materials }
                                 <TabsTrigger value="material">Material</TabsTrigger>
                             </TabsList>
 
-                            <Popover open={open} onOpenChange={setOpen}>
+                            <Popover>
                                 <PopoverTrigger asChild>
                                     <Button variant="outline">
                                         <Plus />

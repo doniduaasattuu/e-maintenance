@@ -26,7 +26,6 @@ class UpdateMaterialRequest extends FormRequest
             'code' => [
                 'required',
                 'numeric',
-                'digits:8',
                 Rule::unique('materials', 'code')->ignore($this->material),
             ],
             'name' => [

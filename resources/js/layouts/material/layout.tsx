@@ -1,3 +1,4 @@
+import { UI_STRINGS } from '@/lib/ui-strings';
 import { Material, type NavItem } from '@/types';
 import AssetLayout from '../asset/layout';
 
@@ -8,10 +9,17 @@ interface Props {
 }
 
 export default function MaterialLayout({ material, children, className }: Props) {
+    const strings = UI_STRINGS;
+    const repoTitle = strings.REPOSITORY?.label ?? 'Repository';
     const sidebarNavItems: NavItem[] = [
         {
             title: 'Details',
             href: route('materials.show', material.id), // http://127.0.0.1:8000/materials/1
+            icon: null,
+        },
+        {
+            title: 'Relation',
+            href: route('materials.relation', material.id),
             icon: null,
         },
         {
@@ -24,7 +32,7 @@ export default function MaterialLayout({ material, children, className }: Props)
             permission: 'show_image',
         },
         {
-            title: 'Repositories',
+            title: repoTitle,
             href: route('materials.repositories', material.id),
             icon: null,
             permission: 'show_repository',

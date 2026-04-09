@@ -1,6 +1,7 @@
+import HeadingSmall from '@/components/heading-small';
+import TableRepository from '@/components/tables/table-repository';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
-import RepositoryAssetLayout from '@/layouts/relational/table/repository';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, Meta, Repository } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -13,12 +14,11 @@ interface EquipmentRepositoriesProps {
         data: Repository[];
         meta: Meta;
     };
-    extensions?: string[];
-    renderable: string[];
 }
 
-export default function EquipmentRepositories({ equipment, repositories, renderable, extensions }: EquipmentRepositoriesProps) {
+export default function EquipmentRepositories({ equipment, repositories }: EquipmentRepositoriesProps) {
     const strings = UI_STRINGS;
+    const repoTitle = strings.REPOSITORY?.label ?? 'Repository';
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: strings.EQUIPMENT?.plural ?? 'Equipments',
@@ -34,22 +34,13 @@ export default function EquipmentRepositories({ equipment, repositories, rendera
         },
     ];
 
-    function handleDownloadRepository(id: number) {
-        window.open(route('repositories.show', id));
-    }
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Repositories" />
+            <Head title={repoTitle} />
 
-            <EquipmentLayout equipment={equipment.data} className="w-full max-w-4xl">
-                <RepositoryAssetLayout
-                    handleDownloadRepository={handleDownloadRepository}
-                    renderable={renderable}
-                    repositories={repositories}
-                    extensions={extensions}
-                    model="equipment"
-                />
+            <EquipmentLayout equipment={equipment.data} className="w-full max-w-xl space-y-4 lg:max-w-4xl">
+                <HeadingSmall title={repoTitle} description="Technical records and operational manuals." />
+                <TableRepository repositories={repositories} renderable={[]} extensions={[]} withHeader={false} />
             </EquipmentLayout>
         </AppLayout>
     );

@@ -184,6 +184,7 @@ export interface Equipment {
     sort_field: string;
     description: string | null;
     functional_location_id: number | null;
+    findings?: Finding[];
     equipment_class_id: number | null;
     equipment_status_id: number | null;
     functionalLocation: FunctionalLocation | null;

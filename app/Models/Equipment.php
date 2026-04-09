@@ -106,6 +106,11 @@ class Equipment extends Model
         return $this->morphMany(Image::class, 'imageable');
     }
 
+    public function materials(): BelongsToMany
+    {
+        return $this->belongsToMany(Material::class);
+    }
+
     public function repositories(): BelongsToMany
     {
         return $this->belongsToMany(Repository::class);
@@ -113,6 +118,6 @@ class Equipment extends Model
 
     public function findings(): HasMany
     {
-        return $this->hasMany(Finding::class);
+        return $this->hasMany(Finding::class, 'equipment_id', 'id');
     }
 }

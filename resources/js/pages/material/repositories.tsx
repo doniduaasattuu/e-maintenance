@@ -1,6 +1,7 @@
+import HeadingSmall from '@/components/heading-small';
+import TableRepository from '@/components/tables/table-repository';
 import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
-import RepositoryAssetLayout from '@/layouts/relational/table/repository';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Material, Meta, Repository } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -13,12 +14,11 @@ interface MaterialRepositoriesProps {
         data: Repository[];
         meta: Meta;
     };
-    extensions?: string[];
-    renderable: string[];
 }
 
-export default function MaterialRepositories({ material, repositories, renderable, extensions }: MaterialRepositoriesProps) {
+export default function MaterialRepositories({ material, repositories }: MaterialRepositoriesProps) {
     const strings = UI_STRINGS;
+    const repoTitle = strings.REPOSITORY?.label ?? 'Repository';
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: strings.MATERIAL?.plural ?? 'Materials',
@@ -34,22 +34,13 @@ export default function MaterialRepositories({ material, repositories, renderabl
         },
     ];
 
-    function handleDownloadRepository(id: number) {
-        window.open(route('repositories.show', id));
-    }
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Repositories" />
+            <Head title={repoTitle} />
 
-            <MaterialLayout material={material.data} className="max-w-xl lg:max-w-3xl">
-                <RepositoryAssetLayout
-                    handleDownloadRepository={handleDownloadRepository}
-                    renderable={renderable}
-                    repositories={repositories}
-                    extensions={extensions}
-                    model="material"
-                />
+            <MaterialLayout material={material.data} className="w-full max-w-xl lg:max-w-4xl">
+                <HeadingSmall title={repoTitle} description="Technical records and operational manuals." />
+                <TableRepository repositories={repositories} renderable={[]} extensions={[]} withHeader={false} />
             </MaterialLayout>
         </AppLayout>
     );

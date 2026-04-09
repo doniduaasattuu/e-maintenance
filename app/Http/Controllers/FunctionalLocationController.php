@@ -86,16 +86,9 @@ class FunctionalLocationController extends Controller
             ])
                 ->latest()
                 ->paginate(10)),
-            'findings' => FindingResource::collection($functionalLocation->findings()->with([
-                'type',
-                'clause',
-                'status',
-                'priority',
-                'causeCode',
-                'inspector',
-                'verifier',
-                'images',
-            ])
+            'findings' => FindingResource::collection($functionalLocation
+                ->findings()
+                ->withDefaultRelations()
                 ->latest()
                 ->paginate(10)),
         ]);

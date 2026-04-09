@@ -20,7 +20,8 @@ type RepositoryIndexProps = {
     extensions?: string[];
     renderable: string[];
 };
-export default function RoleIndex({ repositories, extensions, renderable }: RepositoryIndexProps) {
+
+export default function RepositoryIndex({ repositories, extensions, renderable }: RepositoryIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'REPOSITORY'} className="md:max-w-7xl">

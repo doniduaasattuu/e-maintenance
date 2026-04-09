@@ -52,7 +52,7 @@ export default function RepositoryEdit({ repository }: RepositoryProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit" />
 
-            <RepositoryLayout repository={repository.data} className="max-w-xl">
+            <RepositoryLayout repository={repository.data} className="w-full max-w-xl">
                 <HeadingSmall title="Edit" description="Update repository data and information." />
                 <RepositoryForm
                     buttonLabel="Update"

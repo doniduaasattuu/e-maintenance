@@ -1,21 +1,21 @@
-import TableFinding from '@/components/tables/table-finding';
+import TableMaterial from '@/components/tables/table-material';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, Equipment, Finding, Meta } from '@/types';
+import { BreadcrumbItem, Equipment, Material, Meta } from '@/types';
 import { Head } from '@inertiajs/react';
 
-interface EquipmentFindingsProps {
+interface EquipmentMaterialsProps {
     equipment: {
         data: Equipment;
     };
-    findings: {
-        data: Finding[];
+    materials: {
+        data: Material[];
         meta: Meta;
     };
 }
 
-export default function EquipmentFindings({ equipment, findings }: EquipmentFindingsProps) {
+export default function EquipmentMaterials({ equipment, materials }: EquipmentMaterialsProps) {
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -27,18 +27,17 @@ export default function EquipmentFindings({ equipment, findings }: EquipmentFind
             href: route('equipments.show', equipment.data.id),
         },
         {
-            title: 'Findings',
+            title: 'Materials',
             href: route('equipments.show', equipment.data.id),
         },
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Findings" />
+            <Head title="Materials" />
 
-            <EquipmentLayout equipment={equipment.data} className="w-full">
-                <TableFinding withHeader={false} findings={findings} moduleKey="ABNORMALITY" />
-                {/* <FindingTable findings={findings} /> */}
+            <EquipmentLayout equipment={equipment.data} className="w-full max-w-7xl">
+                <TableMaterial materialTypes={{ data: [] }} withHeader={false} materials={materials} materialUnits={{ data: [] }} />
             </EquipmentLayout>
         </AppLayout>
     );

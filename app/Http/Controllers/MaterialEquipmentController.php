@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\EquipmentResource;
-use App\Http\Resources\RepositoryResource;
+use App\Http\Resources\MaterialResource;
 use App\Models\Equipment;
-use App\Models\Repository;
+use App\Models\Material;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Throwable;
 
-class RepositoryEquipmentController extends Controller
+class MaterialEquipmentController extends Controller
 {
-    public function store(Repository $repository, Equipment $equipment)
+    public function store(Material $material, Equipment $equipment)
     {
         try {
-            $repository->equipments()->syncWithoutDetaching([$equipment->id]);
+            $material->equipments()->syncWithoutDetaching([$equipment->id]);
 
             return back()->with('message', [
                 'type' => 'success',
@@ -29,20 +29,24 @@ class RepositoryEquipmentController extends Controller
         }
     }
 
-    public function show(Request $request, Equipment $equipment)
+    public function show(Equipment $equipment)
     {
-        $repositories = $equipment->repositories()->paginate(10);
+        $materials = $equipment
+            ->materials()
+            ->withDefaultRelations()
+            ->latest()
+            ->paginate(10);
 
-        return Inertia::render('equipment/repositories', [
+        return Inertia::render('equipment/materials', [
             'equipment' => new EquipmentResource($equipment),
-            'repositories' => RepositoryResource::collection($repositories),
+            'materials' => MaterialResource::collection($materials),
         ]);
     }
 
-    public function destroy(Repository $repository, Equipment $equipment)
+    public function destroy(Material $material, Equipment $equipment)
     {
         try {
-            $repository->equipments()->detach($equipment->id);
+            $material->equipments()->detach($equipment->id);
 
             return back()->with('message', [
                 'type' => 'success',
