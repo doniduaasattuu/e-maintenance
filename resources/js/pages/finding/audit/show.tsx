@@ -86,7 +86,7 @@ export default function FindingShow({ finding }: FindingShowProps) {
             href: route('audits.index'),
         },
         {
-            title: truncateText(finding.data.functionalLocation?.description ?? '', 20) ?? finding.data.id.toString(),
+            title: truncateText(finding.data.functionalLocation?.code ?? '', 20) ?? finding.data.id.toString(),
             href: route('audits.index', finding.data.id),
         },
     ];

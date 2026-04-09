@@ -4,8 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FunctionalLocation\StoreFunctionalLocationRequest;
 use App\Http\Requests\FunctionalLocation\UpdateFunctionalLocationRequest;
+use App\Http\Resources\EquipmentClassResource;
+use App\Http\Resources\EquipmentResource;
+use App\Http\Resources\EquipmentStatusResource;
+use App\Http\Resources\FindingResource;
 use App\Http\Resources\FunctionalLocationResource;
 use App\Http\Resources\WorkCenterResource;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentStatus;
 use App\Models\FunctionalLocation;
 use App\Models\WorkCenter;
 use Illuminate\Http\Request;
@@ -69,7 +75,30 @@ class FunctionalLocationController extends Controller
      */
     public function show(FunctionalLocation $functionalLocation)
     {
-        // Gate::authorize('show_functionallocation');
+        Gate::authorize('show_functionallocation');
+
+        return Inertia::render('functional-location/show', [
+            'functionalLocation' => new FunctionalLocationResource($functionalLocation),
+            'equipments' => EquipmentResource::collection($functionalLocation->equipments()->with([
+                'eclass',
+                'status',
+                'functionalLocation',
+            ])
+                ->latest()
+                ->paginate(10)),
+            'findings' => FindingResource::collection($functionalLocation->findings()->with([
+                'type',
+                'clause',
+                'status',
+                'priority',
+                'causeCode',
+                'inspector',
+                'verifier',
+                'images',
+            ])
+                ->latest()
+                ->paginate(10)),
+        ]);
     }
 
     /**

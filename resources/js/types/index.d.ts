@@ -152,6 +152,8 @@ export interface Meta {
 export interface FunctionalLocation {
     id: number;
     code: string;
+    equipments?: Equipment[];
+    findings?: Finding[];
     description: string;
     created_at: string;
     updated_at: string;

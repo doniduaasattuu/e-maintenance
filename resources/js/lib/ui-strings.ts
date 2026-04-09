@@ -21,6 +21,10 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         plural: 'Functional Locations',
         description:
             'An organizational unit that structures technical systems, buildings, or equipment based on functional, spatial, or process criteria.',
+        show: {
+            header: 'Show Functional Location',
+            description: 'Detail of location to the functional hierarchy for maintenance tracking.',
+        },
         create: {
             header: 'Create Functional Location',
             description: 'Add a new location to the functional hierarchy for maintenance tracking.',

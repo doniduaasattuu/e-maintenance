@@ -121,7 +121,7 @@ export default function Register({ departments }: RegisterProps) {
                         <SelectContent>
                             <SelectGroup>
                                 <SelectLabel className="text-muted-foreground">Department</SelectLabel>
-                                {departments.data.map((p) => {
+                                {departments?.data.map((p) => {
                                     return (
                                         <SelectItem key={p.id} value={p.id.toString()}>
                                             {p.code + ' - ' + p.name}

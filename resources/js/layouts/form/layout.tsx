@@ -8,17 +8,19 @@ interface FormLayoutProps {
     className?: string;
     children: React.ReactNode | undefined;
     moduleKey: keyof typeof UI_STRINGS;
-    mode: 'create' | 'edit';
+    mode: 'create' | 'edit' | 'show';
+    title?: string;
+    description?: string;
 }
 
-export default function FormLayout({ className, children, moduleKey, mode }: FormLayoutProps) {
+export default function FormLayout({ className, children, moduleKey, mode, title, description }: FormLayoutProps) {
     const strings = UI_STRINGS[moduleKey] as any;
-    const content = mode === 'edit' ? strings.edit : strings.create;
+    const content = mode === 'edit' ? strings.edit : mode === 'create' ? strings.create : strings.show;
 
     return (
         <div className={cn('flex h-full flex-1 flex-col space-y-6 rounded-xl p-4', className)}>
             <Head title={cfl(mode)} />
-            <HeadingSmall title={content.header} description={content.description} />
+            <HeadingSmall title={title ?? content.header} description={description ?? content.description} />
             {children}
         </div>
     );

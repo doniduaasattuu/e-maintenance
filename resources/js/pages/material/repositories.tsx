@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import MaterialLayout from '@/layouts/material/layout';
-import RepositoryAssetLayout from '@/layouts/repository/asset/layout';
+import RepositoryAssetLayout from '@/layouts/relational/table/repository';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Material, Meta, Repository } from '@/types';
 import { Head } from '@inertiajs/react';

@@ -1,5 +1,6 @@
 import TableFinding from '@/components/tables/table-finding';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, CauseCode, Department, Finding, FindingClause, FindingPriority, FindingStatus, Meta } from '@/types';
 
@@ -36,17 +37,19 @@ type FindingProps = {
 export default function FindingIndex({ findings, findingPriorities, findingStatuses, departments, findingClauses, causeCodes }: FindingProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableFinding
-                findings={findings}
-                findingClauses={findingClauses}
-                findingPriorities={findingPriorities}
-                findingStatuses={findingStatuses}
-                departments={departments}
-                causeCodes={causeCodes}
-                moduleKey="AUDIT"
-                endpoint="audits"
-                clauseFilter="AUD"
-            />
+            <TableLayout moduleKey="AUDIT" className="md:max-w-full">
+                <TableFinding
+                    moduleKey="AUDIT"
+                    findings={findings}
+                    findingClauses={findingClauses}
+                    findingPriorities={findingPriorities}
+                    findingStatuses={findingStatuses}
+                    departments={departments}
+                    causeCodes={causeCodes}
+                    endpoint="audits"
+                    clauseFilter="AUD"
+                />
+            </TableLayout>
         </AppLayout>
     );
 }

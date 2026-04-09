@@ -1,7 +1,6 @@
 import { ActionConfirm } from '@/components/action-confirm';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { Equipment, EquipmentClass, EquipmentStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -22,15 +21,16 @@ interface EquipmentTableProps {
         data: Equipment[];
         meta: Meta;
     };
-    equipmentClasses: {
+    equipmentClasses?: {
         data: EquipmentClass[];
     };
-    equipmentStatuses: {
+    equipmentStatuses?: {
         data: EquipmentStatus[];
     };
+    withHeader?: boolean;
 }
 
-export default function TableEquipment({ equipments, equipmentClasses, equipmentStatuses }: EquipmentTableProps) {
+export default function TableEquipment({ equipments, equipmentClasses, equipmentStatuses, withHeader = true }: EquipmentTableProps) {
     const [open, setOpen] = React.useState<boolean>(false);
     const { can } = usePermissions();
     const meta = equipments.meta;
@@ -41,18 +41,20 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
     }
 
     return (
-        <TableLayout moduleKey={'EQUIPMENT'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['class', 'status']}>
-                        <FilterEquipmentClass equipmentClasses={equipmentClasses.data} />
-                        <CommandSeparator />
-                        <FilterEquipmentStatus equipmentStatuses={equipmentStatuses.data} />
-                    </Filter>
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                        <Filter open={open} setOpen={setOpen} keys={['class', 'status']}>
+                            <FilterEquipmentClass equipmentClasses={equipmentClasses?.data ?? []} />
+                            <CommandSeparator />
+                            <FilterEquipmentStatus equipmentStatuses={equipmentStatuses?.data ?? []} />
+                        </Filter>
+                    </div>
+                    {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={2} />}
                 </div>
-                {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={2} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {equipments?.data?.length > 0 ? (
                     <Table>
@@ -135,6 +137,6 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

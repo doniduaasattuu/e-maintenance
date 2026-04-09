@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
-import RepositoryAssetLayout from '@/layouts/repository/asset/layout';
+import RepositoryAssetLayout from '@/layouts/relational/table/repository';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, Meta, Repository } from '@/types';
 import { Head } from '@inertiajs/react';

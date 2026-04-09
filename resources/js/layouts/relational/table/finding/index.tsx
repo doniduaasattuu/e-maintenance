@@ -17,7 +17,7 @@ import truncateText, { cn, tableCaption } from '@/lib/utils';
 import { Finding, FindingImage, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Info } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 interface FindingAssetProps {
     findings: {
@@ -25,21 +25,24 @@ interface FindingAssetProps {
         meta: Meta;
     };
     className?: string;
+    withHeader?: boolean;
 }
 
-export default function FindingTable({ findings, className }: FindingAssetProps) {
+export default function FindingTable({ findings, className, withHeader = true }: FindingAssetProps) {
     const { can } = usePermissions();
     const meta = findings.meta;
     const caption = tableCaption(meta);
     const [selectedImage, setSelectedImage] = useState<FindingImage | null>(null);
 
     return (
-        <React.Fragment>
-            {findings && findings.data.length > 0 ? (
+        <>
+            {findings.data && findings.data.length > 0 ? (
                 <div className={cn('grid min-w-0 space-y-4 overflow-x-auto rounded-md', className)}>
-                    <div className="flex items-center justify-between gap-2">
-                        <HeadingSmall title="Findings" description={`Equipment finding history.`} />
-                    </div>
+                    {withHeader && (
+                        <div className="flex items-center justify-between gap-2">
+                            <HeadingSmall title="Findings" description={`Equipment finding history.`} />
+                        </div>
+                    )}
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -127,6 +130,6 @@ export default function FindingTable({ findings, className }: FindingAssetProps)
             )}
 
             {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />}
-        </React.Fragment>
+        </>
     );
 }

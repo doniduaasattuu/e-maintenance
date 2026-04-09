@@ -1,0 +1,62 @@
+import TableEquipment from '@/components/tables/table-equipment';
+import TableFinding from '@/components/tables/table-finding';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AppLayout from '@/layouts/app-layout';
+import FormLayout from '@/layouts/form/layout';
+import { UI_STRINGS } from '@/lib/ui-strings';
+import { BreadcrumbItem, Equipment, Finding, FunctionalLocation, Meta } from '@/types';
+
+const strings = UI_STRINGS;
+
+interface FunctionalLocationEditProps {
+    functionalLocation: {
+        data: FunctionalLocation;
+    };
+    equipments: {
+        data: Equipment[];
+        meta: Meta;
+    };
+    findings: {
+        data: Finding[];
+        meta: Meta;
+    };
+    className?: string;
+    withHeader?: boolean;
+}
+
+export default function FunctionalLocationEdit({ functionalLocation, equipments, findings }: FunctionalLocationEditProps) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: strings.FUNCTIONAL_LOCATION?.plural ?? 'Functional Locations',
+            href: route('functional-locations.index'),
+        },
+        {
+            title: functionalLocation.data.code,
+            href: route('functional-locations.index'),
+        },
+    ];
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <FormLayout
+                mode="show"
+                moduleKey="FUNCTIONAL_LOCATION"
+                title={functionalLocation.data.code}
+                description={functionalLocation.data.description}
+            >
+                <Tabs defaultValue="equipments" className="space-y-4">
+                    <TabsList>
+                        <TabsTrigger value="equipments">Equipments</TabsTrigger>
+                        <TabsTrigger value="findings">Findings</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="equipments" className="max-w-6xl">
+                        <TableEquipment withHeader={false} equipments={equipments} />
+                    </TabsContent>
+                    <TabsContent value="findings">
+                        <TableFinding withHeader={false} findings={findings} moduleKey="ABNORMALITY" />
+                    </TabsContent>
+                </Tabs>
+            </FormLayout>
+        </AppLayout>
+    );
+}

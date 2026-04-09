@@ -8,8 +8,8 @@ import usePermissions from '@/hooks/use-permissions';
 import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { FunctionalLocation, Meta } from '@/types';
-import { router } from '@inertiajs/react';
-import { Trash2 } from 'lucide-react';
+import { Link, router } from '@inertiajs/react';
+import { Edit, Trash2 } from 'lucide-react';
 import EmptyIcon from '../empty-icon';
 
 interface TableFunctionalLocationProps {
@@ -45,6 +45,7 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                                 <TableHead className="text-muted-foreground">Description</TableHead>
                                 <TableHead className="text-muted-foreground">Created at</TableHead>
                                 <TableHead className={`text-muted-foreground ${can.delete_functionallocation ?? 'text-right'}`}>Updated at</TableHead>
+                                {can.edit_functionallocation && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                                 {can.delete_functionallocation && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                             </TableRow>
                         </TableHeader>
@@ -53,8 +54,8 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                                 return (
                                     <TableRow key={functionalLocation.id}>
                                         <TableCell>
-                                            {can.update_functionallocation ? (
-                                                <TextLink href={route('functional-locations.edit', functionalLocation.id)}>
+                                            {can.edit_functionallocation ? (
+                                                <TextLink href={route('functional-locations.show', functionalLocation.id)}>
                                                     <span className="truncate font-medium">{functionalLocation.code}</span>
                                                 </TextLink>
                                             ) : (
@@ -68,6 +69,13 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                                         >
                                             {functionalLocation.updated_at}
                                         </TableCell>
+                                        {can.edit_functionallocation && (
+                                            <TableCell className="w-10 flex-col text-right align-top">
+                                                <Link href={route('functional-locations.edit', functionalLocation.id)}>
+                                                    <Edit size={18} className="text-blue-500" />
+                                                </Link>
+                                            </TableCell>
+                                        )}
                                         {can.delete_functionallocation && (
                                             <TableCell className="w-10 flex-col text-right align-top">
                                                 <ActionConfirm

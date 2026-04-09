@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
-import FindingTable from '@/layouts/equipment/relation/finding';
+import FindingTable from '@/layouts/relational/table/finding';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, Finding, Meta } from '@/types';
 import { Head } from '@inertiajs/react';

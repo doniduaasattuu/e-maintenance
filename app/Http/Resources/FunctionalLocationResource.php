@@ -18,6 +18,8 @@ class FunctionalLocationResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'description' => $this->description,
+            'equipments' => EquipmentResource::collection($this->whenLoaded('equipments')),
+            'findings' => FindingResource::collection($this->whenLoaded('findings')),
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
         ];

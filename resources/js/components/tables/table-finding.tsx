@@ -1,6 +1,5 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import truncateText, { cn, tableCaption } from '@/lib/utils';
 import { CauseCode, Department, Finding, FindingClause, FindingImage, FindingPriority, FindingStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
@@ -32,24 +31,25 @@ interface FindingTableProps {
         data: Finding[];
         meta: Meta;
     };
-    findingClauses: {
+    findingClauses?: {
         data: FindingClause[];
     };
-    findingPriorities: {
+    findingPriorities?: {
         data: FindingPriority[];
     };
-    findingStatuses: {
+    findingStatuses?: {
         data: FindingStatus[];
     };
-    departments: {
+    departments?: {
         data: Department[];
     };
-    causeCodes: {
+    causeCodes?: {
         data: CauseCode[];
     };
     moduleKey: string;
-    endpoint: string;
-    clauseFilter: string;
+    endpoint?: string;
+    clauseFilter?: string;
+    withHeader?: boolean;
 }
 
 export function FindingStatusCell({ finding, className }: { finding: Finding; className?: string }) {
@@ -159,6 +159,7 @@ export default function TableFinding({
     endpoint,
     moduleKey,
     clauseFilter,
+    withHeader = true,
 }: FindingTableProps) {
     const [open, setOpen] = useState<boolean>(false);
     const { can } = usePermissions();
@@ -166,17 +167,38 @@ export default function TableFinding({
     const caption = tableCaption(meta);
     const [selectedImage, setSelectedImage] = useState<FindingImage | null>(null);
 
-    function handleShowFinding(id: number) {
-        router.get(route(`${endpoint}.show`, id));
+    function getEndpoint(finding: Finding): 'abnormalities' | 'audits' | null {
+        switch (finding.type?.code) {
+            case 'ABN':
+                return 'abnormalities';
+            case 'AUD':
+                return 'audits';
+            default:
+                return null;
+        }
     }
 
-    function handleEditFinding(id: number) {
-        router.get(route(`${endpoint}.edit`, id));
+    function handleShowFinding(finding: Finding) {
+        const target = endpoint ?? getEndpoint(finding);
+
+        if (target) {
+            router.get(route(`${target}.show`, finding.id));
+        }
     }
 
-    function handleCloseFinding(id: number) {
+    function handleEditFinding(finding: Finding) {
+        const target = endpoint ?? getEndpoint(finding);
+
+        if (target) {
+            router.get(route(`${target}.edit`, finding.id));
+        }
+    }
+
+    function handleCloseFinding(finding: Finding) {
+        const target = endpoint ?? getEndpoint(finding);
+
         router.post(
-            route(`${endpoint}.close`, id),
+            route(`${target}.close`, finding.id),
             {},
             {
                 preserveScroll: true,
@@ -185,34 +207,40 @@ export default function TableFinding({
         );
     }
 
-    function handleDeletefinding(id: number) {
-        router.delete(route(`${endpoint}.destroy`, id));
+    function handleDeletefinding(finding: Finding) {
+        const target = endpoint ?? getEndpoint(finding);
+
+        if (target) {
+            router.delete(route(`${target}.destroy`, finding.id));
+        }
     }
 
     return (
-        <TableLayout moduleKey={moduleKey} className="md:max-w-full">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
-                        <FilterFindingClause filter={clauseFilter} findingClauses={findingClauses.data} />
-                        <CommandSeparator />
-                        {moduleKey == 'ABNORMALITY' && (
-                            <>
-                                <FilterCauseCode causeCodes={causeCodes.data} />
-                                <CommandSeparator />
-                            </>
-                        )}
-                        <FilterFindingStatus findingStatuses={findingStatuses.data} />
-                        <CommandSeparator />
-                        <FilterFindingPriority findingPriorities={findingPriorities.data} />
-                        <CommandSeparator />
-                        <FilterDepartment departments={departments.data} />
-                    </Filter>
-                    <DateRangePopover />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar tabIndex={1} />
+                        <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
+                            <FilterFindingClause filter={clauseFilter} findingClauses={findingClauses?.data ?? []} />
+                            <CommandSeparator />
+                            {moduleKey == 'ABNORMALITY' && (
+                                <>
+                                    <FilterCauseCode causeCodes={causeCodes?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            <FilterFindingStatus findingStatuses={findingStatuses?.data ?? []} />
+                            <CommandSeparator />
+                            <FilterFindingPriority findingPriorities={findingPriorities?.data ?? []} />
+                            <CommandSeparator />
+                            <FilterDepartment departments={departments?.data ?? []} />
+                        </Filter>
+                        <DateRangePopover />
+                    </div>
+                    {can.create_finding && <ButtonAdd route={route(`${endpoint}.create`)} tabIndex={2} />}
                 </div>
-                {can.create_finding && <ButtonAdd route={route(`${endpoint}.create`)} tabIndex={2} />}
-            </div>
+            )}
             {findings?.data?.length > 0 ? (
                 <div className="grid min-w-0 overflow-x-auto rounded-md">
                     <Table>
@@ -249,7 +277,7 @@ export default function TableFinding({
                                                 }
                                                 onCheckedChange={(checked) => {
                                                     if (checked) {
-                                                        handleCloseFinding(finding.id);
+                                                        handleCloseFinding(finding);
                                                     }
                                                 }}
                                             />
@@ -262,7 +290,7 @@ export default function TableFinding({
                                                 disabled={finding.status?.name.toLowerCase() === 'closed'}
                                                 onCheckedChange={(checked) => {
                                                     if (checked) {
-                                                        handleCloseFinding(finding.id);
+                                                        handleCloseFinding(finding);
                                                     }
                                                 }}
                                             />
@@ -347,14 +375,14 @@ export default function TableFinding({
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 {can.show_finding && (
-                                                    <DropdownMenuItem onClick={() => handleShowFinding(finding.id)}>
+                                                    <DropdownMenuItem onClick={() => handleShowFinding(finding)}>
                                                         <Info />
                                                         Details
                                                     </DropdownMenuItem>
                                                 )}
 
                                                 {can.edit_finding && (
-                                                    <DropdownMenuItem onClick={() => handleEditFinding(finding.id)}>
+                                                    <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
                                                         <Edit />
                                                         Edit
                                                     </DropdownMenuItem>
@@ -373,7 +401,7 @@ export default function TableFinding({
                                                     <>
                                                         <DropdownMenuSeparator />
                                                         <ActionConfirm
-                                                            action={() => handleDeletefinding(finding.id)}
+                                                            action={() => handleDeletefinding(finding)}
                                                             title="Delete Finding"
                                                             description="Are you sure? This will permanently delete the finding and its images from the storage."
                                                         >
@@ -401,6 +429,6 @@ export default function TableFinding({
             <GeneratePagination meta={meta} />
 
             {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />}
-        </TableLayout>
+        </>
     );
 }
