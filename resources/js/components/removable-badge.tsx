@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { ActionConfirm } from './action-confirm';
 import { Badge } from './ui/badge';
 
 interface RemovableBadgeProps {
@@ -17,16 +18,14 @@ export default function RemovableBadge({ label, onView, onRemove }: RemovableBad
             >
                 {label}
             </Badge>
-            <button
-                type="button"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onRemove();
-                }}
-                className="flex items-center justify-center rounded-r bg-red-500 px-1.5 text-white transition-colors hover:bg-red-700"
-            >
-                <X className="h-3 w-3" strokeWidth={3} />
-            </button>
+            <ActionConfirm action={() => onRemove()}>
+                <button
+                    type="button"
+                    className="flex items-center justify-center rounded-r bg-red-500 px-1.5 text-white transition-colors hover:bg-red-700"
+                >
+                    <X className="h-3 w-3" strokeWidth={3} />
+                </button>
+            </ActionConfirm>
         </div>
     );
 }

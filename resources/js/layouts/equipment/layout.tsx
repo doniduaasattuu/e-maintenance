@@ -19,7 +19,7 @@ export default function EquipmentLayout({ equipment, className, children }: Prop
             icon: null,
         },
         {
-            title: 'Findings',
+            title: 'Finding',
             href: route('equipments.findings', equipment.id),
             icon: null,
             permission: 'show_finding',
@@ -37,7 +37,7 @@ export default function EquipmentLayout({ equipment, className, children }: Prop
             permission: 'create_inspection',
         },
         {
-            title: 'Images',
+            title: 'Image',
             href: route('images.equipment.index', {
                 id: equipment.id,
                 type: 'equipment',

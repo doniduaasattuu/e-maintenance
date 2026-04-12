@@ -348,6 +348,11 @@ export interface Material {
     unit: MaterialUnit | null;
     type: MaterialType | null;
     images: null | Image[];
+    pivot?: {
+        id: number;
+        quantity: number;
+        note: string;
+    };
 
     created_at: string;
     updated_at: string;

@@ -18,12 +18,7 @@ export default function MaterialLayout({ material, children, className }: Props)
             icon: null,
         },
         {
-            title: 'Relation',
-            href: route('materials.relation', material.id),
-            icon: null,
-        },
-        {
-            title: 'Images',
+            title: 'Image',
             href: route('images.material.index', {
                 id: material.id,
                 type: 'material',

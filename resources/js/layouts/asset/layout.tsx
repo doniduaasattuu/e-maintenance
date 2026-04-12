@@ -56,7 +56,6 @@ export default function AssetLayout({ children, className, sidebarNavItems }: Pr
 
                 <Separator className="md:hidden" />
 
-                {/* <div className={cn('grid min-w-0 overflow-x-auto rounded-md', className)}>{children}</div> */}
                 <div className={className}>{children}</div>
             </div>
         </div>

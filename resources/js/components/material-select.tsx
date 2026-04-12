@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { Equipment } from '@/types';
+import { Material } from '@/types';
 import axios from 'axios';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -11,17 +11,17 @@ import { useCallback, useEffect, useState } from 'react';
 type Props = {
     id: string;
     value: string;
-    currentValue?: Equipment | null;
+    currentValue?: Material | null;
     onChange: (value: number | null) => void;
     tabIndex: number;
-    recentlySuccessful: boolean;
+    recentlySuccessful?: boolean;
     processing: boolean;
     isEditing?: boolean;
     className?: string;
     placeholder?: string;
 };
 
-export default function EquipmentSelect({
+export default function MaterialSelect({
     id,
     value,
     currentValue,
@@ -35,13 +35,13 @@ export default function EquipmentSelect({
 }: Props) {
     const [open, setOpen] = useState(false);
     const [input, setInput] = useState('');
-    const [options, setOptions] = useState<Equipment[]>([]);
+    const [options, setOptions] = useState<Material[]>([]);
     // Gunakan state untuk UI yang reaktif, bukan Ref
-    const [selectedLoc, setSelectedLoc] = useState<Equipment | null>(currentValue || null);
+    const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(currentValue || null);
 
-    const fetchEquipments = useCallback(async (search: string) => {
+    const fetchMaterials = useCallback(async (search: string) => {
         try {
-            const res = await axios.get(route('equipments.index'), { params: { query: search } });
+            const res = await axios.get(route('materials.index'), { params: { query: search } });
             setOptions(res.data);
         } catch (err) {
             setOptions([]);
@@ -50,21 +50,16 @@ export default function EquipmentSelect({
 
     useEffect(() => {
         if (input.length > 0) {
-            const delayDebounce = setTimeout(() => fetchEquipments(input), 300);
+            const delayDebounce = setTimeout(() => fetchMaterials(input), 300);
             return () => clearTimeout(delayDebounce);
         } else {
-            setOptions(selectedLoc ? [selectedLoc] : []);
+            setOptions(selectedMaterial ? [selectedMaterial] : []);
         }
-    }, [input, fetchEquipments, selectedLoc]);
+    }, [input, fetchMaterials, selectedMaterial]);
 
     useEffect(() => {
-        if (recentlySuccessful) setSelectedLoc(null);
+        if (recentlySuccessful) setSelectedMaterial(null);
     }, [recentlySuccessful]);
-
-    const handleDismantling = () => {
-        setSelectedLoc(null);
-        onChange(null);
-    };
 
     return (
         <div className={cn('flex w-full items-center gap-2', className)}>
@@ -78,9 +73,12 @@ export default function EquipmentSelect({
                         aria-expanded={open}
                         tabIndex={tabIndex}
                         disabled={processing}
-                        className={cn('border-muted-background w-full justify-between border font-normal', !selectedLoc && 'text-muted-foreground')}
+                        className={cn(
+                            'border-muted-background w-full justify-between border font-normal',
+                            !selectedMaterial && 'text-muted-foreground',
+                        )}
                     >
-                        <span className="truncate">{selectedLoc ? selectedLoc.code : placeholder || 'Select equipment...'}</span>
+                        <span className="truncate">{selectedMaterial ? selectedMaterial.code : placeholder || 'Select material...'}</span>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
                     </Button>
                 </PopoverTrigger>
@@ -95,21 +93,21 @@ export default function EquipmentSelect({
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>
                             <CommandGroup>
-                                {options.map((e: Equipment) => (
+                                {options.map((e: Material) => (
                                     <CommandItem
                                         key={e.id}
                                         value={e.code}
                                         onSelect={() => {
                                             onChange(e.id);
-                                            setSelectedLoc(e);
+                                            setSelectedMaterial(e);
                                             setOpen(false);
                                             setInput('');
                                         }}
                                     >
-                                        <Check className={cn('mr-2 h-4 w-4', selectedLoc?.id === e.id ? 'opacity-100' : 'opacity-0')} />
+                                        <Check className={cn('mr-2 h-4 w-4', selectedMaterial?.id === e.id ? 'opacity-100' : 'opacity-0')} />
                                         <div className="flex flex-col">
                                             <span className="font-medium">{e.code}</span>
-                                            <span className="text-muted-foreground line-clamp-1 text-xs">{e.sort_field}</span>
+                                            <span className="text-muted-foreground line-clamp-1 text-xs">{e.name}</span>
                                         </div>
                                     </CommandItem>
                                 ))}

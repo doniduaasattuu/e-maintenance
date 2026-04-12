@@ -1,3 +1,4 @@
+import HeadingSmall from '@/components/heading-small';
 import TableFinding from '@/components/tables/table-finding';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
@@ -17,6 +18,8 @@ interface EquipmentFindingsProps {
 
 export default function EquipmentFindings({ equipment, findings }: EquipmentFindingsProps) {
     const strings = UI_STRINGS;
+    const auditTitle = strings.FINDING?.label ?? 'Finding';
+    const abnormalityTitle = strings.ABNORMALITY?.label ?? 'Abnormality';
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: strings.EQUIPMENT?.plural ?? 'Equipments',
@@ -34,11 +37,11 @@ export default function EquipmentFindings({ equipment, findings }: EquipmentFind
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Findings" />
+            <Head title="Finding" />
 
-            <EquipmentLayout equipment={equipment.data} className="w-full">
+            <EquipmentLayout equipment={equipment.data} className="w-full space-y-4">
+                <HeadingSmall title={abnormalityTitle + ' & ' + auditTitle} description="Historical records of abnormalities and audit results." />
                 <TableFinding withHeader={false} findings={findings} moduleKey="ABNORMALITY" />
-                {/* <FindingTable findings={findings} /> */}
             </EquipmentLayout>
         </AppLayout>
     );
