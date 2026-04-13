@@ -1,14 +1,23 @@
 import { ActionConfirm } from '@/components/action-confirm';
 import { GeneratePagination } from '@/components/generate-pagination';
-import TextLink from '@/components/text-link';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import { formatCurrency, tableCaption } from '@/lib/utils';
-import { Material, MaterialType, MaterialUnit, Meta } from '@/types';
+import { Equipment, Material, MaterialType, MaterialUnit, Meta } from '@/types';
+import { useForm } from '@inertiajs/react';
 import { Delete } from 'lucide-react';
+import { useState } from 'react';
+import ButtonSubmit from '../button-submit';
 import EmptyIcon from '../empty-icon';
+import RequiredLabel from '../required-label';
+import { Field, FieldError, FieldLabel } from '../ui/field';
+import { Input } from '../ui/input';
 
 interface TableEquipmentMaterialManagementProps {
+    equipment: {
+        data: Equipment;
+    };
     materials: {
         data: Material[];
         meta: Meta;
@@ -22,10 +31,45 @@ interface TableEquipmentMaterialManagementProps {
     handleRemove: (id: number) => void;
 }
 
-export default function TableEquipmentMaterialManagement({ materials, handleRemove }: TableEquipmentMaterialManagementProps) {
+export default function TableEquipmentMaterialManagement({ equipment, materials, handleRemove }: TableEquipmentMaterialManagementProps) {
     const { can } = usePermissions();
     const meta = materials.meta;
     const caption = tableCaption(meta);
+    const [materialId, setMaterialId] = useState<number | null>(null);
+
+    const { data, setData, patch, processing, reset, recentlySuccessful, errors } = useForm({
+        material_id: null,
+        quantity: 1,
+        note: '',
+    });
+
+    // EDITING
+    const [editingMaterial, setEditingMaterial] = useState<boolean>(false);
+
+    const handleUpdateQuantity = (e: React.FormEvent) => {
+        e.preventDefault();
+        patch(route('equipments.materials.update', [equipment.data.id, materialId]), {
+            onSuccess: () => {
+                setEditingMaterial(false);
+                reset();
+            },
+        });
+    };
+
+    // const handleUpdateQuantity = (materialId: number) => {
+    //     router.patch(
+    //         route('equipments.materials.update', [equipment.data.id, materialId]),
+    //         {},
+    //         {
+    //             preserveScroll: true,
+    //             preserveState: true,
+    //             onSuccess: () => {
+    //                 resetField();
+    //                 setEditingMaterial(false);
+    //             },
+    //         },
+    //     );
+    // };
 
     return (
         <>
@@ -49,14 +93,15 @@ export default function TableEquipmentMaterialManagement({ materials, handleRemo
                             {materials.data.map((material: Material) => {
                                 return (
                                     <TableRow key={material.id}>
-                                        <TableCell>
-                                            {can.show_material ? (
-                                                <TextLink href={route('materials.show', material.id)}>
-                                                    <span className="font-medium">{material.code}</span>
-                                                </TextLink>
-                                            ) : (
-                                                <span className="font-medium">{material.code}</span>
-                                            )}
+                                        <TableCell
+                                            onClick={() => {
+                                                setEditingMaterial(true);
+                                                setMaterialId(material.id);
+                                                setData('quantity', material.pivot?.quantity ?? 1);
+                                                setData('note', material.pivot?.note ?? '');
+                                            }}
+                                        >
+                                            <span className="cursor-context-menu font-medium underline underline-offset-4">{material.code}</span>
                                         </TableCell>
                                         <TableCell className="max-w-md truncate">{material.name}</TableCell>
                                         <TableCell>{formatCurrency(material.price)}</TableCell>
@@ -85,6 +130,55 @@ export default function TableEquipmentMaterialManagement({ materials, handleRemo
                     <EmptyIcon />
                 )}
             </div>
+            <Dialog open={editingMaterial} onOpenChange={setEditingMaterial}>
+                <DialogContent>
+                    <form onSubmit={handleUpdateQuantity}>
+                        <DialogHeader>
+                            <DialogTitle>Update Material Quantity</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-6">
+                            <div className="flex items-center justify-between gap-2">
+                                <Field>
+                                    <FieldLabel htmlFor="quantity">
+                                        Quantity
+                                        <RequiredLabel />
+                                    </FieldLabel>
+                                    <Input
+                                        tabIndex={1}
+                                        type="number"
+                                        step="1"
+                                        value={data.quantity}
+                                        onChange={(e) => setData('quantity', parseFloat(e.target.value))}
+                                    />
+                                    <FieldError>{errors.quantity}</FieldError>
+                                </Field>
+                                <Field>
+                                    <FieldLabel htmlFor="note">Note</FieldLabel>
+                                    <Input
+                                        tabIndex={2}
+                                        type="numeric"
+                                        value={data.note}
+                                        min={'1'}
+                                        onChange={(e) => setData('note', e.target.value)}
+                                        placeholder="Note"
+                                    />
+                                    <FieldError>{errors.note}</FieldError>
+                                </Field>
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <ButtonSubmit
+                                recentlySuccessful={recentlySuccessful}
+                                disabled={processing || data.material_id == ''}
+                                label="Update"
+                                successMessage="Updated"
+                                processing={processing}
+                                tabIndex={3}
+                            />
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
             <GeneratePagination meta={meta} />
         </>
     );

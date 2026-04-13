@@ -31,7 +31,7 @@ class EquipmentMaterialController extends Controller
     {
         $validated = $request->validate([
             'material_id' => 'required|exists:materials,id',
-            'quantity' => 'required|numeric|min:0.01',
+            'quantity' => 'required|numeric|min:1',
             'note' => 'nullable|string|max:255',
         ]);
 
@@ -54,13 +54,13 @@ class EquipmentMaterialController extends Controller
     public function update(Request $request, Equipment $equipment, Material $material)
     {
         $validated = $request->validate([
-            'quantity' => 'required|numeric|min:0.01',
+            'quantity' => 'required|numeric|min:1',
             'note' => 'nullable|string|max:255',
         ]);
 
         // Update data di tabel pivot
         $equipment->materials()->updateExistingPivot($material->id, [
-            'quantityW' => $validated['quantity'],
+            'quantity' => $validated['quantity'],
             'note' => $validated['note']
         ]);
 

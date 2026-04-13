@@ -145,7 +145,7 @@ export default function EquipmentMaterials({ equipment, materials }: EquipmentMa
                         </DialogContent>
                     </Dialog>
                 </div>
-                <TableEquipmentMaterialManagement materials={materials} handleRemove={handleRemove} />
+                <TableEquipmentMaterialManagement equipment={equipment} materials={materials} handleRemove={handleRemove} />
             </EquipmentLayout>
         </AppLayout>
     );
