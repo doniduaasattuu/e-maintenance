@@ -36,6 +36,7 @@ export default function TableEquipmentMaterialManagement({ equipment, materials,
     const meta = materials.meta;
     const caption = tableCaption(meta);
     const [materialId, setMaterialId] = useState<number | null>(null);
+    const [materialName, setmaterialName] = useState<string | null>(null);
 
     const { data, setData, patch, processing, reset, recentlySuccessful, errors } = useForm({
         material_id: null,
@@ -55,21 +56,6 @@ export default function TableEquipmentMaterialManagement({ equipment, materials,
             },
         });
     };
-
-    // const handleUpdateQuantity = (materialId: number) => {
-    //     router.patch(
-    //         route('equipments.materials.update', [equipment.data.id, materialId]),
-    //         {},
-    //         {
-    //             preserveScroll: true,
-    //             preserveState: true,
-    //             onSuccess: () => {
-    //                 resetField();
-    //                 setEditingMaterial(false);
-    //             },
-    //         },
-    //     );
-    // };
 
     return (
         <>
@@ -97,6 +83,7 @@ export default function TableEquipmentMaterialManagement({ equipment, materials,
                                             onClick={() => {
                                                 setEditingMaterial(true);
                                                 setMaterialId(material.id);
+                                                setmaterialName(material.name);
                                                 setData('quantity', material.pivot?.quantity ?? 1);
                                                 setData('note', material.pivot?.note ?? '');
                                             }}
@@ -137,6 +124,7 @@ export default function TableEquipmentMaterialManagement({ equipment, materials,
                             <DialogTitle>Update Material Quantity</DialogTitle>
                         </DialogHeader>
                         <div className="grid gap-4 py-6">
+                            <p className="text-muted-foreground text-sm">{materialName}</p>
                             <div className="flex items-center justify-between gap-2">
                                 <Field>
                                     <FieldLabel htmlFor="quantity">
@@ -144,6 +132,7 @@ export default function TableEquipmentMaterialManagement({ equipment, materials,
                                         <RequiredLabel />
                                     </FieldLabel>
                                     <Input
+                                        id="quantity"
                                         tabIndex={1}
                                         type="number"
                                         step="1"
@@ -155,8 +144,8 @@ export default function TableEquipmentMaterialManagement({ equipment, materials,
                                 <Field>
                                     <FieldLabel htmlFor="note">Note</FieldLabel>
                                     <Input
+                                        id="note"
                                         tabIndex={2}
-                                        type="numeric"
                                         value={data.note}
                                         min={'1'}
                                         onChange={(e) => setData('note', e.target.value)}

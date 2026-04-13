@@ -1,4 +1,3 @@
-import { ActionConfirm } from '@/components/action-confirm';
 import HeadingSmall from '@/components/heading-small';
 import Lightbox from '@/components/light-box';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -26,7 +25,6 @@ import {
     Maximize2,
     ScanSearch,
     Timer,
-    Trash2,
     TriangleAlert,
     User,
     UserPen,
@@ -95,17 +93,9 @@ export default function FindingShow({ finding }: FindingShowProps) {
     const beforeImages = finding.data?.images?.filter((img) => img.category === 'before') || [];
     const afterImages = finding.data?.images?.filter((img) => img.category === 'after') || [];
 
-    const handleDeleteFinding = (id: number) => {
-        router.delete(route('audits.destroy', id));
-    };
-
     const handleEditFinding = (id: number) => {
         router.get(route('audits.edit', id));
     };
-
-    // const handleCloseFinding = (id: number) => {
-    //     router.post(route('audits.close', id));
-    // };
 
     const isClosed: boolean = finding.data.status?.name.toLocaleLowerCase() == 'closed';
     const isInProgress: boolean = finding.data.status?.name.toLocaleLowerCase() == 'in progress';
@@ -212,22 +202,6 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                     <Button onClick={() => handleEditFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
                                         <Edit className="size-4" /> Edit
                                     </Button>
-                                )}
-                                {/* {can.close_audit && (
-                                    <Button onClick={() => handleCloseFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
-                                        <CheckSquare className="size-4" /> Mark as Closed
-                                    </Button>
-                                )} */}
-                                {can.delete_audit && (
-                                    <ActionConfirm
-                                        action={() => handleDeleteFinding(finding.data.id)}
-                                        title={`Delete finding of ${finding.data.functionalLocation?.description}?`}
-                                        description="This action will remove this finding from database. This action cannot be undone."
-                                    >
-                                        <Button size="sm" className="w-full bg-red-600 text-red-100 hover:bg-red-500 hover:text-white">
-                                            <Trash2 className="size-4" /> Delete
-                                        </Button>
-                                    </ActionConfirm>
                                 )}
                             </CardFooter>
                         </Card>

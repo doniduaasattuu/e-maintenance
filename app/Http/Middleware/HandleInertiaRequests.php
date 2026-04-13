@@ -85,6 +85,9 @@ class HandleInertiaRequests extends Middleware
                         : 0,
                 ]
             ],
+            'config' => [
+                'maximumFileUpload' => config('app.maximum_file_upload')
+            ],
         ];
     }
 }

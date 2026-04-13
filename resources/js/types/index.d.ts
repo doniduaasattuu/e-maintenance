@@ -54,6 +54,9 @@ export interface SharedData {
             abnormality_open: number;
         };
     };
+    config: {
+        maximumFileUpload: number;
+    };
     [key: string]: unknown;
 }
 

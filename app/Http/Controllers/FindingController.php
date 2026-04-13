@@ -352,27 +352,5 @@ abstract class FindingController extends Controller
                 Storage::disk('public')->deleteDirectory($directoryPath);
             }
         });
-
-        // DB::beginTransaction();
-
-        // try {
-        //     $directoryPath = 'images/findings/' . $finding->id;
-
-        //     $finding->images()->delete();
-        //     $finding->delete();
-
-        //     if (Storage::disk('public')->exists($directoryPath)) {
-        //         Storage::disk('public')->deleteDirectory($directoryPath);
-        //     }
-
-        //     DB::commit();
-        // } catch (Throwable $e) {
-        //     DB::rollBack();
-
-        //     return back()->with('message', [
-        //         'type' => 'error',
-        //         'description' => 'Failed to delete finding: ' . $e->getMessage(),
-        //     ]);
-        // }
     }
 }

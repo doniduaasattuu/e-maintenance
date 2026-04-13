@@ -111,6 +111,7 @@ export default function EquipmentMaterials({ equipment, materials }: EquipmentMa
                                                 <RequiredLabel />
                                             </FieldLabel>
                                             <Input
+                                                id="quantity"
                                                 tabIndex={2}
                                                 type="number"
                                                 step="1"
@@ -121,8 +122,8 @@ export default function EquipmentMaterials({ equipment, materials }: EquipmentMa
                                         <Field>
                                             <FieldLabel htmlFor="note">Note</FieldLabel>
                                             <Input
+                                                id="note"
                                                 tabIndex={3}
-                                                type="numeric"
                                                 value={data.note}
                                                 min={'1'}
                                                 onChange={(e) => setData('note', e.target.value)}

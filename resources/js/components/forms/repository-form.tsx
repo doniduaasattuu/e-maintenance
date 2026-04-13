@@ -1,8 +1,10 @@
 import ButtonSubmit from '@/components/button-submit';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
 import React, { FormEventHandler } from 'react';
-import { Field, FieldError, FieldLabel } from '../ui/field';
+import { Field, FieldDescription, FieldError, FieldLabel } from '../ui/field';
 
 interface RepositoryFormParams {
     submit: FormEventHandler;
@@ -38,6 +40,9 @@ export default function RepositoryForm({
     successMessage,
     className,
 }: RepositoryFormParams) {
+    const { config } = usePage<SharedData>().props;
+    const maxFileUpload: number = config.maximumFileUpload;
+
     return (
         <form className={cn('space-y-6', className)} onSubmit={submit}>
             <Field>
@@ -70,6 +75,7 @@ export default function RepositoryForm({
                     onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
                 />
                 <FieldError>{errors.file}</FieldError>
+                <FieldDescription className="text-xs">{`Maximum file upload: ${maxFileUpload / 1024} MB`}</FieldDescription>
             </Field>
 
             {canSubmit && (

@@ -108,7 +108,7 @@ export default function TableRepository({ repositories, extensions, renderable, 
                                         <TableCell className="text-right">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="size-8">
+                                                    <Button size="icon" variant="ghost" className="size-6">
                                                         <MoreHorizontalIcon />
                                                     </Button>
                                                 </DropdownMenuTrigger>

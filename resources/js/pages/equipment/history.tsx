@@ -38,7 +38,7 @@ export default function EquipmentHistory({ equipment, histories }: EquipmentHist
             <Head title="History" />
 
             <EquipmentLayout equipment={equipment.data} className="w-full max-w-6xl">
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <HeadingSmall
                         title="History"
                         description="Installation and dismantle history for this equipment, including status and location changes."
