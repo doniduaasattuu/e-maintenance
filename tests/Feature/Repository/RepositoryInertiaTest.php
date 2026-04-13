@@ -21,7 +21,7 @@ test('repository index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('repository/index')
-                ->has('repositories.data', 14)
+                ->has('repositories.data', 10)
 
         );
 
@@ -32,7 +32,17 @@ test('repository index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('repository/index')
-                ->has('repositories.data', 6)
+                ->has('repositories.data', 10)
+        );
+
+    $this->actingAs($admin)
+        ->get(route('repositories.index', [
+            'page' => '3',
+        ]))
+        ->assertInertia(
+            fn(Assert $page) => $page
+                ->component('repository/index')
+                ->has('repositories.data', 0)
         );
 });
 

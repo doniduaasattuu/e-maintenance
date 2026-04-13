@@ -28,7 +28,7 @@ class RepositoryController extends Controller
     {
         Gate::authorize('index_repository');
 
-        $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate(14)->withQueryString();
+        $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate(10)->withQueryString();
         $extensions = Repository::distinct()->pluck('extension');
 
         return Inertia::render('repository/index', [
