@@ -21,7 +21,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Throwable;
 
 abstract class FindingController extends Controller
 {
@@ -224,68 +223,6 @@ abstract class FindingController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    // public function update(UpdateFindingRequest $request, Finding $finding)
-    // {
-    //     Gate::authorize('update_finding');
-
-    //     if ($finding->images()->where('category', 'after')->count() > 5) {
-    //         return back()->with('message', [
-    //             'type' => 'error',
-    //             'description' => 'Number of photos exceeds the maximum limit (5).',
-    //         ]);
-    //     }
-
-    //     DB::beginTransaction();
-
-    //     try {
-    //         $validated = $request->validated();
-
-    //         $status = FindingStatus::find($validated['finding_status_id']);
-
-    //         if (strtolower($status->name) === 'closed') {
-    //             $validated['verified_by'] = auth()->id();
-    //             $validated['closed_at'] = now();
-    //         } else {
-    //             $validated['verified_by'] = null;
-    //             $validated['rectified_by'] = auth()->id();
-    //             $validated['closed_at'] = null;
-    //         }
-
-    //         $finding->update($validated);
-
-    //         if ($request->hasFile('images')) {
-    //             foreach ($request->file('images') as $image) {
-    //                 $originalName = $image->getClientOriginalName();
-
-    //                 $path = $image->store('images/findings/' . $finding->id, 'public');
-
-    //                 FindingImage::create([
-    //                     'finding_id'    => $finding->id,
-    //                     'file_path'     => $path,
-    //                     'category'      => 'after',
-    //                     'original_name' => $originalName,
-    //                 ]);
-    //             }
-    //         }
-
-    //         DB::commit();
-
-    //         return back()->with('message', [
-    //             'type' => 'success',
-    //             'description' => 'Finding updated successfully' . ($request->hasFile('images') ? ' with new photos.' : '.'),
-    //         ]);
-    //     } catch (\Throwable $e) {
-    //         DB::rollBack();
-
-    //         return back()->with('message', [
-    //             'type' => 'error',
-    //             'description' => 'Failed updating finding: ' . $e->getMessage(),
-    //         ]);
-    //     }
-    // }
 
     protected function performUpdate(Request $request, Finding $finding, array $additionalData = [])
     {

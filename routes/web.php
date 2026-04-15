@@ -24,10 +24,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-Route::fallback(function () {
-    return abort(404);
-});
-
 require __DIR__ . '/functional-locations.php';
 require __DIR__ . '/equipments.php';
 require __DIR__ . '/materials.php';
@@ -38,3 +34,7 @@ require __DIR__ . '/inspection.php';
 require __DIR__ . '/roles.php';
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
+
+Route::fallback(function () {
+    return abort(404);
+});

@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
+    // EXPORT
+    Route::get('audits/export', [AuditController::class, 'export'])->name('audits.export');
+    Route::get('abnormalities/export', [AbnormalityController::class, 'export'])->name('abnormalities.export');
+
     // AUDIT
     Route::resource('audits', AuditController::class)->except('update');
     Route::post('audits/{finding}', [AuditController::class, 'update'])->name('audits.update');

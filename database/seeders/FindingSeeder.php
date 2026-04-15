@@ -14,7 +14,7 @@ class FindingSeeder extends Seeder
     public function run(): void
     {
         Finding::factory()
-            ->count(50)
+            ->count(150)
             ->create();
     }
 }

@@ -97,7 +97,7 @@ class FindingFactory extends Factory
         $rectificationAction = $rectificationActions[$randomIndex];
         $findingStatus =  FindingStatus::inRandomOrder()->first();
         $isClosed = strtolower($findingStatus->name) === 'closed';
-        $createdAt = $this->faker->dateTimeBetween('-1 month', 'now');
+        $createdAt = $this->faker->dateTimeBetween('-5 month', 'now');
 
         return [
             'finding_type_id' => $type->id,

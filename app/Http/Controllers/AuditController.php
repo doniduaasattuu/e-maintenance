@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FindingExport;
 use App\Http\Requests\Finding\Audit\StoreAuditRequest;
 use App\Http\Requests\Finding\Audit\UpdateAuditRequest;
 use App\Models\Finding;
+use App\Models\FindingType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AuditController extends FindingController
 {
@@ -145,5 +148,19 @@ class AuditController extends FindingController
                 'description' => $e->getMessage()
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'start_date'     => $request->query('start_date'),
+            'end_date'       => $request->query('end_date'),
+            'status_ids' => $request->query('status_ids'),
+            'department_ids' => $request->query('department_ids'),
+            'priority_ids' => $request->query('priority_ids'),
+            'type_id' => FindingType::where('code', $request->query('type_code'))->firstOrFail()->id,
+        ];
+
+        return Excel::download(new FindingExport($filters), 'Audit_Reports_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

@@ -75,7 +75,7 @@ export default function RepositoryForm({
                     onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
                 />
                 <FieldError>{errors.file}</FieldError>
-                <FieldDescription className="text-xs">{`Maximum file upload: ${maxFileUpload / 1024} MB`}</FieldDescription>
+                <FieldDescription className="text-xs">{`Maximum upload file size: ${maxFileUpload / 1024} MB`}</FieldDescription>
             </Field>
 
             {canSubmit && (

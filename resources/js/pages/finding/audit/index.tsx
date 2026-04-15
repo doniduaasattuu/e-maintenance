@@ -39,6 +39,7 @@ export default function FindingIndex({ findings, findingPriorities, findingStatu
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey="AUDIT" className="md:max-w-full">
                 <TableFinding
+                    findingTypeCode="AUD"
                     moduleKey="AUDIT"
                     findings={findings}
                     findingClauses={findingClauses}

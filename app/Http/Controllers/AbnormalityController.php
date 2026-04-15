@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FindingExport;
 use App\Http\Requests\Finding\Abnormality\StoreAbnormalityRequest;
 use App\Http\Requests\Finding\Abnormality\UpdateAbnormalityRequest;
 use App\Models\Finding;
+use App\Models\FindingType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AbnormalityController extends FindingController
 {
@@ -138,5 +141,19 @@ class AbnormalityController extends FindingController
                 'description' => $e->getMessage()
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'start_date'     => $request->query('start_date'),
+            'end_date'       => $request->query('end_date'),
+            'status_ids' => $request->query('status_ids'),
+            'department_ids' => $request->query('department_ids'),
+            'priority_ids' => $request->query('priority_ids'),
+            'type_id' => FindingType::where('code', $request->query('type_code'))->firstOrFail()->id,
+        ];
+
+        return Excel::download(new FindingExport($filters), 'Abnormalities_Reports_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

@@ -147,6 +147,25 @@ class Finding extends Model
         ]);
     }
 
+    #[Scope]
+    public function scopeWithAllRelations($query)
+    {
+        return $query->with([
+            'type',
+            'clause',
+            'status',
+            'priority',
+            'causeCode',
+            'department',
+            'equipment',
+            'functionalLocation',
+            'inspector',
+            'rectifier',
+            'verifier',
+            'images',
+        ]);
+    }
+
     public function type(): BelongsTo
     {
         return $this->belongsTo(FindingType::class, "finding_type_id");

@@ -1,5 +1,5 @@
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Link } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 import { Button } from './ui/button';
 
@@ -14,10 +14,8 @@ export default function ButtonAdd({ route, label, variant, tabIndex }: ButtonAdd
     const isMobile = useIsMobile();
 
     return (
-        <Link tabIndex={tabIndex} href={route}>
-            <Button size={'sm'} variant={variant ?? 'outline'}>
-                <Plus /> {isMobile ? 'New' : (label ?? 'New')}
-            </Button>
-        </Link>
+        <Button tabIndex={tabIndex} onClick={() => router.get(route)} size={'sm'} variant={variant ?? 'outline'}>
+            <Plus /> {isMobile ? 'New' : (label ?? 'New')}
+        </Button>
     );
 }

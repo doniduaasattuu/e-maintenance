@@ -1,14 +1,17 @@
+import { ButtonGroup } from '@/components/ui/button-group';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useIsMobile } from '@/hooks/use-mobile';
 import usePermissions from '@/hooks/use-permissions';
 import truncateText, { cn, tableCaption } from '@/lib/utils';
 import { CauseCode, Department, Finding, FindingClause, FindingImage, FindingPriority, FindingStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
-import { Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
+import { Edit, Info, MoreHorizontalIcon, Sheet, Trash2, Wrench } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
 import { ActionFindingDialog } from '../action-finding-dialog';
 import ButtonAdd from '../button-add';
 import { DateRangePopover } from '../date-range-popover';
+import DialogFindingExportExcel from '../dialog-finding-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterCauseCode from '../filter-cause-code';
@@ -27,6 +30,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 interface FindingTableProps {
+    findingTypeCode: string;
     findings: {
         data: Finding[];
         meta: Meta;
@@ -150,6 +154,7 @@ export function FindingCauseCodeCell({ finding }: { finding: Finding }) {
 }
 
 export default function TableFinding({
+    findingTypeCode,
     findings,
     findingClauses,
     findingPriorities,
@@ -215,6 +220,9 @@ export default function TableFinding({
         }
     }
 
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
+    const isMobile = useIsMobile();
+
     return (
         <>
             {withHeader && (
@@ -238,7 +246,13 @@ export default function TableFinding({
                         </Filter>
                         <DateRangePopover />
                     </div>
-                    {can.create_finding && <ButtonAdd route={route(`${endpoint}.create`)} tabIndex={2} />}
+                    <ButtonGroup>
+                        {can.create_finding && <ButtonAdd route={route(`${endpoint}.create`)} tabIndex={2} />}
+                        <Button onClick={() => setExportDialog(true)} title="Export to Excel" size={'sm'} variant={'outline'} tabIndex={3}>
+                            <Sheet />
+                            {!isMobile && 'Export'}
+                        </Button>
+                    </ButtonGroup>
                 </div>
             )}
             {findings.data && findings.data.length > 0 ? (
@@ -283,23 +297,6 @@ export default function TableFinding({
                                             />
                                         </TableCell>
                                     ) : null}
-                                    {/* {can.close_finding && finding.gallery?.after && finding.gallery.after.length > 0 ? (
-                                        <TableCell className="align-center min-w-10">
-                                            <Checkbox
-                                                checked={finding.status?.name.toLowerCase() === 'closed'}
-                                                disabled={finding.status?.name.toLowerCase() === 'closed'}
-                                                onCheckedChange={(checked) => {
-                                                    if (checked) {
-                                                        handleCloseFinding(finding);
-                                                    }
-                                                }}
-                                            />
-                                        </TableCell>
-                                    ) : (
-                                        <TableCell>
-                                            <Checkbox disabled></Checkbox>
-                                        </TableCell>
-                                    )} */}
                                     <TableCell className="align-center hidden min-w-55 md:table-cell">
                                         <div className="text-primary font-bold">{finding.clause?.code}</div>
                                         <div className="text-muted-foreground mt-1 text-xs text-wrap" title={finding.clause?.description}>
@@ -339,30 +336,6 @@ export default function TableFinding({
                                             </div>
                                         )}
                                     </TableCell>
-
-                                    {/* <TableCell className="align-center">
-                                        <div className="text-muted-foreground flex flex-col text-xs">
-                                            <Tooltip>
-                                                <TooltipTrigger className="w-20 truncate text-left">
-                                                    {truncateText(finding?.inspector?.name ?? '', 15)}
-                                                </TooltipTrigger>
-                                                <TooltipContent>{finding?.inspector?.name}</TooltipContent>
-                                            </Tooltip>
-                                            <span>{finding?.created_at}</span>
-                                        </div>
-                                    </TableCell>
-
-                                    <TableCell className="align-center">
-                                        <div className="text-muted-foreground flex flex-col text-xs">
-                                            <Tooltip>
-                                                <TooltipTrigger className="w-20 truncate text-left">
-                                                    {truncateText(finding?.verifier?.name ?? '', 15)}
-                                                </TooltipTrigger>
-                                                <TooltipContent>{finding?.verifier?.name}</TooltipContent>
-                                            </Tooltip>
-                                            <span>{finding?.closed_at}</span>
-                                        </div>
-                                    </TableCell> */}
 
                                     {moduleKey == 'ABNORMALITY' && <FindingCauseCodeCell finding={finding} />}
 
@@ -427,6 +400,16 @@ export default function TableFinding({
                 <EmptyIcon />
             )}
             <GeneratePagination meta={meta} />
+
+            <DialogFindingExportExcel
+                findingTypeCode={findingTypeCode}
+                endpoint={endpoint}
+                open={exportDialog}
+                setOpen={setExportDialog}
+                findingPriorities={findingPriorities}
+                findingStatuses={findingStatuses}
+                departments={departments}
+            />
 
             {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />}
         </>
