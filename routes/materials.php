@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
+    // EXPORT
+    Route::get('materials/export', [MaterialController::class, 'export'])->name('materials.export');
+
     Route::resource('materials', MaterialController::class);
 
     Route::prefix('materials')->group(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialExport;
 use App\Http\Requests\Material\StoreMaterialRequest;
 use App\Http\Requests\Material\UpdateMaterialRequest;
 use App\Http\Resources\MaterialResource;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class MaterialController extends Controller
@@ -165,5 +167,14 @@ class MaterialController extends Controller
                 'description' => 'Failed to delete material: ' . $e->getMessage(),
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'type_ids' => $request->query('type_ids'),
+        ];
+
+        return Excel::download(new MaterialExport($filters), 'Materials_' . now()->format('Ymd_His') . '.xlsx');
     }
 }
