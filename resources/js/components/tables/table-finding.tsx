@@ -261,21 +261,21 @@ export default function TableFinding({
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                {can.close_finding ? <TableHead className="w-12.5">#</TableHead> : null}
-                                <TableHead className="hidden w-40 md:table-cell">Clause</TableHead>
-                                <TableHead className="hidden w-25 md:table-cell">Status</TableHead>
-                                <TableHead className="hidden w-25 md:table-cell">Priority & Due</TableHead>
-                                <TableHead className="min-w-50">Description</TableHead>
-                                <TableHead className="w-25">Before</TableHead>
-                                <TableHead className="w-25">After</TableHead>
-                                <TableHead className="hidden min-w-50 md:table-cell">Rectification Action</TableHead>
-                                <TableHead className="hidden w-17.5 md:table-cell">
+                                {can.close_finding ? <TableHead className="text-muted-foreground w-12.5">#</TableHead> : null}
+                                <TableHead className="text-muted-foreground hidden w-40 md:table-cell">Clause</TableHead>
+                                <TableHead className="text-muted-foreground hidden w-25 md:table-cell">Status</TableHead>
+                                <TableHead className="text-muted-foreground hidden w-25 md:table-cell">Priority & Due</TableHead>
+                                <TableHead className="text-muted-foreground min-w-50">Description</TableHead>
+                                <TableHead className="text-muted-foreground w-25">Before</TableHead>
+                                <TableHead className="text-muted-foreground w-25">After</TableHead>
+                                <TableHead className="text-muted-foreground hidden min-w-50 md:table-cell">Rectification Action</TableHead>
+                                <TableHead className="text-muted-foreground hidden w-17.5 md:table-cell">
                                     {moduleKey == 'ABNORMALITY' ? 'Equipment' : 'Department'}
                                 </TableHead>
-                                {moduleKey == 'ABNORMALITY' && <TableHead className="w-17.5">Cause Code</TableHead>}
-                                {/* <TableHead className="w-10">Created</TableHead>
-                                <TableHead className="w-10">Closed</TableHead> */}
-                                <TableHead className="w-12.5"></TableHead>
+                                {moduleKey == 'ABNORMALITY' && <TableHead className="text-muted-foreground w-17.5">Cause Code</TableHead>}
+                                {/* <TableHead className="text-muted-foreground w-10">Created</TableHead>
+                                <TableHead className="text-muted-foreground w-10">Closed</TableHead> */}
+                                <TableHead className="text-muted-foreground w-12.5"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>

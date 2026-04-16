@@ -2,21 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FunctionalLocationExport;
 use App\Http\Requests\FunctionalLocation\StoreFunctionalLocationRequest;
 use App\Http\Requests\FunctionalLocation\UpdateFunctionalLocationRequest;
-use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
-use App\Http\Resources\EquipmentStatusResource;
 use App\Http\Resources\FindingResource;
 use App\Http\Resources\FunctionalLocationResource;
-use App\Http\Resources\WorkCenterResource;
-use App\Models\EquipmentClass;
-use App\Models\EquipmentStatus;
 use App\Models\FunctionalLocation;
-use App\Models\WorkCenter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class FunctionalLocationController extends Controller
@@ -150,5 +146,10 @@ class FunctionalLocationController extends Controller
                 'description' => $e->getMessage() ?? 'Functional location is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new FunctionalLocationExport(), 'Functional_Locations_' . now()->format('Ymd_His') . '.xlsx');
     }
 }
