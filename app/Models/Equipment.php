@@ -76,6 +76,16 @@ class Equipment extends Model
         }
     }
 
+    #[Scope]
+    public function scopeWithDefaultRelations($query)
+    {
+        return $query->with([
+            'functionalLocation',
+            'eclass',
+            'status',
+        ]);
+    }
+
     public function functionalLocation(): BelongsTo
     {
         return $this->belongsTo(FunctionalLocation::class);

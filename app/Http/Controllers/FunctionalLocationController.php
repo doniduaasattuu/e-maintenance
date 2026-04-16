@@ -150,6 +150,10 @@ class FunctionalLocationController extends Controller
 
     public function export(Request $request)
     {
-        return Excel::download(new FunctionalLocationExport(), 'Functional_Locations_' . now()->format('Ymd_His') . '.xlsx');
+        $filters = [
+            'area' => $request->query('area'),
+        ];
+
+        return Excel::download(new FunctionalLocationExport($filters), 'Functional_Locations_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

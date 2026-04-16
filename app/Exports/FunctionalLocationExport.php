@@ -12,12 +12,24 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class FunctionalLocationExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
-    /**
-     * @return \Illuminate\Support\Collection
-     */
+    protected $filters;
+
+    public function __construct(array $filters)
+    {
+        $this->filters = $filters;
+    }
+
     public function query()
     {
-        return FunctionalLocation::query()->latest();
+        $query = FunctionalLocation::query()->latest();
+
+        $area = $this->filters['area'] ?? null;
+        if ($area) {
+            $query->where('code', 'LIKE', "%{$area}%")
+                ->orWhere('description', 'LIKE', "%{$area}%");
+        }
+
+        return $query;
     }
 
     public function map($functionalLocation): array

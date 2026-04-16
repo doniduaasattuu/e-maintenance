@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
+    // EXPORT
+    Route::get('equipments/export', [EquipmentController::class, 'export'])->name('equipments.export');
+
     Route::resource('equipments', EquipmentController::class);
     // HISTORY
     Route::resource('equipment-histories', InstallDismantleHistoryController::class);

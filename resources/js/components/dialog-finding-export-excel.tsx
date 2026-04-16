@@ -283,7 +283,8 @@ export default function DialogFindingExportExcel({
                             </FieldGroup>
                         </FieldSet>
                     </FieldGroup>
-                    <DialogFooter>
+
+                    <DialogFooter className="gap-2 sm:gap-0">
                         <DialogClose asChild>
                             <Button size={'sm'} variant="outline">
                                 Cancel

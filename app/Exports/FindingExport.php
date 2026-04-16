@@ -57,7 +57,6 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             ]);
         });
 
-
         return $query->latest();
     }
 

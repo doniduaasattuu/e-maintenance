@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EquipmentExport;
 use App\Http\Requests\Equipment\StoreEquipmentRequest;
 use App\Http\Requests\Equipment\UpdateEquipmentRequest;
 use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
 use App\Http\Resources\FindingResource;
-use App\Http\Resources\RepositoryResource;
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 use Throwable;
 
 class EquipmentController extends Controller
@@ -173,5 +174,15 @@ class EquipmentController extends Controller
                 'description' => 'Failed to delete equipment: ' . $e->getMessage(),
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'status_ids' => $request->query('status_ids'),
+            'class_ids' => $request->query('class_ids'),
+        ];
+
+        return Excel::download(new EquipmentExport($filters), 'Equipments_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

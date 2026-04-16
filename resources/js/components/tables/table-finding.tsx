@@ -273,8 +273,6 @@ export default function TableFinding({
                                     {moduleKey == 'ABNORMALITY' ? 'Equipment' : 'Department'}
                                 </TableHead>
                                 {moduleKey == 'ABNORMALITY' && <TableHead className="text-muted-foreground w-17.5">Cause Code</TableHead>}
-                                {/* <TableHead className="text-muted-foreground w-10">Created</TableHead>
-                                <TableHead className="text-muted-foreground w-10">Closed</TableHead> */}
                                 <TableHead className="text-muted-foreground w-12.5"></TableHead>
                             </TableRow>
                         </TableHeader>
