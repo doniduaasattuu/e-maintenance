@@ -16,22 +16,25 @@ import { tableCaption } from '@/lib/utils';
 import { Department, Meta, Position, User, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
 import { RefreshCcw, Trash2 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
+import ButtonExport from '../button-export';
+import DialogUserExportExcel from '../dialog-user-export-excel';
 import EmptyIcon from '../empty-icon';
 import FilterWorkCenter from '../filter-work-center';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableUserProps {
     users: {
         data: User[];
         meta: Meta;
     };
-    departments: {
+    departments?: {
         data: Department[];
     };
-    positions: {
+    positions?: {
         data: Position[];
     };
-    workCenters: {
+    workCenters?: {
         data: WorkCenter[];
     };
     roles: string[];
@@ -52,6 +55,8 @@ export default function TableUser({ users, departments, positions, workCenters, 
         router.post(route('users.restore', id));
     }
 
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
+
     return (
         <>
             {withHeader && (
@@ -59,18 +64,21 @@ export default function TableUser({ users, departments, positions, workCenters, 
                     <div className="flex justify-between gap-2">
                         <SearchBar tabIndex={1} />
                         <Filter open={open} setOpen={setOpen} keys={['department', 'position', 'work-center', 'role']}>
-                            <FilterDepartment departments={departments.data} />
+                            <FilterDepartment departments={departments?.data ?? []} />
                             <CommandSeparator />
-                            <FilterPosition positions={positions.data} />
+                            <FilterPosition positions={positions?.data ?? []} />
                             <CommandSeparator />
-                            <FilterWorkCenter workCenters={workCenters.data} />
+                            <FilterWorkCenter workCenters={workCenters?.data ?? []} />
                             <CommandSeparator />
                             <FilterRole roles={roles} />
                             <CommandSeparator />
                             <FilterWithTrashed />
                         </Filter>
                     </div>
-                    {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} />}
+                    <ButtonGroup>
+                        {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} />}
+                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                    </ButtonGroup>
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
@@ -167,6 +175,14 @@ export default function TableUser({ users, departments, positions, workCenters, 
                 )}
             </div>
             <GeneratePagination meta={meta} />
+
+            <DialogUserExportExcel
+                open={exportDialog}
+                setOpen={setExportDialog}
+                departments={departments}
+                positions={positions}
+                workCenters={workCenters}
+            />
         </>
     );
 }

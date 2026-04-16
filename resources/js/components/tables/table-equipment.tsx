@@ -1,13 +1,13 @@
 import { ActionConfirm } from '@/components/action-confirm';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useIsMobile } from '@/hooks/use-mobile';
 import usePermissions from '@/hooks/use-permissions';
 import { tableCaption } from '@/lib/utils';
 import { Equipment, EquipmentClass, EquipmentStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
-import { Sheet, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
 import DialogEquipmentExportExcel from '../dialog-equipment-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
@@ -16,7 +16,6 @@ import FilterEquipmentStatus from '../filter-equipment-status';
 import { GeneratePagination } from '../generate-pagination';
 import SearchBar from '../search-bar';
 import TextLink from '../text-link';
-import { Button } from '../ui/button';
 import { ButtonGroup } from '../ui/button-group';
 import { CommandSeparator } from '../ui/command';
 
@@ -45,7 +44,6 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
     }
 
     const [exportDialog, setExportDialog] = useState<boolean>(false);
-    const isMobile = useIsMobile();
 
     return (
         <>
@@ -61,10 +59,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                     </div>
                     <ButtonGroup>
                         {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={2} />}
-                        <Button onClick={() => setExportDialog(true)} title="Export to Excel" size={'sm'} variant={'outline'} tabIndex={3}>
-                            <Sheet />
-                            {!isMobile && 'Export'}
-                        </Button>
+                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                     </ButtonGroup>
                 </div>
             )}

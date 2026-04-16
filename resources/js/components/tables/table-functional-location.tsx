@@ -4,16 +4,15 @@ import { GeneratePagination } from '@/components/generate-pagination';
 import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useIsMobile } from '@/hooks/use-mobile';
 import usePermissions from '@/hooks/use-permissions';
 import { tableCaption } from '@/lib/utils';
 import { FunctionalLocation, Meta } from '@/types';
 import { Link, router } from '@inertiajs/react';
-import { Edit, Sheet, Trash2 } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import ButtonExport from '../button-export';
 import DialogFunctionalLocationExportExcel from '../dialog-functional-location-export-excel';
 import EmptyIcon from '../empty-icon';
-import { Button } from '../ui/button';
 import { ButtonGroup } from '../ui/button-group';
 
 interface TableFunctionalLocationProps {
@@ -28,7 +27,6 @@ export default function TableFunctionalLocation({ functionalLocations, withHeade
     const { can } = usePermissions();
     const meta = functionalLocations.meta;
     const caption = tableCaption(meta);
-    const isMobile = useIsMobile();
     const [exportDialog, setExportDialog] = useState<boolean>(false);
 
     function handleDeleteFunctionalLocation(id: number | string) {
@@ -43,10 +41,7 @@ export default function TableFunctionalLocation({ functionalLocations, withHeade
                     </div>
                     <ButtonGroup>
                         {can.create_functionallocation && <ButtonAdd tabIndex={2} route={route('functional-locations.create')} />}
-                        <Button onClick={() => setExportDialog(true)} title="Export to Excel" size={'sm'} variant={'outline'} tabIndex={3}>
-                            <Sheet />
-                            {!isMobile && 'Export'}
-                        </Button>
+                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                     </ButtonGroup>
                 </div>
             )}

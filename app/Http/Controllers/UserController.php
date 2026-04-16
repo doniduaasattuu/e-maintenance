@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UserExport;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\DepartmentResource;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -188,5 +190,16 @@ class UserController extends Controller
             'type' => 'success',
             'description' => 'User restored successfully',
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'department_ids' => $request->query('department_ids'),
+            'position_ids' => $request->query('position_ids'),
+            'work_center_ids' => $request->query('work_center_ids'),
+        ];
+
+        return Excel::download(new UserExport($filters), 'Users_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

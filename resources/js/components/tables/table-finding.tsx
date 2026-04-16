@@ -1,15 +1,15 @@
 import { ButtonGroup } from '@/components/ui/button-group';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useIsMobile } from '@/hooks/use-mobile';
 import usePermissions from '@/hooks/use-permissions';
 import truncateText, { cn, tableCaption } from '@/lib/utils';
 import { CauseCode, Department, Finding, FindingClause, FindingImage, FindingPriority, FindingStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
-import { Edit, Info, MoreHorizontalIcon, Sheet, Trash2, Wrench } from 'lucide-react';
+import { Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
 import { ActionFindingDialog } from '../action-finding-dialog';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
 import { DateRangePopover } from '../date-range-popover';
 import DialogFindingExportExcel from '../dialog-finding-export-excel';
 import EmptyIcon from '../empty-icon';
@@ -221,7 +221,6 @@ export default function TableFinding({
     }
 
     const [exportDialog, setExportDialog] = useState<boolean>(false);
-    const isMobile = useIsMobile();
 
     return (
         <>
@@ -248,10 +247,7 @@ export default function TableFinding({
                     </div>
                     <ButtonGroup>
                         {can.create_finding && <ButtonAdd route={route(`${endpoint}.create`)} tabIndex={2} />}
-                        <Button onClick={() => setExportDialog(true)} title="Export to Excel" size={'sm'} variant={'outline'} tabIndex={3}>
-                            <Sheet />
-                            {!isMobile && 'Export'}
-                        </Button>
+                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                     </ButtonGroup>
                 </div>
             )}

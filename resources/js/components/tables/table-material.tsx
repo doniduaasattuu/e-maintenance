@@ -4,19 +4,18 @@ import { GeneratePagination } from '@/components/generate-pagination';
 import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useIsMobile } from '@/hooks/use-mobile';
 import usePermissions from '@/hooks/use-permissions';
 import { formatCurrency, tableCaption } from '@/lib/utils';
 import { Material, MaterialType, MaterialUnit, Meta } from '@/types';
 import { router } from '@inertiajs/react';
-import { Sheet, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
+import ButtonExport from '../button-export';
 import DialogMaterialExportExcel from '../dialog-material-export-excel copy';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterMaterialType from '../filter-material-type';
 import FilterMaterialUnit from '../filter-material-unit';
-import { Button } from '../ui/button';
 import { ButtonGroup } from '../ui/button-group';
 import { CommandSeparator } from '../ui/command';
 
@@ -45,7 +44,6 @@ export default function TableMaterial({ materials, materialUnits, materialTypes,
     }
 
     const [exportDialog, setExportDialog] = useState<boolean>(false);
-    const isMobile = useIsMobile();
 
     return (
         <>
@@ -61,10 +59,7 @@ export default function TableMaterial({ materials, materialUnits, materialTypes,
                     </div>
                     <ButtonGroup>
                         {can.create_material && <ButtonAdd tabIndex={2} route={route('materials.create')} />}
-                        <Button onClick={() => setExportDialog(true)} title="Export to Excel" size={'sm'} variant={'outline'} tabIndex={3}>
-                            <Sheet />
-                            {!isMobile && 'Export'}
-                        </Button>
+                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                     </ButtonGroup>
                 </div>
             )}

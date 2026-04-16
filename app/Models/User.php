@@ -110,6 +110,16 @@ class User extends Authenticatable
         }
     }
 
+    #[Scope]
+    public function scopeWithDefaultRelations($query)
+    {
+        return $query->with([
+            'department',
+            'position',
+            'workCenter',
+        ]);
+    }
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class, 'department_id');

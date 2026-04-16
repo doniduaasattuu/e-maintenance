@@ -62,7 +62,7 @@ export default function DialogMaterialExportExcel({ open, setOpen, materialTypes
                     <DialogHeader>
                         <DialogTitle>Export to Excel</DialogTitle>
                         <DialogDescription>
-                            Configure your Excel report. Select the material type to filter the equipment to be exported.
+                            Configure your Excel report. Select the material type to filter the material to be exported.
                         </DialogDescription>
                     </DialogHeader>
                     {/* STATUS */}
@@ -83,8 +83,8 @@ export default function DialogMaterialExportExcel({ open, setOpen, materialTypes
                                                 name={type.code}
                                                 defaultChecked
                                             />
-                                            <Label htmlFor={type.code} className="font-normal">
-                                                {type.code}
+                                            <Label htmlFor={type.code} className="truncate font-normal">
+                                                {`${type.code} - ${type.description}`}
                                             </Label>
                                         </Field>
                                     );
