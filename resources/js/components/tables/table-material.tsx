@@ -11,7 +11,7 @@ import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 import ButtonExport from '../button-export';
-import DialogMaterialExportExcel from '../dialog-material-export-excel copy';
+import DialogMaterialExportExcel from '../dialog-material-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterMaterialType from '../filter-material-type';

@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
+    // EXPORT
+    Route::get('repositories/export', [RepositoryController::class, 'export'])->name('repositories.export');
+
     Route::resource('repositories', RepositoryController::class)->except(['update']);
     Route::post('repositories/{repository}', [RepositoryController::class, 'update'])->name('repositories.update');
 

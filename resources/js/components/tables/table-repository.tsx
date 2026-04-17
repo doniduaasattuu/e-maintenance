@@ -6,14 +6,17 @@ import { copyTextToClipboard, tableCaption } from '@/lib/utils';
 import { Meta, Repository } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { Copy, Download, Edit, MoreHorizontalIcon, Trash2 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
+import DialogRepositoryExportExcel from '../dialog-repository-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterRepositoryExtension from '../filter-repository-extension';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
+import { ButtonGroup } from '../ui/button-group';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface TableRepositoryProps {
@@ -40,6 +43,8 @@ export default function TableRepository({ repositories, extensions, renderable, 
         window.open(route('repositories.show', id));
     }
 
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
+
     return (
         <>
             {withHeader && (
@@ -50,7 +55,10 @@ export default function TableRepository({ repositories, extensions, renderable, 
                             <FilterRepositoryExtension extensions={extensions} />
                         </Filter>
                     </div>
-                    {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={2} />}
+                    <ButtonGroup>
+                        {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={2} />}
+                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                    </ButtonGroup>
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
@@ -155,6 +163,8 @@ export default function TableRepository({ repositories, extensions, renderable, 
                 )}
             </div>
             <GeneratePagination meta={meta} />
+
+            <DialogRepositoryExportExcel open={exportDialog} setOpen={setExportDialog} extensions={extensions} />
         </>
     );
 }

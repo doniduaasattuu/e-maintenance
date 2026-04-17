@@ -65,32 +65,34 @@ export default function DialogMaterialExportExcel({ open, setOpen, materialTypes
                             Configure your Excel report. Select the material type to filter the material to be exported.
                         </DialogDescription>
                     </DialogHeader>
-                    {/* STATUS */}
-                    <FieldSet className="gap-5">
-                        <FieldLegend className="mb-2" variant="label">
-                            Material Type:
-                        </FieldLegend>
-                        <FieldDescription>Select the material type.</FieldDescription>
-                        <FieldGroup className="gap-3">
-                            {materialTypes?.data &&
-                                materialTypes?.data.map((type: MaterialType) => {
-                                    return (
-                                        <Field orientation="horizontal">
-                                            <Checkbox
-                                                onCheckedChange={(checked: boolean) => handleTypeChange(type.id, checked)}
-                                                id={type.code}
-                                                checked={data.type_ids.includes(type.id)}
-                                                name={type.code}
-                                                defaultChecked
-                                            />
-                                            <Label htmlFor={type.code} className="truncate font-normal">
-                                                {`${type.code} - ${type.description}`}
-                                            </Label>
-                                        </Field>
-                                    );
-                                })}
-                        </FieldGroup>
-                    </FieldSet>
+                    <FieldGroup className="no-scrollbar max-h-[50vh] overflow-y-auto">
+                        {/* STATUS */}
+                        <FieldSet className="gap-5">
+                            <FieldLegend className="mb-2" variant="label">
+                                Material Type:
+                            </FieldLegend>
+                            <FieldDescription>Select the material type.</FieldDescription>
+                            <FieldGroup className="gap-3">
+                                {materialTypes?.data &&
+                                    materialTypes?.data.map((type: MaterialType) => {
+                                        return (
+                                            <Field orientation="horizontal">
+                                                <Checkbox
+                                                    onCheckedChange={(checked: boolean) => handleTypeChange(type.id, checked)}
+                                                    id={type.code}
+                                                    checked={data.type_ids.includes(type.id)}
+                                                    name={type.code}
+                                                    defaultChecked
+                                                />
+                                                <Label htmlFor={type.code} className="truncate font-normal">
+                                                    {`${type.code} - ${type.description}`}
+                                                </Label>
+                                            </Field>
+                                        );
+                                    })}
+                            </FieldGroup>
+                        </FieldSet>
+                    </FieldGroup>
 
                     <DialogFooter className="gap-2 sm:gap-0">
                         <DialogClose asChild>

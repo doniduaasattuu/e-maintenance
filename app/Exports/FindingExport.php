@@ -77,7 +77,7 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             $finding->rectification_action ?? '-',
             $finding->inspector->name ?? '-',
             $finding->rectifier->name ?? '-',
-            $finding->verfier->name ?? '-',
+            $finding->verifier->name ?? '-',
             $finding->closed_at ?? '-',
         ];
     }

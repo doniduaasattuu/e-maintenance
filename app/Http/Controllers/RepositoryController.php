@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RepositoryExport;
 use App\Http\Requests\Repository\StoreRepositoryRequest;
 use App\Http\Requests\Repository\UpdateRepositoryRequest;
 use App\Http\Resources\RepositoryResource;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class RepositoryController extends Controller
@@ -142,5 +144,14 @@ class RepositoryController extends Controller
                 'description' => $e->getMessage() ?? 'Repository is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'extension' => $request->query('extension'),
+        ];
+
+        return Excel::download(new RepositoryExport($filters), 'Documents_' . now()->format('Ymd_His') . '.xlsx');
     }
 }
