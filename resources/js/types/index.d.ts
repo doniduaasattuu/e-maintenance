@@ -23,6 +23,7 @@ export interface NavItem {
     icon?: LucideIcon | null;
     isActive?: boolean;
     permission?: string;
+    roles?: string[];
     children?: string[];
     subItems?: NavItem[];
     multiple?: boolean;

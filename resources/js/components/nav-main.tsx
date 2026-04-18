@@ -17,7 +17,7 @@ import { Badge } from './ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
-    const { can } = usePermissions();
+    const { can, hasAnyRole } = usePermissions();
     const { notifications } = usePage<SharedData>().props;
     const auditOpen = notifications.findings.audit_open;
     const abnormalityOpen = notifications.findings.abnormality_open;
@@ -26,10 +26,13 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>Menu</SidebarGroupLabel>
             <SidebarMenu>
-                {items.map((item: NavItem) =>
-                    item.subItems ? (
+                {items.map((item: NavItem, index: number) => {
+                    const roleAllowed = !item.roles || hasAnyRole(item.roles);
+                    if (!roleAllowed) return null;
+
+                    return item.subItems ? (
                         <Collapsible
-                            key={item.title}
+                            key={index}
                             className="group/collapsible"
                             defaultOpen={item.subItems?.some((subItem) => window.location.pathname.startsWith(removeOrigin(subItem.href)))}
                         >
@@ -87,7 +90,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                             </SidebarMenuItem>
                         </Collapsible>
                     ) : !item.permission || can[item.permission] == true ? (
-                        <SidebarMenuItem key={item.title}>
+                        <SidebarMenuItem key={index}>
                             <SidebarMenuButton
                                 asChild
                                 isActive={
@@ -102,8 +105,8 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
-                    ) : null,
-                )}
+                    ) : null;
+                })}
             </SidebarMenu>
         </SidebarGroup>
     );

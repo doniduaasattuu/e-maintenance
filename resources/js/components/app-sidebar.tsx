@@ -46,6 +46,7 @@ const mainNavItems: NavItem[] = [
         title: 'Reference Data',
         href: '#',
         icon: Layers,
+        roles: ['Admin'],
         subItems: [
             {
                 title: strings.EQUIPMENT_HISTORY?.label ?? 'Equipment History',
