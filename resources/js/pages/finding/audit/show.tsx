@@ -1,45 +1,21 @@
+import CardFindingDetail from '@/components/card-finding-detail';
 import HeadingSmall from '@/components/heading-small';
 import Lightbox from '@/components/light-box';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field } from '@/components/ui/field';
-import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import truncateText from '@/lib/utils';
 import { BreadcrumbItem, Finding, FindingImage } from '@/types';
-import { Head, router } from '@inertiajs/react';
-import {
-    AlertCircle,
-    Box,
-    BuildingIcon,
-    Calendar,
-    CalendarCheck,
-    CalendarClock,
-    CalendarFold,
-    CheckSquare,
-    Edit,
-    HardHat,
-    Info,
-    Maximize2,
-    ScanSearch,
-    Timer,
-    TriangleAlert,
-    User,
-    UserPen,
-} from 'lucide-react';
-import React, { useState } from 'react';
+import { Head } from '@inertiajs/react';
+import { Box, Info, Maximize2 } from 'lucide-react';
+import { useState } from 'react';
 
 interface FindingShowProps {
     finding: {
         data: Finding;
     };
-}
-
-interface LiProps {
-    title: string;
-    children: React.ReactNode;
+    type: 'AUD' | 'ABN';
 }
 
 const PhotoGrid = ({ title, images, onSelect }: { title: string; images: FindingImage[]; onSelect: (img: FindingImage) => void }) => (
@@ -62,22 +38,8 @@ const PhotoGrid = ({ title, images, onSelect }: { title: string; images: Finding
     </div>
 );
 
-const Li = ({ title, children }: LiProps) => {
-    return (
-        <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground">{title}</span>
-            <div className="flex gap-2">{children}</div>
-        </div>
-    );
-};
-
-const Ul = ({ children }: { children: React.ReactNode }) => {
-    return <div className="grid grid-rows-5 gap-2 space-y-3 text-sm">{children}</div>;
-};
-
-export default function FindingShow({ finding }: FindingShowProps) {
+export default function FindingShow({ finding, type }: FindingShowProps) {
     const strings = UI_STRINGS;
-    const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: strings.AUDIT?.plural ?? 'Audits',
@@ -92,14 +54,6 @@ export default function FindingShow({ finding }: FindingShowProps) {
     const [selectedImage, setSelectedImage] = useState<FindingImage | null>(null);
     const beforeImages = finding.data?.images?.filter((img) => img.category === 'before') || [];
     const afterImages = finding.data?.images?.filter((img) => img.category === 'after') || [];
-
-    const handleEditFinding = (id: number) => {
-        router.get(route('audits.edit', id));
-    };
-
-    const isClosed: boolean = finding.data.status?.name.toLocaleLowerCase() == 'closed';
-    const isInProgress: boolean = finding.data.status?.name.toLocaleLowerCase() == 'in progress';
-    const isInReview: boolean = finding.data.status?.name.toLocaleLowerCase() == 'review';
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -119,7 +73,9 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                 <AlertDescription>{finding.data.clause?.description ?? 'Clause description'}</AlertDescription>
                             </Alert>
                         </Field>
-                        <Card className="mx-auto w-full">
+
+                        <CardFindingDetail finding={finding} type={type} />
+                        {/* <Card className="mx-auto w-full">
                             <CardHeader>
                                 <CardTitle className="text-md">{finding.data.functionalLocation?.description ?? 'Location'}</CardTitle>
                                 <CardDescription>
@@ -204,7 +160,7 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                     </Button>
                                 )}
                             </CardFooter>
-                        </Card>
+                        </Card> */}
                     </div>
 
                     <div className="min-h-0 space-y-6 lg:col-span-5 xl:col-span-6">

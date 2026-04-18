@@ -258,7 +258,7 @@ export default function TableFinding({
                         <TableHeader>
                             <TableRow>
                                 {can.close_finding ? <TableHead className="text-muted-foreground w-12.5">#</TableHead> : null}
-                                <TableHead className="text-muted-foreground hidden w-40 md:table-cell">Clause</TableHead>
+                                <TableHead className="text-muted-foreground w-40">Area & Clause</TableHead>
                                 <TableHead className="text-muted-foreground hidden w-25 md:table-cell">Status</TableHead>
                                 <TableHead className="text-muted-foreground hidden w-25 md:table-cell">Priority & Due</TableHead>
                                 <TableHead className="text-muted-foreground min-w-50">Description</TableHead>
@@ -291,10 +291,20 @@ export default function TableFinding({
                                             />
                                         </TableCell>
                                     ) : null}
-                                    <TableCell className="align-center hidden min-w-55 md:table-cell">
-                                        <div className="text-primary font-bold">{finding.clause?.code}</div>
-                                        <div className="text-muted-foreground mt-1 text-xs text-wrap" title={finding.clause?.description}>
-                                            {truncateText(finding.clause?.description ?? '', 100)}
+                                    <TableCell className="align-center min-w-55">
+                                        <div className="flex flex-col gap-1">
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span>{truncateText(finding.functionalLocation?.description ?? '', 25)}</span>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{finding.functionalLocation?.code}</TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span className="text-muted-foreground text-xs">{finding?.clause?.code}</span>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{finding?.clause?.description}</TooltipContent>
+                                            </Tooltip>
                                         </div>
                                     </TableCell>
 

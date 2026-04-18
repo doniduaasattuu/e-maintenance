@@ -153,6 +153,7 @@ abstract class FindingController extends Controller
 
         return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/show", [
             'finding' => new FindingResource($finding),
+            'type' => $this->getTypeCode(),
         ]);
     }
 

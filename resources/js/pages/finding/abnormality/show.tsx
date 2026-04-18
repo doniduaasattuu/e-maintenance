@@ -1,46 +1,20 @@
+import CardFindingDetail from '@/components/card-finding-detail';
 import HeadingSmall from '@/components/heading-small';
 import Lightbox from '@/components/light-box';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field } from '@/components/ui/field';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Finding, FindingImage } from '@/types';
-import { Head, router } from '@inertiajs/react';
-import {
-    AlertCircle,
-    Box,
-    BuildingIcon,
-    Calendar,
-    CalendarCheck,
-    CalendarClock,
-    CalendarFold,
-    CheckSquare,
-    Edit,
-    HardHat,
-    Info,
-    Maximize2,
-    Microscope,
-    ScanSearch,
-    Timer,
-    TriangleAlert,
-    User,
-    UserPen,
-} from 'lucide-react';
-import React, { useState } from 'react';
+import { Head } from '@inertiajs/react';
+import { Box, Info, Maximize2 } from 'lucide-react';
+import { useState } from 'react';
 
 interface FindingShowProps {
     finding: {
         data: Finding;
     };
-}
-
-interface LiProps {
-    title: string;
-    children: React.ReactNode;
+    type: 'AUD' | 'ABN';
 }
 
 const PhotoGrid = ({ title, images, onSelect }: { title: string; images: FindingImage[]; onSelect: (img: FindingImage) => void }) => (
@@ -63,22 +37,8 @@ const PhotoGrid = ({ title, images, onSelect }: { title: string; images: Finding
     </div>
 );
 
-const Li = ({ title, children }: LiProps) => {
-    return (
-        <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground">{title}</span>
-            <div className="flex gap-2">{children}</div>
-        </div>
-    );
-};
-
-const Ul = ({ children }: { children: React.ReactNode }) => {
-    return <div className="grid grid-rows-6 gap-2 space-y-3 text-sm">{children}</div>;
-};
-
-export default function FindingShow({ finding }: FindingShowProps) {
+export default function FindingShow({ finding, type }: FindingShowProps) {
     const strings = UI_STRINGS;
-    const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: strings.ABNORMALITY?.plural ?? 'Abnormalities',
@@ -93,14 +53,6 @@ export default function FindingShow({ finding }: FindingShowProps) {
     const [selectedImage, setSelectedImage] = useState<FindingImage | null>(null);
     const beforeImages = finding.data?.images?.filter((img) => img.category === 'before') || [];
     const afterImages = finding.data?.images?.filter((img) => img.category === 'after') || [];
-
-    const handleEditFinding = (id: number) => {
-        router.get(route('abnormalities.edit', id));
-    };
-
-    const isClosed: boolean = finding.data.status?.name.toLocaleLowerCase() == 'closed';
-    const isInProgress: boolean = finding.data.status?.name.toLocaleLowerCase() == 'in progress';
-    const isInReview: boolean = finding.data.status?.name.toLocaleLowerCase() == 'review';
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -120,94 +72,8 @@ export default function FindingShow({ finding }: FindingShowProps) {
                                 <AlertDescription>{finding.data.clause?.description ?? 'Clause description'}</AlertDescription>
                             </Alert>
                         </Field>
-                        <Card className="mx-auto w-full">
-                            <CardHeader>
-                                <CardTitle className="text-md">{finding.data.equipment?.code ?? 'Equipment'}</CardTitle>
-                                <CardDescription>{finding.data.description}</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <Ul>
-                                        <Li title="Priority">
-                                            <AlertCircle
-                                                color={finding.data.priority?.color_code}
-                                                className="text-muted-foreground mt-0.5 size-4 shrink-0"
-                                            />
-                                            <span>{finding.data.priority?.label ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Inspector">
-                                            <UserPen className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.inspector?.name ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Issued Date">
-                                            <Calendar className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.created_at ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Action by">
-                                            <HardHat className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.rectifier?.name ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Equipment">
-                                            <Box className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.equipment?.code ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Department">
-                                            <BuildingIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.department?.name ?? '-'}</span>
-                                        </Li>
-                                    </Ul>
-                                    <Ul>
-                                        <Li title="Status">
-                                            {isClosed ? (
-                                                <CheckSquare className="mt-0.5 size-4 shrink-0 text-green-400" />
-                                            ) : isInProgress ? (
-                                                <Timer className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            ) : isInReview ? (
-                                                <ScanSearch className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            ) : (
-                                                <TriangleAlert className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            )}
 
-                                            <span className={isClosed ? 'text-green-400' : undefined}>{finding.data.status?.name ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Verifier">
-                                            <User className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.verifier?.name ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Due Date">
-                                            <CalendarClock className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.due_date ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Deadline">
-                                            <CalendarFold className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.due_date_readable ?? '-'} </span>
-                                        </Li>
-                                        <Li title="Closed Date">
-                                            <CalendarCheck className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.closed_at ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Cause Code">
-                                            <Microscope className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>
-                                                <Tooltip>
-                                                    <TooltipTrigger className="text-left">
-                                                        {finding.data.causeCode?.description ?? '-'}
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>{finding.data.causeCode?.code ?? '-'}</TooltipContent>
-                                                </Tooltip>
-                                            </span>
-                                        </Li>
-                                    </Ul>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="flex flex-col gap-3">
-                                {can.edit_abnormality && (
-                                    <Button onClick={() => handleEditFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
-                                        <Edit className="size-4" /> Edit
-                                    </Button>
-                                )}
-                            </CardFooter>
-                        </Card>
+                        <CardFindingDetail finding={finding} type={type} />
                     </div>
 
                     <div className="min-h-0 space-y-6 lg:col-span-5 xl:col-span-6">
