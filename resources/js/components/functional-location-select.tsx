@@ -50,7 +50,7 @@ export default function FunctionalLocationSelect({
     }, []);
 
     useEffect(() => {
-        if (input.length > 0) {
+        if (input?.trim().length > 0) {
             const delayDebounce = setTimeout(() => fetchLocations(input), 300);
             return () => clearTimeout(delayDebounce);
         } else {
@@ -101,24 +101,26 @@ export default function FunctionalLocationSelect({
                             <CommandList>
                                 <CommandEmpty>No results found.</CommandEmpty>
                                 <CommandGroup>
-                                    {options.map((loc) => (
-                                        <CommandItem
-                                            key={loc.id}
-                                            value={loc.code}
-                                            onSelect={() => {
-                                                onChange(loc.id);
-                                                setSelectedLoc(loc);
-                                                setOpen(false);
-                                                setInput('');
-                                            }}
-                                        >
-                                            <Check className={cn('mr-2 h-4 w-4', selectedLoc?.id === loc.id ? 'opacity-100' : 'opacity-0')} />
-                                            <div className="flex flex-col">
-                                                <span className="font-medium">{loc.code}</span>
-                                                <span className="text-muted-foreground line-clamp-1 text-xs">{loc.description}</span>
-                                            </div>
-                                        </CommandItem>
-                                    ))}
+                                    {options && options.length > 0
+                                        ? options?.map((loc) => (
+                                              <CommandItem
+                                                  key={loc.id}
+                                                  value={loc.code}
+                                                  onSelect={() => {
+                                                      onChange(loc.id);
+                                                      setSelectedLoc(loc);
+                                                      setOpen(false);
+                                                      setInput('');
+                                                  }}
+                                              >
+                                                  <Check className={cn('mr-2 h-4 w-4', selectedLoc?.id === loc.id ? 'opacity-100' : 'opacity-0')} />
+                                                  <div className="flex flex-col">
+                                                      <span className="font-medium">{loc.code}</span>
+                                                      <span className="text-muted-foreground line-clamp-1 text-xs">{loc.description}</span>
+                                                  </div>
+                                              </CommandItem>
+                                          ))
+                                        : null}
                                 </CommandGroup>
                             </CommandList>
                         </Command>

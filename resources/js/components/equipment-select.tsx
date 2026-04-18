@@ -49,7 +49,7 @@ export default function EquipmentSelect({
     }, []);
 
     useEffect(() => {
-        if (input.length > 0) {
+        if (input?.trim().length > 0) {
             const delayDebounce = setTimeout(() => fetchEquipments(input), 300);
             return () => clearTimeout(delayDebounce);
         } else {

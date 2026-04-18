@@ -49,7 +49,7 @@ export default function MaterialSelect({
     }, []);
 
     useEffect(() => {
-        if (input.length > 0) {
+        if (input?.trim().length > 0) {
             const delayDebounce = setTimeout(() => fetchMaterials(input), 300);
             return () => clearTimeout(delayDebounce);
         } else {

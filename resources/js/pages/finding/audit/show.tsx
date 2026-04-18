@@ -46,7 +46,7 @@ export default function FindingShow({ finding, type }: FindingShowProps) {
             href: route('audits.index'),
         },
         {
-            title: truncateText(finding.data.functionalLocation?.code ?? '', 20) ?? finding.data.id.toString(),
+            title: truncateText(finding.data.functionalLocation?.description ?? 'N/A', 20) ?? finding.data.id.toString(),
             href: route('audits.index', finding.data.id),
         },
     ];
@@ -75,92 +75,6 @@ export default function FindingShow({ finding, type }: FindingShowProps) {
                         </Field>
 
                         <CardFindingDetail finding={finding} type={type} />
-                        {/* <Card className="mx-auto w-full">
-                            <CardHeader>
-                                <CardTitle className="text-md">{finding.data.functionalLocation?.description ?? 'Location'}</CardTitle>
-                                <CardDescription>
-                                    <div className="mt-2 grid grid-cols-1 gap-2 space-y-2 sm:grid-cols-2 sm:space-y-0">
-                                        <div>
-                                            <span className="text-xs font-light text-gray-500">Description:</span>
-                                            <br />
-                                            {finding.data.description ?? '-'}
-                                        </div>
-                                        <div>
-                                            <span className="text-xs font-light text-gray-500">Rectification Action:</span>
-                                            <br />
-                                            {finding.data.rectification_action ?? '-'}
-                                        </div>
-                                    </div>
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <Ul>
-                                        <Li title="Priority">
-                                            <AlertCircle
-                                                color={finding.data.priority?.color_code}
-                                                className="text-muted-foreground mt-0.5 size-4 shrink-0"
-                                            />
-                                            <span>{finding.data.priority?.label ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Inspector">
-                                            <UserPen className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.inspector?.name ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Issued Date">
-                                            <Calendar className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.created_at ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Action by">
-                                            <HardHat className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.rectifier?.name ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Department">
-                                            <BuildingIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.department?.name ?? '-'}</span>
-                                        </Li>
-                                    </Ul>
-                                    <Ul>
-                                        <Li title="Status">
-                                            {isClosed ? (
-                                                <CheckSquare className="mt-0.5 size-4 shrink-0 text-green-400" />
-                                            ) : isInProgress ? (
-                                                <Timer className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            ) : isInReview ? (
-                                                <ScanSearch className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            ) : (
-                                                <TriangleAlert className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            )}
-
-                                            <span className={isClosed ? 'text-green-400' : undefined}>{finding.data.status?.name ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Verifier">
-                                            <User className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.verifier?.name ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Due Date">
-                                            <CalendarClock className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.due_date ?? '-'}</span>
-                                        </Li>
-                                        <Li title="Deadline">
-                                            <CalendarFold className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.due_date_readable ?? '-'} </span>
-                                        </Li>
-                                        <Li title="Closed Date">
-                                            <CalendarCheck className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <span>{finding.data.closed_at ?? '-'}</span>
-                                        </Li>
-                                    </Ul>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="flex flex-col gap-3">
-                                {can.edit_audit && (
-                                    <Button onClick={() => handleEditFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
-                                        <Edit className="size-4" /> Edit
-                                    </Button>
-                                )}
-                            </CardFooter>
-                        </Card> */}
                     </div>
 
                     <div className="min-h-0 space-y-6 lg:col-span-5 xl:col-span-6">

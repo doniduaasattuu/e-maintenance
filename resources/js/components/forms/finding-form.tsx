@@ -96,8 +96,7 @@ export default function FindingForm({
         data.functional_location_id == '' ||
         data.finding_status_id == '' ||
         data.finding_priority_id == '';
-    const disabledAbnormality = disabledAudit || data.cause_code_id == '' || data.department_id == '' || data.equipment_id == '';
-
+    const disabledAbnormality = disabledAudit || data.cause_code_id == '' || data.department_id == '';
     const disabledWhen = type == 'AUD' ? disabledAudit : disabledAbnormality;
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -287,10 +286,7 @@ export default function FindingForm({
 
             {type == 'ABN' && (
                 <Field>
-                    <FieldLabel htmlFor="equipment_id">
-                        Equipment
-                        <RequiredLabel />
-                    </FieldLabel>
+                    <FieldLabel htmlFor="equipment_id">Equipment</FieldLabel>
                     <EquipmentSelect
                         value={data.equipment_id ?? ''}
                         processing={processing}

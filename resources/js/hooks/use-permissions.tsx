@@ -15,6 +15,7 @@ export default function usePermissions() {
     };
 
     return {
+        user: auth.user,
         can,
         hasRole,
         hasAnyRole,

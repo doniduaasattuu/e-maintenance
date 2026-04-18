@@ -325,9 +325,9 @@ export default function TableFinding({
                                     <TableCell className="align-center hidden text-xs md:table-cell">
                                         {moduleKey == 'ABNORMALITY' ? (
                                             <div className="flex max-w-sm flex-col items-start">
-                                                <span className="max-w-xs font-medium">{finding.equipment?.code}</span>
+                                                <span className="max-w-xs font-medium">{finding.equipment ? finding.equipment?.code : 'N/A'}</span>
                                                 <span className="text-muted-foreground max-w-md">
-                                                    {truncateText(finding.equipment?.sort_field ?? '', 20)}
+                                                    {truncateText(finding.equipment?.sort_field ?? 'N/A', 20)}
                                                 </span>
                                             </div>
                                         ) : (

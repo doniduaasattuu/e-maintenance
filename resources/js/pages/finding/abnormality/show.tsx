@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Field } from '@/components/ui/field';
 import AppLayout from '@/layouts/app-layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
+import truncateText from '@/lib/utils';
 import { BreadcrumbItem, Finding, FindingImage } from '@/types';
 import { Head } from '@inertiajs/react';
 import { Box, Info, Maximize2 } from 'lucide-react';
@@ -45,7 +46,7 @@ export default function FindingShow({ finding, type }: FindingShowProps) {
             href: route('abnormalities.index'),
         },
         {
-            title: finding.data.equipment?.code ?? finding.data.id.toString(),
+            title: finding.data.equipment?.code ? finding.data.equipment?.code : truncateText(finding.data.functionalLocation?.description ?? '', 25),
             href: route('abnormalities.index', finding.data.id),
         },
     ];
