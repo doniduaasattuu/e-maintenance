@@ -15,7 +15,7 @@ type Props = {
     currentValue?: FunctionalLocation | null;
     onChange: (value: number | null) => void;
     tabIndex: number;
-    recentlySuccessful: boolean;
+    recentlySuccessful?: boolean;
     processing: boolean;
     isEditing?: boolean;
     className?: string;

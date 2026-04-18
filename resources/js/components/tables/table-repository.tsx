@@ -57,7 +57,9 @@ export default function TableRepository({ repositories, extensions, renderable, 
                     </div>
                     <ButtonGroup>
                         {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={2} />}
-                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        {repositories.data.length > 0 && (
+                            <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        )}
                     </ButtonGroup>
                 </div>
             )}

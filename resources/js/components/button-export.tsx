@@ -7,14 +7,15 @@ interface ButtonExportProps {
     title?: string;
     variant?: 'default' | 'link' | 'destructive' | 'outline' | 'secondary' | 'ghost' | null | undefined;
     tabIndex?: number;
+    size?: 'default' | 'sm' | 'lg' | 'icon' | null | undefined;
     onClick?: () => void;
 }
 
-export default function ButtonExport({ label, title, variant, tabIndex, onClick }: ButtonExportProps) {
+export default function ButtonExport({ label, title, variant, tabIndex, size, onClick }: ButtonExportProps) {
     const isMobile = useIsMobile();
 
     return (
-        <Button onClick={onClick} title={title ?? 'Export to Excel'} size={'sm'} variant={variant} tabIndex={tabIndex}>
+        <Button onClick={onClick} title={title ?? 'Export to Excel'} size={size ?? 'sm'} variant={variant ?? 'outline'} tabIndex={tabIndex}>
             <Sheet />
             {!isMobile && (label ?? 'Export')}
         </Button>

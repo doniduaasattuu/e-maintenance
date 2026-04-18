@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('{equipment}/findings', [FindingEquipmentController::class, 'show'])->name('equipments.findings');
         Route::get('{equipment}/materials', [EquipmentMaterialController::class, 'show'])->name('equipments.materials');
         // MATERIALS
+        Route::get('{equipment}/materials/export', [EquipmentMaterialController::class, 'export'])->name('equipments.materials.export');
         Route::post('{equipment}/materials', [EquipmentMaterialController::class, 'store'])->name('equipments.materials.store');
         Route::delete('{equipment}/materials/{material}', [EquipmentMaterialController::class, 'destroy'])
             ->name('equipments.materials.destroy');

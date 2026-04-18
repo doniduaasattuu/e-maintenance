@@ -1,10 +1,12 @@
+import ButtonExport from '@/components/button-export';
 import ButtonSubmit from '@/components/button-submit';
 import HeadingSmall from '@/components/heading-small';
 import MaterialSelect from '@/components/material-select';
 import RequiredLabel from '@/components/required-label';
 import TableEquipmentMaterialManagement from '@/components/tables/table-equipment-material-management';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ButtonGroup } from '@/components/ui/button-group';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import usePermissions from '@/hooks/use-permissions';
@@ -73,80 +75,89 @@ export default function EquipmentMaterials({ equipment, materials }: EquipmentMa
             <EquipmentLayout equipment={equipment.data} className="w-full max-w-7xl space-y-4">
                 <div className="flex items-center justify-between gap-2">
                     <HeadingSmall title={materialTitle} description="Catalog of spare parts and consumables associated with this asset." />
-                    <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                        <DialogTrigger asChild>
-                            {can.update_equipment && (
-                                <Button size={'sm'} variant={'outline'}>
-                                    <Plus className="h-4 w-4" />
-                                    Add Material
-                                </Button>
-                            )}
-                        </DialogTrigger>
-                        <DialogContent>
-                            <form onSubmit={handleAddMaterial}>
-                                <DialogHeader>
-                                    <DialogTitle>Add Material to Equipment</DialogTitle>
-                                </DialogHeader>
-                                <div className="grid gap-4 py-6">
-                                    <Field>
-                                        <FieldLabel htmlFor="material_id">
-                                            Material
-                                            <RequiredLabel />
-                                        </FieldLabel>
-                                        <MaterialSelect
-                                            id="material_id"
-                                            value={data.material_id ?? ''}
-                                            processing={processing}
-                                            recentlySuccessful={recentlySuccessful}
-                                            tabIndex={1}
-                                            currentValue={null}
-                                            onChange={(val) => setData('material_id', val ? val.toString() : '')}
-                                        />
-                                        <FieldError>{errors.material_id}</FieldError>
-                                    </Field>
-                                    <div className="flex items-center justify-between gap-2">
-                                        <Field>
-                                            <FieldLabel htmlFor="quantity">
-                                                Quantity
-                                                <RequiredLabel />
-                                            </FieldLabel>
-                                            <Input
-                                                id="quantity"
-                                                tabIndex={2}
-                                                type="number"
-                                                step="1"
-                                                value={data.quantity}
-                                                onChange={(e) => setData('quantity', parseFloat(e.target.value))}
-                                            />
-                                        </Field>
-                                        <Field>
-                                            <FieldLabel htmlFor="note">Note</FieldLabel>
-                                            <Input
-                                                id="note"
-                                                tabIndex={3}
-                                                value={data.note}
-                                                min={'1'}
-                                                onChange={(e) => setData('note', e.target.value)}
-                                                placeholder="Note"
-                                            />
-                                        </Field>
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <ButtonSubmit
-                                        recentlySuccessful={recentlySuccessful}
-                                        disabled={processing || data.material_id == ''}
-                                        label="Save"
-                                        successMessage="Saved"
-                                        processing={processing}
-                                        tabIndex={4}
-                                    />
-                                </DialogFooter>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
+                    <ButtonGroup>
+                        {can.update_equipment && (
+                            <Button onClick={() => setIsAddOpen(true)} title="Insert new Material" size={'sm'} variant={'outline'}>
+                                <Plus className="h-4 w-4" />
+                                Add Material
+                            </Button>
+                        )}
+                        {materials.data.length > 0 && (
+                            <ButtonExport
+                                title="Export to Excel"
+                                onClick={() => {
+                                    window.location.href = route('equipments.materials.export', equipment.data.id);
+                                }}
+                            />
+                        )}
+                    </ButtonGroup>
                 </div>
                 <TableEquipmentMaterialManagement equipment={equipment} materials={materials} handleRemove={handleRemove} />
+
+                <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+                    <DialogContent>
+                        <form onSubmit={handleAddMaterial}>
+                            <DialogHeader>
+                                <DialogTitle>Add Material to Equipment</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-6">
+                                <Field>
+                                    <FieldLabel htmlFor="material_id">
+                                        Material
+                                        <RequiredLabel />
+                                    </FieldLabel>
+                                    <MaterialSelect
+                                        id="material_id"
+                                        value={data.material_id ?? ''}
+                                        processing={processing}
+                                        recentlySuccessful={recentlySuccessful}
+                                        tabIndex={1}
+                                        currentValue={null}
+                                        onChange={(val) => setData('material_id', val ? val.toString() : '')}
+                                    />
+                                    <FieldError>{errors.material_id}</FieldError>
+                                </Field>
+                                <div className="flex items-center justify-between gap-2">
+                                    <Field>
+                                        <FieldLabel htmlFor="quantity">
+                                            Quantity
+                                            <RequiredLabel />
+                                        </FieldLabel>
+                                        <Input
+                                            id="quantity"
+                                            tabIndex={2}
+                                            type="number"
+                                            step="1"
+                                            value={data.quantity}
+                                            onChange={(e) => setData('quantity', parseFloat(e.target.value))}
+                                        />
+                                    </Field>
+                                    <Field>
+                                        <FieldLabel htmlFor="note">Note</FieldLabel>
+                                        <Input
+                                            id="note"
+                                            tabIndex={3}
+                                            value={data.note}
+                                            min={'1'}
+                                            onChange={(e) => setData('note', e.target.value)}
+                                            placeholder="Note"
+                                        />
+                                    </Field>
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <ButtonSubmit
+                                    recentlySuccessful={recentlySuccessful}
+                                    disabled={processing || data.material_id == ''}
+                                    label="Save"
+                                    successMessage="Saved"
+                                    processing={processing}
+                                    tabIndex={4}
+                                />
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </EquipmentLayout>
         </AppLayout>
     );

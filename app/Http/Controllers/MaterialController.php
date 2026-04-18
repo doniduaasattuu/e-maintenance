@@ -172,6 +172,7 @@ class MaterialController extends Controller
     public function export(Request $request)
     {
         $filters = [
+            'functional_location_id' => $request->query('functional_location_id'),
             'type_ids' => $request->query('type_ids'),
         ];
 

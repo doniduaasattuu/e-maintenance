@@ -77,7 +77,9 @@ export default function TableUser({ users, departments, positions, workCenters, 
                     </div>
                     <ButtonGroup>
                         {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} />}
-                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        {users.data.length > 0 && (
+                            <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        )}
                     </ButtonGroup>
                 </div>
             )}

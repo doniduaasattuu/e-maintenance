@@ -32,6 +32,7 @@ export default function TableFunctionalLocation({ functionalLocations, withHeade
     function handleDeleteFunctionalLocation(id: number | string) {
         router.delete(route('functional-locations.destroy', id));
     }
+
     return (
         <>
             {withHeader && (
@@ -41,7 +42,9 @@ export default function TableFunctionalLocation({ functionalLocations, withHeade
                     </div>
                     <ButtonGroup>
                         {can.create_functionallocation && <ButtonAdd tabIndex={2} route={route('functional-locations.create')} />}
-                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        {functionalLocations.data.length > 0 && (
+                            <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        )}
                     </ButtonGroup>
                 </div>
             )}

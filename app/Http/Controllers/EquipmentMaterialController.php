@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EquipmentMaterialExport;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\MaterialResource;
 use App\Models\Equipment;
 use App\Models\Material;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EquipmentMaterialController extends Controller
 {
@@ -81,5 +83,10 @@ class EquipmentMaterialController extends Controller
             'type' => 'success',
             'description' => 'Material removed from equipment.',
         ]);
+    }
+
+    public function export(Equipment $equipment)
+    {
+        return Excel::download(new EquipmentMaterialExport($equipment), "Materials_of_" . $equipment->code . '_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

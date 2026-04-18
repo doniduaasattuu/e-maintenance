@@ -93,7 +93,7 @@ class Material extends Model
 
     public function equipments(): BelongsToMany
     {
-        return $this->belongsToMany(Equipment::class, 'equipment_material')
+        return $this->belongsToMany(Equipment::class, 'equipment_material', 'material_id', 'equipment_id')
             ->withPivot('id', 'quantity', 'note')
             ->withTimestamps();
     }

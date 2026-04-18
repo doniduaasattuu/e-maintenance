@@ -39,6 +39,11 @@ class EquipmentExport implements FromQuery, WithHeadings, WithMapping, WithStyle
                 : $query->where('equipment_class_id', $class);
         }
 
+        $functional_location_id = $this->filters['functional_location_id' ?? null];
+        if ($functional_location_id) {
+            $query->where('functional_location_id', $functional_location_id);
+        }
+
         return $query->latest();
     }
 

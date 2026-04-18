@@ -59,7 +59,9 @@ export default function TableMaterial({ materials, materialUnits, materialTypes,
                     </div>
                     <ButtonGroup>
                         {can.create_material && <ButtonAdd tabIndex={2} route={route('materials.create')} />}
-                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        {materials.data.length > 0 && (
+                            <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        )}
                     </ButtonGroup>
                 </div>
             )}

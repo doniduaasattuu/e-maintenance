@@ -179,6 +179,7 @@ class EquipmentController extends Controller
     public function export(Request $request)
     {
         $filters = [
+            'functional_location_id' => $request->query('functional_location_id'),
             'status_ids' => $request->query('status_ids'),
             'class_ids' => $request->query('class_ids'),
         ];

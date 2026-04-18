@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Field, FieldDescription, FieldGroup, FieldLegend, FieldSet } from '@/components/ui/field';
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field';
 import { Label } from '@/components/ui/label';
 import { MaterialType } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle, Sheet } from 'lucide-react';
 import React, { Dispatch, SetStateAction } from 'react';
+import FunctionalLocationSelect from './functional-location-select';
 import { Checkbox } from './ui/checkbox';
 
 interface DialogMaterialExportExcelProps {
@@ -25,6 +26,7 @@ export default function DialogMaterialExportExcel({ open, setOpen, materialTypes
 
     const { data, setData } = useForm({
         type_ids: selectedType as number[],
+        functional_location_id: '',
     });
 
     const handleTypeChange = (id: number, checked: boolean) => {
@@ -46,6 +48,10 @@ export default function DialogMaterialExportExcel({ open, setOpen, materialTypes
             params.append('type_ids[]', id.toString());
         });
 
+        if (data.functional_location_id) {
+            params.append('functional_location_id', data.functional_location_id);
+        }
+
         const baseUrl = route('materials.export');
         const finalUrl = `${baseUrl}?${params.toString()}`;
         window.location.href = finalUrl;
@@ -66,6 +72,19 @@ export default function DialogMaterialExportExcel({ open, setOpen, materialTypes
                         </DialogDescription>
                     </DialogHeader>
                     <FieldGroup className="no-scrollbar max-h-[50vh] overflow-y-auto">
+                        {/* FUNCTIONAL LOCATION */}
+                        <Field className="w-full">
+                            <FieldLabel>Functional Location</FieldLabel>
+                            <FunctionalLocationSelect
+                                value={data.functional_location_id}
+                                processing={processing}
+                                tabIndex={4}
+                                id="functional_location_id"
+                                onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
+                            />
+                            <FieldDescription>Enter functional location to get all materials in each equipment.</FieldDescription>
+                        </Field>
+
                         {/* STATUS */}
                         <FieldSet className="gap-5">
                             <FieldLegend className="mb-2" variant="label">

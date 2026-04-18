@@ -59,7 +59,9 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                     </div>
                     <ButtonGroup>
                         {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={2} />}
-                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        {equipments.data.length > 0 && (
+                            <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        )}
                     </ButtonGroup>
                 </div>
             )}
