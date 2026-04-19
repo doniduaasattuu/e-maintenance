@@ -21,7 +21,7 @@ test('material type index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('material-type/index')
-                ->has('materialTypes.data', 15)
+                ->has('materialTypes.data', 10)
         );
 
     $this->actingAs($admin)
@@ -29,7 +29,7 @@ test('material type index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('material-type/index')
-                ->has('materialTypes.data', 2)
+                ->has('materialTypes.data', 7)
         );
 });
 

@@ -14,6 +14,7 @@ import DialogRepositoryExportExcel from '../dialog-repository-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterRepositoryExtension from '../filter-repository-extension';
+import { PerPageSelector } from '../per-page-selector';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { ButtonGroup } from '../ui/button-group';
@@ -27,9 +28,13 @@ interface TableRepositoryProps {
     extensions?: string[];
     renderable: string[];
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableRepository({ repositories, extensions, renderable, withHeader = true }: TableRepositoryProps) {
+export default function TableRepository({ repositories, extensions, renderable, withHeader = true, filters }: TableRepositoryProps) {
     const { can } = usePermissions();
     const meta = repositories.meta;
     const caption = tableCaption(meta);
@@ -50,7 +55,8 @@ export default function TableRepository({ repositories, extensions, renderable, 
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                         <Filter open={open} setOpen={setOpen} keys={['ext']}>
                             <FilterRepositoryExtension extensions={extensions} />
                         </Filter>
@@ -76,10 +82,6 @@ export default function TableRepository({ repositories, extensions, renderable, 
                                 <TableHead className="text-muted-foreground">Uploaded by</TableHead>
                                 <TableHead className="text-muted-foreground">Uploaded at</TableHead>
                                 <TableHead className="text-muted-foreground text-right"></TableHead>
-                                {/* <TableHead className="text-muted-foreground text-right"></TableHead>
-                                <TableHead className="text-muted-foreground text-right"></TableHead>
-                                {can.edit_repository && <TableHead className="text-muted-foreground text-right"></TableHead>}
-                                {can.delete_repository && <TableHead className="text-muted-foreground text-right"></TableHead>} */}
                             </TableRow>
                         </TableHeader>
                         <TableBody>

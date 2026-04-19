@@ -38,6 +38,10 @@ abstract class FindingController extends Controller
     {
         Gate::authorize('index_finding');
 
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
         $findings = Finding::with([
             'clause',
             'status',
@@ -59,7 +63,7 @@ abstract class FindingController extends Controller
                 ]);
             })
             ->search($request)
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         $findingClauses = FindingClause::all();
@@ -75,6 +79,7 @@ abstract class FindingController extends Controller
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
             'departments' => DepartmentResource::collection($departments),
             'causeCodes' => CauseCodeResource::collection($causeCodes),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

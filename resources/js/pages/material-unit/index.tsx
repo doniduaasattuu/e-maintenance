@@ -17,13 +17,17 @@ interface UnitIndexProps {
         data: MaterialUnit[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function MaterialUnitIndex({ materialUnits }: UnitIndexProps) {
+export default function MaterialUnitIndex({ materialUnits, filters }: UnitIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'MATERIAL_UNIT'} className="md:max-w-2xl">
-                <TableMaterialUnit materialUnits={materialUnits} />
+                <TableMaterialUnit materialUnits={materialUnits} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

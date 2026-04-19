@@ -29,7 +29,11 @@ class EquipmentController extends Controller
     {
         Gate::authorize('index_equipment');
 
-        $equipments = Equipment::with(['functionalLocation', 'eclass', 'status'])->search($request)->paginate(10)->withQueryString();
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
+        $equipments = Equipment::with(['functionalLocation', 'eclass', 'status'])->search($request)->paginate($perPage)->withQueryString();
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
 
@@ -41,6 +45,7 @@ class EquipmentController extends Controller
             'equipments' => EquipmentResource::collection($equipments),
             'equipmentClasses' => EquipmentClassResource::collection($equipmentClasses),
             'equipmentStatuses' => EquipmentStatusResource::collection($equipmentStatuses),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

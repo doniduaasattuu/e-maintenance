@@ -23,13 +23,17 @@ type EquipmentProps = {
     equipmentStatuses: {
         data: EquipmentStatus[];
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
 
-export default function EquipmentIndex({ equipments, equipmentClasses, equipmentStatuses }: EquipmentProps) {
+export default function EquipmentIndex({ equipments, equipmentClasses, equipmentStatuses, filters }: EquipmentProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'EQUIPMENT'} className="md:max-w-7xl">
-                <TableEquipment equipments={equipments} equipmentClasses={equipmentClasses} equipmentStatuses={equipmentStatuses} />
+                <TableEquipment equipments={equipments} equipmentClasses={equipmentClasses} equipmentStatuses={equipmentStatuses} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

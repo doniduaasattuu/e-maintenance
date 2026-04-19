@@ -14,9 +14,13 @@ interface EquipmentRepositoriesProps {
         data: Repository[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function EquipmentRepositories({ equipment, repositories }: EquipmentRepositoriesProps) {
+export default function EquipmentRepositories({ equipment, repositories, filters }: EquipmentRepositoriesProps) {
     const strings = UI_STRINGS;
     const repoTitle = strings.REPOSITORY?.label ?? 'Repository';
     const breadcrumbs: BreadcrumbItem[] = [
@@ -40,7 +44,7 @@ export default function EquipmentRepositories({ equipment, repositories }: Equip
 
             <EquipmentLayout equipment={equipment.data} className="w-full max-w-xl space-y-4 lg:max-w-4xl">
                 <HeadingSmall title={repoTitle} description="Technical records and operational manuals." />
-                <TableRepository repositories={repositories} renderable={[]} extensions={[]} withHeader={false} />
+                <TableRepository filters={filters} repositories={repositories} renderable={[]} extensions={[]} withHeader={false} />
             </EquipmentLayout>
         </AppLayout>
     );

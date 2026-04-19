@@ -17,13 +17,17 @@ type FunctionalLocationProps = {
         data: FunctionalLocation[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
 
-export default function FunctionalLocationIndex({ functionalLocations }: FunctionalLocationProps) {
+export default function FunctionalLocationIndex({ functionalLocations, filters }: FunctionalLocationProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'FUNCTIONAL_LOCATION'} className="md:max-w-7xl">
-                <TableFunctionalLocation functionalLocations={functionalLocations} />
+                <TableFunctionalLocation functionalLocations={functionalLocations} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

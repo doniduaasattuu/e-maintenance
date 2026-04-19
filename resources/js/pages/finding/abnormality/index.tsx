@@ -32,13 +32,26 @@ type FindingProps = {
     causeCodes: {
         data: CauseCode[];
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
 
-export default function FindingIndex({ findings, findingPriorities, findingStatuses, departments, findingClauses, causeCodes }: FindingProps) {
+export default function FindingIndex({
+    findings,
+    findingPriorities,
+    findingStatuses,
+    departments,
+    findingClauses,
+    causeCodes,
+    filters,
+}: FindingProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey="ABNORMALITY" className="md:max-w-full">
                 <TableFinding
+                    filters={filters}
                     findingTypeCode="ABN"
                     findings={findings}
                     findingClauses={findingClauses}

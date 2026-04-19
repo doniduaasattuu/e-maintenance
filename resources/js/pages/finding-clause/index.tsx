@@ -17,13 +17,17 @@ interface FindingClauseProps {
         data: FindingClause[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function FindingClauseIndex({ findingClauses }: FindingClauseProps) {
+export default function FindingClauseIndex({ findingClauses, filters }: FindingClauseProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'FINDING_CLAUSE'} className="md:max-w-7xl">
-                <TableFindingClause findingClauses={findingClauses} />
+                <TableFindingClause findingClauses={findingClauses} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

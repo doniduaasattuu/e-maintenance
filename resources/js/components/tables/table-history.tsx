@@ -1,7 +1,9 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { tableCaption } from '@/lib/utils';
 import { InstallDismantleHistory, Meta } from '@/types';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
 
 interface HistoryTableProps {
@@ -9,16 +11,23 @@ interface HistoryTableProps {
         data: InstallDismantleHistory[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableHistory({ histories }: HistoryTableProps) {
+export default function TableHistory({ histories, filters }: HistoryTableProps) {
     const meta = histories.meta;
-    const caption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
 
     return (
         <>
             <div className="flex justify-between gap-2">
-                <SearchBar />
+                <div className="flex justify-between gap-2">
+                    <SearchBar value={filters.query} tabIndex={1} />
+                    <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                </div>
             </div>
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {histories.data && histories.data.length > 0 ? (

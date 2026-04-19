@@ -10,6 +10,7 @@ import { CauseCode, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
 
 interface TableCauseCodeProps {
     causeCodes: {
@@ -17,9 +18,13 @@ interface TableCauseCodeProps {
         meta: Meta;
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableCauseCode({ causeCodes, withHeader = true }: TableCauseCodeProps) {
+export default function TableCauseCode({ causeCodes, withHeader = true, filters }: TableCauseCodeProps) {
     const { can } = usePermissions();
     const meta = causeCodes.meta;
     const caption = tableCaption(meta);
@@ -32,7 +37,8 @@ export default function TableCauseCode({ causeCodes, withHeader = true }: TableC
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                     </div>
                     {can.create_causecode && <ButtonAdd tabIndex={2} route={route('cause-codes.create')} />}
                 </div>

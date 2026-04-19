@@ -16,15 +16,19 @@ interface WorkCenterIndexProps {
         data: WorkCenter[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function WorkCenterIndex({ workCenters }: WorkCenterIndexProps) {
+export default function WorkCenterIndex({ workCenters, filters }: WorkCenterIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Work Centers" />
 
             <OrganizationsLayout>
-                <TableWorkCenter workCenters={workCenters} />
+                <TableWorkCenter workCenters={workCenters} filters={filters} />
             </OrganizationsLayout>
         </AppLayout>
     );

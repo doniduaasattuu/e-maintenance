@@ -21,6 +21,7 @@ import ButtonExport from '../button-export';
 import DialogUserExportExcel from '../dialog-user-export-excel';
 import EmptyIcon from '../empty-icon';
 import FilterWorkCenter from '../filter-work-center';
+import { PerPageSelector } from '../per-page-selector';
 import { ButtonGroup } from '../ui/button-group';
 
 interface TableUserProps {
@@ -39,9 +40,13 @@ interface TableUserProps {
     };
     roles: string[];
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableUser({ users, departments, positions, workCenters, roles, withHeader = true }: TableUserProps) {
+export default function TableUser({ users, departments, positions, workCenters, roles, withHeader = true, filters }: TableUserProps) {
     const [open, setOpen] = React.useState<boolean>(false);
     const { can } = usePermissions();
     const meta = users.meta;
@@ -62,7 +67,8 @@ export default function TableUser({ users, departments, positions, workCenters, 
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                         <Filter open={open} setOpen={setOpen} keys={['department', 'position', 'work-center', 'role']}>
                             <FilterDepartment departments={departments?.data ?? []} />
                             <CommandSeparator />

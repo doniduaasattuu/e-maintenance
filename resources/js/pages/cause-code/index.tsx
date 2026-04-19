@@ -17,13 +17,17 @@ interface CauseCodeProps {
         data: CauseCode[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function CauseCodeIndex({ causeCodes }: CauseCodeProps) {
+export default function CauseCodeIndex({ causeCodes, filters }: CauseCodeProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'CAUSE_CODE'} className="md:max-w-7xl">
-                <TableCauseCode causeCodes={causeCodes} />
+                <TableCauseCode causeCodes={causeCodes} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

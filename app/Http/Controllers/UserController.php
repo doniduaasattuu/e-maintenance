@@ -29,7 +29,11 @@ class UserController extends Controller
     {
         Gate::authorize('index_user');
 
-        $users = User::with(['department', 'position', 'workCenter'])->search($request)->paginate(10)->withQueryString();
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
+        $users = User::with(['department', 'position', 'workCenter'])->search($request)->paginate($perPage)->withQueryString();
         $departments = Department::all();
         $positions = Position::all();
         $workCenters = WorkCenter::all();
@@ -40,7 +44,7 @@ class UserController extends Controller
             'positions' => PositionResource::collection($positions),
             'workCenters' => WorkCenterResource::collection($workCenters),
             'roles' => Role::pluck('name'),
-            // 'filters' => $request->only(['query', 'department', 'position', 'role']),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

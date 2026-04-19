@@ -17,13 +17,17 @@ interface EquipmentClassProps {
         data: EquipmentClass[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function EquipmentClassIndex({ equipmentClasses }: EquipmentClassProps) {
+export default function EquipmentClassIndex({ equipmentClasses, filters }: EquipmentClassProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'EQUIPMENT_CLASS'} className="md:max-w-7xl">
-                <TableEquipmentClass equipmentClasses={equipmentClasses} />
+                <TableEquipmentClass equipmentClasses={equipmentClasses} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

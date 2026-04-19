@@ -3,7 +3,7 @@ import React from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Input } from './ui/input';
 
-export default function SearchBar({ tabIndex }: { tabIndex?: number }) {
+export default function SearchBar({ tabIndex, value }: { tabIndex?: number; value?: string }) {
     const handleSearch = useDebouncedCallback((term: string) => {
         const searchParams = new URLSearchParams(window.location.search);
 
@@ -45,7 +45,7 @@ export default function SearchBar({ tabIndex }: { tabIndex?: number }) {
             <Input
                 tabIndex={tabIndex}
                 className="w-full"
-                defaultValue={new URLSearchParams(window.location.search).get('query') || ''}
+                defaultValue={value ?? new URLSearchParams(window.location.search).get('query') ?? ''}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search..."
                 ref={searchBarRef}

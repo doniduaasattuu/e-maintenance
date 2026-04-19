@@ -19,14 +19,19 @@ class InstallDismantleHistoryController extends Controller
     {
         Gate::authorize('index_installdismantlehistory');
 
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
         $histories = InstallDismantleHistory::search($request)
             ->with(['equipment', 'equipment.eclass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->orderBy('changed_at', 'DESC')
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('install-dismantle/index', [
             'histories' => InstallDismantleHistoryResource::collection($histories),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 
@@ -49,19 +54,24 @@ class InstallDismantleHistoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Equipment $equipment)
+    public function show(Request $request, Equipment $equipment)
     {
         Gate::authorize('show_installdismantlehistory');
 
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
         $histories = InstallDismantleHistory::with(['equipment', 'equipment.eclass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->where('equipment_id', $equipment->id)
             ->orderBy('changed_at', 'DESC')
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('equipment/history', [
             'equipment' => new EquipmentResource($equipment),
             'histories' => InstallDismantleHistoryResource::collection($histories),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

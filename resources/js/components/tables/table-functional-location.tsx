@@ -13,6 +13,7 @@ import { useState } from 'react';
 import ButtonExport from '../button-export';
 import DialogFunctionalLocationExportExcel from '../dialog-functional-location-export-excel';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
 import { ButtonGroup } from '../ui/button-group';
 
 interface TableFunctionalLocationProps {
@@ -21,9 +22,13 @@ interface TableFunctionalLocationProps {
         meta: Meta;
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableFunctionalLocation({ functionalLocations, withHeader = true }: TableFunctionalLocationProps) {
+export default function TableFunctionalLocation({ functionalLocations, withHeader = true, filters }: TableFunctionalLocationProps) {
     const { can } = usePermissions();
     const meta = functionalLocations.meta;
     const caption = tableCaption(meta);
@@ -38,7 +43,8 @@ export default function TableFunctionalLocation({ functionalLocations, withHeade
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                     </div>
                     <ButtonGroup>
                         {can.create_functionallocation && <ButtonAdd tabIndex={2} route={route('functional-locations.create')} />}

@@ -10,6 +10,7 @@ import { MaterialType, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
 
 interface TableMaterialTypeProps {
     materialTypes: {
@@ -17,9 +18,13 @@ interface TableMaterialTypeProps {
         meta: Meta;
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableMaterialType({ materialTypes, withHeader = true }: TableMaterialTypeProps) {
+export default function TableMaterialType({ materialTypes, withHeader = true, filters }: TableMaterialTypeProps) {
     const { can } = usePermissions();
     const meta = materialTypes.meta;
     const caption = tableCaption(meta);
@@ -32,7 +37,8 @@ export default function TableMaterialType({ materialTypes, withHeader = true }: 
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                     </div>
                     {can.create_materialtype && <ButtonAdd tabIndex={2} route={route('material-types.create')} />}
                 </div>

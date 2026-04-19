@@ -16,6 +16,7 @@ import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterMaterialType from '../filter-material-type';
 import FilterMaterialUnit from '../filter-material-unit';
+import { PerPageSelector } from '../per-page-selector';
 import { ButtonGroup } from '../ui/button-group';
 import { CommandSeparator } from '../ui/command';
 
@@ -31,9 +32,13 @@ interface TableMaterialProps {
         data: MaterialType[];
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableMaterial({ materials, materialUnits, materialTypes, withHeader = true }: TableMaterialProps) {
+export default function TableMaterial({ materials, materialUnits, materialTypes, withHeader = true, filters }: TableMaterialProps) {
     const { can } = usePermissions();
     const meta = materials.meta;
     const caption = tableCaption(meta);
@@ -50,7 +55,8 @@ export default function TableMaterial({ materials, materialUnits, materialTypes,
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                         <Filter open={open} setOpen={setOpen} keys={['unit', 'type']}>
                             <FilterMaterialUnit materialUnits={materialUnits?.data ?? []} />
                             <CommandSeparator />

@@ -10,6 +10,7 @@ import { FindingType, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
 
 interface TableFindingTypeProps {
     findingTypes: {
@@ -17,9 +18,13 @@ interface TableFindingTypeProps {
         meta: Meta;
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableFindingType({ findingTypes, withHeader = true }: TableFindingTypeProps) {
+export default function TableFindingType({ findingTypes, withHeader = true, filters }: TableFindingTypeProps) {
     const { can } = usePermissions();
     const meta = findingTypes.meta;
     const caption = tableCaption(meta);
@@ -32,7 +37,8 @@ export default function TableFindingType({ findingTypes, withHeader = true }: Ta
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                     </div>
                     {can.create_findingtype && <ButtonAdd tabIndex={2} route={route('finding-types.create')} />}
                 </div>

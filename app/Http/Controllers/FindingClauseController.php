@@ -22,10 +22,15 @@ class FindingClauseController extends Controller
     {
         Gate::authorize('index_findingclause');
 
-        $findingClauses = FindingClause::search($request)->paginate()->withQueryString();
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
+        $findingClauses = FindingClause::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('finding-clause/index', [
             'findingClauses' => FindingClauseResource::collection($findingClauses),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

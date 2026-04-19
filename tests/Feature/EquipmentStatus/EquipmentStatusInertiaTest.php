@@ -23,7 +23,7 @@ test('equipment status index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('equipment-status/index')
-                ->has('equipmentStatuses.data', 15)
+                ->has('equipmentStatuses.data', 10)
         );
 
     $this->actingAs($admin)
@@ -31,7 +31,7 @@ test('equipment status index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('equipment-status/index')
-                ->has('equipmentStatuses.data', 5)
+                ->has('equipmentStatuses.data', 10)
         );
 });
 

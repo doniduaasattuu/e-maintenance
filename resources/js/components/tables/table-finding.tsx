@@ -21,6 +21,7 @@ import FilterFindingPriority from '../filter-finding-priority';
 import FilterFindingStatus from '../filter-finding-status';
 import { GeneratePagination } from '../generate-pagination';
 import Lightbox from '../light-box';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -54,6 +55,10 @@ interface FindingTableProps {
     endpoint?: string;
     clauseFilter?: string;
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
 export function FindingStatusCell({ finding, className }: { finding: Finding; className?: string }) {
@@ -165,6 +170,7 @@ export default function TableFinding({
     moduleKey,
     clauseFilter,
     withHeader = true,
+    filters,
 }: FindingTableProps) {
     const [open, setOpen] = useState<boolean>(false);
     const { can } = usePermissions();
@@ -227,7 +233,8 @@ export default function TableFinding({
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                         <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
                             <FilterFindingClause filter={clauseFilter} findingClauses={findingClauses?.data ?? []} />
                             <CommandSeparator />

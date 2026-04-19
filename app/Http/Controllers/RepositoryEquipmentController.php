@@ -31,11 +31,16 @@ class RepositoryEquipmentController extends Controller
 
     public function show(Request $request, Equipment $equipment)
     {
-        $repositories = $equipment->repositories()->paginate(10);
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
+        $repositories = $equipment->repositories()->paginate($perPage);
 
         return Inertia::render('equipment/repositories', [
             'equipment' => new EquipmentResource($equipment),
             'repositories' => RepositoryResource::collection($repositories),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

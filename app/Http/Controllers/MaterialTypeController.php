@@ -20,10 +20,15 @@ class MaterialTypeController extends Controller
     {
         Gate::authorize('index_materialtype');
 
-        $material_types = MaterialType::search($request)->paginate()->withQueryString();
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
+        $material_types = MaterialType::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('material-type/index', [
             'materialTypes' => MaterialTypeResource::collection($material_types),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

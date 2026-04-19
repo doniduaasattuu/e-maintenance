@@ -20,13 +20,18 @@ class CauseCodeController extends Controller
     {
         Gate::authorize('index_causecode');
 
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
         $causeCodes = CauseCode::search($request)
             ->orderBy('code', 'ASC')
-            ->paginate()
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('cause-code/index', [
             'causeCodes' => CauseCodeResource::collection($causeCodes),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

@@ -17,13 +17,17 @@ interface FindingPriorityProps {
         data: FindingPriority[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function FindingPriorityIndex({ findingPriorities }: FindingPriorityProps) {
+export default function FindingPriorityIndex({ findingPriorities, filters }: FindingPriorityProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'FINDING_PRIORITY'} className="md:max-w-7xl">
-                <TableFindingPriority findingPriorities={findingPriorities} />
+                <TableFindingPriority findingPriorities={findingPriorities} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

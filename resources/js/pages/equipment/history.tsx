@@ -14,9 +14,13 @@ interface EquipmentHistoryProps {
         data: InstallDismantleHistory[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function EquipmentHistory({ equipment, histories }: EquipmentHistoryProps) {
+export default function EquipmentHistory({ equipment, histories, filters }: EquipmentHistoryProps) {
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -43,7 +47,7 @@ export default function EquipmentHistory({ equipment, histories }: EquipmentHist
                         title="History"
                         description="Installation and dismantle history for this equipment, including status and location changes."
                     />
-                    <TableHistory histories={histories} />
+                    <TableHistory filters={filters} histories={histories} />
                 </div>
             </EquipmentLayout>
         </AppLayout>

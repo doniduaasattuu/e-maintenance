@@ -20,10 +20,15 @@ class FindingStatusController extends Controller
     {
         Gate::authorize('index_findingstatus');
 
-        $findingStatuses = FindingStatus::search($request)->paginate()->withQueryString();
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
+        $findingStatuses = FindingStatus::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('finding-status/index', [
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

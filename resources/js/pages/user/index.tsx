@@ -27,13 +27,17 @@ type UserProps = {
         data: WorkCenter[];
     };
     roles: string[];
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
 
-export default function UserIndex({ users, departments, positions, workCenters, roles }: UserProps) {
+export default function UserIndex({ users, departments, positions, workCenters, roles, filters }: UserProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'USER'} className="md:max-w-7xl">
-                <TableUser users={users} departments={departments} positions={positions} workCenters={workCenters} roles={roles} />
+                <TableUser users={users} departments={departments} positions={positions} workCenters={workCenters} roles={roles} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

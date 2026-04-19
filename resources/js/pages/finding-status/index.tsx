@@ -17,13 +17,17 @@ interface FindingStatusProps {
         data: FindingStatus[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function FindingStatusIndex({ findingStatuses }: FindingStatusProps) {
+export default function FindingStatusIndex({ findingStatuses, filters }: FindingStatusProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'FINDING_STATUS'} className="md:max-w-7xl">
-                <TableFindingStatus findingStatuses={findingStatuses} />
+                <TableFindingStatus findingStatuses={findingStatuses} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

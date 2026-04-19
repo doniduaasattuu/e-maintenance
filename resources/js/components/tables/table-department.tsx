@@ -9,6 +9,7 @@ import { Trash2 } from 'lucide-react';
 import ButtonAdd from '../button-add';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
 
 interface DepartmentTableProps {
@@ -17,9 +18,13 @@ interface DepartmentTableProps {
         meta: Meta;
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableDepartment({ departments, withHeader = true }: DepartmentTableProps) {
+export default function TableDepartment({ departments, withHeader = true, filters }: DepartmentTableProps) {
     const { can } = usePermissions();
     const meta = departments.meta;
     const caption = tableCaption(meta);
@@ -32,7 +37,10 @@ export default function TableDepartment({ departments, withHeader = true }: Depa
         <>
             {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                    </div>
                     {can.create_department && <ButtonAdd route={route('departments.create')} tabIndex={2} />}
                 </div>
             )}

@@ -21,7 +21,7 @@ test('unit index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('material-unit/index')
-                ->has('materialUnits.data', 15)
+                ->has('materialUnits.data', 10)
         );
 
     $this->actingAs($admin)
@@ -29,7 +29,7 @@ test('unit index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('material-unit/index')
-                ->has('materialUnits.data', 15)
+                ->has('materialUnits.data', 10)
         );
 });
 

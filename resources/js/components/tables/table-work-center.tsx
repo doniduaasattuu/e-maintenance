@@ -9,6 +9,7 @@ import { Trash2 } from 'lucide-react';
 import ButtonAdd from '../button-add';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
 
 interface WorkCenterTableProps {
@@ -17,9 +18,13 @@ interface WorkCenterTableProps {
         meta: Meta;
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableWorkCenter({ workCenters, withHeader = true }: WorkCenterTableProps) {
+export default function TableWorkCenter({ workCenters, withHeader = true, filters }: WorkCenterTableProps) {
     const { can } = usePermissions();
     const meta = workCenters.meta;
     const caption = tableCaption(meta);
@@ -32,12 +37,15 @@ export default function TableWorkCenter({ workCenters, withHeader = true }: Work
         <>
             {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters.query} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                    </div>
                     {can.create_workcenter && <ButtonAdd route={route('work-centers.create')} tabIndex={2} />}
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {workCenters.data.length > 0 ? (
+                {workCenters.data && workCenters.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>

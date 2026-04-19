@@ -21,11 +21,16 @@ class RoleController extends Controller
     {
         Gate::authorize('index_role');
 
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
         $query = $request->query('query');
-        $roles = Role::where('name', 'LIKE', "%{$query}%")->paginate()->withQueryString();
+        $roles = Role::where('name', 'LIKE', "%{$query}%")->paginate($perPage)->withQueryString();
 
         return Inertia::render('role/index', [
             'roles' => RoleResource::collection($roles),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

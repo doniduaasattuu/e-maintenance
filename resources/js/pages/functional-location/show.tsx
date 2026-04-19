@@ -53,7 +53,7 @@ export default function FunctionalLocationEdit({ functionalLocation, equipments,
                         <TableEquipment withHeader={false} equipments={equipments} />
                     </TabsContent>
                     <TabsContent value="findings">
-                        <TableFinding withHeader={false} findings={findings} moduleKey="ABNORMALITY" />
+                        <TableFinding findingTypeCode="" withHeader={false} findings={findings} moduleKey="ABNORMALITY" />
                     </TabsContent>
                 </Tabs>
             </FormLayout>

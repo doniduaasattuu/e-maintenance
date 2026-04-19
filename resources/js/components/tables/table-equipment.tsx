@@ -14,6 +14,7 @@ import Filter from '../filter';
 import FilterEquipmentClass from '../filter-equipment-class';
 import FilterEquipmentStatus from '../filter-equipment-status';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
 import TextLink from '../text-link';
 import { ButtonGroup } from '../ui/button-group';
@@ -31,9 +32,13 @@ interface EquipmentTableProps {
         data: EquipmentStatus[];
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableEquipment({ equipments, equipmentClasses, equipmentStatuses, withHeader = true }: EquipmentTableProps) {
+export default function TableEquipment({ equipments, equipmentClasses, equipmentStatuses, withHeader = true, filters }: EquipmentTableProps) {
     const [open, setOpen] = React.useState<boolean>(false);
     const { can } = usePermissions();
     const meta = equipments.meta;
@@ -50,7 +55,8 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                         <Filter open={open} setOpen={setOpen} keys={['class', 'status']}>
                             <FilterEquipmentClass equipmentClasses={equipmentClasses?.data ?? []} />
                             <CommandSeparator />

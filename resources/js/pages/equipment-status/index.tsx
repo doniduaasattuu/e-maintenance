@@ -17,13 +17,17 @@ interface EquipmentStatusProps {
         data: EquipmentStatus[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function EquipmentStatusIndex({ equipmentStatuses }: EquipmentStatusProps) {
+export default function EquipmentStatusIndex({ equipmentStatuses, filters }: EquipmentStatusProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'EQUIPMENT_STATUS'} className="md:max-w-7xl">
-                <TableEquipmentStatus equipmentStatuses={equipmentStatuses} />
+                <TableEquipmentStatus equipmentStatuses={equipmentStatuses} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

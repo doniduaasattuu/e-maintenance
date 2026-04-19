@@ -22,7 +22,7 @@ test('functional location index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('functional-location/index')
-                ->has('functionalLocations.data', 15)
+                ->has('functionalLocations.data', 10)
         );
 
     $this->actingAs($admin)
@@ -30,7 +30,7 @@ test('functional location index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('functional-location/index')
-                ->has('functionalLocations.data', 5)
+                ->has('functionalLocations.data', 10)
         );
 });
 

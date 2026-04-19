@@ -10,6 +10,7 @@ import { FindingStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
 
 interface TableFindingStatusProps {
     findingStatuses: {
@@ -17,9 +18,13 @@ interface TableFindingStatusProps {
         meta: Meta;
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableFindingStatus({ findingStatuses, withHeader = true }: TableFindingStatusProps) {
+export default function TableFindingStatus({ findingStatuses, withHeader = true, filters }: TableFindingStatusProps) {
     const { can } = usePermissions();
     const meta = findingStatuses.meta;
     const caption = tableCaption(meta);
@@ -32,7 +37,8 @@ export default function TableFindingStatus({ findingStatuses, withHeader = true 
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                     </div>
                     {can.create_findingstatus && <ButtonAdd tabIndex={2} route={route('finding-statuses.create')} />}
                 </div>

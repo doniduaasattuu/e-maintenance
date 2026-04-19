@@ -20,10 +20,15 @@ class EquipmentClassController extends Controller
     {
         Gate::authorize('index_equipmentclass');
 
-        $equipmentClasses = EquipmentClass::search($request)->paginate()->withQueryString();
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
+        $equipmentClasses = EquipmentClass::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('equipment-class/index', [
             'equipmentClasses' => EquipmentClassResource::collection($equipmentClasses),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

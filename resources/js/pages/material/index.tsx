@@ -23,13 +23,17 @@ interface MaterialIndexProps {
     materialTypes: {
         data: MaterialType[];
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function MaterialIndex({ materials, materialUnits, materialTypes }: MaterialIndexProps) {
+export default function MaterialIndex({ materials, materialUnits, materialTypes, filters }: MaterialIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'MATERIAL'} className="md:max-w-7xl">
-                <TableMaterial materials={materials} materialUnits={materialUnits} materialTypes={materialTypes} />
+                <TableMaterial materials={materials} materialUnits={materialUnits} materialTypes={materialTypes} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

@@ -17,12 +17,16 @@ type RoleIndexProps = {
         data: Role[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
-export default function RoleIndex({ roles }: RoleIndexProps) {
+export default function RoleIndex({ roles, filters }: RoleIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'ROLE'} className="md:max-w-2xl">
-                <TableRole roles={roles} />
+                <TableRole roles={roles} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

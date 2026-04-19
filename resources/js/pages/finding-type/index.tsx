@@ -17,13 +17,17 @@ interface FindingTypeProps {
         data: FindingType[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function FindingTypeIndex({ findingTypes }: FindingTypeProps) {
+export default function FindingTypeIndex({ findingTypes, filters }: FindingTypeProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'FINDING_TYPE'} className="md:max-w-7xl">
-                <TableFindingType findingTypes={findingTypes} />
+                <TableFindingType findingTypes={findingTypes} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

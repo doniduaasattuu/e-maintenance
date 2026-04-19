@@ -30,13 +30,18 @@ class RepositoryController extends Controller
     {
         Gate::authorize('index_repository');
 
-        $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate(10)->withQueryString();
+        $perPage = $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
+            $perPage = 10;
+        }
+        $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate($perPage)->withQueryString();
         $extensions = Repository::distinct()->pluck('extension');
 
         return Inertia::render('repository/index', [
             'repositories' => RepositoryResource::collection($repositories),
             'extensions' => $extensions,
-            'renderable' => config('repository.renderable')
+            'renderable' => config('repository.renderable'),
+            'filters' => $request->only(['query', 'per_page']),
         ]);
     }
 

@@ -19,13 +19,17 @@ type RepositoryIndexProps = {
     };
     extensions?: string[];
     renderable: string[];
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
 
-export default function RepositoryIndex({ repositories, extensions, renderable }: RepositoryIndexProps) {
+export default function RepositoryIndex({ repositories, extensions, renderable, filters }: RepositoryIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'REPOSITORY'} className="md:max-w-7xl">
-                <TableRepository repositories={repositories} extensions={extensions} renderable={renderable} />
+                <TableRepository repositories={repositories} extensions={extensions} renderable={renderable} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

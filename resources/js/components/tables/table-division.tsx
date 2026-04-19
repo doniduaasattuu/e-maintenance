@@ -9,6 +9,7 @@ import { Trash2 } from 'lucide-react';
 import ButtonAdd from '../button-add';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
 
 interface DivisionTableProps {
@@ -17,9 +18,13 @@ interface DivisionTableProps {
         meta: Meta;
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableDivision({ divisions, withHeader = true }: DivisionTableProps) {
+export default function TableDivision({ divisions, withHeader = true, filters }: DivisionTableProps) {
     const { can } = usePermissions();
     const meta = divisions.meta;
     const caption = tableCaption(meta);
@@ -32,7 +37,10 @@ export default function TableDivision({ divisions, withHeader = true }: Division
         <>
             {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                    </div>
                     {can.create_division && <ButtonAdd route={route('divisions.create')} tabIndex={2} />}
                 </div>
             )}

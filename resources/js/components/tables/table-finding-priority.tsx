@@ -10,6 +10,7 @@ import { FindingPriority, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
 
 interface TableFindingPriorityProps {
     findingPriorities: {
@@ -17,9 +18,13 @@ interface TableFindingPriorityProps {
         meta: Meta;
     };
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableFindingPriority({ findingPriorities, withHeader = true }: TableFindingPriorityProps) {
+export default function TableFindingPriority({ findingPriorities, withHeader = true, filters }: TableFindingPriorityProps) {
     const { can } = usePermissions();
     const meta = findingPriorities.meta;
     const caption = tableCaption(meta);
@@ -32,7 +37,8 @@ export default function TableFindingPriority({ findingPriorities, withHeader = t
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar tabIndex={1} />
+                        <SearchBar value={filters.query} tabIndex={1} />
+                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                     </div>
                     {can.create_findingpriority && <ButtonAdd tabIndex={2} route={route('finding-priorities.create')} />}
                 </div>
