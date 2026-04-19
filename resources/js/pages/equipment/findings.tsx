@@ -14,9 +14,13 @@ interface EquipmentFindingsProps {
         data: Finding[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function EquipmentFindings({ equipment, findings }: EquipmentFindingsProps) {
+export default function EquipmentFindings({ equipment, findings, filters }: EquipmentFindingsProps) {
     const strings = UI_STRINGS;
     const auditTitle = strings.FINDING?.label ?? 'Finding';
     const abnormalityTitle = strings.ABNORMALITY?.label ?? 'Abnormality';
@@ -41,7 +45,7 @@ export default function EquipmentFindings({ equipment, findings }: EquipmentFind
 
             <EquipmentLayout equipment={equipment.data} className="w-full space-y-4">
                 <HeadingSmall title={abnormalityTitle + ' & ' + auditTitle} description="Historical records of abnormalities and audit results." />
-                <TableFinding withHeader={false} findings={findings} moduleKey="ABNORMALITY" />
+                <TableFinding withHeader={false} findings={findings} moduleKey="ABNORMALITY" filters={filters} findingTypeCode={''}/>
             </EquipmentLayout>
         </AppLayout>
     );

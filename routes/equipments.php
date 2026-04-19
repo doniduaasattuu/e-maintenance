@@ -5,7 +5,7 @@ use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentMaterialController;
 use App\Http\Controllers\EquipmentStatusController;
-use App\Http\Controllers\FindingEquipmentController;
+use App\Http\Controllers\EquipmentFindingController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\RepositoryEquipmentController;
@@ -25,7 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('{id}/images/{type}', [ImageController::class, 'store'])->name('images.equipment.store');
         // RELATION
         Route::get('{equipment}/repositories', [RepositoryEquipmentController::class, 'show'])->name('equipments.repositories');
-        Route::get('{equipment}/findings', [FindingEquipmentController::class, 'show'])->name('equipments.findings');
+        Route::get('{equipment}/findings', [EquipmentFindingController::class, 'show'])->name('equipments.findings');
         Route::get('{equipment}/materials', [EquipmentMaterialController::class, 'show'])->name('equipments.materials');
         // MATERIALS
         Route::get('{equipment}/materials/export', [EquipmentMaterialController::class, 'export'])->name('equipments.materials.export');

@@ -9,6 +9,7 @@ use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\FindingResource;
 use App\Http\Resources\FunctionalLocationResource;
 use App\Models\FunctionalLocation;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -17,6 +18,8 @@ use Throwable;
 
 class FunctionalLocationController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -24,10 +27,8 @@ class FunctionalLocationController extends Controller
     {
         Gate::authorize('index_functionallocation');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $functionalLocations = FunctionalLocation::search($request)->paginate($perPage)->withQueryString();
 
         if ($request->expectsJson() && $request->filled('query')) {
@@ -36,7 +37,10 @@ class FunctionalLocationController extends Controller
 
         return Inertia::render('functional-location/index', [
             'functionalLocations' => FunctionalLocationResource::collection($functionalLocations),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -74,9 +78,11 @@ class FunctionalLocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(FunctionalLocation $functionalLocation)
+    public function show(Request $request, FunctionalLocation $functionalLocation)
     {
         Gate::authorize('show_functionallocation');
+
+        $perPage = $this->getPerPage($request);
 
         return Inertia::render('functional-location/show', [
             'functionalLocation' => new FunctionalLocationResource($functionalLocation),
@@ -86,12 +92,16 @@ class FunctionalLocationController extends Controller
                 'functionalLocation',
             ])
                 ->latest()
-                ->paginate(10)),
+                ->paginate($perPage)),
             'findings' => FindingResource::collection($functionalLocation
                 ->findings()
-                ->withDefaultRelations()
+                ->withAllRelations()
                 ->latest()
-                ->paginate(10)),
+                ->paginate($perPage)),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

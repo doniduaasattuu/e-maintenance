@@ -6,6 +6,7 @@ use App\Http\Requests\MaterialUnit\StoreMaterialUnitRequest;
 use App\Http\Requests\MaterialUnit\UpdateMaterialUnitRequest;
 use App\Http\Resources\MaterialUnitResource;
 use App\Models\MaterialUnit;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -13,6 +14,8 @@ use Throwable;
 
 class MaterialUnitController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,15 +23,16 @@ class MaterialUnitController extends Controller
     {
         Gate::authorize('index_materialunit');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $materialUnits = MaterialUnit::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('material-unit/index', [
             'materialUnits' => MaterialUnitResource::collection($materialUnits),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

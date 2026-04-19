@@ -6,6 +6,7 @@ use App\Http\Requests\FindingPriority\StoreFindingPriorityRequest;
 use App\Http\Requests\FindingPriority\UpdateFindingPriorityRequest;
 use App\Http\Resources\FindingPriorityResource;
 use App\Models\FindingPriority;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -13,6 +14,8 @@ use Throwable;
 
 class FindingPriorityController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,15 +23,16 @@ class FindingPriorityController extends Controller
     {
         Gate::authorize('index_findingpriority');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $findingPriorities = FindingPriority::search($request)->paginate()->withQueryString();
 
         return Inertia::render('finding-priority/index', [
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

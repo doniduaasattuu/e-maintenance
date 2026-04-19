@@ -13,6 +13,7 @@ use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
 use App\Models\WorkCenter;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +23,8 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -29,10 +32,8 @@ class UserController extends Controller
     {
         Gate::authorize('index_user');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $users = User::with(['department', 'position', 'workCenter'])->search($request)->paginate($perPage)->withQueryString();
         $departments = Department::all();
         $positions = Position::all();
@@ -44,7 +45,10 @@ class UserController extends Controller
             'positions' => PositionResource::collection($positions),
             'workCenters' => WorkCenterResource::collection($workCenters),
             'roles' => Role::pluck('name'),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

@@ -14,9 +14,13 @@ interface MaterialRepositoriesProps {
         data: Repository[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function MaterialRepositories({ material, repositories }: MaterialRepositoriesProps) {
+export default function MaterialRepositories({ material, repositories, filters }: MaterialRepositoriesProps) {
     const strings = UI_STRINGS;
     const repoTitle = strings.REPOSITORY?.label ?? 'Repository';
     const breadcrumbs: BreadcrumbItem[] = [
@@ -40,7 +44,7 @@ export default function MaterialRepositories({ material, repositories }: Materia
 
             <MaterialLayout material={material.data} className="w-full max-w-xl lg:max-w-4xl">
                 <HeadingSmall title={repoTitle} description="Technical records and operational manuals." />
-                <TableRepository repositories={repositories} renderable={[]} extensions={[]} withHeader={false} />
+                <TableRepository filters={filters} repositories={repositories} renderable={[]} extensions={[]} withHeader={false} />
             </MaterialLayout>
         </AppLayout>
     );

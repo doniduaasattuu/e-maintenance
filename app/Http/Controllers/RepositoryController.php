@@ -8,6 +8,7 @@ use App\Http\Requests\Repository\UpdateRepositoryRequest;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Repository;
 use App\Services\RepositoryService;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +18,7 @@ use Throwable;
 
 class RepositoryController extends Controller
 {
+    use HasPerPagePreference;
     private $repositoryService;
 
     public function __construct(RepositoryService $repositoryService)
@@ -30,10 +32,8 @@ class RepositoryController extends Controller
     {
         Gate::authorize('index_repository');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate($perPage)->withQueryString();
         $extensions = Repository::distinct()->pluck('extension');
 
@@ -41,7 +41,10 @@ class RepositoryController extends Controller
             'repositories' => RepositoryResource::collection($repositories),
             'extensions' => $extensions,
             'renderable' => config('repository.renderable'),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

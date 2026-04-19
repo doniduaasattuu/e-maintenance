@@ -22,9 +22,13 @@ interface FunctionalLocationEditProps {
     };
     className?: string;
     withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function FunctionalLocationEdit({ functionalLocation, equipments, findings }: FunctionalLocationEditProps) {
+export default function FunctionalLocationEdit({ functionalLocation, equipments, findings, filters }: FunctionalLocationEditProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: strings.FUNCTIONAL_LOCATION?.plural ?? 'Functional Locations',
@@ -49,11 +53,11 @@ export default function FunctionalLocationEdit({ functionalLocation, equipments,
                         <TabsTrigger value="equipments">Equipments</TabsTrigger>
                         <TabsTrigger value="findings">Findings</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="equipments" className="max-w-6xl">
-                        <TableEquipment withHeader={false} equipments={equipments} />
+                    <TabsContent value="equipments" className="max-w-6xl space-y-4">
+                        <TableEquipment filters={filters} withHeader={false} equipments={equipments} />
                     </TabsContent>
                     <TabsContent value="findings">
-                        <TableFinding findingTypeCode="" withHeader={false} findings={findings} moduleKey="ABNORMALITY" />
+                        <TableFinding filters={filters} findingTypeCode="ABN" withHeader={false} findings={findings} moduleKey="ABNORMALITY" />
                     </TabsContent>
                 </Tabs>
             </FormLayout>

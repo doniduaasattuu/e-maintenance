@@ -6,12 +6,15 @@ use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\InstallDismantleHistoryResource;
 use App\Models\Equipment;
 use App\Models\InstallDismantleHistory;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class InstallDismantleHistoryController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -19,10 +22,8 @@ class InstallDismantleHistoryController extends Controller
     {
         Gate::authorize('index_installdismantlehistory');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $histories = InstallDismantleHistory::search($request)
             ->with(['equipment', 'equipment.eclass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->orderBy('changed_at', 'DESC')
@@ -31,7 +32,10 @@ class InstallDismantleHistoryController extends Controller
 
         return Inertia::render('install-dismantle/index', [
             'histories' => InstallDismantleHistoryResource::collection($histories),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -58,10 +62,8 @@ class InstallDismantleHistoryController extends Controller
     {
         Gate::authorize('show_installdismantlehistory');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $histories = InstallDismantleHistory::with(['equipment', 'equipment.eclass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->where('equipment_id', $equipment->id)
             ->orderBy('changed_at', 'DESC')
@@ -71,7 +73,10 @@ class InstallDismantleHistoryController extends Controller
         return Inertia::render('equipment/history', [
             'equipment' => new EquipmentResource($equipment),
             'histories' => InstallDismantleHistoryResource::collection($histories),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

@@ -8,12 +8,15 @@ use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\DivisionResource;
 use App\Models\Department;
 use App\Models\Division;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class DepartmentController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -21,15 +24,16 @@ class DepartmentController extends Controller
     {
         Gate::authorize('index_department');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $departments = Department::with('division')->search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('department/index', [
             'departments' => DepartmentResource::collection($departments),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

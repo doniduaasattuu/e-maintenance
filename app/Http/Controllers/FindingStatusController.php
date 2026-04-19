@@ -6,6 +6,7 @@ use App\Http\Requests\FindingStatus\StoreFindingStatusRequest;
 use App\Http\Requests\FindingStatus\UpdateFindingStatusRequest;
 use App\Http\Resources\FindingStatusResource;
 use App\Models\FindingStatus;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -13,6 +14,8 @@ use Throwable;
 
 class FindingStatusController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,15 +23,16 @@ class FindingStatusController extends Controller
     {
         Gate::authorize('index_findingstatus');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $findingStatuses = FindingStatus::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('finding-status/index', [
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

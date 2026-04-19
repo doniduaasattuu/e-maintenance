@@ -16,6 +16,7 @@ use App\Models\FindingImage;
 use App\Models\FindingPriority;
 use App\Models\FindingStatus;
 use App\Models\FindingType;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,7 @@ use Inertia\Inertia;
 
 abstract class FindingController extends Controller
 {
+    use HasPerPagePreference;
     abstract protected function getTypeCode(): string;
 
     protected $map = [
@@ -38,10 +40,8 @@ abstract class FindingController extends Controller
     {
         Gate::authorize('index_finding');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $findings = Finding::with([
             'clause',
             'status',
@@ -79,7 +79,10 @@ abstract class FindingController extends Controller
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
             'departments' => DepartmentResource::collection($departments),
             'causeCodes' => CauseCodeResource::collection($causeCodes),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

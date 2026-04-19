@@ -12,6 +12,7 @@ use App\Http\Resources\FindingResource;
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -20,8 +21,12 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Throwable;
 
+use function Pest\Laravel\session;
+
 class EquipmentController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -29,10 +34,8 @@ class EquipmentController extends Controller
     {
         Gate::authorize('index_equipment');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $equipments = Equipment::with(['functionalLocation', 'eclass', 'status'])->search($request)->paginate($perPage)->withQueryString();
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
@@ -45,7 +48,10 @@ class EquipmentController extends Controller
             'equipments' => EquipmentResource::collection($equipments),
             'equipmentClasses' => EquipmentClassResource::collection($equipmentClasses),
             'equipmentStatuses' => EquipmentStatusResource::collection($equipmentStatuses),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

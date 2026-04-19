@@ -36,7 +36,7 @@ export function NavFooter({
                                     asChild
                                     className={`${page.url.includes(item.href) ? 'hover:text-neutral-800 dark:hover:text-neutral-100' : 'text-neutral-600 dark:text-neutral-300'}`}
                                 >
-                                    <Link href={item.href} prefetch>
+                                    <Link href={item.href}>
                                         {item.icon && <item.icon />}
                                         <span>{item.title}</span>
                                     </Link>

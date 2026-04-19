@@ -6,6 +6,7 @@ use App\Http\Requests\Division\StoreDivisionRequest;
 use App\Http\Requests\Division\UpdateDivisionRequest;
 use App\Http\Resources\DivisionResource;
 use App\Models\Division;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -13,6 +14,8 @@ use Throwable;
 
 class DivisionController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,17 +23,18 @@ class DivisionController extends Controller
     {
         Gate::authorize('index_division');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $divisions = Division::search($request)
             ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('division/index', [
             'divisions' => DivisionResource::collection($divisions),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

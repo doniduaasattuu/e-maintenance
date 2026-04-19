@@ -7,22 +7,31 @@ use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\MaterialResource;
 use App\Models\Equipment;
 use App\Models\Material;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
 class EquipmentMaterialController extends Controller
 {
-    public function show(Equipment $equipment)
+    use HasPerPagePreference;
+
+    public function show(Request $request, Equipment $equipment)
     {
+        $perPage = $this->getPerPage($request);
+
         $materials = $equipment
             ->materials()
             ->latest()
-            ->paginate(10);
+            ->paginate($perPage);
 
         return Inertia::render('equipment/materials', [
             'equipment' => new EquipmentResource($equipment),
             'materials' => MaterialResource::collection($materials),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

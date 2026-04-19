@@ -58,7 +58,6 @@ export default function OrganizationsLayout({ className, children }: Props) {
                                     'inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-all',
                                     isActive && 'bg-muted sm:bg-background text-foreground',
                                 )}
-                                prefetch
                             >
                                 {item.title}
                             </Link>

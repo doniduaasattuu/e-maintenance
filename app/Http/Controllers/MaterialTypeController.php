@@ -6,6 +6,7 @@ use App\Http\Requests\MaterialType\StoreMaterialTypeRequest;
 use App\Http\Requests\MaterialType\UpdateMaterialTypeRequest;
 use App\Http\Resources\MaterialTypeResource;
 use App\Models\MaterialType;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -13,6 +14,8 @@ use Throwable;
 
 class MaterialTypeController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,15 +23,16 @@ class MaterialTypeController extends Controller
     {
         Gate::authorize('index_materialtype');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $material_types = MaterialType::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('material-type/index', [
             'materialTypes' => MaterialTypeResource::collection($material_types),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

@@ -11,6 +11,7 @@ use App\Http\Resources\MaterialUnitResource;
 use App\Models\Material;
 use App\Models\MaterialType;
 use App\Models\MaterialUnit;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -21,6 +22,8 @@ use Throwable;
 
 class MaterialController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -28,10 +31,8 @@ class MaterialController extends Controller
     {
         Gate::authorize('index_material');
 
-        $perPage = $request->input('per_page', 10);
-        if (!in_array($perPage, [10, 25, 50, 100, 250])) {
-            $perPage = 10;
-        }
+        $perPage = $this->getPerPage($request);
+
         $materials = Material::with(['unit', 'type'])->search($request)->paginate($perPage)->withQueryString();
 
         if ($request->expectsJson() && $request->filled('query')) {
@@ -42,7 +43,10 @@ class MaterialController extends Controller
             'materials' => MaterialResource::collection($materials),
             'materialUnits' => MaterialUnitResource::collection(MaterialUnit::all()),
             'materialTypes' => MaterialTypeResource::collection(MaterialType::all()),
-            'filters' => $request->only(['query', 'per_page']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

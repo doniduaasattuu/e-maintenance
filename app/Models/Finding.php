@@ -141,7 +141,6 @@ class Finding extends Model
             'status',
             'priority',
             'causeCode',
-            'functionalLocation',
             'inspector',
             'verifier',
             'images',

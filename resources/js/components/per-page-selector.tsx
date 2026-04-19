@@ -9,14 +9,11 @@ const options = ['10', '25', '50', '100', '250'];
 
 export function PerPageSelector({ value }: PerPageSelectorProps) {
     const handleValueChange = (newValue: string) => {
-        // 1. Get current URL params
         const params = new URLSearchParams(window.location.search);
 
-        // 2. Set the new per_page and reset page to 1
         params.set('per_page', newValue);
-        params.set('page', '1'); // Reset pagination to first page on size change
+        params.set('page', '1');
 
-        // 3. Navigate with Inertia
         router.get(
             `${window.location.pathname}?${params.toString()}`,
             {},
