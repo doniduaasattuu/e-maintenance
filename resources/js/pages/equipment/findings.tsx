@@ -45,7 +45,7 @@ export default function EquipmentFindings({ equipment, findings, filters }: Equi
 
             <EquipmentLayout equipment={equipment.data} className="w-full space-y-4">
                 <HeadingSmall title={abnormalityTitle + ' & ' + auditTitle} description="Historical records of abnormalities and audit results." />
-                <TableFinding withHeader={false} findings={findings} moduleKey="ABNORMALITY" filters={filters} findingTypeCode={''}/>
+                <TableFinding withHeader={false} findings={findings} filters={filters} mode="equipment" />
             </EquipmentLayout>
         </AppLayout>
     );

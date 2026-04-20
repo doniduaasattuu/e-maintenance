@@ -56,8 +56,8 @@ export default function FunctionalLocationEdit({ functionalLocation, equipments,
                     <TabsContent value="equipments" className="max-w-6xl space-y-4">
                         <TableEquipment filters={filters} withHeader={false} equipments={equipments} />
                     </TabsContent>
-                    <TabsContent value="findings">
-                        <TableFinding filters={filters} findingTypeCode="ABN" withHeader={false} findings={findings} moduleKey="ABNORMALITY" />
+                    <TabsContent value="findings" className="space-y-4">
+                        <TableFinding mode="functional-location" filters={filters} withHeader={false} findings={findings} />
                     </TabsContent>
                 </Tabs>
             </FormLayout>

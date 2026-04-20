@@ -12,7 +12,8 @@ import { Checkbox } from './ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 interface DialogFindingExportExcelProps {
-    findingTypeCode: string;
+    mode: 'standalone' | 'functional-location' | 'equipment';
+    findingTypeCode?: 'AUD' | 'ABN';
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
     findingPriorities?: {
@@ -24,12 +25,11 @@ interface DialogFindingExportExcelProps {
     departments?: {
         data: Department[];
     };
-    endpoint?: string;
 }
 
 export default function DialogFindingExportExcel({
+    mode,
     findingTypeCode,
-    endpoint,
     open,
     setOpen,
     findingPriorities,
@@ -101,6 +101,17 @@ export default function DialogFindingExportExcel({
         }
     };
 
+    function getEndpoint(findingTypeCode: 'AUD' | 'ABN'): 'audits' | 'abnormalities' | undefined {
+        switch (findingTypeCode) {
+            case 'AUD':
+                return 'audits';
+            case 'ABN':
+                return 'abnormalities';
+            default:
+                return undefined;
+        }
+    }
+
     const handleExport = () => {
         setProcessing(true);
         const params = new URLSearchParams();
@@ -120,15 +131,19 @@ export default function DialogFindingExportExcel({
             params.append('priority_ids[]', id.toString());
         });
 
-        params.append('type_code', data.type_code);
+        if (mode === 'standalone' && data.type_code) {
+            params.append('type_code', data.type_code);
+        }
 
-        const baseUrl = route(`${endpoint}.export`);
-        const finalUrl = `${baseUrl}?${params.toString()}`;
-        window.location.href = finalUrl;
-        setTimeout(() => {
-            setProcessing(false);
-            setOpen(false);
-        }, 3000);
+        if (findingTypeCode) {
+            const baseUrl = route(`${getEndpoint(findingTypeCode)}.export`);
+            const finalUrl = `${baseUrl}?${params.toString()}`;
+            window.location.href = finalUrl;
+            setTimeout(() => {
+                setProcessing(false);
+                setOpen(false);
+            }, 3000);
+        }
     };
 
     return (

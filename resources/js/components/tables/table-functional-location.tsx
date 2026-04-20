@@ -73,7 +73,7 @@ export default function TableFunctionalLocation({ functionalLocations, withHeade
                                 return (
                                     <TableRow key={functionalLocation.id}>
                                         <TableCell>
-                                            {can.edit_functionallocation ? (
+                                            {can.show_functionallocation ? (
                                                 <TextLink href={route('functional-locations.show', functionalLocation.id)}>
                                                     <span className="truncate font-medium">{functionalLocation.code}</span>
                                                 </TextLink>

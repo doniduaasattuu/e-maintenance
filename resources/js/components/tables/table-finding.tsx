@@ -8,7 +8,6 @@ import { Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
 import { ActionFindingDialog } from '../action-finding-dialog';
-import ButtonAdd from '../button-add';
 import ButtonExport from '../button-export';
 import { DateRangePopover } from '../date-range-popover';
 import DialogFindingExportExcel from '../dialog-finding-export-excel';
@@ -31,7 +30,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 interface FindingTableProps {
-    findingTypeCode: string;
+    mode: 'standalone' | 'functional-location' | 'equipment';
+    findingTypeCode?: 'AUD' | 'ABN';
     findings: {
         data: Finding[];
         meta: Meta;
@@ -51,9 +51,6 @@ interface FindingTableProps {
     causeCodes?: {
         data: CauseCode[];
     };
-    moduleKey: string;
-    endpoint?: string;
-    clauseFilter?: string;
     withHeader?: boolean;
     filters: {
         query: string;
@@ -159,6 +156,7 @@ export function FindingCauseCodeCell({ finding }: { finding: Finding }) {
 }
 
 export default function TableFinding({
+    mode = 'standalone',
     findingTypeCode,
     findings,
     findingClauses,
@@ -166,9 +164,6 @@ export default function TableFinding({
     findingStatuses,
     departments,
     causeCodes,
-    endpoint,
-    moduleKey,
-    clauseFilter,
     withHeader = true,
     filters,
 }: FindingTableProps) {
@@ -178,51 +173,49 @@ export default function TableFinding({
     const caption = tableCaption(meta);
     const [selectedImage, setSelectedImage] = useState<FindingImage | null>(null);
 
-    function getEndpoint(finding: Finding): 'abnormalities' | 'audits' | null {
+    function getEndpoint(finding: Finding): 'abnormalities' | 'audits' | undefined {
         switch (finding.type?.code) {
             case 'ABN':
                 return 'abnormalities';
             case 'AUD':
                 return 'audits';
             default:
-                return null;
+                return undefined;
         }
     }
 
-    function handleShowFinding(finding: Finding) {
-        const target = endpoint ?? getEndpoint(finding);
+    function isStandAlone(finding: Finding): boolean {
+        return mode == 'standalone' && getEndpoint(finding) != undefined;
+    }
 
-        if (target) {
-            router.get(route(`${target}.show`, finding.id));
+    function handleShowFinding(finding: Finding) {
+        if (isStandAlone(finding)) {
+            router.get(route(`${getEndpoint(finding)}.show`, finding.id));
         }
     }
 
     function handleEditFinding(finding: Finding) {
-        const target = endpoint ?? getEndpoint(finding);
-
-        if (target) {
-            router.get(route(`${target}.edit`, finding.id));
+        if (isStandAlone(finding)) {
+            router.get(route(`${getEndpoint(finding)}.edit`, finding.id));
         }
     }
 
     function handleCloseFinding(finding: Finding) {
-        const target = endpoint ?? getEndpoint(finding);
-
-        router.post(
-            route(`${target}.close`, finding.id),
-            {},
-            {
-                preserveScroll: true,
-                preserveState: true,
-            },
-        );
+        if (isStandAlone(finding)) {
+            router.post(
+                route(`${getEndpoint(finding)}.close`, finding.id),
+                {},
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                },
+            );
+        }
     }
 
     function handleDeletefinding(finding: Finding) {
-        const target = endpoint ?? getEndpoint(finding);
-
-        if (target) {
-            router.delete(route(`${target}.destroy`, finding.id));
+        if (isStandAlone(finding)) {
+            router.delete(route(`${getEndpoint(finding)}.destroy`, finding.id));
         }
     }
 
@@ -236,14 +229,12 @@ export default function TableFinding({
                         <SearchBar value={filters.query} tabIndex={1} />
                         <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
                         <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
-                            <FilterFindingClause filter={clauseFilter} findingClauses={findingClauses?.data ?? []} />
+                            {mode == 'standalone' && <FilterFindingClause filter={findingTypeCode} findingClauses={findingClauses?.data ?? []} />}
                             <CommandSeparator />
-                            {moduleKey == 'ABNORMALITY' && (
-                                <>
-                                    <FilterCauseCode causeCodes={causeCodes?.data ?? []} />
-                                    <CommandSeparator />
-                                </>
-                            )}
+                            <>
+                                <FilterCauseCode causeCodes={causeCodes?.data ?? []} />
+                                <CommandSeparator />
+                            </>
                             <FilterFindingStatus findingStatuses={findingStatuses?.data ?? []} />
                             <CommandSeparator />
                             <FilterFindingPriority findingPriorities={findingPriorities?.data ?? []} />
@@ -253,7 +244,7 @@ export default function TableFinding({
                         <DateRangePopover />
                     </div>
                     <ButtonGroup>
-                        {can.create_finding && <ButtonAdd route={route(`${endpoint}.create`)} tabIndex={2} />}
+                        {/* {can.create_finding && mode === 'standalone' && <ButtonAdd route={route(`${getEndpoint()}.create`)} tabIndex={2} />} */}
                         <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                     </ButtonGroup>
                 </div>
@@ -264,7 +255,11 @@ export default function TableFinding({
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                {can.close_finding ? <TableHead className="text-muted-foreground w-12.5">#</TableHead> : null}
+                                {can.close_finding ? (
+                                    <TableHead className="text-muted-foreground w-12.5">#</TableHead>
+                                ) : mode != 'standalone' ? (
+                                    <TableHead className="text-muted-foreground w-12.5">#</TableHead>
+                                ) : null}
                                 <TableHead className="text-muted-foreground w-40">Area & Clause</TableHead>
                                 <TableHead className="text-muted-foreground hidden w-25 md:table-cell">Status</TableHead>
                                 <TableHead className="text-muted-foreground hidden w-25 md:table-cell">Priority & Due</TableHead>
@@ -273,10 +268,13 @@ export default function TableFinding({
                                 <TableHead className="text-muted-foreground w-25">After</TableHead>
                                 <TableHead className="text-muted-foreground hidden min-w-50 md:table-cell">Rectification Action</TableHead>
                                 <TableHead className="text-muted-foreground hidden w-17.5 md:table-cell">
-                                    {moduleKey == 'ABNORMALITY' ? 'Equipment' : 'Department'}
+                                    {findingTypeCode == 'ABN' ? 'Equipment' : 'Department'}
                                 </TableHead>
-                                {moduleKey == 'ABNORMALITY' && <TableHead className="text-muted-foreground w-17.5">Cause Code</TableHead>}
-                                <TableHead className="text-muted-foreground w-12.5"></TableHead>
+                                {mode === 'standalone' && findingTypeCode != 'AUD' && (
+                                    <TableHead className="text-muted-foreground w-17.5">Cause Code</TableHead>
+                                )}
+
+                                {mode == 'standalone' && <TableHead className="text-muted-foreground w-12.5"></TableHead>}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -296,6 +294,10 @@ export default function TableFinding({
                                                     }
                                                 }}
                                             />
+                                        </TableCell>
+                                    ) : mode !== 'standalone' ? (
+                                        <TableCell onClick={() => router.get(route(`${getEndpoint(finding)}.show`, finding.id))}>
+                                            <Info className="h-4 w-4 text-blue-500" />
                                         </TableCell>
                                     ) : null}
                                     <TableCell className="align-center min-w-55">
@@ -330,7 +332,7 @@ export default function TableFinding({
                                     </TableCell>
 
                                     <TableCell className="align-center hidden text-xs md:table-cell">
-                                        {moduleKey == 'ABNORMALITY' ? (
+                                        {findingTypeCode == 'ABN' ? (
                                             <div className="flex max-w-sm flex-col items-start">
                                                 <span className="max-w-xs font-medium">{finding.equipment ? finding.equipment?.code : 'N/A'}</span>
                                                 <span className="text-muted-foreground max-w-md">
@@ -348,60 +350,62 @@ export default function TableFinding({
                                         )}
                                     </TableCell>
 
-                                    {moduleKey == 'ABNORMALITY' && <FindingCauseCodeCell finding={finding} />}
+                                    {mode === 'standalone' && findingTypeCode != 'AUD' && <FindingCauseCodeCell finding={finding} />}
 
-                                    <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon" className="size-8">
-                                                    <MoreHorizontalIcon />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                {can.show_finding && (
-                                                    <DropdownMenuItem onClick={() => handleShowFinding(finding)}>
-                                                        <Info />
-                                                        Details
-                                                    </DropdownMenuItem>
-                                                )}
-
-                                                {can.edit_finding && (
-                                                    <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
-                                                        <Edit />
-                                                        Edit
-                                                    </DropdownMenuItem>
-                                                )}
-
-                                                {finding.status?.name.toLowerCase() != 'closed' && (
-                                                    <ActionFindingDialog finding={finding}>
-                                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                            <Wrench />
-                                                            Resolve
+                                    {mode === 'standalone' && (
+                                        <TableCell className="text-right">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="size-8">
+                                                        <MoreHorizontalIcon />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    {can.show_finding && (
+                                                        <DropdownMenuItem onClick={() => handleShowFinding(finding)}>
+                                                            <Info />
+                                                            Details
                                                         </DropdownMenuItem>
-                                                    </ActionFindingDialog>
-                                                )}
+                                                    )}
 
-                                                {can.delete_finding && (
-                                                    <>
-                                                        <DropdownMenuSeparator />
-                                                        <ActionConfirm
-                                                            action={() => handleDeletefinding(finding)}
-                                                            title="Delete Finding"
-                                                            description="Are you sure? This will permanently delete the finding and its images from the storage."
-                                                        >
-                                                            <DropdownMenuItem
-                                                                onSelect={(e) => e.preventDefault()}
-                                                                className="text-red-600 focus:bg-red-50 focus:text-red-700"
-                                                            >
-                                                                <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
-                                                                Delete
+                                                    {can.edit_finding && (
+                                                        <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
+                                                            <Edit />
+                                                            Edit
+                                                        </DropdownMenuItem>
+                                                    )}
+
+                                                    {finding.status?.name.toLowerCase() != 'closed' && (
+                                                        <ActionFindingDialog finding={finding}>
+                                                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                <Wrench />
+                                                                Resolve
                                                             </DropdownMenuItem>
-                                                        </ActionConfirm>
-                                                    </>
-                                                )}
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
+                                                        </ActionFindingDialog>
+                                                    )}
+
+                                                    {can.delete_finding && (
+                                                        <>
+                                                            <DropdownMenuSeparator />
+                                                            <ActionConfirm
+                                                                action={() => handleDeletefinding(finding)}
+                                                                title="Delete Finding"
+                                                                description="Are you sure? This will permanently delete the finding and its images from the storage."
+                                                            >
+                                                                <DropdownMenuItem
+                                                                    onSelect={(e) => e.preventDefault()}
+                                                                    className="text-red-600 focus:bg-red-50 focus:text-red-700"
+                                                                >
+                                                                    <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
+                                                                    Delete
+                                                                </DropdownMenuItem>
+                                                            </ActionConfirm>
+                                                        </>
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -414,12 +418,12 @@ export default function TableFinding({
 
             <DialogFindingExportExcel
                 findingTypeCode={findingTypeCode}
-                endpoint={endpoint}
                 open={exportDialog}
                 setOpen={setExportDialog}
                 findingPriorities={findingPriorities}
                 findingStatuses={findingStatuses}
                 departments={departments}
+                mode={mode}
             />
 
             {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />}

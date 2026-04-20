@@ -42,18 +42,8 @@ abstract class FindingController extends Controller
 
         $perPage = $this->getPerPage($request);
 
-        $findings = Finding::with([
-            'clause',
-            'status',
-            'priority',
-            'department',
-            'causeCode',
-            'equipment',
-            'functionalLocation',
-            'inspector',
-            'verifier',
-            'images',
-        ])->orderBy('created_at', 'DESC')
+        $findings = Finding::withAllRelations()
+            ->orderBy('created_at', 'DESC')
             ->forUserDepartment()
             ->whereHas('type', fn($q) => $q->where('code', $this->getTypeCode()))
             ->when($request->start_date && $request->end_date, function ($query) use ($request) {

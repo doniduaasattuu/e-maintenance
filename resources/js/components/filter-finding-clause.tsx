@@ -6,7 +6,7 @@ import { Check } from 'lucide-react';
 
 interface FilterFindingClauseProps {
     findingClauses: FindingClause[];
-    filter?: string;
+    filter?: 'AUD' | 'ABN';
 }
 
 export default function FilterFindingClause({ findingClauses, filter }: FilterFindingClauseProps) {

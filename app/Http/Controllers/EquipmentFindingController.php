@@ -21,7 +21,7 @@ class EquipmentFindingController extends Controller
             'equipment' => new EquipmentResource($equipment),
             'findings' => FindingResource::collection(
                 $equipment->findings()
-                    ->withDefaultRelations()
+                    ->withAllRelations()
                     ->latest()
                     ->paginate($perPage)
             ),

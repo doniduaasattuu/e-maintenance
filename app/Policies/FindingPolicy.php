@@ -21,7 +21,7 @@ class FindingPolicy
      */
     public function view(User $user, Finding $finding): bool
     {
-        return $user->hasRole('Admin') || $user->department_id === $finding->department_id && $user->hasPermissionTo('show_finding');
+        return $user->hasRole('Admin') || $user->department_id === $finding->department_id || $user->hasPermissionTo('show_finding');
     }
 
     /**

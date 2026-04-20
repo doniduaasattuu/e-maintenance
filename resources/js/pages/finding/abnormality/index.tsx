@@ -51,17 +51,15 @@ export default function FindingIndex({
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey="ABNORMALITY" className="md:max-w-full">
                 <TableFinding
-                    filters={filters}
+                    mode="standalone"
                     findingTypeCode="ABN"
+                    filters={filters}
                     findings={findings}
                     findingClauses={findingClauses}
                     findingPriorities={findingPriorities}
                     findingStatuses={findingStatuses}
                     departments={departments}
                     causeCodes={causeCodes}
-                    moduleKey="ABNORMALITY"
-                    endpoint="abnormalities"
-                    clauseFilter="ABN"
                 />
             </TableLayout>
         </AppLayout>
