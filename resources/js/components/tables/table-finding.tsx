@@ -8,6 +8,7 @@ import { Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
 import { ActionFindingDialog } from '../action-finding-dialog';
+import ButtonAdd from '../button-add';
 import ButtonExport from '../button-export';
 import { DateRangePopover } from '../date-range-popover';
 import DialogFindingExportExcel from '../dialog-finding-export-excel';
@@ -226,8 +227,8 @@ export default function TableFinding({
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar value={filters.query} tabIndex={1} />
-                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                         <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
                             {mode == 'standalone' && <FilterFindingClause filter={findingTypeCode} findingClauses={findingClauses?.data ?? []} />}
                             <CommandSeparator />
@@ -244,8 +245,14 @@ export default function TableFinding({
                         <DateRangePopover />
                     </div>
                     <ButtonGroup>
-                        {/* {can.create_finding && mode === 'standalone' && <ButtonAdd route={route(`${getEndpoint()}.create`)} tabIndex={2} />} */}
-                        <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        {can.create_finding &&
+                            mode === 'standalone' &&
+                            (findingTypeCode != null && findingTypeCode == 'ABN' ? (
+                                <ButtonAdd route={route('abnormalities.create')} tabIndex={3} />
+                            ) : (
+                                <ButtonAdd route={route('audits.create')} tabIndex={3} />
+                            ))}
+                        <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                     </ButtonGroup>
                 </div>
             )}

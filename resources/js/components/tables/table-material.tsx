@@ -55,8 +55,8 @@ export default function TableMaterial({ materials, materialUnits, materialTypes,
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar value={filters.query} tabIndex={1} />
-                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                         <Filter open={open} setOpen={setOpen} keys={['unit', 'type']}>
                             <FilterMaterialUnit materialUnits={materialUnits?.data ?? []} />
                             <CommandSeparator />
@@ -64,9 +64,9 @@ export default function TableMaterial({ materials, materialUnits, materialTypes,
                         </Filter>
                     </div>
                     <ButtonGroup>
-                        {can.create_material && <ButtonAdd tabIndex={2} route={route('materials.create')} />}
+                        {can.create_material && <ButtonAdd tabIndex={3} route={route('materials.create')} />}
                         {materials.data.length > 0 && (
-                            <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                         )}
                     </ButtonGroup>
                 </div>

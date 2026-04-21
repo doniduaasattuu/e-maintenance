@@ -3,11 +3,12 @@ import { router } from '@inertiajs/react';
 
 interface PerPageSelectorProps {
     value: string;
+    tabIndex?: number;
 }
 
 const options = ['10', '25', '50', '100', '250'];
 
-export function PerPageSelector({ value }: PerPageSelectorProps) {
+export function PerPageSelector({ value, tabIndex }: PerPageSelectorProps) {
     const handleValueChange = (newValue: string) => {
         const params = new URLSearchParams(window.location.search);
 
@@ -27,7 +28,7 @@ export function PerPageSelector({ value }: PerPageSelectorProps) {
 
     return (
         <Select value={value} onValueChange={handleValueChange}>
-            <SelectTrigger className="w-17.5">
+            <SelectTrigger className="w-17.5" tabIndex={tabIndex}>
                 <SelectValue placeholder={value} />
             </SelectTrigger>
             <SelectContent>

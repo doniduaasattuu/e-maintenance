@@ -43,13 +43,13 @@ export default function TableFunctionalLocation({ functionalLocations, withHeade
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar value={filters.query} tabIndex={1} />
-                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
                     <ButtonGroup>
-                        {can.create_functionallocation && <ButtonAdd tabIndex={2} route={route('functional-locations.create')} />}
+                        {can.create_functionallocation && <ButtonAdd tabIndex={3} route={route('functional-locations.create')} />}
                         {functionalLocations.data.length > 0 && (
-                            <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                         )}
                     </ButtonGroup>
                 </div>

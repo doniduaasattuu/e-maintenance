@@ -55,8 +55,8 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar value={filters.query} tabIndex={1} />
-                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                         <Filter open={open} setOpen={setOpen} keys={['class', 'status']}>
                             <FilterEquipmentClass equipmentClasses={equipmentClasses?.data ?? []} />
                             <CommandSeparator />
@@ -64,9 +64,9 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                         </Filter>
                     </div>
                     <ButtonGroup>
-                        {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={2} />}
+                        {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={3} />}
                         {equipments.data.length > 0 && (
-                            <ButtonExport tabIndex={3} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                         )}
                     </ButtonGroup>
                 </div>

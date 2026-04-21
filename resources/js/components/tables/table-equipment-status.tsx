@@ -37,10 +37,10 @@ export default function TableEquipmentStatus({ equipmentStatuses, withHeader = t
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar value={filters.query} tabIndex={1} />
-                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
-                    {can.create_equipmentstatus && <ButtonAdd tabIndex={2} route={route('equipment-statuses.create')} />}
+                    {can.create_equipmentstatus && <ButtonAdd tabIndex={3} route={route('equipment-statuses.create')} />}
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">

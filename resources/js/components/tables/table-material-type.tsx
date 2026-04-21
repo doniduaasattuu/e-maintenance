@@ -37,10 +37,10 @@ export default function TableMaterialType({ materialTypes, withHeader = true, fi
             {withHeader && (
                 <div className="flex justify-between gap-2">
                     <div className="flex justify-between gap-2">
-                        <SearchBar value={filters.query} tabIndex={1} />
-                        <PerPageSelector value={filters.per_page?.toString() ?? '10'} />
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
-                    {can.create_materialtype && <ButtonAdd tabIndex={2} route={route('material-types.create')} />}
+                    {can.create_materialtype && <ButtonAdd tabIndex={3} route={route('material-types.create')} />}
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
