@@ -101,7 +101,7 @@ export default function DialogFindingExportExcel({
         }
     };
 
-    function getEndpoint(findingTypeCode: 'AUD' | 'ABN'): 'audits' | 'abnormalities' | undefined {
+    function getEndpointFromCode(findingTypeCode: 'AUD' | 'ABN'): 'audits' | 'abnormalities' | undefined {
         switch (findingTypeCode) {
             case 'AUD':
                 return 'audits';
@@ -136,7 +136,7 @@ export default function DialogFindingExportExcel({
         }
 
         if (findingTypeCode) {
-            const baseUrl = route(`${getEndpoint(findingTypeCode)}.export`);
+            const baseUrl = route(`${getEndpointFromCode(findingTypeCode)}.export`);
             const finalUrl = `${baseUrl}?${params.toString()}`;
             window.location.href = finalUrl;
             setTimeout(() => {

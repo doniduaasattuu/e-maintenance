@@ -49,7 +49,7 @@ export default function FindingIndex({
 }: FindingProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout moduleKey="ABNORMALITY" className="md:max-w-full">
+            <TableLayout isolated={true} moduleKey="ABNORMALITY" className="md:max-w-full">
                 <TableFinding
                     mode="standalone"
                     findingTypeCode="ABN"

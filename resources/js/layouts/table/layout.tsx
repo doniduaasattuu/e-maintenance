@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Heading from '@/components/heading';
+import usePermissions from '@/hooks/use-permissions';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { cn } from '@/lib/utils';
 import { Head } from '@inertiajs/react';
@@ -10,9 +11,12 @@ interface TableLayoutProps {
     action?: React.ReactNode | undefined;
     children: React.ReactNode | undefined;
     moduleKey: keyof typeof UI_STRINGS;
+    isolated?: boolean;
 }
 
-export default function TableLayout({ title, className, action, children, moduleKey }: TableLayoutProps) {
+export default function TableLayout({ title, className, action, children, moduleKey, isolated = false }: TableLayoutProps) {
+    const { user, hasRole } = usePermissions();
+
     if (typeof window === 'undefined') {
         return null;
     }
@@ -24,7 +28,16 @@ export default function TableLayout({ title, className, action, children, module
             <div className="mb-8 flex items-center justify-between gap-2 align-top">
                 <div>
                     <Head title={title ? title : module.label} />
-                    <Heading title={module.label} description={module.description} />
+                    <Heading
+                        title={
+                            title
+                                ? title
+                                : !hasRole('Admin') && user?.department?.code != null && isolated
+                                  ? `${module.label} (${user?.department?.code})`
+                                  : module.label
+                        }
+                        description={module.description}
+                    />
                 </div>
                 {action}
             </div>

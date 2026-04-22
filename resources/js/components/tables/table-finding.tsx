@@ -174,7 +174,7 @@ export default function TableFinding({
     const caption = tableCaption(meta);
     const [selectedImage, setSelectedImage] = useState<FindingImage | null>(null);
 
-    function getEndpoint(finding: Finding): 'abnormalities' | 'audits' | undefined {
+    function getEndpointFromFinding(finding: Finding): 'abnormalities' | 'audits' | undefined {
         switch (finding.type?.code) {
             case 'ABN':
                 return 'abnormalities';
@@ -186,25 +186,25 @@ export default function TableFinding({
     }
 
     function isStandAlone(finding: Finding): boolean {
-        return mode == 'standalone' && getEndpoint(finding) != undefined;
+        return mode == 'standalone' && getEndpointFromFinding(finding) != undefined;
     }
 
     function handleShowFinding(finding: Finding) {
         if (isStandAlone(finding)) {
-            router.get(route(`${getEndpoint(finding)}.show`, finding.id));
+            router.get(route(`${getEndpointFromFinding(finding)}.show`, finding.id));
         }
     }
 
     function handleEditFinding(finding: Finding) {
         if (isStandAlone(finding)) {
-            router.get(route(`${getEndpoint(finding)}.edit`, finding.id));
+            router.get(route(`${getEndpointFromFinding(finding)}.edit`, finding.id));
         }
     }
 
     function handleCloseFinding(finding: Finding) {
         if (isStandAlone(finding)) {
             router.post(
-                route(`${getEndpoint(finding)}.close`, finding.id),
+                route(`${getEndpointFromFinding(finding)}.close`, finding.id),
                 {},
                 {
                     preserveScroll: true,
@@ -216,7 +216,7 @@ export default function TableFinding({
 
     function handleDeletefinding(finding: Finding) {
         if (isStandAlone(finding)) {
-            router.delete(route(`${getEndpoint(finding)}.destroy`, finding.id));
+            router.delete(route(`${getEndpointFromFinding(finding)}.destroy`, finding.id));
         }
     }
 
@@ -303,7 +303,7 @@ export default function TableFinding({
                                             />
                                         </TableCell>
                                     ) : mode !== 'standalone' ? (
-                                        <TableCell onClick={() => router.get(route(`${getEndpoint(finding)}.show`, finding.id))}>
+                                        <TableCell onClick={() => router.get(route(`${getEndpointFromFinding(finding)}.show`, finding.id))}>
                                             <Info className="h-4 w-4 text-blue-500" />
                                         </TableCell>
                                     ) : null}

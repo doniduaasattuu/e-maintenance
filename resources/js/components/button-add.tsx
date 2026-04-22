@@ -15,7 +15,7 @@ export default function ButtonAdd({ route, label, variant, tabIndex }: ButtonAdd
 
     return (
         <Button tabIndex={tabIndex} onClick={() => router.get(route)} size={'sm'} variant={variant ?? 'outline'}>
-            <Plus /> {isMobile ? 'New' : (label ?? 'New')}
+            <Plus /> {isMobile ? null : label ? label : 'New'}
         </Button>
     );
 }
