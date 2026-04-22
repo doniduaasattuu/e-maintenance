@@ -14,7 +14,7 @@ export default function ButtonAdd({ route, label, variant, tabIndex }: ButtonAdd
     const isMobile = useIsMobile();
 
     return (
-        <Button tabIndex={tabIndex} onClick={() => router.get(route)} size={'sm'} variant={variant ?? 'outline'}>
+        <Button tabIndex={tabIndex} onClick={() => router.get(route)} size={'sm'} variant={variant ?? 'outline'} className="text-muted-foreground">
             <Plus /> {isMobile ? null : label ? label : 'New'}
         </Button>
     );

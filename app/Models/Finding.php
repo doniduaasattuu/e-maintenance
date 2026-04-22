@@ -133,6 +133,18 @@ class Finding extends Model
     }
 
     #[Scope]
+    public function scopeActive($query)
+    {
+        return $query->whereHas('status', fn($q) => $q->where('name', '!=', 'Closed'));
+    }
+
+    #[Scope]
+    public function scopeArchived($query)
+    {
+        return $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+    }
+
+    #[Scope]
     public function scopeWithDefaultRelations($query)
     {
         return $query->with([

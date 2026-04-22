@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AbnormalityController;
+use App\Http\Controllers\ArchivedFindingController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CauseCodeController;
 use App\Http\Controllers\FindingClauseController;
@@ -11,6 +12,10 @@ use App\Http\Controllers\FindingTypeController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('findings/archived/export', [ArchivedFindingController::class, 'export'])->name('findings.archived.export');
+
+    Route::get('findings/archived', [ArchivedFindingController::class, 'index'])->name('findings.archived');
 
     // EXPORT
     Route::get('audits/export', [AuditController::class, 'export'])->name('audits.export');

@@ -44,6 +44,7 @@ abstract class FindingController extends Controller
 
         $findings = Finding::withAllRelations()
             ->orderBy('created_at', 'DESC')
+            ->active()
             ->forUserDepartment()
             ->whereHas('type', fn($q) => $q->where('code', $this->getTypeCode()))
             ->when($request->start_date && $request->end_date, function ($query) use ($request) {
@@ -57,7 +58,7 @@ abstract class FindingController extends Controller
             ->withQueryString();
 
         $findingClauses = FindingClause::all();
-        $findingStatuses = FindingStatus::all();
+        $findingStatuses = FindingStatus::where('name', '!=', 'Closed')->get();
         $findingPriorities = FindingPriority::all();
         $departments = Department::all();
         $causeCodes = CauseCode::all();
@@ -218,10 +219,9 @@ abstract class FindingController extends Controller
 
         return back()->with('message', [
             'type' => 'success',
-            'description' => "Finding {$finding->id} has been marked as Closed.",
+            'description' => "Finding has been mark as Closed. The finding is archived.",
         ]);
     }
-
 
     protected function performUpdate(Request $request, Finding $finding, array $additionalData = [])
     {

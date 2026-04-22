@@ -250,6 +250,12 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         },
     },
 
+    ARCHIVED_FINDING: {
+        label: 'Archived',
+        plural: 'Archives',
+        description: 'Represents any finding that have been closed.',
+    },
+
     REPOSITORY: {
         label: 'Repository',
         plural: 'Repositories',

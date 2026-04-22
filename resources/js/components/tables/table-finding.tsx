@@ -32,6 +32,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 interface FindingTableProps {
     mode: 'standalone' | 'functional-location' | 'equipment';
+    isArchived?: boolean;
     findingTypeCode?: 'AUD' | 'ABN';
     findings: {
         data: Finding[];
@@ -89,7 +90,7 @@ export function FindingPriorityAndDueDateCell({ finding, className }: { finding:
 
 export function FindingDescriptionCell({ finding }: { finding: Finding }) {
     return (
-        <TableCell className="align-center w-50">
+        <TableCell className="align-center">
             <p className="text-xs text-wrap">{truncateText(finding.description, 100)}</p>
         </TableCell>
     );
@@ -158,6 +159,7 @@ export function FindingCauseCodeCell({ finding }: { finding: Finding }) {
 
 export default function TableFinding({
     mode = 'standalone',
+    isArchived = false,
     findingTypeCode,
     findings,
     findingClauses,
@@ -230,22 +232,35 @@ export default function TableFinding({
                         <SearchBar value={filters?.query} tabIndex={1} />
                         <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                         <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
-                            {mode == 'standalone' && <FilterFindingClause filter={findingTypeCode} findingClauses={findingClauses?.data ?? []} />}
+                            {mode == 'standalone' && findingClauses?.data && (
+                                <FilterFindingClause filter={findingTypeCode} findingClauses={findingClauses?.data ?? []} />
+                            )}
                             <CommandSeparator />
-                            <>
-                                <FilterCauseCode causeCodes={causeCodes?.data ?? []} />
-                                <CommandSeparator />
-                            </>
-                            <FilterFindingStatus findingStatuses={findingStatuses?.data ?? []} />
-                            <CommandSeparator />
-                            <FilterFindingPriority findingPriorities={findingPriorities?.data ?? []} />
-                            <CommandSeparator />
-                            <FilterDepartment departments={departments?.data ?? []} />
+                            {causeCodes?.data && (
+                                <>
+                                    <FilterCauseCode causeCodes={causeCodes?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            {findingStatuses?.data && (
+                                <>
+                                    <FilterFindingStatus findingStatuses={findingStatuses?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            {findingPriorities?.data && (
+                                <>
+                                    <FilterFindingPriority findingPriorities={findingPriorities?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            {departments?.data && <FilterDepartment departments={departments?.data ?? []} />}
                         </Filter>
                         <DateRangePopover />
                     </div>
                     <ButtonGroup>
                         {can.create_finding &&
+                            !isArchived &&
                             mode === 'standalone' &&
                             (findingTypeCode != null && findingTypeCode == 'ABN' ? (
                                 <ButtonAdd route={route('abnormalities.create')} tabIndex={3} />
@@ -262,33 +277,25 @@ export default function TableFinding({
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                {can.close_finding ? (
-                                    <TableHead className="text-muted-foreground w-12.5">#</TableHead>
-                                ) : mode != 'standalone' ? (
-                                    <TableHead className="text-muted-foreground w-12.5">#</TableHead>
-                                ) : null}
-                                <TableHead className="text-muted-foreground w-40">Area & Clause</TableHead>
-                                <TableHead className="text-muted-foreground hidden w-25 md:table-cell">Status</TableHead>
-                                <TableHead className="text-muted-foreground hidden w-25 md:table-cell">Priority & Due</TableHead>
+                                <TableHead className="text-muted-foreground w-12.5">#</TableHead>
+                                <TableHead className="text-muted-foreground">Area & Clause</TableHead>
+                                <TableHead className="text-muted-foreground hidden md:table-cell">Status</TableHead>
+                                {!isArchived && <TableHead className="text-muted-foreground hidden md:table-cell">Priority & Due</TableHead>}
                                 <TableHead className="text-muted-foreground min-w-50">Description</TableHead>
-                                <TableHead className="text-muted-foreground w-25">Before</TableHead>
-                                <TableHead className="text-muted-foreground w-25">After</TableHead>
+                                <TableHead className="text-muted-foreground">Before</TableHead>
+                                <TableHead className="text-muted-foreground">After</TableHead>
                                 <TableHead className="text-muted-foreground hidden min-w-50 md:table-cell">Rectification Action</TableHead>
-                                <TableHead className="text-muted-foreground hidden w-17.5 md:table-cell">
-                                    {findingTypeCode == 'ABN' ? 'Equipment' : 'Department'}
-                                </TableHead>
-                                {mode === 'standalone' && findingTypeCode != 'AUD' && (
-                                    <TableHead className="text-muted-foreground w-17.5">Cause Code</TableHead>
-                                )}
-
-                                {mode == 'standalone' && <TableHead className="text-muted-foreground w-12.5"></TableHead>}
+                                <TableHead className="text-muted-foreground min-w-30">Created</TableHead>
+                                {isArchived && <TableHead className="text-muted-foreground min-w-30">Closed</TableHead>}
+                                <TableHead className="text-muted-foreground min-w-30">Department</TableHead>
+                                {mode == 'standalone' && <TableHead className="text-muted-foreground"></TableHead>}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {findings.data?.map((finding: Finding) => (
                                 <TableRow key={finding.id}>
                                     {can.close_finding ? (
-                                        <TableCell className="align-center min-w-10">
+                                        <TableCell className="align-center">
                                             <Checkbox
                                                 checked={finding.status?.name.toLowerCase() === 'closed'}
                                                 disabled={
@@ -302,22 +309,30 @@ export default function TableFinding({
                                                 }}
                                             />
                                         </TableCell>
-                                    ) : mode !== 'standalone' ? (
+                                    ) : (
                                         <TableCell onClick={() => router.get(route(`${getEndpointFromFinding(finding)}.show`, finding.id))}>
                                             <Info className="h-4 w-4 text-blue-500" />
                                         </TableCell>
-                                    ) : null}
-                                    <TableCell className="align-center min-w-55">
+                                    )}
+                                    <TableCell className="align-center">
                                         <div className="flex flex-col gap-1">
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <span>{truncateText(finding.functionalLocation?.description ?? '', 25)}</span>
+                                                    <span>{truncateText(finding.functionalLocation?.description ?? '', 20)}</span>
                                                 </TooltipTrigger>
                                                 <TooltipContent>{finding.functionalLocation?.code}</TooltipContent>
                                             </Tooltip>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <span className="text-muted-foreground text-xs">{finding?.clause?.code}</span>
+                                                    <div className="text-muted-foreground flex gap-2 text-xs">
+                                                        <span>{finding?.clause?.code}</span>
+                                                        {finding?.type?.name && (
+                                                            <>
+                                                                {' - '}
+                                                                <span>{finding?.type?.name}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
                                                 </TooltipTrigger>
                                                 <TooltipContent>{finding?.clause?.description}</TooltipContent>
                                             </Tooltip>
@@ -326,7 +341,7 @@ export default function TableFinding({
 
                                     <FindingStatusCell className="hidden md:table-cell" finding={finding} />
 
-                                    <FindingPriorityAndDueDateCell className="hidden md:table-cell" finding={finding} />
+                                    {!isArchived && <FindingPriorityAndDueDateCell className="hidden md:table-cell" finding={finding} />}
 
                                     <FindingDescriptionCell finding={finding} />
 
@@ -334,30 +349,37 @@ export default function TableFinding({
 
                                     <FindingAfterCell finding={finding} setSelectedImage={setSelectedImage} />
 
-                                    <TableCell className="align-center hidden w-50 md:table-cell">
+                                    <TableCell className="align-center hidden md:table-cell">
                                         <p className="text-xs text-wrap">{truncateText(finding.rectification_action ?? '', 100)}</p>
                                     </TableCell>
 
-                                    <TableCell className="align-center hidden text-xs md:table-cell">
-                                        {findingTypeCode == 'ABN' ? (
-                                            <div className="flex max-w-sm flex-col items-start">
-                                                <span className="max-w-xs font-medium">{finding.equipment ? finding.equipment?.code : 'N/A'}</span>
-                                                <span className="text-muted-foreground max-w-md">
-                                                    {truncateText(finding.equipment?.sort_field ?? 'N/A', 20)}
-                                                </span>
-                                            </div>
-                                        ) : (
-                                            <div className="flex flex-col gap-1">
-                                                <Tooltip>
-                                                    <TooltipTrigger className="w-40 truncate text-left">{finding.department?.name}</TooltipTrigger>
-                                                    <TooltipContent>{finding.department?.name}</TooltipContent>
-                                                </Tooltip>
-                                                <div className="text-muted-foreground text-xs">{finding.department?.code}</div>
-                                            </div>
-                                        )}
+                                    <TableCell className="align-center text-xs">
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <span>{truncateText(finding?.inspector?.name ?? 'N/A', 15)}</span>
+                                            <span className="text-muted-foreground">{finding?.created_at ?? 'N/A'}</span>
+                                        </div>
                                     </TableCell>
 
-                                    {mode === 'standalone' && findingTypeCode != 'AUD' && <FindingCauseCodeCell finding={finding} />}
+                                    {isArchived && (
+                                        <TableCell className="align-center text-xs">
+                                            <div className="grid grid-cols-1 gap-2">
+                                                <span>{truncateText(finding?.rectifier?.name ?? 'N/A', 15)}</span>
+                                                <span className="text-muted-foreground">{finding?.closed_at ?? 'N/A'}</span>
+                                            </div>
+                                        </TableCell>
+                                    )}
+
+                                    <TableCell className="align-center text-xs">
+                                        <div className="flex flex-col gap-1">
+                                            <Tooltip>
+                                                <TooltipTrigger className="truncate text-left">
+                                                    {truncateText(finding.department?.name ?? 'N/A', 15)}
+                                                </TooltipTrigger>
+                                                <TooltipContent>{finding.department?.name}</TooltipContent>
+                                            </Tooltip>
+                                            <div className="text-muted-foreground text-xs">{finding.department?.code}</div>
+                                        </div>
+                                    </TableCell>
 
                                     {mode === 'standalone' && (
                                         <TableCell className="text-right">
@@ -424,6 +446,7 @@ export default function TableFinding({
             <GeneratePagination meta={meta} />
 
             <DialogFindingExportExcel
+                isArchived={isArchived}
                 findingTypeCode={findingTypeCode}
                 open={exportDialog}
                 setOpen={setExportDialog}

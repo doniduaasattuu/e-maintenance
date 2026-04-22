@@ -116,6 +116,11 @@ const mainNavItems: NavItem[] = [
                 href: route('abnormalities.index'),
                 permission: 'index_abnormality',
             },
+            {
+                title: strings.ARCHIVED_FINDING?.label ?? 'Archived',
+                href: route('findings.archived'),
+                permission: 'index_finding',
+            },
         ],
     },
     {

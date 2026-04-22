@@ -138,13 +138,13 @@ export default function CardFindingDetail({ finding, type }: Props) {
                     </Ul>
                 </div>
             </CardContent>
-            <CardFooter className="flex flex-col gap-3">
-                {can.edit_abnormality && (
+            {can.edit_abnormality && (
+                <CardFooter>
                     <Button onClick={() => handleEditFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
                         <Edit className="size-4" /> Edit
                     </Button>
-                )}
-            </CardFooter>
+                </CardFooter>
+            )}
         </Card>
     );
 }

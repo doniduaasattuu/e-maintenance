@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 interface DialogFindingExportExcelProps {
     mode: 'standalone' | 'functional-location' | 'equipment';
     findingTypeCode?: 'AUD' | 'ABN';
+    isArchived?: boolean;
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
     findingPriorities?: {
@@ -30,6 +31,7 @@ interface DialogFindingExportExcelProps {
 export default function DialogFindingExportExcel({
     mode,
     findingTypeCode,
+    isArchived = false,
     open,
     setOpen,
     findingPriorities,
@@ -41,15 +43,21 @@ export default function DialogFindingExportExcel({
     const [startDate, setStartDate] = React.useState<Date>(new Date(date.setMonth(date.getMonth() - 3)));
     const [endDate, setEndDate] = React.useState<Date>(new Date());
 
-    const selectedStatus = findingStatuses?.data.map((status: FindingStatus) => {
-        return status.id;
-    });
-    const selectedPriority = findingPriorities?.data.map((priority: FindingPriority) => {
-        return priority.id;
-    });
-    const selectedDepartments = departments?.data.map((department: Department) => {
-        return department.id;
-    });
+    const selectedStatus = findingStatuses?.data
+        ? findingStatuses?.data.map((status: FindingStatus) => {
+              return status.id;
+          })
+        : [];
+    const selectedPriority = findingPriorities?.data
+        ? findingPriorities?.data.map((priority: FindingPriority) => {
+              return priority.id;
+          })
+        : [];
+    const selectedDepartments = departments?.data
+        ? departments?.data.map((department: Department) => {
+              return department.id;
+          })
+        : [];
 
     const { data, setData } = useForm({
         start_date: '',
@@ -101,14 +109,14 @@ export default function DialogFindingExportExcel({
         }
     };
 
-    function getEndpointFromCode(findingTypeCode: 'AUD' | 'ABN'): 'audits' | 'abnormalities' | undefined {
+    function getEndpointFromCode(findingTypeCode?: 'AUD' | 'ABN'): 'audits' | 'abnormalities' | 'findings.archived' {
         switch (findingTypeCode) {
             case 'AUD':
                 return 'audits';
             case 'ABN':
                 return 'abnormalities';
             default:
-                return undefined;
+                return 'findings.archived';
         }
     }
 
@@ -135,15 +143,13 @@ export default function DialogFindingExportExcel({
             params.append('type_code', data.type_code);
         }
 
-        if (findingTypeCode) {
-            const baseUrl = route(`${getEndpointFromCode(findingTypeCode)}.export`);
-            const finalUrl = `${baseUrl}?${params.toString()}`;
-            window.location.href = finalUrl;
-            setTimeout(() => {
-                setProcessing(false);
-                setOpen(false);
-            }, 3000);
-        }
+        const baseUrl = route(`${getEndpointFromCode(findingTypeCode)}.export`);
+        const finalUrl = `${baseUrl}?${params.toString()}`;
+        window.location.href = finalUrl;
+        setTimeout(() => {
+            setProcessing(false);
+            setOpen(false);
+        }, 3000);
     };
 
     return (
@@ -217,32 +223,36 @@ export default function DialogFindingExportExcel({
                             </Field>
                         </div>
 
-                        {/* STATUS */}
-                        <FieldSet className="gap-5">
-                            <FieldLegend className="mb-2" variant="label">
-                                Finding Status:
-                            </FieldLegend>
-                            <FieldDescription>Select the finding status.</FieldDescription>
-                            <FieldGroup className="gap-3">
-                                {findingStatuses?.data &&
-                                    findingStatuses?.data.map((status: FindingStatus) => {
-                                        return (
-                                            <Field orientation="horizontal">
-                                                <Checkbox
-                                                    onCheckedChange={(checked: boolean) => handleStatusChange(status.id, checked)}
-                                                    id={status.name}
-                                                    checked={data.status_ids.includes(status.id)}
-                                                    name={status.name}
-                                                    defaultChecked
-                                                />
-                                                <Label htmlFor={status.name} className="font-normal">
-                                                    {status.name}
-                                                </Label>
-                                            </Field>
-                                        );
-                                    })}
-                            </FieldGroup>
-                        </FieldSet>
+                        {!isArchived && (
+                            <>
+                                {/* STATUS */}
+                                <FieldSet className="gap-5">
+                                    <FieldLegend className="mb-2" variant="label">
+                                        Finding Status:
+                                    </FieldLegend>
+                                    <FieldDescription>Select the finding status.</FieldDescription>
+                                    <FieldGroup className="gap-3">
+                                        {findingStatuses?.data &&
+                                            findingStatuses?.data.map((status: FindingStatus, index: number) => {
+                                                return (
+                                                    <Field key={index} orientation="horizontal">
+                                                        <Checkbox
+                                                            onCheckedChange={(checked: boolean) => handleStatusChange(status.id, checked)}
+                                                            id={status.name}
+                                                            checked={data.status_ids.includes(status.id)}
+                                                            name={status.name}
+                                                            defaultChecked
+                                                        />
+                                                        <Label htmlFor={status.name} className="font-normal">
+                                                            {status.name}
+                                                        </Label>
+                                                    </Field>
+                                                );
+                                            })}
+                                    </FieldGroup>
+                                </FieldSet>
+                            </>
+                        )}
 
                         {/* DEPARTMENT */}
                         <FieldSet className="gap-5">
@@ -252,9 +262,9 @@ export default function DialogFindingExportExcel({
                             <FieldDescription>Select the responsible departments.</FieldDescription>
                             <FieldGroup className="gap-3">
                                 {departments?.data &&
-                                    departments?.data.map((department: Department) => {
+                                    departments?.data.map((department: Department, index: number) => {
                                         return (
-                                            <Field orientation="horizontal">
+                                            <Field key={index} orientation="horizontal">
                                                 <Checkbox
                                                     onCheckedChange={(checked: boolean) => handleDepartmentChange(department.id, checked)}
                                                     id={department.code}
@@ -279,9 +289,9 @@ export default function DialogFindingExportExcel({
                             <FieldDescription>Select the priority of finding.</FieldDescription>
                             <FieldGroup className="gap-3">
                                 {findingPriorities?.data &&
-                                    findingPriorities?.data.map((priority: FindingPriority) => {
+                                    findingPriorities?.data.map((priority: FindingPriority, index: number) => {
                                         return (
-                                            <Field orientation="horizontal">
+                                            <Field key={index} orientation="horizontal">
                                                 <Checkbox
                                                     onCheckedChange={(checked: boolean) => handlePriorityChange(priority.id, checked)}
                                                     id={priority.label}
