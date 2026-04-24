@@ -1,5 +1,5 @@
+import { ChartBarDefault } from '@/components/chart-bar-default';
 import DashboardCard from '@/components/dashboard-card';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -34,9 +34,17 @@ interface DashboardProps {
             desc: string;
         };
     };
+    chartClosedFinding: {
+        departmentCode: string;
+        totalClosedFindings: number;
+    }[];
+    topInspectors: {
+        name: string;
+        totalSolved: number;
+    }[];
 }
 
-export default function Dashboard({ stats }: DashboardProps) {
+export default function Dashboard({ stats, chartClosedFinding, topInspectors }: DashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -58,14 +66,26 @@ export default function Dashboard({ stats }: DashboardProps) {
                         </DashboardCard>
                     </div>
                     <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
                         <DashboardCard title="SLA Exceeded" description={stats.slaExceeded.desc} value={stats.slaExceeded.value}>
                             <Clock className="h-5 w-5 text-red-400" />
                         </DashboardCard>
                     </div>
                 </div>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-screen flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                    <ChartBarDefault
+                        title="Closed Findings Achievement"
+                        description="Distribusi temuan selesai per departemen (6 bulan terakhir)"
+                        chartData={chartClosedFinding}
+                        labelKey="departmentCode"
+                        valueKey="totalClosedFindings"
+                    />
+                    <ChartBarDefault
+                        title="Top 10 Inspector"
+                        description="User yang paling aktif memverifikasi temuan selesai"
+                        chartData={topInspectors}
+                        labelKey="name"
+                        valueKey="totalSolved"
+                    />
                 </div>
             </div>
         </AppLayout>

@@ -253,4 +253,46 @@ class Finding extends Model
     {
         return $this->hasMany(FindingImage::class);
     }
+
+    // CHART
+    public static function getChartData()
+    {
+        return \App\Models\Department::query()
+            ->select('id', 'code')
+            ->withCount(['findings as totalClosedFindings' => function ($query) {
+                // Gunakan logic archived/closed di sini
+                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            }])
+            ->get()
+            ->map(function ($dept) {
+                return [
+                    'departmentCode' => $dept->code,
+                    'totalClosedFindings' => $dept->totalClosedFindings,
+                ];
+            })
+            ->sortByDesc('totalClosedFindings')
+            ->values();
+    }
+
+    public static function getTopInspectors()
+    {
+        return \App\Models\User::query()
+            ->select('id', 'name')
+            ->withCount(['verifiedFindings as totalSolved' => function ($query) {
+                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            }])
+            ->whereHas('verifiedFindings', function ($query) {
+                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            })
+            ->orderByDesc('totalSolved')
+            ->limit(10)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'name' => str()->before($user->name, ' '),
+                    'totalSolved' => $user->totalSolved,
+                ];
+            })
+            ->values();
+    }
 }

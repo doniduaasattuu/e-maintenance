@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Finding;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,7 +57,9 @@ class DashboardController extends Controller
                     'value' => $slaExceeded,
                     'desc' => 'Temuan yang melewati batas SLA',
                 ],
-            ]
+            ],
+            'chartClosedFinding' => Finding::getChartData(),
+            'topInspectors' => Finding::getTopInspectors(),
         ]);
     }
 }
