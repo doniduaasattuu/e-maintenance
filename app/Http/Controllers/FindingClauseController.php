@@ -84,9 +84,11 @@ class FindingClauseController extends Controller
     public function edit(FindingClause $findingClause)
     {
         Gate::authorize('edit_findingclause');
+        $findingTypes = FindingType::get();
 
         return Inertia::render('finding-clause/edit', [
             'findingClause' => new FindingClauseResource($findingClause),
+            'findingTypes' => FindingTypeResource::collection($findingTypes),
         ]);
     }
 

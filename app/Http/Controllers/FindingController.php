@@ -9,6 +9,7 @@ use App\Http\Resources\FindingClauseResource;
 use App\Http\Resources\FindingPriorityResource;
 use App\Http\Resources\FindingResource;
 use App\Http\Resources\FindingStatusResource;
+use App\Http\Resources\WorkCenterResource;
 use App\Models\CauseCode;
 use App\Models\Department;
 use App\Models\FindingClause;
@@ -16,6 +17,7 @@ use App\Models\FindingImage;
 use App\Models\FindingPriority;
 use App\Models\FindingStatus;
 use App\Models\FindingType;
+use App\Models\WorkCenter;
 use App\Traits\HasPerPagePreference;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
@@ -61,6 +63,7 @@ abstract class FindingController extends Controller
         $findingStatuses = FindingStatus::where('name', '!=', 'Closed')->get();
         $findingPriorities = FindingPriority::all();
         $departments = Department::all();
+        $workCenters = WorkCenter::all();
         $causeCodes = CauseCode::all();
 
         return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/index", [
@@ -69,6 +72,7 @@ abstract class FindingController extends Controller
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
             'departments' => DepartmentResource::collection($departments),
+            'workCenters' => WorkCenterResource::collection($workCenters),
             'causeCodes' => CauseCodeResource::collection($causeCodes),
             'filters' => [
                 'query' => $request->query('query'),
@@ -89,6 +93,7 @@ abstract class FindingController extends Controller
         $findingPriorities = FindingPriority::all();
         $causeCodes = CauseCode::all();
         $departments = Department::all();
+        $workCenters = WorkCenter::all();
 
         return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/create", [
             'findingClauses' => FindingClauseResource::collection($findingClauses),
@@ -96,6 +101,7 @@ abstract class FindingController extends Controller
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
             'causeCodes' => CauseCodeResource::collection($causeCodes),
             'departments' => DepartmentResource::collection($departments),
+            'workCenters' => WorkCenterResource::collection($workCenters),
         ]);
     }
 
@@ -142,6 +148,7 @@ abstract class FindingController extends Controller
             'priority',
             'causeCode',
             'department',
+            'workCenter',
             'equipment',
             'functionalLocation',
             'inspector',
@@ -162,6 +169,7 @@ abstract class FindingController extends Controller
     public function revise(Finding $finding)
     {
         Gate::authorize('edit_finding');
+        Gate::authorize('update', $finding);
 
         $finding->load([
             'clause',
@@ -169,6 +177,7 @@ abstract class FindingController extends Controller
             'priority',
             'causeCode',
             'department',
+            'workCenter',
             'equipment',
             'functionalLocation',
             'inspector',
@@ -177,10 +186,11 @@ abstract class FindingController extends Controller
         ]);
 
         $findingClauses = FindingClause::all();
-        $findingStatuses = FindingStatus::all();
+        $findingStatuses = FindingStatus::where('name', '!=', 'Closed')->get();
         $findingPriorities = FindingPriority::all();
         $causeCodes = CauseCode::all();
         $departments = Department::all();
+        $workCenters = WorkCenter::all();
 
         return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/edit", [
             'finding' => new FindingResource($finding),
@@ -189,6 +199,7 @@ abstract class FindingController extends Controller
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
             'causeCodes' => CauseCodeResource::collection($causeCodes),
             'departments' => DepartmentResource::collection($departments),
+            'workCenters' => WorkCenterResource::collection($workCenters),
         ]);
     }
 
@@ -277,6 +288,7 @@ abstract class FindingController extends Controller
     public function delete(Finding $finding)
     {
         Gate::authorize('delete_finding');
+        Gate::authorize('delete', $finding);
 
         return DB::transaction(function () use ($finding) {
             $directoryPath = 'images/findings/' . $finding->id;

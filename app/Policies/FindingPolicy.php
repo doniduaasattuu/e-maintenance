@@ -37,7 +37,7 @@ class FindingPolicy
      */
     public function update(User $user, Finding $finding): bool
     {
-        return false;
+        return $user->hasRole('Admin') || $finding->inspected_by == $user->id;
     }
 
     /**
@@ -53,7 +53,7 @@ class FindingPolicy
      */
     public function delete(User $user, Finding $finding): bool
     {
-        return false;
+        return $user->hasRole('Admin') || $finding->inspected_by == $user->id;
     }
 
     /**

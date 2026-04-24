@@ -41,7 +41,6 @@ class StoreFindingClauseRequest extends FormRequest
                 'required',
                 'string',
                 'max:50',
-                'unique:finding_clauses,title'
             ],
             'description' => ['required', 'string', 'max:255'],
         ];

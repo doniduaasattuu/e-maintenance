@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import usePermissions from '@/hooks/use-permissions';
+import { cn } from '@/lib/utils';
 import { Finding } from '@/types';
 import { router } from '@inertiajs/react';
 import {
@@ -40,12 +41,13 @@ const Li = ({ title, children }: LiProps) => {
     );
 };
 
-const Ul = ({ children }: { children: React.ReactNode }) => {
-    return <div className="grid grid-rows-5 gap-2 space-y-3 text-sm">{children}</div>;
+const Ul = ({ children, type }: { children: React.ReactNode; type: 'AUD' | 'ABN' }) => {
+    return <div className={cn('grid gap-2 space-y-3 text-sm', type == 'ABN' ? 'grid-rows-6' : 'grid-rows-5')}>{children}</div>;
 };
 
-const handleEditFinding = (id: number) => {
-    router.get(route('abnormalities.edit', id));
+const handleEditFinding = (id: number, type: 'AUD' | 'ABN') => {
+    const endpoint = type == 'ABN' ? 'abnormalities' : 'audits';
+    router.get(route(`${endpoint}.edit`, id));
 };
 
 export default function CardFindingDetail({ finding, type }: Props) {
@@ -78,9 +80,9 @@ export default function CardFindingDetail({ finding, type }: Props) {
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-2 gap-2">
-                    <Ul>
+                    <Ul type={type}>
                         <Li title="Priority">
-                            <AlertCircle color={finding.data.priority?.color_code} className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                            <AlertCircle className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                             <span>{finding.data.priority?.label ?? '-'}</span>
                         </Li>
                         <Li title="Inspector">
@@ -95,34 +97,15 @@ export default function CardFindingDetail({ finding, type }: Props) {
                             <HardHat className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                             <span>{finding.data.rectifier?.name ?? '-'}</span>
                         </Li>
-
                         <Li title="Department">
                             <BuildingIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                            <span>{finding.data.department?.name ?? '-'}</span>
-                        </Li>
-                    </Ul>
-                    <Ul>
-                        <Li title="Status">
-                            {isClosed ? (
-                                <CheckSquare className="mt-0.5 size-4 shrink-0 text-green-400" />
-                            ) : (
-                                <TriangleAlert className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                            )}
 
-                            <span className={isClosed ? 'text-green-400' : undefined}>{finding.data.status?.name ?? '-'}</span>
-                        </Li>
-                        <Li title="Verifier">
-                            <User className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                            <span>{finding.data.verifier?.name ?? '-'}</span>
-                        </Li>
-
-                        <Li title="Deadline">
-                            <CalendarFold className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                            <span>{finding.data.due_date_readable ?? '-'} </span>
-                        </Li>
-                        <Li title="Closed Date">
-                            <CalendarCheck className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                            <span>{finding.data.closed_at ?? '-'}</span>
+                            <span>
+                                <Tooltip>
+                                    <TooltipTrigger className="text-left">{finding.data.department?.name ?? '-'}</TooltipTrigger>
+                                    <TooltipContent>{finding.data.department?.code ?? '-'}</TooltipContent>
+                                </Tooltip>
+                            </span>
                         </Li>
                         {type === 'ABN' && (
                             <Li title="Cause Code">
@@ -136,11 +119,43 @@ export default function CardFindingDetail({ finding, type }: Props) {
                             </Li>
                         )}
                     </Ul>
+                    <Ul type={type}>
+                        <Li title="Status">
+                            {isClosed ? (
+                                <CheckSquare className="mt-0.5 size-4 shrink-0 text-green-400" />
+                            ) : (
+                                <TriangleAlert className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                            )}
+
+                            <span className={isClosed ? 'text-green-400' : undefined}>{finding.data.status?.name ?? '-'}</span>
+                        </Li>
+                        <Li title="Verifier">
+                            <User className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                            <span>{finding.data.verifier?.name ?? '-'}</span>
+                        </Li>
+                        <Li title="Deadline">
+                            <CalendarFold className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                            <span>{finding.data.due_date_readable ?? '-'} </span>
+                        </Li>
+                        <Li title="Closed Date">
+                            <CalendarCheck className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                            <span>{finding.data.closed_at ?? '-'}</span>
+                        </Li>
+                        <Li title="Work Center">
+                            <BuildingIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                            <span>
+                                <Tooltip>
+                                    <TooltipTrigger className="text-left">{finding.data.workCenter?.name ?? '-'}</TooltipTrigger>
+                                    <TooltipContent>{finding.data.workCenter?.code ?? '-'}</TooltipContent>
+                                </Tooltip>
+                            </span>
+                        </Li>
+                    </Ul>
                 </div>
             </CardContent>
-            {can.edit_abnormality && (
+            {(can.edit_abnormality || can.edit_audit) && (
                 <CardFooter>
-                    <Button onClick={() => handleEditFinding(finding.data.id)} variant="outline" size="sm" className="w-full">
+                    <Button onClick={() => handleEditFinding(finding.data.id, type)} variant="outline" size="sm" className="w-full">
                         <Edit className="size-4" /> Edit
                     </Button>
                 </CardFooter>

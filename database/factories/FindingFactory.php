@@ -11,6 +11,7 @@ use App\Models\FindingStatus;
 use App\Models\FindingType;
 use App\Models\FunctionalLocation;
 use App\Models\User;
+use App\Models\WorkCenter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -109,6 +110,7 @@ class FindingFactory extends Factory
             'functional_location_id' => FunctionalLocation::inRandomOrder()->first()->id ?? FunctionalLocation::factory(),
             'description' => $description,
             'department_id' => Department::inRandomOrder()->first()->id,
+            'work_center_id' => WorkCenter::inRandomOrder()->first()->id,
             'rectification_action' => $isClosed ? $rectificationAction : null,
             'notification' => $this->faker->numerify('########'),
             'inspected_by' => User::inRandomOrder()->first()->id ?? User::factory()->create()->id,

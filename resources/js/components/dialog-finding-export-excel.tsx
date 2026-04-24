@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Field, FieldDescription, FieldGroup, FieldLegend, FieldSet } from '@/components/ui/field';
 import { Label } from '@/components/ui/label';
-import { Department, FindingPriority, FindingStatus } from '@/types';
+import { Department, FindingPriority, FindingStatus, WorkCenter } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { ChevronDownIcon, LoaderCircle, Sheet } from 'lucide-react';
@@ -26,6 +26,9 @@ interface DialogFindingExportExcelProps {
     departments?: {
         data: Department[];
     };
+    workCenters?: {
+        data: WorkCenter[];
+    };
 }
 
 export default function DialogFindingExportExcel({
@@ -37,33 +40,44 @@ export default function DialogFindingExportExcel({
     findingPriorities,
     findingStatuses,
     departments,
+    workCenters,
 }: DialogFindingExportExcelProps) {
     const [processing, setProcessing] = React.useState<boolean>(false);
     const date = new Date();
     const [startDate, setStartDate] = React.useState<Date>(new Date(date.setMonth(date.getMonth() - 3)));
     const [endDate, setEndDate] = React.useState<Date>(new Date());
 
-    const selectedStatus = findingStatuses?.data
-        ? findingStatuses?.data.map((status: FindingStatus) => {
-              return status.id;
-          })
-        : [];
-    const selectedPriority = findingPriorities?.data
-        ? findingPriorities?.data.map((priority: FindingPriority) => {
-              return priority.id;
-          })
-        : [];
-    const selectedDepartments = departments?.data
-        ? departments?.data.map((department: Department) => {
-              return department.id;
-          })
-        : [];
+    const selectedStatus =
+        findingStatuses?.data && findingStatuses?.data?.length > 0
+            ? findingStatuses?.data.map((status: FindingStatus) => {
+                  return status.id;
+              })
+            : [];
+    const selectedPriority =
+        findingPriorities?.data && findingPriorities?.data?.length > 0
+            ? findingPriorities?.data.map((priority: FindingPriority) => {
+                  return priority.id;
+              })
+            : [];
+    const selectedDepartments =
+        departments?.data && departments?.data?.length > 0
+            ? departments?.data.map((department: Department) => {
+                  return department.id;
+              })
+            : [];
+    const selectedWorkCenters =
+        workCenters?.data && workCenters?.data?.length > 0
+            ? workCenters?.data.map((workCenter: WorkCenter) => {
+                  return workCenter.id;
+              })
+            : [];
 
     const { data, setData } = useForm({
         start_date: '',
         end_date: '',
         status_ids: selectedStatus as number[],
         department_ids: selectedDepartments as number[],
+        work_center_ids: selectedWorkCenters as number[],
         priority_ids: selectedPriority as number[],
         type_code: findingTypeCode,
     });
@@ -105,6 +119,17 @@ export default function DialogFindingExportExcel({
             setData(
                 'department_ids',
                 data.department_ids.filter((item) => item !== id),
+            );
+        }
+    };
+
+    const handleWorkCenterChange = (id: number, checked: boolean) => {
+        if (checked) {
+            setData('work_center_ids', [...data.work_center_ids, id]);
+        } else {
+            setData(
+                'work_center_ids',
+                data.work_center_ids.filter((item) => item !== id),
             );
         }
     };
@@ -301,6 +326,33 @@ export default function DialogFindingExportExcel({
                                                 />
                                                 <Label htmlFor={priority.label} className="font-normal">
                                                     {priority.label}
+                                                </Label>
+                                            </Field>
+                                        );
+                                    })}
+                            </FieldGroup>
+                        </FieldSet>
+
+                        {/* Work Center */}
+                        <FieldSet className="gap-5">
+                            <FieldLegend className="mb-2" variant="label">
+                                Work Center:
+                            </FieldLegend>
+                            <FieldDescription>Select Work Center.</FieldDescription>
+                            <FieldGroup className="gap-3">
+                                {workCenters?.data &&
+                                    workCenters?.data.map((workCenter: WorkCenter, index: number) => {
+                                        return (
+                                            <Field key={index} orientation="horizontal">
+                                                <Checkbox
+                                                    onCheckedChange={(checked: boolean) => handleWorkCenterChange(workCenter.id, checked)}
+                                                    id={workCenter.code}
+                                                    checked={data.work_center_ids.includes(workCenter.id)}
+                                                    name={workCenter.code}
+                                                    defaultChecked
+                                                />
+                                                <Label htmlFor={workCenter.name} className="font-normal">
+                                                    {workCenter.name}
                                                 </Label>
                                             </Field>
                                         );

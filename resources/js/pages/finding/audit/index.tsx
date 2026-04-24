@@ -2,7 +2,7 @@ import TableFinding from '@/components/tables/table-finding';
 import AppLayout from '@/layouts/app-layout';
 import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, CauseCode, Department, Finding, FindingClause, FindingPriority, FindingStatus, Meta } from '@/types';
+import { BreadcrumbItem, CauseCode, Department, Finding, FindingClause, FindingPriority, FindingStatus, Meta, WorkCenter } from '@/types';
 
 const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
@@ -29,6 +29,9 @@ type FindingProps = {
     departments: {
         data: Department[];
     };
+    workCenters: {
+        data: WorkCenter[];
+    };
     causeCodes: {
         data: CauseCode[];
     };
@@ -43,6 +46,7 @@ export default function FindingIndex({
     findingPriorities,
     findingStatuses,
     departments,
+    workCenters,
     findingClauses,
     causeCodes,
     filters,
@@ -59,6 +63,7 @@ export default function FindingIndex({
                     findingPriorities={findingPriorities}
                     findingStatuses={findingStatuses}
                     departments={departments}
+                    workCenters={workCenters}
                     causeCodes={causeCodes}
                 />
             </TableLayout>

@@ -18,7 +18,7 @@ import { PerPageSelector } from '../per-page-selector';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { ButtonGroup } from '../ui/button-group';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface TableRepositoryProps {
     repositories: {
@@ -141,18 +141,15 @@ export default function TableRepository({ repositories, extensions, renderable, 
                                                         </Link>
                                                     )}
                                                     {can.delete_repository && (
-                                                        <>
-                                                            <DropdownMenuSeparator />
-                                                            <ActionConfirm
-                                                                action={() => handleDeleteRepository(repository.id)}
-                                                                title={`Delete Repository ${repository.title}?`}
-                                                                description="This action will remove this repository from database. This action cannot be undone."
-                                                            >
-                                                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                                    <Trash2 size={18} className="text-red-500" /> Delete
-                                                                </DropdownMenuItem>
-                                                            </ActionConfirm>
-                                                        </>
+                                                        <ActionConfirm
+                                                            action={() => handleDeleteRepository(repository.id)}
+                                                            title={`Delete Repository ${repository.title}?`}
+                                                            description="This action will remove this repository from database. This action cannot be undone."
+                                                        >
+                                                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                <Trash2 size={18} className="text-red-500" /> Delete
+                                                            </DropdownMenuItem>
+                                                        </ActionConfirm>
                                                     )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>

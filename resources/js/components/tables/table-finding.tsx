@@ -2,7 +2,7 @@ import { ButtonGroup } from '@/components/ui/button-group';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import truncateText, { cn, tableCaption } from '@/lib/utils';
-import { CauseCode, Department, Finding, FindingClause, FindingImage, FindingPriority, FindingStatus, Meta } from '@/types';
+import { CauseCode, Department, Finding, FindingClause, FindingImage, FindingPriority, FindingStatus, Meta, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
 import { Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
@@ -19,6 +19,7 @@ import FilterDepartment from '../filter-department';
 import FilterFindingClause from '../filter-finding-clause';
 import FilterFindingPriority from '../filter-finding-priority';
 import FilterFindingStatus from '../filter-finding-status';
+import FilterWorkCenter from '../filter-work-center';
 import { GeneratePagination } from '../generate-pagination';
 import Lightbox from '../light-box';
 import { PerPageSelector } from '../per-page-selector';
@@ -27,7 +28,7 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import { CommandSeparator } from '../ui/command';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 interface FindingTableProps {
@@ -49,6 +50,9 @@ interface FindingTableProps {
     };
     departments?: {
         data: Department[];
+    };
+    workCenters?: {
+        data: WorkCenter[];
     };
     causeCodes?: {
         data: CauseCode[];
@@ -166,6 +170,7 @@ export default function TableFinding({
     findingPriorities,
     findingStatuses,
     departments,
+    workCenters,
     causeCodes,
     withHeader = true,
     filters,
@@ -254,7 +259,18 @@ export default function TableFinding({
                                     <CommandSeparator />
                                 </>
                             )}
-                            {departments?.data && <FilterDepartment departments={departments?.data ?? []} />}
+                            {departments?.data && (
+                                <>
+                                    <FilterDepartment departments={departments?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            {workCenters?.data && (
+                                <>
+                                    <FilterWorkCenter workCenters={workCenters?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
                         </Filter>
                         <DateRangePopover />
                     </div>
@@ -372,12 +388,17 @@ export default function TableFinding({
                                     <TableCell className="align-center text-xs">
                                         <div className="flex flex-col gap-1">
                                             <Tooltip>
-                                                <TooltipTrigger className="truncate text-left">
+                                                <TooltipTrigger className="truncate text-left text-xs">
                                                     {truncateText(finding.department?.name ?? 'N/A', 15)}
                                                 </TooltipTrigger>
                                                 <TooltipContent>{finding.department?.name}</TooltipContent>
                                             </Tooltip>
-                                            <div className="text-muted-foreground text-xs">{finding.department?.code}</div>
+                                            <Tooltip>
+                                                <TooltipTrigger className="text-muted-foreground truncate text-left text-xs">
+                                                    {truncateText(finding.workCenter?.code ?? 'N/A', 15)}
+                                                </TooltipTrigger>
+                                                <TooltipContent>{finding.workCenter?.name}</TooltipContent>
+                                            </Tooltip>
                                         </div>
                                     </TableCell>
 
@@ -397,7 +418,7 @@ export default function TableFinding({
                                                         </DropdownMenuItem>
                                                     )}
 
-                                                    {can.edit_finding && (
+                                                    {can.edit_finding && finding.can?.update && (
                                                         <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
                                                             <Edit />
                                                             Edit
@@ -413,23 +434,20 @@ export default function TableFinding({
                                                         </ActionFindingDialog>
                                                     )}
 
-                                                    {can.delete_finding && (
-                                                        <>
-                                                            <DropdownMenuSeparator />
-                                                            <ActionConfirm
-                                                                action={() => handleDeletefinding(finding)}
-                                                                title="Delete Finding"
-                                                                description="Are you sure? This will permanently delete the finding and its images from the storage."
+                                                    {can.delete_finding && finding.can?.delete && (
+                                                        <ActionConfirm
+                                                            action={() => handleDeletefinding(finding)}
+                                                            title="Delete Finding"
+                                                            description="Are you sure? This will permanently delete the finding and its images from the storage."
+                                                        >
+                                                            <DropdownMenuItem
+                                                                onSelect={(e) => e.preventDefault()}
+                                                                className="text-red-600 focus:bg-red-50 focus:text-red-700"
                                                             >
-                                                                <DropdownMenuItem
-                                                                    onSelect={(e) => e.preventDefault()}
-                                                                    className="text-red-600 focus:bg-red-50 focus:text-red-700"
-                                                                >
-                                                                    <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
-                                                                    Delete
-                                                                </DropdownMenuItem>
-                                                            </ActionConfirm>
-                                                        </>
+                                                                <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
+                                                                Delete
+                                                            </DropdownMenuItem>
+                                                        </ActionConfirm>
                                                     )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
@@ -453,6 +471,7 @@ export default function TableFinding({
                 findingPriorities={findingPriorities}
                 findingStatuses={findingStatuses}
                 departments={departments}
+                workCenters={workCenters}
                 mode={mode}
             />
 

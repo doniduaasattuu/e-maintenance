@@ -34,6 +34,7 @@ class FindingResource extends JsonResource
             'priority' => new FindingPriorityResource($this->whenLoaded('priority')),
             'causeCode' => new CauseCodeResource($this->whenLoaded('causeCode')),
             'department' => new DepartmentResource($this->whenLoaded('department')),
+            'workCenter' => new WorkCenterResource($this->whenLoaded('workCenter')),
             'equipment' => new EquipmentResource($this->whenLoaded('equipment')),
             'functionalLocation' => new FunctionalLocationResource($this->whenLoaded('functionalLocation')),
 
@@ -57,6 +58,11 @@ class FindingResource extends JsonResource
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('d/m/Y') : $this->created_at,
             'updated_at' => $this->updated_at?->toDateTimeString(),
             'closed_at' => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y') : null,
+
+            'can' => [
+                'update' => $request->user()->can('update', $this->resource),
+                'delete' => $request->user()->can('delete', $this->resource),
+            ]
         ];
     }
 }

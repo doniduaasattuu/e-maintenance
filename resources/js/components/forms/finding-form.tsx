@@ -1,6 +1,6 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
 import truncateText, { cn } from '@/lib/utils';
-import { CauseCode, Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation } from '@/types';
+import { CauseCode, Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation, WorkCenter } from '@/types';
 import { Info } from 'lucide-react';
 import React, { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import ButtonSubmit from '../button-submit';
@@ -42,6 +42,9 @@ interface FindingFormProps {
     departments: {
         data: Department[];
     };
+    workCenters: {
+        data: WorkCenter[];
+    };
     isEditing?: boolean;
     closedStatusId?: string | number | null;
     type: string;
@@ -53,6 +56,7 @@ export type FindingFormData = {
     finding_priority_id: string;
     cause_code_id: string;
     department_id: string;
+    work_center_id: string;
     functional_location_id: string;
     equipment_id: string;
     description: string;
@@ -76,10 +80,10 @@ export default function FindingForm({
     findingPriorities,
     causeCodes,
     departments,
+    workCenters,
     functionalLocation,
     equipment,
     isEditing = false,
-    closedStatusId,
     type,
 }: FindingFormProps) {
     const [clauseDescription, setClauseDescription] = React.useState<string | null>(null);
@@ -96,7 +100,7 @@ export default function FindingForm({
         data.functional_location_id == '' ||
         data.finding_status_id == '' ||
         data.finding_priority_id == '';
-    const disabledAbnormality = disabledAudit || data.cause_code_id == '' || data.department_id == '';
+    const disabledAbnormality = disabledAudit || data.cause_code_id == '' || data.department_id == '' || data.work_center_id == '';
     const disabledWhen = type == 'AUD' ? disabledAudit : disabledAbnormality;
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -125,8 +129,6 @@ export default function FindingForm({
             setIsCompressing(false);
         }
     };
-
-    const isStatusClosed = data.finding_status_id == closedStatusId;
 
     const FieldClause = () => {
         return (
@@ -241,31 +243,13 @@ export default function FindingForm({
 
             <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
                 <Field>
-                    <FieldLabel htmlFor="functional_location_id">
-                        Funcloc (Area)
-                        <RequiredLabel />
-                    </FieldLabel>
-                    <FunctionalLocationSelect
-                        value={data.functional_location_id ?? ''}
-                        processing={processing}
-                        recentlySuccessful={recentlySuccessful}
-                        tabIndex={3}
-                        id="functional_location_id"
-                        currentValue={functionalLocation}
-                        onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
-                        placeholder="Select funcloc"
-                    />
-                    <FieldError>{errors.functional_location_id}</FieldError>
-                </Field>
-
-                <Field>
                     <FieldLabel htmlFor="department_id">
                         Department
                         {type == 'ABN' && <RequiredLabel />}
                     </FieldLabel>
                     <Select disabled={processing} onValueChange={(e) => setData('department_id', e)} value={data.department_id}>
-                        <SelectTrigger tabIndex={4} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Responsible department" />
+                        <SelectTrigger id="department_id" tabIndex={4} className="truncate overflow-hidden whitespace-nowrap">
+                            <SelectValue placeholder="Responsible Department" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
@@ -282,23 +266,68 @@ export default function FindingForm({
                     </Select>
                     <FieldError>{errors.department_id}</FieldError>
                 </Field>
+
+                <Field>
+                    <FieldLabel htmlFor="work_center_id">
+                        Work Center
+                        {type == 'ABN' && <RequiredLabel />}
+                    </FieldLabel>
+                    <Select disabled={processing} onValueChange={(e) => setData('work_center_id', e)} value={data.work_center_id}>
+                        <SelectTrigger id="work_center_id" tabIndex={3} className="truncate overflow-hidden whitespace-nowrap">
+                            <SelectValue placeholder="Responsible Work Center" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel className="text-muted-foreground">Work Centers</SelectLabel>
+                                {workCenters?.data?.map((wc) => {
+                                    return (
+                                        <SelectItem key={wc.id} value={wc.id.toString()}>
+                                            {wc.code + ' - ' + truncateText(wc.name ?? null, 25)}
+                                        </SelectItem>
+                                    );
+                                })}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <FieldError>{errors.work_center_id}</FieldError>
+                </Field>
             </div>
 
-            {type == 'ABN' && (
-                <Field>
-                    <FieldLabel htmlFor="equipment_id">Equipment</FieldLabel>
-                    <EquipmentSelect
-                        value={data.equipment_id ?? ''}
+            <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
+                <Field className={type != 'ABN' ? 'sm:col-span-2' : undefined}>
+                    <FieldLabel htmlFor="functional_location_id">
+                        Funcloc (Area)
+                        <RequiredLabel />
+                    </FieldLabel>
+                    <FunctionalLocationSelect
+                        value={data.functional_location_id ?? ''}
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
                         tabIndex={5}
-                        id="equipment_id"
-                        currentValue={equipment}
-                        onChange={(val) => setData('equipment_id', val ? val.toString() : '')}
+                        id="functional_location_id"
+                        currentValue={functionalLocation}
+                        onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
+                        placeholder="Select funcloc"
                     />
-                    <FieldError>{errors.equipment_id}</FieldError>
+                    <FieldError>{errors.functional_location_id}</FieldError>
                 </Field>
-            )}
+
+                {type == 'ABN' && (
+                    <Field>
+                        <FieldLabel htmlFor="equipment_id">Equipment</FieldLabel>
+                        <EquipmentSelect
+                            value={data.equipment_id ?? ''}
+                            processing={processing}
+                            recentlySuccessful={recentlySuccessful}
+                            tabIndex={6}
+                            id="equipment_id"
+                            currentValue={equipment}
+                            onChange={(val) => setData('equipment_id', val ? val.toString() : '')}
+                        />
+                        <FieldError>{errors.equipment_id}</FieldError>
+                    </Field>
+                )}
+            </div>
 
             <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
                 <Field>
@@ -312,7 +341,7 @@ export default function FindingForm({
                         onValueChange={(e) => setData('finding_status_id', e)}
                         value={data.finding_status_id}
                     >
-                        <SelectTrigger tabIndex={6} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={7} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -342,7 +371,7 @@ export default function FindingForm({
                         onValueChange={(e) => setData('finding_priority_id', e)}
                         value={data.finding_priority_id}
                     >
-                        <SelectTrigger tabIndex={7} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={8} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select priority" />
                         </SelectTrigger>
                         <SelectContent>
@@ -362,14 +391,14 @@ export default function FindingForm({
                 </Field>
             </div>
 
-            {(isStatusClosed || !isEditing) && (
+            {!isEditing && (
                 <Field>
                     <FieldLabel htmlFor="images">
                         Photos
                         <RequiredLabel />
                     </FieldLabel>
                     <Input
-                        tabIndex={8}
+                        tabIndex={9}
                         type="file"
                         id="images"
                         multiple
@@ -398,8 +427,8 @@ export default function FindingForm({
             {canSubmit && (
                 <ButtonSubmit
                     processing={processing}
-                    disabled={processing || disabledWhen || (!isEditing ? data.images == null : isStatusClosed && data.images == null)}
-                    tabIndex={9}
+                    disabled={processing || disabledWhen || (!isEditing ? data.images == null : false)}
+                    tabIndex={10}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}
                     label={buttonLabel}

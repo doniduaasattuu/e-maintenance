@@ -433,6 +433,7 @@ export interface Finding {
     priority?: FindingPriority;
     causeCode?: CauseCode;
     department?: Department;
+    workCenter?: WorkCenter;
     equipment?: Equipment;
     functionalLocation?: FunctionalLocation;
 
@@ -454,6 +455,10 @@ export interface Finding {
     created_at: string;
     updated_at: string;
     closed_at: string | null;
+    can: {
+        update: boolean;
+        delete: boolean;
+    };
 }
 
 export interface FindingImage {

@@ -3,7 +3,7 @@ import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, CauseCode, Department, Finding, FindingClause, FindingPriority, FindingStatus } from '@/types';
+import { BreadcrumbItem, CauseCode, Department, Finding, FindingClause, FindingPriority, FindingStatus, WorkCenter } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -26,9 +26,20 @@ type FindingEditProps = {
     departments: {
         data: Department[];
     };
+    workCenters: {
+        data: WorkCenter[];
+    };
 };
 
-export default function FindingEdit({ finding, findingClauses, findingStatuses, findingPriorities, causeCodes, departments }: FindingEditProps) {
+export default function FindingEdit({
+    finding,
+    findingClauses,
+    findingStatuses,
+    findingPriorities,
+    causeCodes,
+    departments,
+    workCenters,
+}: FindingEditProps) {
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -54,6 +65,7 @@ export default function FindingEdit({ finding, findingClauses, findingStatuses, 
         finding_priority_id: finding.data.priority?.id.toString() ?? '',
         cause_code_id: finding.data.causeCode?.id.toString() ?? '',
         department_id: finding.data.department?.id.toString() ?? '',
+        work_center_id: finding.data.workCenter?.id.toString() ?? '',
         functional_location_id: finding.data.functionalLocation?.id.toString() ?? '',
         equipment_id: finding.data.equipment?.id.toString() ?? '',
         description: finding.data.description,
@@ -78,6 +90,7 @@ export default function FindingEdit({ finding, findingClauses, findingStatuses, 
                     findingStatuses={findingStatuses}
                     findingPriorities={findingPriorities}
                     departments={departments}
+                    workCenters={workCenters}
                     setData={setData}
                     errors={errors}
                     processing={processing}

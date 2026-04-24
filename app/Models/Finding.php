@@ -24,6 +24,7 @@ class Finding extends Model
         "cause_code_id",
         "department_id",
         "equipment_id",
+        "work_center_id",
         "functional_location_id",
         "description",
         "rectification_action",
@@ -43,6 +44,7 @@ class Finding extends Model
         $status = $request->query('status');
         $priority = $request->query('priority');
         $department = $request->query('department');
+        $workCenter = $request->query('work-center');
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
@@ -102,6 +104,14 @@ class Finding extends Model
             });
         } elseif ($department && is_string($department)) {
             $builder->whereRelation('department', 'code', $department);
+        }
+
+        if ($workCenter && is_array($workCenter)) {
+            $builder->whereHas('workCenter', function ($query) use ($workCenter) {
+                $query->whereIn('code', $workCenter);
+            });
+        } elseif ($workCenter && is_string($workCenter)) {
+            $builder->whereRelation('workCenter', 'code', $workCenter);
         }
     }
 
@@ -169,6 +179,7 @@ class Finding extends Model
             'priority',
             'causeCode',
             'department',
+            'workCenter',
             'equipment',
             'functionalLocation',
             'inspector',
@@ -206,6 +217,11 @@ class Finding extends Model
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function workCenter(): BelongsTo
+    {
+        return $this->belongsTo(WorkCenter::class, 'work_center_id');
     }
 
     public function equipment(): BelongsTo

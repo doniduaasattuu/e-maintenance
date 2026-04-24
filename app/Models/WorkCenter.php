@@ -37,4 +37,9 @@ class WorkCenter extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function findings(): HasMany
+    {
+        return $this->hasMany(Finding::class, 'work_center_id', 'id');
+    }
 }

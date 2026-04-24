@@ -26,6 +26,7 @@ class StoreAuditRequest extends FormRequest
             'description'               => ['required', 'string', 'min:10'],
             'functional_location_id'    => ['required', 'exists:functional_locations,id'],
             'department_id'             => ['nullable', 'exists:departments,id'],
+            'work_center_id'            => ['nullable', 'exists:work_centers,id'],
             'finding_status_id'         => ['required', 'exists:finding_statuses,id'],
             'finding_priority_id'       => ['required', 'exists:finding_priorities,id'],
             'images'                    => ['required', 'array', 'min:1', 'max:5'],

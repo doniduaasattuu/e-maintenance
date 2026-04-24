@@ -42,7 +42,6 @@ export default function FindingClauseForm({
     buttonLabel,
     successMessage,
     className,
-    isEditing,
     findingTypes,
 }: FindingClauseFormProps) {
     return (
@@ -70,7 +69,7 @@ export default function FindingClauseForm({
                     Type
                     <RequiredLabel />
                 </FieldLabel>
-                <Select onValueChange={(e) => setData('type', e)}>
+                <Select value={data.type} onValueChange={(e) => setData('type', e)}>
                     <SelectTrigger tabIndex={2}>
                         <SelectValue placeholder="Clause type" />
                     </SelectTrigger>
@@ -93,11 +92,11 @@ export default function FindingClauseForm({
                 <Input
                     tabIndex={3}
                     id="title"
-                    disabled={isEditing || processing}
+                    disabled={processing}
                     value={data.title ?? ''}
-                    onChange={(e) => setData('title', e.target.value.toLowerCase())}
+                    onChange={(e) => setData('title', e.target.value)}
                     placeholder="Abnormality"
-                    required={!isEditing}
+                    required
                     autoComplete="title"
                 />
                 <FieldError>{errors.title}</FieldError>
