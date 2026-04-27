@@ -58,8 +58,10 @@ class DashboardController extends Controller
                     'desc' => 'Temuan yang melewati batas SLA',
                 ],
             ],
-            'chartClosedFinding' => Finding::getChartData(),
+            'chartClosedFindingDepartment' => Finding::getChartData(\App\Models\Department::class),
+            'chartClosedFindingWorkCenter' => Finding::getChartData(\App\Models\WorkCenter::class),
             'topInspectors' => Finding::getTopInspectors(),
+            'topResolvers' => Finding::getTopResolvers(),
         ]);
     }
 }

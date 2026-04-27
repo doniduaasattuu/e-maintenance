@@ -34,17 +34,31 @@ interface DashboardProps {
             desc: string;
         };
     };
-    chartClosedFinding: {
-        departmentCode: string;
+    chartClosedFindingDepartment: {
+        code: string;
+        totalClosedFindings: number;
+    }[];
+    chartClosedFindingWorkCenter: {
+        code: string;
         totalClosedFindings: number;
     }[];
     topInspectors: {
         name: string;
         totalSolved: number;
     }[];
+    topResolvers: {
+        name: string;
+        totalSolved: number;
+    }[];
 }
 
-export default function Dashboard({ stats, chartClosedFinding, topInspectors }: DashboardProps) {
+export default function Dashboard({
+    stats,
+    chartClosedFindingDepartment,
+    chartClosedFindingWorkCenter,
+    topInspectors,
+    topResolvers,
+}: DashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -74,15 +88,31 @@ export default function Dashboard({ stats, chartClosedFinding, topInspectors }: 
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
                         title="Closed Findings Achievement"
-                        description="Distribusi temuan selesai per departemen (6 bulan terakhir)"
-                        chartData={chartClosedFinding}
-                        labelKey="departmentCode"
+                        description="Distribusi temuan selesai per departemen"
+                        chartData={chartClosedFindingDepartment}
+                        labelKey="code"
                         valueKey="totalClosedFindings"
                     />
                     <ChartBarDefault
                         title="Top 10 Inspector"
-                        description="User yang paling aktif memverifikasi temuan selesai"
+                        description="User yang paling aktif membuat temuan"
                         chartData={topInspectors}
+                        labelKey="name"
+                        valueKey="totalSolved"
+                    />
+                </div>
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                    <ChartBarDefault
+                        title="Closed Findings Achievement"
+                        description="Distribusi temuan selesai per work center"
+                        chartData={chartClosedFindingWorkCenter}
+                        labelKey="code"
+                        valueKey="totalClosedFindings"
+                    />
+                    <ChartBarDefault
+                        title="Top 10 Resolvers"
+                        description="User yang paling aktif menutup temuan"
+                        chartData={topResolvers}
                         labelKey="name"
                         valueKey="totalSolved"
                     />

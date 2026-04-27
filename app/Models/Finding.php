@@ -255,18 +255,19 @@ class Finding extends Model
     }
 
     // CHART
-    public static function getChartData()
+    public static function getChartData($model)
     {
-        return \App\Models\Department::query()
+        return $model::query()
             ->select('id', 'code')
             ->withCount(['findings as totalClosedFindings' => function ($query) {
                 // Gunakan logic archived/closed di sini
                 $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
             }])
+            ->limit(10)
             ->get()
             ->map(function ($dept) {
                 return [
-                    'departmentCode' => $dept->code,
+                    'code' => $dept->code,
                     'totalClosedFindings' => $dept->totalClosedFindings,
                 ];
             })
@@ -278,10 +279,30 @@ class Finding extends Model
     {
         return \App\Models\User::query()
             ->select('id', 'name')
-            ->withCount(['verifiedFindings as totalSolved' => function ($query) {
+            ->withCount(['inspectedFindings as totalSolved'])
+            ->whereHas('inspectedFindings', function ($query) {
+                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            })
+            ->orderByDesc('totalSolved')
+            ->limit(10)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'name' => str()->before($user->name, ' '),
+                    'totalSolved' => $user->totalSolved,
+                ];
+            })
+            ->values();
+    }
+
+    public static function getTopResolvers()
+    {
+        return \App\Models\User::query()
+            ->select('id', 'name')
+            ->withCount(['rectifiedFindings as totalSolved' => function ($query) {
                 $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
             }])
-            ->whereHas('verifiedFindings', function ($query) {
+            ->whereHas('rectifiedFindings', function ($query) {
                 $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
             })
             ->orderByDesc('totalSolved')

@@ -372,7 +372,12 @@ export default function TableFinding({
                                     <TableCell className="align-center text-xs">
                                         <div className="grid grid-cols-1 gap-2">
                                             <span>{truncateText(finding?.inspector?.name ?? 'N/A', 15)}</span>
-                                            <span className="text-muted-foreground">{finding?.created_at ?? 'N/A'}</span>
+                                            <Tooltip>
+                                                <TooltipTrigger className="text-left">
+                                                    <span className="text-muted-foreground">{finding?.created_at ?? 'N/A'}</span>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{finding?.created ?? '-'}</TooltipContent>
+                                            </Tooltip>
                                         </div>
                                     </TableCell>
 
@@ -380,7 +385,12 @@ export default function TableFinding({
                                         <TableCell className="align-center text-xs">
                                             <div className="grid grid-cols-1 gap-2">
                                                 <span>{truncateText(finding?.rectifier?.name ?? 'N/A', 15)}</span>
-                                                <span className="text-muted-foreground">{finding?.closed_at ?? 'N/A'}</span>
+                                                <Tooltip>
+                                                    <TooltipTrigger className="text-left">
+                                                        <span className="text-muted-foreground">{finding?.closed_at ?? 'N/A'}</span>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>{finding?.closed ?? '-'}</TooltipContent>
+                                                </Tooltip>
                                             </div>
                                         </TableCell>
                                     )}
@@ -395,9 +405,9 @@ export default function TableFinding({
                                             </Tooltip>
                                             <Tooltip>
                                                 <TooltipTrigger className="text-muted-foreground truncate text-left text-xs">
-                                                    {truncateText(finding.workCenter?.code ?? 'N/A', 15)}
+                                                    {truncateText(finding.workCenter?.name ?? 'N/A', 15)}
                                                 </TooltipTrigger>
-                                                <TooltipContent>{finding.workCenter?.name}</TooltipContent>
+                                                <TooltipContent>{finding.workCenter?.code ?? 'N/A'}</TooltipContent>
                                             </Tooltip>
                                         </div>
                                     </TableCell>

@@ -453,8 +453,10 @@ export interface Finding {
 
     // Timestamps
     created_at: string;
+    created: string;
     updated_at: string;
     closed_at: string | null;
+    closed: string | null;
     can: {
         update: boolean;
         delete: boolean;

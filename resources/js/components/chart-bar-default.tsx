@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
+import { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 // Interface sekarang lebih fleksibel menggunakan generic atau record
 interface ChartProps {
@@ -20,12 +23,31 @@ export function ChartBarDefault({ title, description, chartData, labelKey, value
             color: chartColor,
         },
     } satisfies ChartConfig;
+    const [timeRange, setTimeRange] = useState('90d');
 
     return (
         <Card className="bg-sidebar">
-            <CardHeader>
-                <CardTitle className="text-xl font-bold">{title}</CardTitle>
-                <CardDescription className="text-muted-foreground text-sm">{description}</CardDescription>
+            <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+                <div className="grid flex-1 gap-1">
+                    <CardTitle className="text-xl font-bold">{title}</CardTitle>
+                    <CardDescription className="text-muted-foreground text-sm">{description}</CardDescription>
+                </div>
+                <Select disabled value={timeRange} onValueChange={setTimeRange}>
+                    <SelectTrigger className="hidden w-40 rounded-lg sm:ml-auto sm:flex" aria-label="Select a value">
+                        <SelectValue placeholder="Last 3 months" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl">
+                        <SelectItem value="90d" className="rounded-lg">
+                            Last 3 months
+                        </SelectItem>
+                        <SelectItem value="30d" className="rounded-lg">
+                            Last 30 days
+                        </SelectItem>
+                        <SelectItem value="7d" className="rounded-lg">
+                            Last 7 days
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>

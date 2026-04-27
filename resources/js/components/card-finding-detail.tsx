@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useIsMobile } from '@/hooks/use-mobile';
 import usePermissions from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
 import { Finding } from '@/types';
@@ -52,6 +53,7 @@ const handleEditFinding = (id: number, type: 'AUD' | 'ABN') => {
 
 export default function CardFindingDetail({ finding, type }: Props) {
     const { can } = usePermissions();
+    const isMobile = useIsMobile();
     const isClosed: boolean = finding.data.status?.name.toLocaleLowerCase() == 'closed';
 
     return (
@@ -91,7 +93,7 @@ export default function CardFindingDetail({ finding, type }: Props) {
                         </Li>
                         <Li title="Issued Date">
                             <Calendar className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                            <span>{finding.data.created_at ?? '-'}</span>
+                            <span>{isMobile ? finding?.data?.created_at : finding?.data?.created}</span>
                         </Li>
                         <Li title="Action by">
                             <HardHat className="text-muted-foreground mt-0.5 size-4 shrink-0" />
@@ -139,7 +141,7 @@ export default function CardFindingDetail({ finding, type }: Props) {
                         </Li>
                         <Li title="Closed Date">
                             <CalendarCheck className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                            <span>{finding.data.closed_at ?? '-'}</span>
+                            <span>{isMobile ? finding?.data?.closed_at : (finding?.data?.closed ?? '-')}</span>
                         </Li>
                         <Li title="Work Center">
                             <BuildingIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
