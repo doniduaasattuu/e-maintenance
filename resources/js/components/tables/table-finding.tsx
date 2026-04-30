@@ -428,7 +428,7 @@ export default function TableFinding({
                                                         </DropdownMenuItem>
                                                     )}
 
-                                                    {can.edit_finding && finding.can?.update && (
+                                                    {(can.edit_finding || finding.can?.update) && (
                                                         <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
                                                             <Edit />
                                                             Edit
@@ -444,7 +444,7 @@ export default function TableFinding({
                                                         </ActionFindingDialog>
                                                     )}
 
-                                                    {can.delete_finding && finding.can?.delete && (
+                                                    {(can.delete_finding || finding.can?.delete) && (
                                                         <ActionConfirm
                                                             action={() => handleDeletefinding(finding)}
                                                             title="Delete Finding"

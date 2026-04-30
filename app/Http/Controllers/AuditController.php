@@ -90,7 +90,7 @@ class AuditController extends FindingController
      */
     public function update(UpdateAuditRequest $request, Finding $finding)
     {
-        Gate::authorize('update_audit');
+        Gate::authorize('update', $finding);
 
         try {
             $this->performUpdate($request, $finding);

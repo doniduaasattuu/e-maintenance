@@ -14,7 +14,9 @@ test('authenticated users can visit the dashboard', function () {
     $response->assertOk();
     $response->assertInertia(
         fn($page) => $page
+            ->has('chartClosedFindingDepartment')
+            ->has('chartClosedFindingWorkCenter')
             ->has('topInspectors')
-            ->has('chartClosedFinding')
+            ->has('topResolvers')
     );
 });

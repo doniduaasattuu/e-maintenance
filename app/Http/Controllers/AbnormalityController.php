@@ -90,7 +90,7 @@ class AbnormalityController extends FindingController
      */
     public function update(UpdateAbnormalityRequest $request, Finding $finding)
     {
-        Gate::authorize('update_abnormality');
+        Gate::authorize('update', $finding);
 
         try {
             $this->performUpdate($request, $finding);

@@ -21,7 +21,7 @@ class FindingPolicy
      */
     public function view(User $user, Finding $finding): bool
     {
-        return $user->hasRole('Admin') || $user->department_id === $finding->department_id || $user->hasPermissionTo('show_finding');
+        return $user->hasRole('Admin') || $user->hasAnyPermission(['show_finding', 'show_audit', 'show_abnormality']);
     }
 
     /**
@@ -37,7 +37,7 @@ class FindingPolicy
      */
     public function update(User $user, Finding $finding): bool
     {
-        return $user->hasRole('Admin') || $finding->inspected_by == $user->id;
+        return $user->hasRole('Admin') || $finding->inspected_by == $user->id || $user->hasAnyPermission(['update_finding', 'update_audit', 'update_abnormality']);
     }
 
     /**
@@ -45,7 +45,7 @@ class FindingPolicy
      */
     public function close(User $user, Finding $finding): bool
     {
-        return $user->hasRole(['Admin', 'Verifier']) || $user->department_id == $finding->department_id;
+        return $user->hasRole(['Admin', 'Verifier']) || $user->department_id == $finding->department_id || $user->hasAnyPermission(['close_finding', 'close_audit', 'close_abnormality']);
     }
 
     /**
@@ -53,7 +53,7 @@ class FindingPolicy
      */
     public function delete(User $user, Finding $finding): bool
     {
-        return $user->hasRole('Admin') || $finding->inspected_by == $user->id;
+        return $user->hasRole('Admin') || $finding->inspected_by == $user->id || $user->hasAnyPermission(['delete_finding', 'delete_audit', 'delete_abnormality']);
     }
 
     /**
