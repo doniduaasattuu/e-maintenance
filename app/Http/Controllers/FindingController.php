@@ -223,7 +223,6 @@ abstract class FindingController extends Controller
         DB::transaction(function () use ($request, $finding, $statusClosed) {
             $finding->update([
                 'finding_status_id' => $statusClosed->id,
-                'closed_at' => now(),
                 'verified_by' => $request->user()->id,
             ]);
         });

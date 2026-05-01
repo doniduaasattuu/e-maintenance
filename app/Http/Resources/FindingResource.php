@@ -56,10 +56,10 @@ class FindingResource extends JsonResource
             'is_overdue' => $dueDate ? $dueDate->isPast() : false,
 
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('d/m/Y') : $this->created_at,
-            'created' => $this->created_at ? Carbon::parse($this->created_at)->format('d/m/Y h:m:s') : $this->created_at,
             'updated_at' => $this->updated_at?->toDateTimeString(),
+            'created'   => $this->created_at ? Carbon::parse($this->created_at)->format('d/m/Y H:i:s') : null,
             'closed_at' => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y') : null,
-            'closed' => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y h:m:s') : null,
+            'closed'    => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y H:i:s') : null,
 
             'can' => [
                 'update' => $request->user()->can('update', $this->resource),

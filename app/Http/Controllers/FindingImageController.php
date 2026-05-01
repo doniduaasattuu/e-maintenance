@@ -37,6 +37,7 @@ class FindingImageController extends Controller
         $validated = $request->validate([
             'rectification_action'   => ['required', 'string', 'min:10'],
             'images'                 => ['required', 'array', 'min:1', 'max:5'],
+            'closed_at'             => 'required|date_format:Y-d-m H:i:s',
             'images.*'               => [
                 'image',
                 'mimes:jpg,jpeg,png,webp',
@@ -61,6 +62,7 @@ class FindingImageController extends Controller
                 'rectification_action' => $validated['rectification_action'],
                 'finding_status_id' => $statusReview->id,
                 'rectified_by' => auth()->id(),
+                'closed_at' => $validated['closed_at'],
             ]);
 
             foreach ($request->file('images') as $image) {
