@@ -188,7 +188,7 @@ export default function FindingForm({
                     }}
                     value={data.cause_code_id}
                 >
-                    <SelectTrigger tabIndex={1} className="truncate overflow-hidden whitespace-nowrap">
+                    <SelectTrigger tabIndex={2} className="truncate overflow-hidden whitespace-nowrap">
                         <SelectValue placeholder="Select cause code" />
                     </SelectTrigger>
                     <SelectContent>
@@ -232,7 +232,7 @@ export default function FindingForm({
                 <Textarea
                     className="text-sm"
                     disabled={processing}
-                    tabIndex={2}
+                    tabIndex={3}
                     id="description"
                     onChange={(val: React.ChangeEvent<HTMLTextAreaElement>) => setData('description', val.target.value)}
                     value={data.description}
@@ -273,7 +273,7 @@ export default function FindingForm({
                         {type == 'ABN' && <RequiredLabel />}
                     </FieldLabel>
                     <Select disabled={processing} onValueChange={(e) => setData('work_center_id', e)} value={data.work_center_id}>
-                        <SelectTrigger id="work_center_id" tabIndex={3} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger id="work_center_id" tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Responsible Work Center" />
                         </SelectTrigger>
                         <SelectContent>
@@ -303,7 +303,7 @@ export default function FindingForm({
                         value={data.functional_location_id ?? ''}
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
-                        tabIndex={5}
+                        tabIndex={6}
                         id="functional_location_id"
                         currentValue={functionalLocation}
                         onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
@@ -319,7 +319,7 @@ export default function FindingForm({
                             value={data.equipment_id ?? ''}
                             processing={processing}
                             recentlySuccessful={recentlySuccessful}
-                            tabIndex={6}
+                            tabIndex={7}
                             id="equipment_id"
                             currentValue={equipment}
                             onChange={(val) => setData('equipment_id', val ? val.toString() : '')}
@@ -341,7 +341,7 @@ export default function FindingForm({
                         onValueChange={(e) => setData('finding_status_id', e)}
                         value={data.finding_status_id}
                     >
-                        <SelectTrigger tabIndex={7} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={8} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -371,7 +371,7 @@ export default function FindingForm({
                         onValueChange={(e) => setData('finding_priority_id', e)}
                         value={data.finding_priority_id}
                     >
-                        <SelectTrigger tabIndex={8} className="truncate overflow-hidden whitespace-nowrap">
+                        <SelectTrigger tabIndex={9} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select priority" />
                         </SelectTrigger>
                         <SelectContent>
@@ -398,7 +398,7 @@ export default function FindingForm({
                         <RequiredLabel />
                     </FieldLabel>
                     <Input
-                        tabIndex={9}
+                        tabIndex={10}
                         type="file"
                         id="images"
                         multiple
@@ -428,7 +428,7 @@ export default function FindingForm({
                 <ButtonSubmit
                     processing={processing}
                     disabled={processing || disabledWhen || (!isEditing ? data.images == null : false)}
-                    tabIndex={10}
+                    tabIndex={11}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}
                     label={buttonLabel}

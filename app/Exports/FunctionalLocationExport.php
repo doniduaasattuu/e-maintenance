@@ -12,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class FunctionalLocationExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
-    protected $filters;
+    protected array $filters;
 
     public function __construct(array $filters)
     {

@@ -16,7 +16,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class EquipmentMaterialExport implements FromCollection, WithTitle, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithEvents
 {
-    protected $equipment;
+    protected Equipment $equipment;
 
     public function __construct(Equipment $equipment)
     {

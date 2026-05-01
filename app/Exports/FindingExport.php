@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents
 {
-    protected $filters;
+    protected array $filters;
 
     public function __construct(array $filters)
     {
@@ -25,8 +25,24 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
     {
         $query = Finding::query()->withAllRelations();
 
-        $query->where('finding_type_id', $this->filters['type_id']);
+        $type = $this->filters['type_id'] ?? null;
+        if ($type) {
+            $query->where('finding_type_id', $this->filters['type_id']);
+        }
 
+        $funclocIds = $this->filters['functional_location_id'] ?? null;
+        if ($funclocIds) {
+            is_array($funclocIds)
+                ? $query->whereIn('functional_location_id', $funclocIds)
+                : $query->where('functional_location_id', $funclocIds);
+        }
+
+        $funclocIds = $this->filters['equipment_id'] ?? null;
+        if ($funclocIds) {
+            is_array($funclocIds)
+                ? $query->whereIn('equipment_id', $funclocIds)
+                : $query->where('equipment_id', $funclocIds);
+        }
         $status = $this->filters['status_ids'] ?? null;
         if ($status) {
             is_array($status)
@@ -97,7 +113,7 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             'Finding Description',
             'Department',
             'Rectification Plan',
-            'Inspector',
+            'Inspected By',
             'Action By',
             'Verified By',
             'Approved Date',

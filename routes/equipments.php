@@ -15,6 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // EXPORT
     Route::get('equipments/export', [EquipmentController::class, 'export'])->name('equipments.export');
+    Route::get('equipments/findings/export', [EquipmentController::class, 'equipmentFindingExport'])->name('equipments.findings.export');
 
     Route::resource('equipments', EquipmentController::class);
     // HISTORY

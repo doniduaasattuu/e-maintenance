@@ -3,7 +3,7 @@ import TableFinding from '@/components/tables/table-finding';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, Equipment, Finding, Meta } from '@/types';
+import { BreadcrumbItem, CauseCode, Department, Equipment, Finding, FindingClause, FindingPriority, FindingStatus, Meta, WorkCenter } from '@/types';
 import { Head } from '@inertiajs/react';
 
 interface EquipmentFindingsProps {
@@ -18,9 +18,37 @@ interface EquipmentFindingsProps {
         query: string;
         per_page: string;
     };
+    findingClauses?: {
+        data: FindingClause[];
+    };
+    findingPriorities?: {
+        data: FindingPriority[];
+    };
+    findingStatuses?: {
+        data: FindingStatus[];
+    };
+    departments?: {
+        data: Department[];
+    };
+    workCenters?: {
+        data: WorkCenter[];
+    };
+    causeCodes?: {
+        data: CauseCode[];
+    };
 }
 
-export default function EquipmentFindings({ equipment, findings, filters }: EquipmentFindingsProps) {
+export default function EquipmentFindings({
+    equipment,
+    findings,
+    filters,
+    findingClauses,
+    findingPriorities,
+    findingStatuses,
+    departments,
+    workCenters,
+    causeCodes,
+}: EquipmentFindingsProps) {
     const strings = UI_STRINGS;
     const auditTitle = strings.FINDING?.label ?? 'Finding';
     const abnormalityTitle = strings.ABNORMALITY?.label ?? 'Abnormality';
@@ -45,7 +73,19 @@ export default function EquipmentFindings({ equipment, findings, filters }: Equi
 
             <EquipmentLayout equipment={equipment.data} className="w-full space-y-4">
                 <HeadingSmall title={abnormalityTitle + ' & ' + auditTitle} description="Historical records of abnormalities and audit results." />
-                <TableFinding withHeader={false} findings={findings} filters={filters} mode="equipment" />
+                <TableFinding
+                    asset={equipment.data}
+                    mode="equipment"
+                    withHeader={true}
+                    findings={findings}
+                    filters={filters}
+                    findingClauses={findingClauses}
+                    findingPriorities={findingPriorities}
+                    findingStatuses={findingStatuses}
+                    departments={departments}
+                    workCenters={workCenters}
+                    causeCodes={causeCodes}
+                />
             </EquipmentLayout>
         </AppLayout>
     );

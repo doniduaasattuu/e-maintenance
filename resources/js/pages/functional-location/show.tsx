@@ -4,7 +4,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, Equipment, Finding, FunctionalLocation, Meta } from '@/types';
+import {
+    BreadcrumbItem,
+    CauseCode,
+    Department,
+    Equipment,
+    Finding,
+    FindingClause,
+    FindingPriority,
+    FindingStatus,
+    FunctionalLocation,
+    Meta,
+    WorkCenter,
+} from '@/types';
 
 const strings = UI_STRINGS;
 
@@ -21,6 +33,24 @@ interface FunctionalLocationEditProps {
         meta: Meta;
     };
     className?: string;
+    findingClauses?: {
+        data: FindingClause[];
+    };
+    findingPriorities?: {
+        data: FindingPriority[];
+    };
+    findingStatuses?: {
+        data: FindingStatus[];
+    };
+    departments?: {
+        data: Department[];
+    };
+    workCenters?: {
+        data: WorkCenter[];
+    };
+    causeCodes?: {
+        data: CauseCode[];
+    };
     withHeader?: boolean;
     filters: {
         query: string;
@@ -28,7 +58,18 @@ interface FunctionalLocationEditProps {
     };
 }
 
-export default function FunctionalLocationEdit({ functionalLocation, equipments, findings, filters }: FunctionalLocationEditProps) {
+export default function FunctionalLocationEdit({
+    functionalLocation,
+    equipments,
+    findings,
+    findingPriorities,
+    findingStatuses,
+    departments,
+    workCenters,
+    findingClauses,
+    causeCodes,
+    filters,
+}: FunctionalLocationEditProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: strings.FUNCTIONAL_LOCATION?.plural ?? 'Functional Locations',
@@ -57,7 +98,19 @@ export default function FunctionalLocationEdit({ functionalLocation, equipments,
                         <TableEquipment filters={filters} withHeader={false} equipments={equipments} />
                     </TabsContent>
                     <TabsContent value="findings" className="space-y-4">
-                        <TableFinding mode="functional-location" filters={filters} withHeader={false} findings={findings} />
+                        <TableFinding
+                            asset={functionalLocation.data}
+                            mode="functional-location"
+                            filters={filters}
+                            withHeader={true}
+                            findings={findings}
+                            findingClauses={findingClauses}
+                            findingPriorities={findingPriorities}
+                            findingStatuses={findingStatuses}
+                            departments={departments}
+                            workCenters={workCenters}
+                            causeCodes={causeCodes}
+                        />
                     </TabsContent>
                 </Tabs>
             </FormLayout>

@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ArchivedFindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents
 {
-    protected $filters;
+    protected array $filters;
 
     public function __construct(array $filters)
     {

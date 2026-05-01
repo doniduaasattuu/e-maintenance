@@ -2,7 +2,19 @@ import { ButtonGroup } from '@/components/ui/button-group';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import truncateText, { cn, tableCaption } from '@/lib/utils';
-import { CauseCode, Department, Finding, FindingClause, FindingImage, FindingPriority, FindingStatus, Meta, WorkCenter } from '@/types';
+import {
+    CauseCode,
+    Department,
+    Equipment,
+    Finding,
+    FindingClause,
+    FindingImage,
+    FindingPriority,
+    FindingStatus,
+    FunctionalLocation,
+    Meta,
+    WorkCenter,
+} from '@/types';
 import { router } from '@inertiajs/react';
 import { Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
@@ -33,6 +45,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 interface FindingTableProps {
     mode: 'standalone' | 'functional-location' | 'equipment';
+    asset?: Equipment | FunctionalLocation;
     isArchived?: boolean;
     findingTypeCode?: 'AUD' | 'ABN';
     findings: {
@@ -163,6 +176,7 @@ export function FindingCauseCodeCell({ finding }: { finding: Finding }) {
 
 export default function TableFinding({
     mode = 'standalone',
+    asset,
     isArchived = false,
     findingTypeCode,
     findings,
@@ -474,6 +488,7 @@ export default function TableFinding({
             <GeneratePagination meta={meta} />
 
             <DialogFindingExportExcel
+                asset={asset}
                 isArchived={isArchived}
                 findingTypeCode={findingTypeCode}
                 open={exportDialog}

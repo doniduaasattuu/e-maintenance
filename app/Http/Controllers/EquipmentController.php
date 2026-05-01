@@ -3,15 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Exports\EquipmentExport;
+use App\Exports\FindingExport;
 use App\Http\Requests\Equipment\StoreEquipmentRequest;
 use App\Http\Requests\Equipment\UpdateEquipmentRequest;
+use App\Http\Resources\CauseCodeResource;
+use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
+use App\Http\Resources\FindingClauseResource;
+use App\Http\Resources\FindingPriorityResource;
 use App\Http\Resources\FindingResource;
+use App\Http\Resources\FindingStatusResource;
+use App\Http\Resources\WorkCenterResource;
+use App\Models\CauseCode;
+use App\Models\Department;
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
+use App\Models\FindingClause;
+use App\Models\FindingPriority;
+use App\Models\FindingStatus;
+use App\Models\WorkCenter;
 use App\Traits\HasPerPagePreference;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -95,24 +108,39 @@ class EquipmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Equipment $equipment)
+    public function show(Request $request, Equipment $equipment)
     {
         Gate::authorize('show_equipment');
+
+        $perPage = $this->getPerPage($request);
+
+        $findingClauses = FindingClause::all();
+        $findingStatuses = FindingStatus::all();
+        $findingPriorities = FindingPriority::all();
+        $departments = Department::all();
+        $workCenters = WorkCenter::all();
+        $causeCodes = CauseCode::all();
 
         $equipment->load([
             'functionalLocation',
             'eclass',
             'status',
-            'findings' => function ($query) {
-                $query->with(['status', 'priority', 'inspector'])
-                    ->orderBy('created_at', 'DESC')
-                    ->limit(10);
-            }
         ]);
 
         return Inertia::render('equipment/show', [
             'equipment' => new EquipmentResource($equipment),
-            'findings' => FindingResource::collection($equipment->findings),
+            'findings' => FindingResource::collection($equipment
+                ->findings()
+                ->search($request)
+                ->withAllRelations()
+                ->latest()
+                ->paginate($perPage)),
+            'findingClauses' => FindingClauseResource::collection($findingClauses),
+            'findingStatuses' => FindingStatusResource::collection($findingStatuses),
+            'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
+            'departments' => DepartmentResource::collection($departments),
+            'workCenters' => WorkCenterResource::collection($workCenters),
+            'causeCodes' => CauseCodeResource::collection($causeCodes),
         ]);
     }
 
@@ -196,5 +224,16 @@ class EquipmentController extends Controller
         ];
 
         return Excel::download(new EquipmentExport($filters), 'Equipments_' . now()->format('Ymd_His') . '.xlsx');
+    }
+
+    public function equipmentFindingExport(Request $request)
+    {
+        $filters = [
+            'equipment_id'   => $request->query('equipment_id'),
+            'start_date'     => $request->query('start_date'),
+            'end_date'       => $request->query('end_date'),
+        ];
+
+        return Excel::download(new FindingExport($filters), 'Equipment_Findings_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

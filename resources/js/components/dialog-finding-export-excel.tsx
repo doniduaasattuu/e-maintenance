@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Field, FieldDescription, FieldGroup, FieldLegend, FieldSet } from '@/components/ui/field';
 import { Label } from '@/components/ui/label';
-import { Department, FindingPriority, FindingStatus, WorkCenter } from '@/types';
+import { Department, Equipment, FindingPriority, FindingStatus, FunctionalLocation, WorkCenter } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { ChevronDownIcon, LoaderCircle, Sheet } from 'lucide-react';
@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 interface DialogFindingExportExcelProps {
     mode: 'standalone' | 'functional-location' | 'equipment';
+    asset?: Equipment | FunctionalLocation;
     findingTypeCode?: 'AUD' | 'ABN';
     isArchived?: boolean;
     open: boolean;
@@ -33,6 +34,7 @@ interface DialogFindingExportExcelProps {
 
 export default function DialogFindingExportExcel({
     mode,
+    asset,
     findingTypeCode,
     isArchived = false,
     open,
@@ -134,7 +136,18 @@ export default function DialogFindingExportExcel({
         }
     };
 
-    function getEndpointFromCode(findingTypeCode?: 'AUD' | 'ABN'): 'audits' | 'abnormalities' | 'findings.archived' {
+    function getEndpointFromCode(
+        findingTypeCode?: 'AUD' | 'ABN',
+    ): 'audits' | 'abnormalities' | 'findings.archived' | 'functional-locations.findings' | 'equipments.findings' {
+        if (mode != 'standalone') {
+            switch (mode) {
+                case 'functional-location':
+                    return 'functional-locations.findings';
+                case 'equipment':
+                    return 'equipments.findings';
+            }
+        }
+
         switch (findingTypeCode) {
             case 'AUD':
                 return 'audits';
@@ -166,6 +179,17 @@ export default function DialogFindingExportExcel({
 
         if (mode === 'standalone' && data.type_code) {
             params.append('type_code', data.type_code);
+        }
+
+        if (asset && mode != 'standalone') {
+            switch (mode) {
+                case 'equipment':
+                    params.append('equipment_id', `${asset.id}`);
+                    break;
+                case 'functional-location':
+                    params.append('functional_location_id', `${asset.id}`);
+                    break;
+            }
         }
 
         const baseUrl = route(`${getEndpointFromCode(findingTypeCode)}.export`);
@@ -248,28 +272,113 @@ export default function DialogFindingExportExcel({
                             </Field>
                         </div>
 
-                        {!isArchived && (
+                        {mode == 'standalone' && (
                             <>
-                                {/* STATUS */}
+                                {!isArchived && (
+                                    <>
+                                        {/* STATUS */}
+                                        <FieldSet className="gap-5">
+                                            <FieldLegend className="mb-2" variant="label">
+                                                Finding Status:
+                                            </FieldLegend>
+                                            <FieldDescription>Select the finding status.</FieldDescription>
+                                            <FieldGroup className="gap-3">
+                                                {findingStatuses?.data &&
+                                                    findingStatuses?.data.map((status: FindingStatus, index: number) => {
+                                                        return (
+                                                            <Field key={index} orientation="horizontal">
+                                                                <Checkbox
+                                                                    onCheckedChange={(checked: boolean) => handleStatusChange(status.id, checked)}
+                                                                    id={status.name}
+                                                                    checked={data.status_ids.includes(status.id)}
+                                                                    name={status.name}
+                                                                    defaultChecked
+                                                                />
+                                                                <Label htmlFor={status.name} className="font-normal">
+                                                                    {status.name}
+                                                                </Label>
+                                                            </Field>
+                                                        );
+                                                    })}
+                                            </FieldGroup>
+                                        </FieldSet>
+                                    </>
+                                )}
+
+                                {/* DEPARTMENT */}
                                 <FieldSet className="gap-5">
                                     <FieldLegend className="mb-2" variant="label">
-                                        Finding Status:
+                                        Department:
                                     </FieldLegend>
-                                    <FieldDescription>Select the finding status.</FieldDescription>
+                                    <FieldDescription>Select the responsible departments.</FieldDescription>
                                     <FieldGroup className="gap-3">
-                                        {findingStatuses?.data &&
-                                            findingStatuses?.data.map((status: FindingStatus, index: number) => {
+                                        {departments?.data &&
+                                            departments?.data.map((department: Department, index: number) => {
                                                 return (
                                                     <Field key={index} orientation="horizontal">
                                                         <Checkbox
-                                                            onCheckedChange={(checked: boolean) => handleStatusChange(status.id, checked)}
-                                                            id={status.name}
-                                                            checked={data.status_ids.includes(status.id)}
-                                                            name={status.name}
+                                                            onCheckedChange={(checked: boolean) => handleDepartmentChange(department.id, checked)}
+                                                            id={department.code}
+                                                            checked={data.department_ids.includes(department.id)}
+                                                            name={department.code}
                                                             defaultChecked
                                                         />
-                                                        <Label htmlFor={status.name} className="font-normal">
-                                                            {status.name}
+                                                        <Label htmlFor={department.code} className="font-normal">
+                                                            {department.name}
+                                                        </Label>
+                                                    </Field>
+                                                );
+                                            })}
+                                    </FieldGroup>
+                                </FieldSet>
+
+                                {/* PRIORITY */}
+                                <FieldSet className="gap-5">
+                                    <FieldLegend className="mb-2" variant="label">
+                                        Finding Priority:
+                                    </FieldLegend>
+                                    <FieldDescription>Select the priority of finding.</FieldDescription>
+                                    <FieldGroup className="gap-3">
+                                        {findingPriorities?.data &&
+                                            findingPriorities?.data.map((priority: FindingPriority, index: number) => {
+                                                return (
+                                                    <Field key={index} orientation="horizontal">
+                                                        <Checkbox
+                                                            onCheckedChange={(checked: boolean) => handlePriorityChange(priority.id, checked)}
+                                                            id={priority.label}
+                                                            checked={data.priority_ids.includes(priority.id)}
+                                                            name={priority.label}
+                                                            defaultChecked
+                                                        />
+                                                        <Label htmlFor={priority.label} className="font-normal">
+                                                            {priority.label}
+                                                        </Label>
+                                                    </Field>
+                                                );
+                                            })}
+                                    </FieldGroup>
+                                </FieldSet>
+
+                                {/* Work Center */}
+                                <FieldSet className="gap-5">
+                                    <FieldLegend className="mb-2" variant="label">
+                                        Work Center:
+                                    </FieldLegend>
+                                    <FieldDescription>Select Work Center.</FieldDescription>
+                                    <FieldGroup className="gap-3">
+                                        {workCenters?.data &&
+                                            workCenters?.data.map((workCenter: WorkCenter, index: number) => {
+                                                return (
+                                                    <Field key={index} orientation="horizontal">
+                                                        <Checkbox
+                                                            onCheckedChange={(checked: boolean) => handleWorkCenterChange(workCenter.id, checked)}
+                                                            id={workCenter.code}
+                                                            checked={data.work_center_ids.includes(workCenter.id)}
+                                                            name={workCenter.code}
+                                                            defaultChecked
+                                                        />
+                                                        <Label htmlFor={workCenter.name} className="font-normal">
+                                                            {workCenter.name}
                                                         </Label>
                                                     </Field>
                                                 );
@@ -278,87 +387,6 @@ export default function DialogFindingExportExcel({
                                 </FieldSet>
                             </>
                         )}
-
-                        {/* DEPARTMENT */}
-                        <FieldSet className="gap-5">
-                            <FieldLegend className="mb-2" variant="label">
-                                Department:
-                            </FieldLegend>
-                            <FieldDescription>Select the responsible departments.</FieldDescription>
-                            <FieldGroup className="gap-3">
-                                {departments?.data &&
-                                    departments?.data.map((department: Department, index: number) => {
-                                        return (
-                                            <Field key={index} orientation="horizontal">
-                                                <Checkbox
-                                                    onCheckedChange={(checked: boolean) => handleDepartmentChange(department.id, checked)}
-                                                    id={department.code}
-                                                    checked={data.department_ids.includes(department.id)}
-                                                    name={department.code}
-                                                    defaultChecked
-                                                />
-                                                <Label htmlFor={department.code} className="font-normal">
-                                                    {department.name}
-                                                </Label>
-                                            </Field>
-                                        );
-                                    })}
-                            </FieldGroup>
-                        </FieldSet>
-
-                        {/* PRIORITY */}
-                        <FieldSet className="gap-5">
-                            <FieldLegend className="mb-2" variant="label">
-                                Finding Priority:
-                            </FieldLegend>
-                            <FieldDescription>Select the priority of finding.</FieldDescription>
-                            <FieldGroup className="gap-3">
-                                {findingPriorities?.data &&
-                                    findingPriorities?.data.map((priority: FindingPriority, index: number) => {
-                                        return (
-                                            <Field key={index} orientation="horizontal">
-                                                <Checkbox
-                                                    onCheckedChange={(checked: boolean) => handlePriorityChange(priority.id, checked)}
-                                                    id={priority.label}
-                                                    checked={data.priority_ids.includes(priority.id)}
-                                                    name={priority.label}
-                                                    defaultChecked
-                                                />
-                                                <Label htmlFor={priority.label} className="font-normal">
-                                                    {priority.label}
-                                                </Label>
-                                            </Field>
-                                        );
-                                    })}
-                            </FieldGroup>
-                        </FieldSet>
-
-                        {/* Work Center */}
-                        <FieldSet className="gap-5">
-                            <FieldLegend className="mb-2" variant="label">
-                                Work Center:
-                            </FieldLegend>
-                            <FieldDescription>Select Work Center.</FieldDescription>
-                            <FieldGroup className="gap-3">
-                                {workCenters?.data &&
-                                    workCenters?.data.map((workCenter: WorkCenter, index: number) => {
-                                        return (
-                                            <Field key={index} orientation="horizontal">
-                                                <Checkbox
-                                                    onCheckedChange={(checked: boolean) => handleWorkCenterChange(workCenter.id, checked)}
-                                                    id={workCenter.code}
-                                                    checked={data.work_center_ids.includes(workCenter.id)}
-                                                    name={workCenter.code}
-                                                    defaultChecked
-                                                />
-                                                <Label htmlFor={workCenter.name} className="font-normal">
-                                                    {workCenter.name}
-                                                </Label>
-                                            </Field>
-                                        );
-                                    })}
-                            </FieldGroup>
-                        </FieldSet>
                     </FieldGroup>
 
                     <DialogFooter className="gap-2 sm:gap-0">

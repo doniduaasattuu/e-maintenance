@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class MaterialExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithEvents
 {
-    protected $filters;
+    protected array $filters;
 
     public function __construct(array $filters)
     {
