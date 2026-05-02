@@ -23,8 +23,6 @@ class AbnormalityController extends FindingController
      */
     public function index(Request $request)
     {
-        Gate::authorize('index_abnormality');
-
         return parent::index($request);
     }
 
@@ -33,8 +31,6 @@ class AbnormalityController extends FindingController
      */
     public function create()
     {
-        Gate::authorize('create_abnormality');
-
         return parent::create();
     }
 
@@ -43,8 +39,6 @@ class AbnormalityController extends FindingController
      */
     public function store(StoreAbnormalityRequest $request)
     {
-        Gate::authorize('store_abnormality');
-
         try {
             $this->performStore($request->validated());
 
@@ -66,8 +60,6 @@ class AbnormalityController extends FindingController
      */
     public function show(string $id)
     {
-        Gate::authorize('show_abnormality');
-
         $finding = Finding::findOrFail($id);
 
         return parent::display($finding);
@@ -78,8 +70,6 @@ class AbnormalityController extends FindingController
      */
     public function edit(string $id)
     {
-        Gate::authorize('edit_abnormality');
-
         $finding = Finding::findOrFail($id);
 
         return parent::revise($finding);
@@ -90,8 +80,6 @@ class AbnormalityController extends FindingController
      */
     public function update(UpdateAbnormalityRequest $request, Finding $finding)
     {
-        Gate::authorize('update', $finding);
-
         try {
             $this->performUpdate($request, $finding);
 
@@ -112,8 +100,6 @@ class AbnormalityController extends FindingController
      */
     public function close(Request $request, string $id)
     {
-        Gate::authorize('close_finding');
-
         $finding = Finding::findOrFail($id);
 
         parent::finish($request, $finding);
@@ -124,8 +110,6 @@ class AbnormalityController extends FindingController
      */
     public function destroy(string $id)
     {
-        Gate::authorize('delete_abnormality');
-
         $finding = Finding::findOrFail($id);
 
         try {
@@ -148,10 +132,10 @@ class AbnormalityController extends FindingController
         $filters = [
             'start_date'     => $request->query('start_date'),
             'end_date'       => $request->query('end_date'),
-            'status_ids' => $request->query('status_ids'),
+            'status_ids'     => $request->query('status_ids'),
             'department_ids' => $request->query('department_ids'),
-            'priority_ids' => $request->query('priority_ids'),
-            'type_id' => FindingType::where('code', $request->query('type_code'))->firstOrFail()->id,
+            'priority_ids'   => $request->query('priority_ids'),
+            'type_id'        => FindingType::where('code', $request->query('type_code'))->firstOrFail()->id,
         ];
 
         return Excel::download(new FindingExport($filters), 'Abnormalities_Reports_' . now()->format('Ymd_His') . '.xlsx');

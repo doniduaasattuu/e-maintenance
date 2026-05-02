@@ -40,7 +40,7 @@ abstract class FindingController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('index_finding');
+        Gate::authorize('viewAny', Finding::class);
 
         $perPage = $this->getPerPage($request);
 
@@ -86,7 +86,7 @@ abstract class FindingController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create_finding');
+        Gate::authorize('create', Finding::class);
 
         $findingClauses = FindingClause::all();
         $findingStatuses = FindingStatus::all();
@@ -110,6 +110,8 @@ abstract class FindingController extends Controller
      */
     protected function performStore(array $validatedData)
     {
+        Gate::authorize('create', Finding::class);
+
         return DB::transaction(function () use ($validatedData) {
             $validatedData['inspected_by'] = auth()->id();
 
@@ -168,7 +170,6 @@ abstract class FindingController extends Controller
      */
     public function revise(Finding $finding)
     {
-        Gate::authorize('edit_finding');
         Gate::authorize('update', $finding);
 
         $finding->load([
@@ -209,7 +210,6 @@ abstract class FindingController extends Controller
     public function finish(Request $request, Finding $finding)
     {
         Gate::authorize('close', $finding);
-        Gate::authorize('close_finding');
 
         $statusClosed = FindingStatus::where('name', 'Closed')->firstOrFail();
 
@@ -235,6 +235,8 @@ abstract class FindingController extends Controller
 
     protected function performUpdate(Request $request, Finding $finding, array $additionalData = [])
     {
+        Gate::authorize('update', $finding);
+
         // 1. Validasi Limit Foto (Cek existing + new)
         $newPhotosCount = $request->hasFile('images') ? count($request->file('images')) : 0;
         $existingPhotosCount = $finding->images()->where('category', 'after')->count();
@@ -286,7 +288,6 @@ abstract class FindingController extends Controller
      */
     public function delete(Finding $finding)
     {
-        Gate::authorize('delete_finding');
         Gate::authorize('delete', $finding);
 
         return DB::transaction(function () use ($finding) {

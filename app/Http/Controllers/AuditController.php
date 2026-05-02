@@ -23,8 +23,6 @@ class AuditController extends FindingController
      */
     public function index(Request $request)
     {
-        Gate::authorize('index_audit');
-
         return parent::index($request);
     }
 
@@ -33,8 +31,6 @@ class AuditController extends FindingController
      */
     public function create()
     {
-        Gate::authorize('create_audit');
-
         return parent::create();
     }
 
@@ -43,8 +39,6 @@ class AuditController extends FindingController
      */
     public function store(StoreAuditRequest $request)
     {
-        Gate::authorize('store_audit');
-
         try {
             $this->performStore($request->validated());
 
@@ -66,8 +60,6 @@ class AuditController extends FindingController
      */
     public function show(string $id)
     {
-        Gate::authorize('show_audit');
-
         $finding = Finding::findOrFail($id);
 
         return parent::display($finding);
@@ -78,8 +70,6 @@ class AuditController extends FindingController
      */
     public function edit(string $id)
     {
-        Gate::authorize('edit_audit');
-
         $finding = Finding::findOrFail($id);
 
         return parent::revise($finding);
@@ -90,8 +80,6 @@ class AuditController extends FindingController
      */
     public function update(UpdateAuditRequest $request, Finding $finding)
     {
-        Gate::authorize('update', $finding);
-
         try {
             $this->performUpdate($request, $finding);
 
@@ -112,27 +100,16 @@ class AuditController extends FindingController
      */
     public function close(Request $request, string $id)
     {
-        Gate::authorize('close_finding');
-
         $finding = Finding::findOrFail($id);
 
         parent::finish($request, $finding);
     }
-
-    // public function close(Request $request, string $id)
-    // {
-    //     $finding = Finding::findOrFail($id);
-
-    //     parent::close($request, $finding);
-    // }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        Gate::authorize('delete_audit');
-
         $finding = Finding::findOrFail($id);
 
         try {

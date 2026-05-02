@@ -435,14 +435,14 @@ export default function TableFinding({
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
-                                                    {can.show_finding && (
+                                                    {finding.can?.show && (
                                                         <DropdownMenuItem onClick={() => handleShowFinding(finding)}>
                                                             <Info />
                                                             Details
                                                         </DropdownMenuItem>
                                                     )}
 
-                                                    {(can.edit_finding || finding.can?.update) && (
+                                                    {finding.can?.update && (
                                                         <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
                                                             <Edit />
                                                             Edit
@@ -458,7 +458,7 @@ export default function TableFinding({
                                                         </ActionFindingDialog>
                                                     )}
 
-                                                    {(can.delete_finding || finding.can?.delete) && (
+                                                    {finding.can?.delete && (
                                                         <ActionConfirm
                                                             action={() => handleDeletefinding(finding)}
                                                             title="Delete Finding"

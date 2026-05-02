@@ -1,5 +1,5 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
-import truncateText, { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { CauseCode, Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation, WorkCenter } from '@/types';
 import { Info } from 'lucide-react';
 import React, { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
@@ -7,11 +7,10 @@ import ButtonSubmit from '../button-submit';
 import CompressingDescription from '../compressing-description';
 import EquipmentSelect from '../equipment-select';
 import FunctionalLocationSelect from '../functional-location-select';
+import { GenericCombobox } from '../generic-combobox';
 import RequiredLabel from '../required-label';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Field, FieldDescription, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
 
 interface FindingFormProps {
@@ -86,9 +85,6 @@ export default function FindingForm({
     isEditing = false,
     type,
 }: FindingFormProps) {
-    const [clauseDescription, setClauseDescription] = React.useState<string | null>(null);
-    const [clauseCode, setClauseCode] = React.useState<string | null>(null);
-
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const compressImage = useImageCompressor();
     const [errorCompression, setErrorCompression] = useState<string | null>(null);
@@ -137,39 +133,19 @@ export default function FindingForm({
                     Finding Clause
                     <RequiredLabel />
                 </FieldLabel>
-                <Select
-                    disabled={processing}
-                    onValueChange={(e) => {
+                <GenericCombobox
+                    tabIndex={1}
+                    id="finding_clause_id"
+                    valueKey="id"
+                    labelKey="description"
+                    options={findingClauses?.data}
+                    defaultValue={data.finding_clause_id}
+                    placeholder="Clause"
+                    onChange={(e) => {
                         setData('finding_clause_id', e);
-                        setClauseDescription(findingClauses?.data?.[parseInt(e) - 1].description);
-                        setClauseCode(findingClauses?.data?.[parseInt(e) - 1].code);
                     }}
-                    value={data.finding_clause_id}
-                >
-                    <SelectTrigger tabIndex={1} className="truncate overflow-hidden whitespace-nowrap">
-                        <SelectValue placeholder="Select clause" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel className="text-muted-foreground truncate">Finding Clause</SelectLabel>
-                            {findingClauses?.data?.map((fc: FindingClause) => {
-                                return (
-                                    <SelectItem key={fc.id} value={fc.id.toString()}>
-                                        {fc.code} - {truncateText(fc.description)}
-                                    </SelectItem>
-                                );
-                            })}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                />
                 <FieldError>{errors.finding_clause_id}</FieldError>
-                {clauseCode && clauseDescription && (
-                    <Alert>
-                        <Info />
-                        <AlertTitle>{clauseCode}</AlertTitle>
-                        <AlertDescription>{clauseDescription}</AlertDescription>
-                    </Alert>
-                )}
             </Field>
         );
     };
@@ -181,29 +157,18 @@ export default function FindingForm({
                     Cause Code
                     <RequiredLabel />
                 </FieldLabel>
-                <Select
-                    disabled={processing}
-                    onValueChange={(e) => {
+                <GenericCombobox
+                    tabIndex={2}
+                    id="cause_code_id"
+                    valueKey="id"
+                    labelKey="description"
+                    options={causeCodes?.data}
+                    defaultValue={data.cause_code_id}
+                    placeholder="Cause Code"
+                    onChange={(e) => {
                         setData('cause_code_id', e);
                     }}
-                    value={data.cause_code_id}
-                >
-                    <SelectTrigger tabIndex={2} className="truncate overflow-hidden whitespace-nowrap">
-                        <SelectValue placeholder="Select cause code" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel className="text-muted-foreground truncate">Cause Code</SelectLabel>
-                            {causeCodes?.data?.map((cc: CauseCode) => {
-                                return (
-                                    <SelectItem key={cc.id} value={cc.id.toString()}>
-                                        {cc.code} - {truncateText(cc.description, 30)}
-                                    </SelectItem>
-                                );
-                            })}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                />
                 <FieldError>{errors.cause_code_id}</FieldError>
             </Field>
         );
@@ -247,23 +212,18 @@ export default function FindingForm({
                         Department
                         {type == 'ABN' && <RequiredLabel />}
                     </FieldLabel>
-                    <Select disabled={processing} onValueChange={(e) => setData('department_id', e)} value={data.department_id}>
-                        <SelectTrigger id="department_id" tabIndex={4} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Responsible Department" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Departments</SelectLabel>
-                                {departments?.data?.map((d) => {
-                                    return (
-                                        <SelectItem key={d.id} value={d.id.toString()}>
-                                            {d.code + ' - ' + d.name}
-                                        </SelectItem>
-                                    );
-                                })}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                    <GenericCombobox
+                        tabIndex={4}
+                        id="department_id"
+                        valueKey="id"
+                        labelKey="name"
+                        options={departments?.data}
+                        defaultValue={data.department_id}
+                        placeholder="Department"
+                        onChange={(e) => {
+                            setData('department_id', e);
+                        }}
+                    />
                     <FieldError>{errors.department_id}</FieldError>
                 </Field>
 
@@ -272,23 +232,18 @@ export default function FindingForm({
                         Work Center
                         {type == 'ABN' && <RequiredLabel />}
                     </FieldLabel>
-                    <Select disabled={processing} onValueChange={(e) => setData('work_center_id', e)} value={data.work_center_id}>
-                        <SelectTrigger id="work_center_id" tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Responsible Work Center" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Work Centers</SelectLabel>
-                                {workCenters?.data?.map((wc) => {
-                                    return (
-                                        <SelectItem key={wc.id} value={wc.id.toString()}>
-                                            {wc.code + ' - ' + truncateText(wc.name ?? null, 25)}
-                                        </SelectItem>
-                                    );
-                                })}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                    <GenericCombobox
+                        tabIndex={5}
+                        id="work_center_id"
+                        valueKey="id"
+                        labelKey="name"
+                        options={workCenters?.data}
+                        defaultValue={data.work_center_id}
+                        placeholder="Work Center"
+                        onChange={(e) => {
+                            setData('work_center_id', e);
+                        }}
+                    />
                     <FieldError>{errors.work_center_id}</FieldError>
                 </Field>
             </div>
@@ -335,29 +290,18 @@ export default function FindingForm({
                         Finding Status
                         <RequiredLabel />
                     </FieldLabel>
-                    <Select
-                        defaultValue="1"
-                        disabled={processing}
-                        onValueChange={(e) => setData('finding_status_id', e)}
-                        value={data.finding_status_id}
-                    >
-                        <SelectTrigger tabIndex={8} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Finding Status</SelectLabel>
-                                {findingStatuses?.data?.length > 0 &&
-                                    findingStatuses.data.map((fs) => {
-                                        return (
-                                            <SelectItem key={fs.id} value={fs.id.toString()}>
-                                                {fs.name}
-                                            </SelectItem>
-                                        );
-                                    })}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                    <GenericCombobox
+                        tabIndex={8}
+                        id="finding_status_id"
+                        valueKey="id"
+                        labelKey="name"
+                        options={findingStatuses?.data}
+                        defaultValue={data.finding_status_id}
+                        placeholder="Finding Status"
+                        onChange={(e) => {
+                            setData('finding_status_id', e);
+                        }}
+                    />
                     <FieldError>{errors.finding_status_id}</FieldError>
                 </Field>
                 <Field>
@@ -365,28 +309,18 @@ export default function FindingForm({
                         Finding Priority
                         <RequiredLabel />
                     </FieldLabel>
-                    <Select
-                        defaultValue="1"
-                        disabled={processing}
-                        onValueChange={(e) => setData('finding_priority_id', e)}
-                        value={data.finding_priority_id}
-                    >
-                        <SelectTrigger tabIndex={9} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Select priority" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Finding Priority</SelectLabel>
-                                {findingPriorities?.data?.map((fp) => {
-                                    return (
-                                        <SelectItem key={fp.id} value={fp.id.toString()}>
-                                            {fp.label}
-                                        </SelectItem>
-                                    );
-                                })}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                    <GenericCombobox
+                        tabIndex={9}
+                        id="finding_priority_id"
+                        valueKey="id"
+                        labelKey="label"
+                        options={findingPriorities?.data}
+                        defaultValue={data.finding_priority_id}
+                        placeholder="Finding Priority"
+                        onChange={(e) => {
+                            setData('finding_priority_id', e);
+                        }}
+                    />
                     <FieldError>{errors.finding_priority_id}</FieldError>
                 </Field>
             </div>

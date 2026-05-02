@@ -13,7 +13,7 @@ class FindingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasAnyPermission(['index_finding', 'index_audit', 'index_abnormality']);
     }
 
     /**
@@ -21,7 +21,7 @@ class FindingPolicy
      */
     public function view(User $user, Finding $finding): bool
     {
-        return $user->hasRole('Admin') || $user->hasAnyPermission(['show_finding', 'show_audit', 'show_abnormality']);
+        return $user->id == $finding->inspected_by || $user->hasAnyPermission(['show_finding', 'show_audit', 'show_abnormality']);
     }
 
     /**
@@ -29,7 +29,7 @@ class FindingPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasAnyPermission(['create_finding', 'create_audit', 'create_abnormality']);
     }
 
     /**
@@ -37,7 +37,7 @@ class FindingPolicy
      */
     public function update(User $user, Finding $finding): bool
     {
-        return $user->hasRole('Admin') || $finding->inspected_by == $user->id || $user->hasAnyPermission(['update_finding', 'update_audit', 'update_abnormality']);
+        return $finding->inspected_by == $user->id || $user->hasAnyPermission(['update_finding', 'update_audit', 'update_abnormality']);
     }
 
     /**
@@ -45,7 +45,7 @@ class FindingPolicy
      */
     public function close(User $user, Finding $finding): bool
     {
-        return $user->hasRole(['Admin', 'Verifier']) || $user->department_id == $finding->department_id || $user->hasAnyPermission(['close_finding', 'close_audit', 'close_abnormality']);
+        return $user->department_id == $finding->department_id || $user->hasAnyPermission(['close_finding', 'close_audit', 'close_abnormality']);
     }
 
     /**
@@ -53,7 +53,7 @@ class FindingPolicy
      */
     public function delete(User $user, Finding $finding): bool
     {
-        return $user->hasRole('Admin') || $finding->inspected_by == $user->id || $user->hasAnyPermission(['delete_finding', 'delete_audit', 'delete_abnormality']);
+        return $finding->inspected_by == $user->id || $user->hasAnyPermission(['delete_finding', 'delete_audit', 'delete_abnormality']);
     }
 
     /**

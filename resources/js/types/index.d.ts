@@ -458,6 +458,7 @@ export interface Finding {
     closed_at: string | null;
     closed: string | null;
     can: {
+        show: boolean;
         update: boolean;
         delete: boolean;
     };

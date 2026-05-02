@@ -62,6 +62,7 @@ class FindingResource extends JsonResource
             'closed'    => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y H:i:s') : null,
 
             'can' => [
+                'show' => $request->user()->can('view', $this->resource),
                 'update' => $request->user()->can('update', $this->resource),
                 'delete' => $request->user()->can('delete', $this->resource),
             ]

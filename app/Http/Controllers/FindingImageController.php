@@ -37,7 +37,15 @@ class FindingImageController extends Controller
         $validated = $request->validate([
             'rectification_action'   => ['required', 'string', 'min:10'],
             'images'                 => ['required', 'array', 'min:1', 'max:5'],
-            'closed_at'             => 'required|date_format:Y-d-m H:i:s',
+            'closed_at'            => [
+                'required',
+                'date_format:Y-m-d H:i:s',
+                function ($attribute, $value, $fail) use ($finding) {
+                    if (\Carbon\Carbon::parse($value)->lt($finding->created_at)) {
+                        $fail("The completion time must not be earlier than the time the finding was made (" . $finding->created_at->format('d/m/Y H:i') . ").");
+                    }
+                },
+            ],
             'images.*'               => [
                 'image',
                 'mimes:jpg,jpeg,png,webp',
@@ -57,7 +65,6 @@ class FindingImageController extends Controller
         DB::beginTransaction();
 
         try {
-
             $finding->update([
                 'rectification_action' => $validated['rectification_action'],
                 'finding_status_id' => $statusReview->id,
