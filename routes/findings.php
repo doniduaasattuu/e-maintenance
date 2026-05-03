@@ -6,6 +6,7 @@ use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CauseCodeController;
 use App\Http\Controllers\FindingClauseController;
 use App\Http\Controllers\FindingImageController;
+use App\Http\Controllers\FindingMomController;
 use App\Http\Controllers\FindingPriorityController;
 use App\Http\Controllers\FindingStatusController;
 use App\Http\Controllers\FindingTypeController;
@@ -41,4 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // CAUSE CODE
     Route::resource('cause-codes', CauseCodeController::class)->except('show');
     Route::post('findings/{finding}/images', [FindingImageController::class, 'store'])->name('findings.images.store');
+
+    Route::get('findings/mom', [FindingMomController::class, 'index'])->name('findings.mom');
+    Route::get('findings/mom/export', [FindingMomController::class, 'export'])->name('findings.mom.export');
 });

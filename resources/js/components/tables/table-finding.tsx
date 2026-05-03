@@ -47,6 +47,7 @@ interface FindingTableProps {
     mode: 'standalone' | 'functional-location' | 'equipment';
     asset?: Equipment | FunctionalLocation;
     isArchived?: boolean;
+    isMom?: boolean;
     findingTypeCode?: 'AUD' | 'ABN';
     findings: {
         data: Finding[];
@@ -177,6 +178,7 @@ export function FindingCauseCodeCell({ finding }: { finding: Finding }) {
 export default function TableFinding({
     mode = 'standalone',
     asset,
+    isMom = false,
     isArchived = false,
     findingTypeCode,
     findings,
@@ -288,17 +290,26 @@ export default function TableFinding({
                         </Filter>
                         <DateRangePopover />
                     </div>
-                    <ButtonGroup>
-                        {can.create_finding &&
-                            !isArchived &&
-                            mode === 'standalone' &&
-                            (findingTypeCode != null && findingTypeCode == 'ABN' ? (
-                                <ButtonAdd route={route('abnormalities.create')} tabIndex={3} />
-                            ) : (
-                                <ButtonAdd route={route('audits.create')} tabIndex={3} />
-                            ))}
-                        <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
-                    </ButtonGroup>
+                    {isMom ? (
+                        <ButtonExport
+                            tabIndex={4}
+                            onClick={() => (window.location.href = route('findings.mom.export'))}
+                            label="Export"
+                            variant={'outline'}
+                        />
+                    ) : (
+                        <ButtonGroup>
+                            {can.create_finding &&
+                                !isArchived &&
+                                mode === 'standalone' &&
+                                (findingTypeCode != null && findingTypeCode == 'ABN' ? (
+                                    <ButtonAdd route={route('abnormalities.create')} tabIndex={3} />
+                                ) : (
+                                    <ButtonAdd route={route('audits.create')} tabIndex={3} />
+                                ))}
+                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        </ButtonGroup>
+                    )}
                 </div>
             )}
             {findings.data && findings.data.length > 0 ? (

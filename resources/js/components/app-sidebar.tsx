@@ -121,6 +121,11 @@ const mainNavItems: NavItem[] = [
                 href: route('findings.archived'),
                 permission: 'index_finding',
             },
+            {
+                title: strings.MOM?.label ?? 'Minutes of Meeting',
+                href: route('findings.mom'),
+                permission: 'index_finding',
+            },
         ],
     },
     {

@@ -250,6 +250,13 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         },
     },
 
+    MOM: {
+        label: 'MoM',
+        plural: 'Minutes of Meeting',
+        description:
+            'A consolidated view of Audit and Abnormality findings, representing any deviation from established standards, procedures, or specifications recorded within the last 7 days.',
+    },
+
     ARCHIVED_FINDING: {
         label: 'Archived',
         plural: 'Archives',
