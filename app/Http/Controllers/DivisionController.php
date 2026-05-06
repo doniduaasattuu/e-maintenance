@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DivisionExport;
 use App\Http\Requests\Division\StoreDivisionRequest;
 use App\Http\Requests\Division\UpdateDivisionRequest;
 use App\Http\Resources\DivisionResource;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class DivisionController extends Controller
@@ -129,5 +131,10 @@ class DivisionController extends Controller
             'type' => 'success',
             'description' => 'Division deleted successfully',
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new DivisionExport(), 'Divisions_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

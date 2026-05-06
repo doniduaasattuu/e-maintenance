@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DepartmentExport;
 use App\Http\Requests\Department\StoreDepartmentRequest;
 use App\Http\Requests\Department\UpdateDepartmentRequest;
 use App\Http\Resources\DepartmentResource;
@@ -12,6 +13,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DepartmentController extends Controller
 {
@@ -130,5 +132,10 @@ class DepartmentController extends Controller
             'type' => 'success',
             'description' => 'Department deleted successfully',
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new DepartmentExport(), 'Departments_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

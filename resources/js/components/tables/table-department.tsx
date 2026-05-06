@@ -7,10 +7,12 @@ import { Department, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
 import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
+import { ButtonGroup } from '../ui/button-group';
 
 interface DepartmentTableProps {
     departments: {
@@ -41,7 +43,10 @@ export default function TableDepartment({ departments, withHeader = true, filter
                         <SearchBar value={filters?.query} tabIndex={1} />
                         <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
-                    {can.create_department && <ButtonAdd route={route('departments.create')} tabIndex={3} />}
+                    <ButtonGroup>
+                        {can.create_department && <ButtonAdd route={route('departments.create')} tabIndex={3} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('departments.export'))} />
+                    </ButtonGroup>
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">

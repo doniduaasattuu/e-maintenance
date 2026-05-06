@@ -10,6 +10,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ORGANIZATIONS
     Route::prefix('organizations')->group(function () {
         // DEPARTMENT
+        Route::get('departments/export', [DepartmentController::class, 'export'])->name('departments.export');
         Route::resource('departments', DepartmentController::class)->names([
             'index' => 'departments.index',
             'create' => 'departments.create',
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
 
         // DIVISION
+        Route::get('divisions/export', [DivisionController::class, 'export'])->name('divisions.export');
         Route::resource('divisions', DivisionController::class)->names([
             'index' => 'divisions.index',
             'create' => 'divisions.create',
@@ -44,6 +46,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
 
         // WORK CENTER
+        Route::get('work-centers/export', [WorkCenterController::class, 'export'])->name('work-centers.export');
         Route::resource('work-centers', WorkCenterController::class)->names([
             'index' => 'work-centers.index',
             'create' => 'work-centers.create',

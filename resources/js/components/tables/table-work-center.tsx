@@ -7,10 +7,12 @@ import { Meta, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
 import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
+import { ButtonGroup } from '../ui/button-group';
 
 interface WorkCenterTableProps {
     workCenters: {
@@ -41,7 +43,10 @@ export default function TableWorkCenter({ workCenters, withHeader = true, filter
                         <SearchBar value={filters?.query} tabIndex={1} />
                         <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
-                    {can.create_workcenter && <ButtonAdd route={route('work-centers.create')} tabIndex={3} />}
+                    <ButtonGroup>
+                        {can.create_workcenter && <ButtonAdd route={route('work-centers.create')} tabIndex={3} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('work-centers.export'))} />
+                    </ButtonGroup>
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">

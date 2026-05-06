@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\WorkCenterExport;
 use App\Http\Requests\WorkCenter\StoreWorkCenterRequest;
 use App\Http\Requests\WorkCenter\UpdateWorkCenterRequest;
 use App\Http\Resources\WorkCenterResource;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class WorkCenterController extends Controller
@@ -120,5 +122,10 @@ class WorkCenterController extends Controller
             'type' => 'success',
             'description' => 'Work center deleted successfully',
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new WorkCenterExport(), 'Work_Centers_' . now()->format('Ymd_His') . '.xlsx');
     }
 }
