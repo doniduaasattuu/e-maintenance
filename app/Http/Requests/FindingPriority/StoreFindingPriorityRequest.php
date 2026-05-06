@@ -28,12 +28,12 @@ class StoreFindingPriorityRequest extends FormRequest
                 'max:50',
                 'unique:finding_priorities,label'
             ],
+            'color_code' => ['nullable', 'hex_color'],
+            'description' => ['required', 'string', 'max:255'],
             'sla_resolution_hours' => [
                 'nullable',
                 'numeric',
             ],
-            'description' => ['required', 'string', 'max:255'],
-            'color_code' => ['nullable', 'hex_color']
         ];
     }
 }

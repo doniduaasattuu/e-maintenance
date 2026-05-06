@@ -84,7 +84,10 @@ export default function CardFindingDetail({ finding, type }: Props) {
                 <div className="grid grid-cols-2 gap-2">
                     <Ul type={type}>
                         <Li title="Priority">
-                            <AlertCircle className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                            <AlertCircle
+                                color={finding?.data?.priority?.color_code ? finding?.data?.priority?.color_code : undefined}
+                                className="text-muted-foreground mt-0.5 size-4 shrink-0"
+                            />
                             <span>{finding.data.priority?.label ?? '-'}</span>
                         </Li>
                         <Li title="Inspector">

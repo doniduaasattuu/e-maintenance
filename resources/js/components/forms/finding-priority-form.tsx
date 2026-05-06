@@ -21,6 +21,7 @@ interface FindingPriorityFormProps {
 export type FindingPriorityFormData = {
     label: string;
     description: string;
+    color_code: string;
     sla_resolution_hours: string;
 };
 
@@ -71,6 +72,20 @@ export default function FindingPriorityForm({
                     autoComplete="description"
                 />
                 <FieldError>{errors.description}</FieldError>
+            </Field>
+
+            <Field>
+                <FieldLabel htmlFor="color_code">Color Code</FieldLabel>
+                <Input
+                    tabIndex={2}
+                    id="color_code"
+                    value={data.color_code ?? ''}
+                    onChange={(e) => setData('color_code', e.target.value)}
+                    placeholder="#31e981"
+                    disabled={processing}
+                    autoComplete="color_code"
+                />
+                <FieldError>{errors.color_code}</FieldError>
             </Field>
 
             <div className="grid gap-2">

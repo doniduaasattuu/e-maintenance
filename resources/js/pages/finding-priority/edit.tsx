@@ -30,6 +30,7 @@ export default function FindingPrioritiesEdit({ findingPriority }: FindingPriori
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<FindingPriorityFormData>>({
         label: findingPriority.data.label,
         description: findingPriority.data?.description ?? '',
+        color_code: findingPriority.data?.color_code ?? '',
         sla_resolution_hours: findingPriority.data?.sla_resolution_hours ?? '',
     });
 

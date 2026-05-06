@@ -24,6 +24,7 @@ export default function FindingPriorityCreate() {
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<FindingPriorityFormData>>({
         label: '',
         description: '',
+        color_code: '',
         sla_resolution_hours: '',
     });
 
