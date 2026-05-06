@@ -27,7 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // MATERIAL TYPE
+    Route::get('material-types/export', [MaterialTypeController::class, 'export'])->name('material-types.export');
     Route::resource('material-types', MaterialTypeController::class);
     // MATERIAL UNIT
+    Route::get('material-units/export', [MaterialUnitController::class, 'export'])->name('material-units.export');
     Route::resource('material-units', MaterialUnitController::class);
 });

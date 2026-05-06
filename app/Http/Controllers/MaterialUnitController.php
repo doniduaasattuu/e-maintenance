@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialUnitExport;
 use App\Http\Requests\MaterialUnit\StoreMaterialUnitRequest;
 use App\Http\Requests\MaterialUnit\UpdateMaterialUnitRequest;
 use App\Http\Resources\MaterialUnitResource;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class MaterialUnitController extends Controller
@@ -130,5 +132,10 @@ class MaterialUnitController extends Controller
                 'description' => $e->getMessage() ?? 'Unit is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new MaterialUnitExport(), 'Material_Units_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

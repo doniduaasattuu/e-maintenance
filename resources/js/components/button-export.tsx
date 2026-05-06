@@ -1,4 +1,5 @@
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 import { Sheet } from 'lucide-react';
 import { Button } from './ui/button';
 
@@ -9,9 +10,10 @@ interface ButtonExportProps {
     tabIndex?: number;
     size?: 'default' | 'sm' | 'lg' | 'icon' | null | undefined;
     onClick?: () => void;
+    className?: string;
 }
 
-export default function ButtonExport({ label, title, variant, tabIndex, size, onClick }: ButtonExportProps) {
+export default function ButtonExport({ label, title, variant, tabIndex, size, onClick, className }: ButtonExportProps) {
     const isMobile = useIsMobile();
 
     return (
@@ -21,7 +23,7 @@ export default function ButtonExport({ label, title, variant, tabIndex, size, on
             size={size ?? 'sm'}
             variant={variant ?? 'outline'}
             tabIndex={tabIndex}
-            className="text-muted-foreground"
+            className={cn('text-muted-foreground', className)}
         >
             <Sheet />
             {!isMobile && (label ?? 'Export')}

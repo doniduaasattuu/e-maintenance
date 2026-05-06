@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FindingClauseExport;
 use App\Http\Requests\FindingClause\StoreFindingClauseRequest;
 use App\Http\Requests\FindingClause\UpdateFindingClauseRequest;
 use App\Http\Resources\FindingClauseResource;
@@ -12,6 +13,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class FindingClauseController extends Controller
@@ -131,5 +133,10 @@ class FindingClauseController extends Controller
                 'description' => $e->getMessage() ?? 'Finding clause is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new FindingClauseExport(), 'Finding_Clauses_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

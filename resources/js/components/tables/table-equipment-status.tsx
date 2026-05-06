@@ -9,8 +9,10 @@ import { tableCaption } from '@/lib/utils';
 import { EquipmentStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
 import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableEquipmentStatusProps {
     equipmentStatuses: {
@@ -40,11 +42,14 @@ export default function TableEquipmentStatus({ equipmentStatuses, withHeader = t
                         <SearchBar value={filters?.query} tabIndex={1} />
                         <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
-                    {can.create_equipmentstatus && <ButtonAdd tabIndex={3} route={route('equipment-statuses.create')} />}
+                    <ButtonGroup>
+                        {can.create_equipmentstatus && <ButtonAdd tabIndex={3} route={route('equipment-statuses.create')} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('equipment-statuses.export'))} />
+                    </ButtonGroup>
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {equipmentStatuses.data && equipmentStatuses.data.length > 0 ? (
+                {equipmentStatuses?.data && equipmentStatuses?.data?.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>

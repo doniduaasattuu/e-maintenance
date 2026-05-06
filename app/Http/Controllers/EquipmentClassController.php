@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EquipmentClassExport;
 use App\Http\Requests\EquipmentClass\StoreEquipmentClassRequest;
 use App\Http\Requests\EquipmentClass\UpdateEquipmentClassRequest;
 use App\Http\Resources\EquipmentClassResource;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class EquipmentClassController extends Controller
@@ -131,5 +133,10 @@ class EquipmentClassController extends Controller
                 'description' => $e->getMessage() ?? 'Equipment class is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new EquipmentClassExport(), 'Equipment_Classes_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FindingPriorityExport;
 use App\Http\Requests\FindingPriority\StoreFindingPriorityRequest;
 use App\Http\Requests\FindingPriority\UpdateFindingPriorityRequest;
 use App\Http\Resources\FindingPriorityResource;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class FindingPriorityController extends Controller
@@ -124,5 +126,10 @@ class FindingPriorityController extends Controller
                 'description' => $e->getMessage() ?? 'Finding priority is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new FindingPriorityExport(), 'Finding_Priorities_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

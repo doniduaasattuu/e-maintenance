@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialTypeExport;
 use App\Http\Requests\MaterialType\StoreMaterialTypeRequest;
 use App\Http\Requests\MaterialType\UpdateMaterialTypeRequest;
 use App\Http\Resources\MaterialTypeResource;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class MaterialTypeController extends Controller
@@ -134,5 +136,10 @@ class MaterialTypeController extends Controller
                 'description' => $e->getMessage() ?? 'Material type is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new MaterialTypeExport(), 'Material_Types_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

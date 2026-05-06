@@ -1,6 +1,9 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { tableCaption } from '@/lib/utils';
 import { InstallDismantleHistory, Meta } from '@/types';
+import { useState } from 'react';
+import ButtonExport from '../button-export';
+import DialogEquipmentHistoryExportExcel from '../dialog-equipment-history-export-excel';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
 import { PerPageSelector } from '../per-page-selector';
@@ -20,6 +23,7 @@ interface HistoryTableProps {
 export default function TableHistory({ histories, filters }: HistoryTableProps) {
     const meta = histories.meta;
     const caption = tableCaption(meta);
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
 
     return (
         <>
@@ -28,6 +32,8 @@ export default function TableHistory({ histories, filters }: HistoryTableProps) 
                     <SearchBar value={filters?.query} tabIndex={1} />
                     <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                 </div>
+
+                <ButtonExport tabIndex={2} onClick={() => setExportDialog(true)} />
             </div>
             <div className="grid min-w-0 overflow-x-auto rounded-md">
                 {histories.data && histories.data.length > 0 ? (
@@ -93,6 +99,8 @@ export default function TableHistory({ histories, filters }: HistoryTableProps) 
                 )}
             </div>
             <GeneratePagination meta={meta} />
+
+            <DialogEquipmentHistoryExportExcel open={exportDialog} setOpen={setExportDialog} />
         </>
     );
 }

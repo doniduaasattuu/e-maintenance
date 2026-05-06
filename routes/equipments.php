@@ -19,6 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('equipments', EquipmentController::class);
     // HISTORY
+    Route::get('equipment-histories/export', [InstallDismantleHistoryController::class, 'export'])->name('equipment-histories.export');
     Route::resource('equipment-histories', InstallDismantleHistoryController::class);
     Route::prefix('equipments')->group(function () {
         // IMAGES
@@ -42,7 +43,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // EQUIPMENT CLASS
+    Route::get('equipment-classes/export', [EquipmentClassController::class, 'export'])->name('equipment-classes.export');
     Route::resource('equipment-classes', EquipmentClassController::class);
     // EQUIPMENT STATUS
+    Route::get('equipment-statuses/export', [EquipmentStatusController::class, 'export'])->name('equipment-statuses.export');
     Route::resource('equipment-statuses', EquipmentStatusController::class);
 });

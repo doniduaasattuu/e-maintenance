@@ -9,8 +9,10 @@ import { tableCaption } from '@/lib/utils';
 import { MaterialType, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
 import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableMaterialTypeProps {
     materialTypes: {
@@ -40,11 +42,14 @@ export default function TableMaterialType({ materialTypes, withHeader = true, fi
                         <SearchBar value={filters?.query} tabIndex={1} />
                         <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
-                    {can.create_materialtype && <ButtonAdd tabIndex={3} route={route('material-types.create')} />}
+                    <ButtonGroup>
+                        {can.create_materialtype && <ButtonAdd tabIndex={3} route={route('material-types.create')} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('material-types.export'))} />
+                    </ButtonGroup>
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {materialTypes.data && materialTypes.data.length > 0 ? (
+                {materialTypes?.data && materialTypes?.data?.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>

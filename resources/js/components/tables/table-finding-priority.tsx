@@ -9,8 +9,10 @@ import { tableCaption } from '@/lib/utils';
 import { FindingPriority, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
 import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableFindingPriorityProps {
     findingPriorities: {
@@ -40,12 +42,15 @@ export default function TableFindingPriority({ findingPriorities, withHeader = t
                         <SearchBar value={filters?.query} tabIndex={1} />
                         <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
-                    {can.create_findingpriority && <ButtonAdd tabIndex={3} route={route('finding-priorities.create')} />}
+                    <ButtonGroup>
+                        {can.create_findingpriority && <ButtonAdd tabIndex={3} route={route('finding-priorities.create')} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('finding-priorities.export'))} />
+                    </ButtonGroup>
                 </div>
             )}
 
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {findingPriorities.data && findingPriorities.data.length > 0 ? (
+                {findingPriorities?.data && findingPriorities?.data?.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>

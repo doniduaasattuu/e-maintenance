@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InstallDismantleHistoryExport;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\InstallDismantleHistoryResource;
 use App\Models\Equipment;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InstallDismantleHistoryController extends Controller
 {
@@ -102,5 +104,17 @@ class InstallDismantleHistoryController extends Controller
     public function destroy(InstallDismantleHistory $installDismantleHistory)
     {
         // Gate::authorize('delete_installdismantlehistory');
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'start_date'             => $request->query('start_date'),
+            'end_date'               => $request->query('end_date'),
+            'functional_location_id' => $request->query('functional_location_id'),
+            'equipment_id'           => $request->query('equipment_id'),
+        ];
+
+        return Excel::download(new InstallDismantleHistoryExport($filters), 'Install_Dismantle_Histories_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

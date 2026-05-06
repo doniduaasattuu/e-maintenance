@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FindingStatusExport;
 use App\Http\Requests\FindingStatus\StoreFindingStatusRequest;
 use App\Http\Requests\FindingStatus\UpdateFindingStatusRequest;
 use App\Http\Resources\FindingStatusResource;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class FindingStatusController extends Controller
@@ -124,5 +126,10 @@ class FindingStatusController extends Controller
                 'description' => $e->getMessage() ?? 'Finding status is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new FindingStatusExport(), 'Finding_Statuses_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

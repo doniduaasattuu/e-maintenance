@@ -9,8 +9,10 @@ import { tableCaption } from '@/lib/utils';
 import { FindingType, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
 import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableFindingTypeProps {
     findingTypes: {
@@ -40,11 +42,14 @@ export default function TableFindingType({ findingTypes, withHeader = true, filt
                         <SearchBar value={filters?.query} tabIndex={1} />
                         <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
-                    {can.create_findingtype && <ButtonAdd tabIndex={3} route={route('finding-types.create')} />}
+                    <ButtonGroup>
+                        {can.create_findingtype && <ButtonAdd tabIndex={3} route={route('finding-types.create')} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('finding-types.export'))} />
+                    </ButtonGroup>
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {findingTypes.data && findingTypes.data.length > 0 ? (
+                {findingTypes?.data && findingTypes?.data?.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>

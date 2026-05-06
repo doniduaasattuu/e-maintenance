@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FindingTypeExport;
 use App\Http\Requests\FindingType\StoreFindingTypeRequest;
 use App\Http\Requests\FindingType\UpdateFindingTypeRequest;
 use App\Http\Resources\FindingTypeResource;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class FindingTypeController extends Controller
@@ -124,5 +126,10 @@ class FindingTypeController extends Controller
                 'description' => $e->getMessage() ?? 'Finding type is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new FindingTypeExport(), 'Finding_Types_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

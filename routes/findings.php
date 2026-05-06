@@ -32,14 +32,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('abnormalities/{finding}/close', [AbnormalityController::class, 'close'])->name('abnormalities.close');
 
     // FINDING TYPE
+    Route::get('finding-types/export', [FindingTypeController::class, 'export'])->name('finding-types.export');
     Route::resource('finding-types', FindingTypeController::class)->except(['show']);
     // FINDING ClAUSE
+    Route::get('finding-clauses/export', [FindingClauseController::class, 'export'])->name('finding-clauses.export');
     Route::resource('finding-clauses', FindingClauseController::class)->except(['show']);
     // FINDING STATUS
+    Route::get('finding-statuses/export', [FindingStatusController::class, 'export'])->name('finding-statuses.export');
     Route::resource('finding-statuses', FindingStatusController::class)->except(['show']);
     // FINDING PRIORITY
+    Route::get('finding-priorities/export', [FindingPriorityController::class, 'export'])->name('finding-priorities.export');
     Route::resource('finding-priorities', FindingPriorityController::class)->except(['show']);
     // CAUSE CODE
+    Route::get('cause-codes/export', [CauseCodeController::class, 'export'])->name('cause-codes.export');
     Route::resource('cause-codes', CauseCodeController::class)->except('show');
     Route::post('findings/{finding}/images', [FindingImageController::class, 'store'])->name('findings.images.store');
 

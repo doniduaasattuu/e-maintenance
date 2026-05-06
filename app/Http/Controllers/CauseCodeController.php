@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CauseCodeExport;
 use App\Http\Requests\CauseCode\StoreCauseCodeRequest;
 use App\Http\Requests\CauseCode\UpdateCauseCodeRequest;
 use App\Http\Resources\CauseCodeResource;
@@ -10,6 +11,7 @@ use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class CauseCodeController extends Controller
@@ -127,5 +129,11 @@ class CauseCodeController extends Controller
                 'description' => $e->getMessage() ?? 'Cause code is not found',
             ]);
         }
+    }
+
+
+    public function export(Request $request)
+    {
+        return Excel::download(new CauseCodeExport(), 'Cause_Codes_' . now()->format('Ymd_His') . '.xlsx');
     }
 }
