@@ -23,7 +23,9 @@ class EquipmentFindingController extends Controller
                 $equipment->findings()
                     ->withAllRelations()
                     ->latest()
+                    ->search($request)
                     ->paginate($perPage)
+                    ->withQueryString()
             ),
         ]);
     }

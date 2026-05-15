@@ -1,8 +1,8 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import { Equipment, Image, Material } from '@/types';
+import { Equipment, FunctionalLocation, Image, Material } from '@/types';
 import { router } from '@inertiajs/react';
-import { Maximize2, X } from 'lucide-react';
+import { ImageOff, Maximize2, X } from 'lucide-react';
 import { useState } from 'react';
 import { ActionConfirm } from './action-confirm';
 import Lightbox from './light-box';
@@ -10,7 +10,7 @@ import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 interface ImageCarouselProps {
-    model: Equipment | Material;
+    model: FunctionalLocation | Equipment | Material;
     canDelete: boolean;
 }
 
@@ -22,6 +22,27 @@ export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
     };
 
     const [selectedImage, setSelectedImage] = useState<Image | null>(null);
+
+    function ImageWithFallback({ src }: { src: string }) {
+        const [error, setError] = useState(false);
+
+        if (error) {
+            return (
+                <div className="text-muted-foreground flex h-full flex-col items-center justify-center p-4">
+                    <ImageOff className="mb-2 size-8 opacity-20" />
+                    <span className="text-xs font-medium tracking-wider uppercase opacity-50">Image Not Found</span>
+                </div>
+            );
+        }
+
+        return (
+            <img
+                src={src}
+                onError={() => setError(true)}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+            />
+        );
+    }
 
     return (
         <Carousel className="w-full">
@@ -49,10 +70,9 @@ export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
                             )}
                             <Card className="p-0" onClick={() => setSelectedImage(image)}>
                                 <CardContent className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-white/10">
-                                    <img
-                                        src={image.url}
-                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                    />
+                                    <span className="absolute top-2 left-2 z-10 text-sm">{`${images.length - index} of ${images.length}`}</span>
+                                    <ImageWithFallback src={image.url} />
+
                                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                                         <Maximize2 className="size-4 text-white" />
                                     </div>

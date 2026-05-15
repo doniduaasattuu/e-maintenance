@@ -161,6 +161,8 @@ export interface FunctionalLocation {
     description: string;
     created_at: string;
     updated_at: string;
+
+    images: null | Image[];
 }
 
 export interface EquipmentClass {

@@ -21,6 +21,7 @@ import { ButtonGroup } from '../ui/button-group';
 import { CommandSeparator } from '../ui/command';
 
 interface EquipmentTableProps {
+    mode?: 'standalone' | 'functional-location';
     equipments: {
         data: Equipment[];
         meta: Meta;
@@ -38,7 +39,14 @@ interface EquipmentTableProps {
     };
 }
 
-export default function TableEquipment({ equipments, equipmentClasses, equipmentStatuses, withHeader = true, filters }: EquipmentTableProps) {
+export default function TableEquipment({
+    mode = 'standalone',
+    equipments,
+    equipmentClasses,
+    equipmentStatuses,
+    withHeader = true,
+    filters,
+}: EquipmentTableProps) {
     const [open, setOpen] = React.useState<boolean>(false);
     const { can } = usePermissions();
     const meta = equipments.meta;
@@ -63,12 +71,14 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                             <FilterEquipmentStatus equipmentStatuses={equipmentStatuses?.data ?? []} />
                         </Filter>
                     </div>
-                    <ButtonGroup>
-                        {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={3} />}
-                        {equipments.data.length > 0 && (
-                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
-                        )}
-                    </ButtonGroup>
+                    {mode == 'standalone' && (
+                        <ButtonGroup>
+                            {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={3} />}
+                            {equipments.data.length > 0 && (
+                                <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                            )}
+                        </ButtonGroup>
+                    )}
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
@@ -82,7 +92,9 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                                 <TableHead className="text-muted-foreground">Class</TableHead>
                                 <TableHead className="text-muted-foreground">Functional Location</TableHead>
                                 <TableHead className="text-muted-foreground">Date</TableHead>
-                                {can.delete_equipment && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
+                                {mode == 'standalone' && can.delete_equipment && (
+                                    <TableHead className="text-muted-foreground w-10 text-right"></TableHead>
+                                )}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -132,7 +144,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                                             </div>
                                         </TableCell>
 
-                                        {can.delete_equipment && (
+                                        {mode == 'standalone' && can.delete_equipment && (
                                             <TableCell className="table-icon">
                                                 <ActionConfirm
                                                     action={() => handleDeleteEquipment(equipment.id)}

@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\EquipmentClassController;
 use App\Http\Controllers\EquipmentController;
-use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentMaterialController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\EquipmentFindingController;

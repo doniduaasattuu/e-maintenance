@@ -8,7 +8,9 @@ use App\Http\Requests\FunctionalLocation\StoreFunctionalLocationRequest;
 use App\Http\Requests\FunctionalLocation\UpdateFunctionalLocationRequest;
 use App\Http\Resources\CauseCodeResource;
 use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
+use App\Http\Resources\EquipmentStatusResource;
 use App\Http\Resources\FindingClauseResource;
 use App\Http\Resources\FindingPriorityResource;
 use App\Http\Resources\FindingResource;
@@ -17,10 +19,11 @@ use App\Http\Resources\FunctionalLocationResource;
 use App\Http\Resources\WorkCenterResource;
 use App\Models\CauseCode;
 use App\Models\Department;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentStatus;
 use App\Models\FindingClause;
 use App\Models\FindingPriority;
 use App\Models\FindingStatus;
-use App\Models\FindingType;
 use App\Models\FunctionalLocation;
 use App\Models\WorkCenter;
 use App\Traits\HasPerPagePreference;
@@ -97,39 +100,28 @@ class FunctionalLocationController extends Controller
         Gate::authorize('show_functionallocation');
 
         $perPage = $this->getPerPage($request);
-
-        $findingClauses = FindingClause::all();
-        $findingStatuses = FindingStatus::all();
-        $findingPriorities = FindingPriority::all();
-        $departments = Department::all();
-        $workCenters = WorkCenter::all();
-        $causeCodes = CauseCode::all();
+        $equipmentClass = EquipmentClass::all();
+        $equipmentStatus = EquipmentStatus::all();
 
         return Inertia::render('functional-location/show', [
             'functionalLocation' => new FunctionalLocationResource($functionalLocation),
-            'equipments' => EquipmentResource::collection($functionalLocation->equipments()->with([
-                'eclass',
-                'status',
-                'functionalLocation',
-            ])
-                ->latest()
-                ->paginate($perPage)),
-            'findings' => FindingResource::collection($functionalLocation
-                ->findings()
-                ->search($request)
-                ->withAllRelations()
-                ->latest()
-                ->paginate($perPage)),
+            'equipments' => EquipmentResource::collection(
+                $functionalLocation->equipments()->with([
+                    'eclass',
+                    'status',
+                    'functionalLocation',
+                ])
+                    ->search($request)
+                    ->paginate($perPage)
+                    ->withQueryString(),
+
+            ),
+            'equipmentClasses' => EquipmentClassResource::collection($equipmentClass),
+            'equipmentStatuses' => EquipmentStatusResource::collection($equipmentStatus),
             'filters' => [
                 'query' => $request->query('query'),
                 'per_page' => (string) $perPage,
             ],
-            'findingClauses' => FindingClauseResource::collection($findingClauses),
-            'findingStatuses' => FindingStatusResource::collection($findingStatuses),
-            'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
-            'departments' => DepartmentResource::collection($departments),
-            'workCenters' => WorkCenterResource::collection($workCenters),
-            'causeCodes' => CauseCodeResource::collection($causeCodes),
         ]);
     }
 
@@ -198,16 +190,5 @@ class FunctionalLocationController extends Controller
         ];
 
         return Excel::download(new FunctionalLocationExport($filters), 'Functional_Locations_' . now()->format('Ymd_His') . '.xlsx');
-    }
-
-    public function functionalLocationFindingExport(Request $request)
-    {
-        $filters = [
-            'functional_location_id'   => $request->query('functional_location_id'),
-            'start_date'     => $request->query('start_date'),
-            'end_date'       => $request->query('end_date'),
-        ];
-
-        return Excel::download(new FindingExport($filters), 'Functional_Location_Findings_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

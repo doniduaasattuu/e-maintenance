@@ -47,7 +47,7 @@ export default function AssetLayout({ children, className, sidebarNavItems }: Pr
     return (
         <div className="space-y-6 px-4 py-6">
             <div className="flex flex-col space-y-6 lg:flex-row lg:space-x-12">
-                <aside className={cn('max-w-xl lg:w-48', sidebarNavItems.length > 4 ? 'pt-2' : undefined)}>
+                <aside className="max-w-xl lg:w-48">
                     <nav
                         ref={scrollContainerRef}
                         className={cn(

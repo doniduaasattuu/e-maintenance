@@ -326,7 +326,7 @@ export default function TableFinding({
                                 <TableHead className="text-muted-foreground hidden min-w-50 md:table-cell">Rectification Action</TableHead>
                                 <TableHead className="text-muted-foreground min-w-30">Created</TableHead>
                                 {isArchived && <TableHead className="text-muted-foreground min-w-30">Closed</TableHead>}
-                                <TableHead className="text-muted-foreground min-w-30">Department</TableHead>
+                                <TableHead className="text-muted-foreground min-w-20">Dept.</TableHead>
                                 <TableHead className="text-muted-foreground"></TableHead>
                             </TableRow>
                         </TableHeader>
@@ -422,7 +422,7 @@ export default function TableFinding({
                                         <div className="flex flex-col gap-1">
                                             <Tooltip>
                                                 <TooltipTrigger className="truncate text-left text-xs">
-                                                    {truncateText(finding.department?.name ?? 'N/A', 15)}
+                                                    {truncateText(finding.department?.code ?? 'N/A', 15)}
                                                 </TooltipTrigger>
                                                 <TooltipContent>{finding.department?.name}</TooltipContent>
                                             </Tooltip>

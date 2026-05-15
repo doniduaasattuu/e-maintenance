@@ -42,4 +42,9 @@ class FunctionalLocation extends Model
     {
         return $this->hasMany(Finding::class, 'functional_location_id', 'id');
     }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }
