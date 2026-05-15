@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
-import usePermissions from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
 import { Finding } from '@/types';
 import { router } from '@inertiajs/react';
@@ -52,7 +51,6 @@ const handleEditFinding = (id: number, type: 'AUD' | 'ABN') => {
 };
 
 export default function CardFindingDetail({ finding, type }: Props) {
-    const { can } = usePermissions();
     const isMobile = useIsMobile();
     const isClosed: boolean = finding.data.status?.name.toLocaleLowerCase() == 'closed';
 
@@ -158,7 +156,7 @@ export default function CardFindingDetail({ finding, type }: Props) {
                     </Ul>
                 </div>
             </CardContent>
-            {(can.edit_abnormality || can.edit_audit) && (
+            {finding.data.can.update && (
                 <CardFooter>
                     <Button onClick={() => handleEditFinding(finding.data.id, type)} variant="outline" size="sm" className="w-full">
                         <Edit className="size-4" /> Edit

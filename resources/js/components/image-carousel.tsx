@@ -2,12 +2,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { Equipment, FunctionalLocation, Image, Material } from '@/types';
 import { router } from '@inertiajs/react';
-import { ImageOff, Maximize2, X } from 'lucide-react';
+import { ImageOff, Maximize2, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { ActionConfirm } from './action-confirm';
 import Lightbox from './light-box';
-import { Button } from './ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 interface ImageCarouselProps {
     model: FunctionalLocation | Equipment | Material;
@@ -39,7 +37,7 @@ export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
             <img
                 src={src}
                 onError={() => setError(true)}
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
         );
     }
@@ -57,14 +55,17 @@ export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
                                         title={`Delete this image?`}
                                         description="This action will remove the image permanently. This action can't be undone."
                                     >
-                                        <Button variant="destructive" size={'icon'}>
+                                        <div className="rounded bg-red-500 p-1 transition duration-300 hover:bg-red-700">
+                                            <Trash2 size={20} className="text-white" />
+                                        </div>
+                                        {/* <Button variant="destructive" size={'sm'}>
                                             <Tooltip>
                                                 <TooltipTrigger>
-                                                    <X />
+                                                    <X className="text-white" />
                                                 </TooltipTrigger>
                                                 <TooltipContent>Delete image</TooltipContent>
                                             </Tooltip>
-                                        </Button>
+                                        </Button> */}
                                     </ActionConfirm>
                                 </div>
                             )}
