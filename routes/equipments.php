@@ -6,12 +6,17 @@ use App\Http\Controllers\EquipmentInspectionFormController;
 use App\Http\Controllers\EquipmentMaterialController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\EquipmentFindingController;
+use App\Http\Controllers\EquipmentTrendController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\RepositoryEquipmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    // TREND
+    Route::get('equipments/{equipment}/trend', [EquipmentTrendController::class, 'show'])->name('equipments.trend');
+    // TREND EXPORT
+    // Route::get('equipments/{equipment}/trend/export', [EquipmentTrendController::class, 'export'])->name('equipments.trend.export');
 
     // EXPORT
     Route::get('equipments/export', [EquipmentController::class, 'export'])->name('equipments.export');
@@ -38,8 +43,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('equipments.materials.update');
         // HISTORY
         Route::get('{equipment}/history', [InstallDismantleHistoryController::class, 'show'])->name('equipments.history');
-        // INSPECTION
-        Route::get('{equipment}/inspection', [EquipmentInspectionFormController::class, 'create'])->name('inspections.create');
     });
 
     // EQUIPMENT CLASS

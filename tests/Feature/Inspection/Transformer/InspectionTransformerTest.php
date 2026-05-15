@@ -1,23 +1,32 @@
 <?php
 
 use App\Models\Equipment;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentInspectionForm;
+use App\Models\EquipmentStatus;
 use App\Models\InspectionTransformer;
 use App\Models\QualityRating;
 use Database\Seeders\EquipmentClassSeeder;
+use Database\Seeders\EquipmentStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed([EquipmentClassSeeder::class, QualityRatingSeeder::class]);
+    $this->seed([EquipmentClassSeeder::class, EquipmentStatusSeeder::class, QualityRatingSeeder::class]);
 
     $this->generatePermissions(['Inspection', 'InspectionTransformer']);
 });
 
 test('store fails validation', function () {
     $inspector = createInspectorUser();
+
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 3,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $response = $this
@@ -42,6 +51,7 @@ test('store fails validation', function () {
             'temperature_winding' => 's',
             'desicant_level_id' => 's',
             'inspected_by' => 's',
+            'has_abnormality' => '0'
         ]);
 
     $response->assertSessionHasErrors([
@@ -68,8 +78,13 @@ test('store fails validation', function () {
 
 test('store success validation', function () {
     $inspector = createInspectorUser();
+
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 3,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $response = $this
@@ -94,6 +109,7 @@ test('store success validation', function () {
             'temperature_winding' => 66,
             'desicant_level_id' => 1,
             'inspected_by' => $inspector->id,
+            'has_abnormality' => '0',
         ]);
 
     $response->assertSessionHasNoErrors([
@@ -122,9 +138,26 @@ test('update fails validation', function () {
     $inspector = createInspectorUser();
     $inspectionTransformer = InspectionTransformer::factory()->create();
 
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionTransformer->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
+
     $response = $this
         ->actingAs($inspector)
-        ->patch(route('inspectiontransformers.update', $inspectionTransformer->id), [
+        ->patch(route('inspectiontransformers.update', [
+            'equipment' => $equipment->id,
+            'inspectionTransformer' => $inspectionTransformer->id
+        ]), [
             'is_operational' => 's',
             'is_clean' => 'g',
             'primary_current_r' => 's',
@@ -171,10 +204,30 @@ test('update inspection transformer success validation', function () {
     $inspector = createInspectorUser();
     $inspectionTransformer = InspectionTransformer::factory()->create();
 
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionTransformer->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
+
     $response = $this
-        ->from(route('inspectiontransformers.edit', $inspectionTransformer->id))
+        ->from(route('inspectiontransformers.edit', [
+            'equipment' => $equipment->id,
+            'inspectionTransformer' => $inspectionTransformer->id
+        ]))
         ->actingAs($inspector)
-        ->patch(route('inspectiontransformers.update', $inspectionTransformer->id), [
+        ->patch(route('inspectiontransformers.update', [
+            'equipment' => $equipment->id,
+            'inspectionTransformer' => $inspectionTransformer->id
+        ]), [
             'is_operational' => 1,
             'is_clean' => 1,
             'primary_current_r' => 150,

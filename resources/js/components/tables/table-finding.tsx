@@ -213,9 +213,7 @@ export default function TableFinding({
     }
 
     function handleShowFinding(finding: Finding) {
-        if (isStandAlone(finding)) {
-            router.get(route(`${getEndpointFromFinding(finding)}.show`, finding.id));
-        }
+        router.get(route(`${getEndpointFromFinding(finding)}.show`, finding.id));
     }
 
     function handleEditFinding(finding: Finding) {
@@ -329,7 +327,7 @@ export default function TableFinding({
                                 <TableHead className="text-muted-foreground min-w-30">Created</TableHead>
                                 {isArchived && <TableHead className="text-muted-foreground min-w-30">Closed</TableHead>}
                                 <TableHead className="text-muted-foreground min-w-30">Department</TableHead>
-                                {mode == 'standalone' && <TableHead className="text-muted-foreground"></TableHead>}
+                                <TableHead className="text-muted-foreground"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -437,7 +435,7 @@ export default function TableFinding({
                                         </div>
                                     </TableCell>
 
-                                    {mode === 'standalone' && (
+                                    {mode === 'standalone' ? (
                                         <TableCell className="text-right">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
@@ -486,6 +484,12 @@ export default function TableFinding({
                                                     )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
+                                        </TableCell>
+                                    ) : (
+                                        <TableCell className="text-right">
+                                            <Button onClick={() => handleShowFinding(finding)} variant="ghost" size="icon" className="size-8">
+                                                <Info />
+                                            </Button>
                                         </TableCell>
                                     )}
                                 </TableRow>

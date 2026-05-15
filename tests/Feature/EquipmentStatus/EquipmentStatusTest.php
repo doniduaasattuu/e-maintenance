@@ -3,7 +3,6 @@
 use App\Models\EquipmentStatus;
 use Database\Seeders\EquipmentStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Permission;
 
 uses(RefreshDatabase::class);
 
@@ -96,13 +95,11 @@ test('update equipment status successfully', function () {
         ->actingAs(createAdminUser())
         ->from(route('equipment-statuses.edit', $equipmentStatus->id))
         ->put(route('equipment-statuses.update', $equipmentStatus->id), [
-            'code' => 'MTC',
             'name' => 'MAINTENANCE',
         ])
         ->assertRedirect(route('equipment-statuses.edit', $equipmentStatus->id));
 
     $equipmentStatus->refresh();
-    expect($equipmentStatus->code)->toBe('MTC');
     expect($equipmentStatus->name)->toBe('MAINTENANCE');
 });
 
@@ -113,11 +110,10 @@ test('update equipment status fails validation', function () {
         ->actingAs(createAdminUser())
         ->from(route('equipment-statuses.edit', $equipmentStatus->id))
         ->patch(route('equipment-statuses.update', $equipmentStatus->id), [
-            'code' => '',
             'name' => '',
             'description' => '',
         ])
-        ->assertSessionHasErrors(['code', 'name']);
+        ->assertSessionHasErrors(['name']);
 });
 
 test('can delete equipment status', function () {

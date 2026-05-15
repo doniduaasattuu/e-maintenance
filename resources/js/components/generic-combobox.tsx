@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -13,12 +11,14 @@ interface GenericComboboxProps<T> {
     valueKey: keyof T; // Field untuk ID/Value (e.g., 'id', 'code')
     labelKey: keyof T; // Field untuk tampilan (e.g., 'name', 'title')
     tabIndex?: number;
+    disabled?: boolean;
     placeholder?: string;
     emptyMessage?: string;
     className?: string;
     onChange?: (value: string) => void;
     defaultValue?: string;
     id?: string;
+    align?: 'start' | 'end' | 'center';
 }
 
 export function GenericCombobox<T>({
@@ -28,16 +28,18 @@ export function GenericCombobox<T>({
     placeholder = 'Pilih data...',
     emptyMessage = 'Data not found.',
     className,
+    disabled = false,
     onChange,
     defaultValue = '',
     tabIndex,
     id,
+    align = 'start',
 }: GenericComboboxProps<T>) {
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState(defaultValue);
 
     const selectedLabel = React.useMemo(() => {
-        const selected = options.find((opt) => String(opt[valueKey]) === value);
+        const selected = options?.find((opt) => String(opt[valueKey]) === value);
         return selected ? String(selected[labelKey]) : placeholder;
     }, [value, options, valueKey, labelKey, placeholder]);
 
@@ -45,6 +47,7 @@ export function GenericCombobox<T>({
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
+                    disabled={disabled}
                     id={id}
                     tabIndex={tabIndex}
                     size={'sm'}
@@ -57,7 +60,7 @@ export function GenericCombobox<T>({
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="p-0" align="end">
+            <PopoverContent className="p-0" align={align}>
                 <Command>
                     <CommandInput className="w-full text-base sm:text-sm" placeholder={`Search ${placeholder.toLowerCase()}...`} />
                     <CommandList>

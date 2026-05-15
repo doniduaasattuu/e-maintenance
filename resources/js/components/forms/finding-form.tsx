@@ -1,17 +1,20 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
 import { cn } from '@/lib/utils';
 import { CauseCode, Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation, WorkCenter } from '@/types';
-import { Info } from 'lucide-react';
-import React, { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
+import { ChangeEvent, FormEventHandler, useState } from 'react';
 import ButtonSubmit from '../button-submit';
-import CompressingDescription from '../compressing-description';
+import CauseCodeSelect from '../cause-code-select';
+import DepartmentSelect from '../department-select';
 import EquipmentSelect from '../equipment-select';
+import FindingClauseSelect from '../finding-clause-select';
+import FindingDescriptionInput from '../finding-description-input';
+import FindingPhotoInput from '../finding-photo-input';
+import FindingPrioritySelect from '../finding-priority-select';
+import FindingStatusSelect from '../finding-status-select';
 import FunctionalLocationSelect from '../functional-location-select';
-import { GenericCombobox } from '../generic-combobox';
 import RequiredLabel from '../required-label';
-import { Field, FieldDescription, FieldError, FieldLabel } from '../ui/field';
-import { Input } from '../ui/input';
-import { Textarea } from '../ui/textarea';
+import { Field, FieldError, FieldLabel } from '../ui/field';
+import WorkCenterSelect from '../work-center-select';
 
 interface FindingFormProps {
     functionalLocation?: FunctionalLocation | null;
@@ -85,9 +88,7 @@ export default function FindingForm({
     isEditing = false,
     type,
 }: FindingFormProps) {
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
     const compressImage = useImageCompressor();
-    const [errorCompression, setErrorCompression] = useState<string | null>(null);
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
 
     const disabledAudit =
@@ -119,59 +120,10 @@ export default function FindingForm({
         } catch (error) {
             if (error instanceof Error) {
                 console.error('Compression failed: ', error);
-                setErrorCompression(error.message);
             }
         } finally {
             setIsCompressing(false);
         }
-    };
-
-    const FieldClause = () => {
-        return (
-            <Field>
-                <FieldLabel htmlFor="finding_clause_id">
-                    Finding Clause
-                    <RequiredLabel />
-                </FieldLabel>
-                <GenericCombobox
-                    tabIndex={1}
-                    id="finding_clause_id"
-                    valueKey="id"
-                    labelKey="description"
-                    options={findingClauses?.data}
-                    defaultValue={data.finding_clause_id}
-                    placeholder="Clause"
-                    onChange={(e) => {
-                        setData('finding_clause_id', e);
-                    }}
-                />
-                <FieldError>{errors.finding_clause_id}</FieldError>
-            </Field>
-        );
-    };
-
-    const FieldCauseCode = () => {
-        return (
-            <Field>
-                <FieldLabel htmlFor="cause_code_id">
-                    Cause Code
-                    <RequiredLabel />
-                </FieldLabel>
-                <GenericCombobox
-                    tabIndex={2}
-                    id="cause_code_id"
-                    valueKey="id"
-                    labelKey="description"
-                    options={causeCodes?.data}
-                    defaultValue={data.cause_code_id}
-                    placeholder="Cause Code"
-                    onChange={(e) => {
-                        setData('cause_code_id', e);
-                    }}
-                />
-                <FieldError>{errors.cause_code_id}</FieldError>
-            </Field>
-        );
     };
 
     findingClauses.data = findingClauses.data.filter((e: FindingClause) => {
@@ -182,70 +134,66 @@ export default function FindingForm({
         <form onSubmit={submit} className={cn('space-y-6', className)}>
             {type == 'ABN' ? (
                 <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
-                    <FieldClause />
-                    <FieldCauseCode />
+                    <FindingClauseSelect
+                        clauses={findingClauses?.data}
+                        value={data.finding_clause_id}
+                        onChange={(val) => setData('finding_clause_id', val)}
+                        error={errors.finding_clause_id}
+                        tabIndex={1}
+                        disabled={processing}
+                    />
+                    <CauseCodeSelect
+                        causeCodes={causeCodes?.data}
+                        value={data.cause_code_id}
+                        onChange={(val) => setData('cause_code_id', val)}
+                        error={errors.cause_code_id}
+                        disabled={processing}
+                    />
                 </div>
             ) : (
-                <FieldClause />
+                <FindingClauseSelect
+                    clauses={findingClauses.data}
+                    value={data.finding_clause_id}
+                    onChange={(val) => setData('finding_clause_id', val)}
+                    error={errors.finding_clause_id}
+                    tabIndex={1}
+                    disabled={processing}
+                />
             )}
 
-            <Field>
-                <FieldLabel htmlFor="description">
-                    Description
-                    <RequiredLabel />
-                </FieldLabel>
-                <Textarea
-                    className="text-sm"
-                    disabled={processing}
-                    tabIndex={3}
-                    id="description"
-                    onChange={(val: React.ChangeEvent<HTMLTextAreaElement>) => setData('description', val.target.value)}
-                    value={data.description}
-                    placeholder="Explain the issue clearly (e.g., 'Oil leak detected on the main pump seal, dripping approx. 1 drop/sec. Requires seal replacement.')"
-                />
-                <FieldError>{errors.description}</FieldError>
-            </Field>
+            <FindingDescriptionInput
+                value={data.description}
+                onChange={(val) => setData('description', val)}
+                error={errors.description}
+                tabIndex={3}
+                placeholder={
+                    type === 'ABN'
+                        ? "Describe the machine abnormality (e.g., 'Unusual vibration on motor bearing...')"
+                        : 'Describe the audit finding in detail...'
+                }
+                disabled={processing}
+            />
 
             <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
-                <Field>
-                    <FieldLabel htmlFor="department_id">
-                        Department
-                        {type == 'ABN' && <RequiredLabel />}
-                    </FieldLabel>
-                    <GenericCombobox
-                        tabIndex={4}
-                        id="department_id"
-                        valueKey="id"
-                        labelKey="name"
-                        options={departments?.data}
-                        defaultValue={data.department_id}
-                        placeholder="Department"
-                        onChange={(e) => {
-                            setData('department_id', e);
-                        }}
-                    />
-                    <FieldError>{errors.department_id}</FieldError>
-                </Field>
+                <DepartmentSelect
+                    departments={departments?.data}
+                    value={data.department_id}
+                    onChange={(val) => setData('department_id', val)}
+                    error={errors.department_id}
+                    tabIndex={4}
+                    disabled={processing}
+                    required={type === 'ABN'}
+                />
 
-                <Field>
-                    <FieldLabel htmlFor="work_center_id">
-                        Work Center
-                        {type == 'ABN' && <RequiredLabel />}
-                    </FieldLabel>
-                    <GenericCombobox
-                        tabIndex={5}
-                        id="work_center_id"
-                        valueKey="id"
-                        labelKey="name"
-                        options={workCenters?.data}
-                        defaultValue={data.work_center_id}
-                        placeholder="Work Center"
-                        onChange={(e) => {
-                            setData('work_center_id', e);
-                        }}
-                    />
-                    <FieldError>{errors.work_center_id}</FieldError>
-                </Field>
+                <WorkCenterSelect
+                    workCenters={workCenters?.data}
+                    value={data.work_center_id}
+                    onChange={(val) => setData('work_center_id', val)}
+                    error={errors.work_center_id}
+                    tabIndex={5}
+                    disabled={processing}
+                    required={type === 'ABN'}
+                />
             </div>
 
             <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
@@ -285,77 +233,33 @@ export default function FindingForm({
             </div>
 
             <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
-                <Field>
-                    <FieldLabel htmlFor="finding_status_id">
-                        Finding Status
-                        <RequiredLabel />
-                    </FieldLabel>
-                    <GenericCombobox
-                        tabIndex={8}
-                        id="finding_status_id"
-                        valueKey="id"
-                        labelKey="name"
-                        options={findingStatuses?.data}
-                        defaultValue={data.finding_status_id}
-                        placeholder="Finding Status"
-                        onChange={(e) => {
-                            setData('finding_status_id', e);
-                        }}
-                    />
-                    <FieldError>{errors.finding_status_id}</FieldError>
-                </Field>
-                <Field>
-                    <FieldLabel htmlFor="finding_priority_id">
-                        Finding Priority
-                        <RequiredLabel />
-                    </FieldLabel>
-                    <GenericCombobox
-                        tabIndex={9}
-                        id="finding_priority_id"
-                        valueKey="id"
-                        labelKey="label"
-                        options={findingPriorities?.data}
-                        defaultValue={data.finding_priority_id}
-                        placeholder="Finding Priority"
-                        onChange={(e) => {
-                            setData('finding_priority_id', e);
-                        }}
-                    />
-                    <FieldError>{errors.finding_priority_id}</FieldError>
-                </Field>
+                <FindingStatusSelect
+                    statuses={findingStatuses?.data}
+                    value={data.finding_status_id}
+                    onChange={(val) => setData('finding_status_id', val)}
+                    error={errors.finding_status_id}
+                    tabIndex={8}
+                    disabled={processing}
+                />
+                <FindingPrioritySelect
+                    priorities={findingPriorities?.data}
+                    value={data.finding_priority_id}
+                    onChange={(val) => setData('finding_priority_id', val)}
+                    error={errors.finding_priority_id}
+                    tabIndex={9}
+                    disabled={processing}
+                />
             </div>
 
             {!isEditing && (
-                <Field>
-                    <FieldLabel htmlFor="images">
-                        Photos
-                        <RequiredLabel />
-                    </FieldLabel>
-                    <Input
-                        tabIndex={10}
-                        type="file"
-                        id="images"
-                        multiple
-                        ref={fileInputRef}
-                        disabled={processing || isCompressing}
-                        onChange={handleFileChange}
-                        accept=".jpg,.jpeg,.png,.webp"
-                    />
-                    <FieldError>{errors.images || errorCompression}</FieldError>
-                    <FieldDescription>
-                        <div className="space-y-1">
-                            <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                                <Info className="text-muted-foreground size-3 shrink-0" />
-                                Upload between 2 to 5 photos.
-                            </div>
-                            <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                                <Info className="text-muted-foreground size-3 shrink-0" />
-                                Images will be automatically compressed to optimize upload speed and storage.
-                            </div>
-                        </div>
-                    </FieldDescription>
-                    {isCompressing && <CompressingDescription />}
-                </Field>
+                <FindingPhotoInput
+                    images={data.images}
+                    onFileChange={handleFileChange}
+                    error={errors.images}
+                    isCompressing={isCompressing}
+                    disabled={processing}
+                    tabIndex={10}
+                />
             )}
 
             {canSubmit && (

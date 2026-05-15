@@ -1,5 +1,4 @@
 import FindingForm, { FindingFormData } from '@/components/forms/finding-form';
-import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
@@ -56,7 +55,6 @@ export default function FindingEdit({
         },
     ];
 
-    const { can } = usePermissions();
     const closedStatusId = findingStatuses?.data?.find((s) => s.name.toLowerCase() === 'closed')?.id?.toString() ?? finding.data.status?.id;
 
     const { data, setData, post, errors, processing } = useForm<Required<FindingFormData>>({
@@ -96,7 +94,7 @@ export default function FindingEdit({
                     processing={processing}
                     recentlySuccessful={false}
                     submit={submit}
-                    canSubmit={can.update_abnormality}
+                    canSubmit={finding.data.can.update}
                     buttonLabel="Update"
                     successMessage="Updated"
                     className="max-w-xl"

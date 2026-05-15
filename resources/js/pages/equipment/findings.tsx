@@ -71,7 +71,7 @@ export default function EquipmentFindings({
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Finding" />
 
-            <EquipmentLayout equipment={equipment.data} className="w-full space-y-4">
+            <EquipmentLayout equipment={equipment.data} className="w-full max-w-7xl space-y-4">
                 <HeadingSmall title={abnormalityTitle + ' & ' + auditTitle} description="Historical records of abnormalities and audit results." />
                 <TableFinding
                     asset={equipment.data}

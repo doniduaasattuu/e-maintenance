@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Heading from '@/components/heading';
+import HeadingSmall from '@/components/heading-small';
 import usePermissions from '@/hooks/use-permissions';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export default function TableLayout({ title, className, action, children, module
             <div className="mb-8 flex items-center justify-between gap-2 align-top">
                 <div>
                     <Head title={title ? title : module.label} />
-                    <Heading
+                    <HeadingSmall
                         title={
                             title
                                 ? title

@@ -1,10 +1,21 @@
 import InspectionMotorForm, { InspectionMotorData } from '@/components/forms/inspection-motor-form';
+import HeadingSmall from '@/components/heading-small';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
-import TableLayout from '@/layouts/table/layout';
+import EquipmentLayout from '@/layouts/equipment/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, Equipment, InspectionMotor } from '@/types';
-import { useForm } from '@inertiajs/react';
+import {
+    BreadcrumbItem,
+    CauseCode,
+    Department,
+    Equipment,
+    FindingClause,
+    FindingPriority,
+    FindingStatus,
+    InspectionMotor,
+    WorkCenter,
+} from '@/types';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface Props {
@@ -14,9 +25,36 @@ interface Props {
     equipment: {
         data: Equipment;
     };
+    findingClauses: {
+        data: FindingClause[];
+    };
+    findingStatuses: {
+        data: FindingStatus[];
+    };
+    findingPriorities: {
+        data: FindingPriority[];
+    };
+    causeCodes: {
+        data: CauseCode[];
+    };
+    departments: {
+        data: Department[];
+    };
+    workCenters: {
+        data: WorkCenter[];
+    };
 }
 
-export default function InspectionMotorEdit({ inspectionMotor, equipment }: Props) {
+export default function InspectionMotorEdit({
+    inspectionMotor,
+    equipment,
+    findingClauses,
+    findingStatuses,
+    findingPriorities,
+    causeCodes,
+    departments,
+    workCenters,
+}: Props) {
     const { can } = usePermissions();
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
@@ -25,17 +63,17 @@ export default function InspectionMotorEdit({ inspectionMotor, equipment }: Prop
             href: route('equipments.index'),
         },
         {
-            title: inspectionMotor.data.inspectionForm.equipment.code,
-            href: route('equipments.show', inspectionMotor.data.inspectionForm.equipment.id),
+            title: equipment.data.code,
+            href: route('equipments.show', equipment.data.id),
         },
         {
             title: 'Inspection',
-            href: route('inspectionmotors.edit', inspectionMotor.data.inspectionForm.equipment?.id),
+            href: '#',
         },
     ];
 
     const { data, setData, patch, processing, errors, recentlySuccessful } = useForm<Required<InspectionMotorData>>({
-        equipment_id: inspectionMotor.data.inspectionForm.equipment.id,
+        equipment_id: equipment.data.id,
         is_operational: inspectionMotor.data.is_operational.toString(),
         is_clean: inspectionMotor.data.is_clean.toString(),
         number_of_greasing: inspectionMotor.data.number_of_greasing,
@@ -51,18 +89,41 @@ export default function InspectionMotorEdit({ inspectionMotor, equipment }: Prop
         vibration_ndeh: inspectionMotor.data.vibration_ndeh ?? '',
         vibration_ndef: inspectionMotor.data.vibration_ndef ?? '',
         is_noisy_nde: inspectionMotor.data.is_noisy_nde.toString(),
+        has_abnormality: false,
+        finding_clause_id: '',
+        cause_code_id: '',
+        description: '',
+        department_id: '',
+        work_center_id: '',
+        finding_status_id: '1',
+        finding_priority_id: '1',
+        images: [],
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(route('inspectionmotors.update', inspectionMotor.data.id), {
-            preserveScroll: true,
-        });
+        patch(
+            route('inspectionmotors.update', {
+                equipment: equipment.data.id,
+                inspectionMotor: inspectionMotor.data.id,
+            }),
+            {
+                preserveScroll: true,
+            },
+        );
     };
+
+    const equipmentClassName = equipment.data.eclass?.name.toLocaleLowerCase();
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} moduleKey={'INSPECTION_MOTOR'} className="max-w-xl">
+            <EquipmentLayout equipment={equipment.data} className="max-w-xl space-y-6">
+                <Head title="Inspection" />
+
+                <HeadingSmall
+                    title={`${equipmentClassName ? equipmentClassName.toUpperCase() : 'Inspection'}`}
+                    description="Equipment inspection update form."
+                />
                 <InspectionMotorForm
                     data={data}
                     errors={errors}
@@ -73,8 +134,14 @@ export default function InspectionMotorEdit({ inspectionMotor, equipment }: Prop
                     showSuccessMessage={true}
                     isEditing={true}
                     canSubmit={can.update_inspection && can.update_inspectionmotor}
+                    findingClauses={findingClauses}
+                    findingStatuses={findingStatuses}
+                    findingPriorities={findingPriorities}
+                    causeCodes={causeCodes}
+                    departments={departments}
+                    workCenters={workCenters}
                 />
-            </TableLayout>
+            </EquipmentLayout>
         </AppLayout>
     );
 }

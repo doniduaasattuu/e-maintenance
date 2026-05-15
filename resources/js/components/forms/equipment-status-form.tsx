@@ -16,6 +16,7 @@ interface EquipmentStatusFormProps {
     buttonLabel: string;
     successMessage?: string;
     className?: string;
+    isEditing?: boolean;
 }
 
 export type EquipmentStatusFormData = {
@@ -35,6 +36,7 @@ export default function EquipmentStatusForm({
     buttonLabel,
     successMessage,
     className,
+    isEditing = false,
 }: EquipmentStatusFormProps) {
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
@@ -51,7 +53,7 @@ export default function EquipmentStatusForm({
                     onChange={(e) => setData('code', e.target.value.toUpperCase())}
                     placeholder="INST"
                     required
-                    disabled={processing}
+                    disabled={processing || isEditing}
                     autoComplete="code"
                 />
                 <FieldError>{errors.code}</FieldError>

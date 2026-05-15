@@ -37,6 +37,12 @@ export default function EquipmentLayout({ equipment, className, children }: Prop
             permission: 'create_inspection',
         },
         {
+            title: 'Trend',
+            href: route('equipments.trend', equipment.id),
+            icon: null,
+            permission: 'show_equipment',
+        },
+        {
             title: 'Image',
             href: route('images.equipment.index', {
                 id: equipment.id,

@@ -1,10 +1,21 @@
 import InspectionTransformerForm, { InspectionTransformerData } from '@/components/forms/inspection-transformer-form';
+import HeadingSmall from '@/components/heading-small';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
-import TableLayout from '@/layouts/table/layout';
+import EquipmentLayout from '@/layouts/equipment/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, Equipment, InspectionTransformer } from '@/types';
-import { useForm } from '@inertiajs/react';
+import {
+    BreadcrumbItem,
+    CauseCode,
+    Department,
+    Equipment,
+    FindingClause,
+    FindingPriority,
+    FindingStatus,
+    InspectionTransformer,
+    WorkCenter,
+} from '@/types';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface Props {
@@ -14,9 +25,36 @@ interface Props {
     equipment: {
         data: Equipment;
     };
+    findingClauses: {
+        data: FindingClause[];
+    };
+    findingStatuses: {
+        data: FindingStatus[];
+    };
+    findingPriorities: {
+        data: FindingPriority[];
+    };
+    causeCodes: {
+        data: CauseCode[];
+    };
+    departments: {
+        data: Department[];
+    };
+    workCenters: {
+        data: WorkCenter[];
+    };
 }
 
-export default function InspectionTransformerEdit({ inspectionTransformer, equipment }: Props) {
+export default function InspectionTransformerEdit({
+    inspectionTransformer,
+    equipment,
+    findingClauses,
+    findingStatuses,
+    findingPriorities,
+    causeCodes,
+    departments,
+    workCenters,
+}: Props) {
     const { can } = usePermissions();
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
@@ -25,17 +63,17 @@ export default function InspectionTransformerEdit({ inspectionTransformer, equip
             href: route('equipments.index'),
         },
         {
-            title: inspectionTransformer.data.inspectionForm.equipment.code,
-            href: route('equipments.show', inspectionTransformer.data.inspectionForm.equipment.id),
+            title: equipment.data.code,
+            href: route('equipments.show', equipment.data.id),
         },
         {
             title: 'Inspection',
-            href: route('inspectiontransformers.edit', inspectionTransformer.data.inspectionForm.equipment?.id),
+            href: '#',
         },
     ];
 
     const { data, setData, patch, processing, errors, recentlySuccessful } = useForm<Required<InspectionTransformerData>>({
-        equipment_id: inspectionTransformer.data.inspectionForm.equipment.id,
+        equipment_id: equipment.data.id,
         is_operational: inspectionTransformer.data.is_operational.toString(),
         is_clean: inspectionTransformer.data.is_clean.toString(),
         primary_current_r: inspectionTransformer.data.primary_current_r ?? '',
@@ -53,18 +91,41 @@ export default function InspectionTransformerEdit({ inspectionTransformer, equip
         temperature_oil: inspectionTransformer.data.temperature_oil?.toString() ?? '',
         temperature_winding: inspectionTransformer.data.temperature_winding?.toString() ?? '',
         desicant_level_id: inspectionTransformer.data.desicant_level_id?.toString() ?? '',
+        has_abnormality: false,
+        finding_clause_id: '',
+        cause_code_id: '',
+        description: '',
+        department_id: '',
+        work_center_id: '',
+        finding_status_id: '1',
+        finding_priority_id: '1',
+        images: [],
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(route('inspectiontransformers.update', inspectionTransformer.data.id), {
-            preserveScroll: true,
-        });
+        patch(
+            route('inspectiontransformers.update', {
+                equipment: equipment.data.id,
+                inspectionTransformer: inspectionTransformer.data.id,
+            }),
+            {
+                preserveScroll: true,
+            },
+        );
     };
+
+    const equipmentClassName = equipment.data.eclass?.name.toLocaleLowerCase();
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableLayout title={equipment.data.code} moduleKey={'INSPECTION_TRANSFORMER'} className="max-w-xl">
+            <Head title="Inspection" />
+
+            <EquipmentLayout equipment={equipment.data} className="max-w-xl space-y-6">
+                <HeadingSmall
+                    title={`${equipmentClassName ? equipmentClassName.toUpperCase() : 'Inspection'}`}
+                    description="Equipment inspection update form."
+                />
                 <InspectionTransformerForm
                     data={data}
                     setData={setData}
@@ -75,8 +136,14 @@ export default function InspectionTransformerEdit({ inspectionTransformer, equip
                     showSuccessMessage={true}
                     isEditing={true}
                     canSubmit={can.update_inspection && can.update_inspectiontransformer}
+                    findingClauses={findingClauses}
+                    findingStatuses={findingStatuses}
+                    findingPriorities={findingPriorities}
+                    causeCodes={causeCodes}
+                    departments={departments}
+                    workCenters={workCenters}
                 />
-            </TableLayout>
+            </EquipmentLayout>
         </AppLayout>
     );
 }

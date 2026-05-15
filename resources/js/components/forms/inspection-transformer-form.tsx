@@ -1,12 +1,15 @@
-import { FormEventHandler } from 'react';
+import { CauseCode, Department, FindingClause, FindingPriority, FindingStatus, WorkCenter } from '@/types';
+import React, { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
-import InputError from '../input-error';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+import RequiredLabel from '../required-label';
+import { Field, FieldLabel } from '../ui/field';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
-import { Separator } from '../ui/separator';
+import AbnormalityFormSection, { AbnormalityData } from './abnormality-form-section';
+import BinarySelect from './binary-select';
+import HeaderSmall from './header-small';
+import NumericalInput from './numerical-input';
 
-export type InspectionTransformerData = {
+export interface InspectionTransformerData extends AbnormalityData {
     equipment_id: number;
     is_operational: string;
     is_clean: string;
@@ -25,7 +28,7 @@ export type InspectionTransformerData = {
     temperature_oil: string;
     temperature_winding: string;
     desicant_level_id: string;
-};
+}
 
 export type InspectionTransformerFormProps = {
     submit: FormEventHandler;
@@ -37,7 +40,41 @@ export type InspectionTransformerFormProps = {
     showSuccessMessage?: boolean;
     isEditing?: boolean;
     canSubmit: boolean;
+    findingClauses: {
+        data: FindingClause[];
+    };
+    findingStatuses: {
+        data: FindingStatus[];
+    };
+    findingPriorities: {
+        data: FindingPriority[];
+    };
+    causeCodes: {
+        data: CauseCode[];
+    };
+    departments: {
+        data: Department[];
+    };
+    workCenters: {
+        data: WorkCenter[];
+    };
+    showAssignmentFields?: boolean;
 };
+
+const nullWhenStopped: Array<keyof InspectionTransformerData> = [
+    'primary_current_r',
+    'primary_current_s',
+    'primary_current_t',
+    'primary_voltage_r',
+    'primary_voltage_s',
+    'primary_voltage_t',
+    'secondary_current_r',
+    'secondary_current_s',
+    'secondary_current_t',
+    'secondary_voltage_r',
+    'secondary_voltage_s',
+    'secondary_voltage_t',
+];
 
 export default function InspectionTransformerForm({
     submit,
@@ -49,318 +86,280 @@ export default function InspectionTransformerForm({
     showSuccessMessage = false,
     isEditing = false,
     canSubmit,
+    findingClauses,
+    findingStatuses,
+    findingPriorities,
+    causeCodes,
+    departments,
+    workCenters,
+    showAssignmentFields = false,
 }: InspectionTransformerFormProps) {
+    React.useEffect(() => {
+        if (data.is_operational == '0') {
+            for (const field of nullWhenStopped) {
+                setData(field, '');
+            }
+        }
+    }, [data.is_operational, setData]);
+
+    const abnormalitiesField = data.has_abnormality
+        ? data.finding_clause_id == '' ||
+          data.cause_code_id == '' ||
+          data.description == '' ||
+          data.finding_status_id == '' ||
+          data.finding_priority_id == '' ||
+          data.images == null
+        : false;
+
+    const requiredIfField =
+        data.is_operational == '1'
+            ? data.primary_current_r == '' ||
+              data.primary_current_s == '' ||
+              data.primary_current_t == '' ||
+              data.primary_voltage_r == '' ||
+              data.primary_voltage_s == '' ||
+              data.primary_voltage_t == '' ||
+              data.secondary_current_r == '' ||
+              data.secondary_current_s == '' ||
+              data.secondary_current_t == '' ||
+              data.secondary_voltage_r == '' ||
+              data.secondary_voltage_s == '' ||
+              data.secondary_voltage_t == ''
+            : false;
+
     return (
         <form className="space-y-6" onSubmit={submit}>
-            <div className="grid grid-cols-2 gap-2">
-                <div className="grid gap-2">
-                    <Label htmlFor="equipment_class_id">Operated</Label>
-                    <Select disabled={processing} onValueChange={(e) => setData('is_operational', e)} value={data.is_operational}>
-                        <SelectTrigger tabIndex={1} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Operating status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Equipment is operational</SelectLabel>
-                                <SelectItem value="0">No</SelectItem>
-                                <SelectItem value="1">Yes</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <InputError message={errors.is_operational} />
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="equipment_class_id">Cleanliness</Label>
-                    <Select disabled={processing} onValueChange={(e) => setData('is_clean', e)} value={data.is_clean}>
-                        <SelectTrigger tabIndex={2} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Operating status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Equipment is clean</SelectLabel>
-                                <SelectItem value="0">No</SelectItem>
-                                <SelectItem value="1">Yes</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <InputError message={errors.is_clean} />
-                </div>
-            </div>
-
-            <Separator className="mb-5" />
-
-            <div className="space-y-5">
-                <div className="text-muted-foreground text-sm font-semibold">Primary</div>
+            <div className={data.has_abnormality ? 'grid grid-cols-1 items-start gap-8 xl:grid-cols-2' : 'block'}>
                 <div className="space-y-6">
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="grid gap-2">
-                            <Label htmlFor="primary_current_r">Current R</Label>
-                            <Input
-                                id="primary_current_r"
-                                type="text"
-                                tabIndex={3}
-                                autoComplete="primary_current_r"
-                                inputMode="numeric"
-                                value={data.primary_current_r}
-                                placeholder="A"
-                                onChange={(e) => setData('primary_current_r', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.primary_current_r} />
-                        </div>
+                    <div className="grid grid-cols-2 gap-2">
+                        <BinarySelect
+                            errorMessage={errors.is_operational}
+                            onChange={(value) => setData('is_operational', value)}
+                            processing={processing}
+                            required={true}
+                            value={data.is_operational}
+                            tabIndex={1}
+                            id="is_operational"
+                            label="Operated"
+                            selectLabel="Equipment is operational"
+                            placeholder="Is the equipment operational?"
+                        />
+                        <BinarySelect
+                            errorMessage={errors.is_clean}
+                            onChange={(value) => setData('is_clean', value)}
+                            processing={processing}
+                            required={true}
+                            value={data.is_clean}
+                            tabIndex={2}
+                            id="is_clean"
+                            label="Cleanliness"
+                            selectLabel="Equipment is clean"
+                            placeholder="Is the equipment clean?"
+                        />
+                    </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="primary_current_s">Current S</Label>
-                            <Input
-                                id="primary_current_s"
-                                type="text"
-                                tabIndex={4}
-                                autoComplete="primary_current_s"
-                                inputMode="numeric"
-                                value={data.primary_current_s}
-                                placeholder="A"
-                                onChange={(e) => setData('primary_current_s', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.primary_current_s} />
-                        </div>
+                    <div className="space-y-6">
+                        <HeaderSmall title="Primary" />
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-3 gap-2">
+                                {Array.from([
+                                    {
+                                        field: 'primary_current_r',
+                                        label: 'Pri. Curr. R',
+                                    },
+                                    {
+                                        field: 'primary_current_s',
+                                        label: 'Pri. Curr. S',
+                                    },
+                                    {
+                                        field: 'primary_current_t',
+                                        label: 'Pri. Curr. T',
+                                    },
+                                ] as const).map((item, index) => (
+                                    <NumericalInput
+                                        key={item.field}
+                                        id={item.field}
+                                        label={item.label}
+                                        tabIndex={3 + index}
+                                        placeholder="A"
+                                        value={data[item.field]}
+                                        onChange={(value) => setData(item.field, value)}
+                                        errorMessage={errors[item.field]}
+                                        disabled={processing || data.is_operational === '0'}
+                                        required={data.is_operational === '1'}
+                                    />
+                                ))}
+                            </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="primary_current_t">Current T</Label>
-                            <Input
-                                id="primary_current_t"
-                                type="text"
-                                tabIndex={5}
-                                autoComplete="primary_current_t"
-                                inputMode="numeric"
-                                value={data.primary_current_t}
-                                placeholder="A"
-                                onChange={(e) => setData('primary_current_t', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.primary_current_t} />
+                            <div className="grid grid-cols-3 gap-2">
+                                {Array.from([
+                                    {
+                                        field: 'primary_voltage_r',
+                                        label: 'Pri. Volt. R',
+                                    },
+                                    {
+                                        field: 'primary_voltage_s',
+                                        label: 'Pri. Volt. S',
+                                    },
+                                    {
+                                        field: 'primary_voltage_t',
+                                        label: 'Pri. Volt. T',
+                                    },
+                                ] as const).map((item, index) => (
+                                    <NumericalInput
+                                        key={item.field}
+                                        id={item.field}
+                                        label={item.label}
+                                        tabIndex={4 + index}
+                                        placeholder="V"
+                                        value={data[item.field]}
+                                        onChange={(value) => setData(item.field, value)}
+                                        errorMessage={errors[item.field]}
+                                        disabled={processing || data.is_operational === '0'}
+                                        required={data.is_operational === '1'}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="grid gap-2">
-                            <Label htmlFor="primary_voltage_r">Voltage R</Label>
-                            <Input
-                                id="primary_voltage_r"
-                                type="text"
-                                tabIndex={6}
-                                autoComplete="primary_voltage_r"
-                                inputMode="numeric"
-                                value={data.primary_voltage_r}
-                                placeholder="V"
-                                onChange={(e) => setData('primary_voltage_r', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.primary_voltage_r} />
-                        </div>
+                    <div className="space-y-6">
+                        <HeaderSmall title="Secondary" />
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-3 gap-2">
+                                {Array.from([
+                                    {
+                                        field: 'secondary_current_r',
+                                        label: 'Sec. Curr. R',
+                                    },
+                                    {
+                                        field: 'secondary_current_s',
+                                        label: 'Sec. Curr. S',
+                                    },
+                                    {
+                                        field: 'secondary_current_t',
+                                        label: 'Sec. Curr. T',
+                                    },
+                                ] as const).map((item, index) => (
+                                    <NumericalInput
+                                        key={item.field}
+                                        id={item.field}
+                                        label={item.label}
+                                        tabIndex={7 + index}
+                                        placeholder="A"
+                                        value={data[item.field]}
+                                        onChange={(value) => setData(item.field, value)}
+                                        errorMessage={errors[item.field]}
+                                        disabled={processing || data.is_operational === '0'}
+                                        required={data.is_operational === '1'}
+                                    />
+                                ))}
+                            </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="primary_voltage_s">Voltage S</Label>
-                            <Input
-                                id="primary_voltage_s"
-                                type="text"
-                                tabIndex={7}
-                                autoComplete="primary_voltage_s"
-                                inputMode="numeric"
-                                value={data.primary_voltage_s}
-                                placeholder="V"
-                                onChange={(e) => setData('primary_voltage_s', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.primary_voltage_s} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="primary_voltage_t">Voltage S</Label>
-                            <Input
-                                id="primary_voltage_t"
-                                type="text"
-                                tabIndex={8}
-                                autoComplete="primary_voltage_t"
-                                inputMode="numeric"
-                                value={data.primary_voltage_t}
-                                placeholder="V"
-                                onChange={(e) => setData('primary_voltage_t', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.primary_voltage_t} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <Separator className="mb-5" />
-
-            <div className="space-y-5">
-                <div className="text-muted-foreground text-sm font-semibold">Secondary</div>
-                <div className="space-y-6">
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="grid gap-2">
-                            <Label htmlFor="secondary_current_r">Current R</Label>
-                            <Input
-                                id="secondary_current_r"
-                                type="text"
-                                tabIndex={9}
-                                autoComplete="secondary_current_r"
-                                inputMode="numeric"
-                                value={data.secondary_current_r}
-                                placeholder="A"
-                                onChange={(e) => setData('secondary_current_r', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.secondary_current_r} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="secondary_current_s">Current S</Label>
-                            <Input
-                                id="secondary_current_s"
-                                type="text"
-                                tabIndex={10}
-                                autoComplete="secondary_current_s"
-                                inputMode="numeric"
-                                value={data.secondary_current_s}
-                                placeholder="A"
-                                onChange={(e) => setData('secondary_current_s', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.secondary_current_s} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="secondary_current_t">Current T</Label>
-                            <Input
-                                id="secondary_current_t"
-                                type="text"
-                                tabIndex={11}
-                                autoComplete="secondary_current_t"
-                                inputMode="numeric"
-                                value={data.secondary_current_t}
-                                placeholder="A"
-                                onChange={(e) => setData('secondary_current_t', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.secondary_current_t} />
+                            <div className="grid grid-cols-3 gap-2">
+                                {Array.from([
+                                    {
+                                        field: 'secondary_voltage_r',
+                                        label: 'Sec. Volt. R',
+                                    },
+                                    {
+                                        field: 'secondary_voltage_s',
+                                        label: 'Sec. Volt. S',
+                                    },
+                                    {
+                                        field: 'secondary_voltage_t',
+                                        label: 'Sec. Volt. T',
+                                    },
+                                ] as const).map((item, index) => (
+                                    <NumericalInput
+                                        key={item.field}
+                                        id={item.field}
+                                        label={item.label}
+                                        tabIndex={10 + index}
+                                        placeholder="V"
+                                        value={data[item.field]}
+                                        onChange={(value) => setData(item.field, value)}
+                                        errorMessage={errors[item.field]}
+                                        disabled={processing || data.is_operational === '0'}
+                                        required={data.is_operational === '1'}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="grid gap-2">
-                            <Label htmlFor="secondary_voltage_r">Voltage R</Label>
-                            <Input
-                                id="secondary_voltage_r"
-                                type="text"
-                                tabIndex={12}
-                                autoComplete="secondary_voltage_r"
-                                inputMode="numeric"
-                                value={data.secondary_voltage_r}
-                                placeholder="V"
-                                onChange={(e) => setData('secondary_voltage_r', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.secondary_voltage_r} />
-                        </div>
+                    <div className="space-y-6">
+                        <HeaderSmall title="Others" />
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="secondary_voltage_s">Voltage S</Label>
-                            <Input
-                                id="secondary_voltage_s"
-                                type="text"
+                        <div className="grid grid-cols-3 gap-2">
+                            <NumericalInput
+                                id="temperature_oil"
+                                label="Oil Temp."
                                 tabIndex={13}
-                                autoComplete="secondary_voltage_s"
-                                inputMode="numeric"
-                                value={data.secondary_voltage_s}
-                                placeholder="V"
-                                onChange={(e) => setData('secondary_voltage_s', e.target.value)}
+                                placeholder="°C"
+                                value={data.temperature_oil}
+                                onChange={(value) => setData('temperature_oil', value)}
+                                errorMessage={errors.temperature_oil}
                                 disabled={processing}
+                                required={true}
                             />
-                            <InputError message={errors.secondary_voltage_s} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="secondary_voltage_t">Voltage S</Label>
-                            <Input
-                                id="secondary_voltage_t"
-                                type="text"
+                            <NumericalInput
+                                id="temperature_winding"
+                                label="Winding Temp."
                                 tabIndex={14}
-                                autoComplete="secondary_voltage_t"
-                                inputMode="numeric"
-                                value={data.secondary_voltage_t}
-                                placeholder="V"
-                                onChange={(e) => setData('secondary_voltage_t', e.target.value)}
+                                placeholder="°C"
+                                value={data.temperature_winding}
+                                onChange={(value) => setData('temperature_winding', value)}
+                                errorMessage={errors.temperature_winding}
                                 disabled={processing}
+                                required={true}
                             />
-                            <InputError message={errors.secondary_voltage_t} />
+                            <Field>
+                                <FieldLabel htmlFor="desicant_level">
+                                    Desicant Level
+                                    <RequiredLabel />
+                                </FieldLabel>
+                                <Select disabled={processing} onValueChange={(e) => setData('desicant_level_id', e)} value={data.desicant_level_id}>
+                                    <SelectTrigger tabIndex={15} className="truncate overflow-hidden whitespace-nowrap">
+                                        <SelectValue placeholder="Good" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel className="text-muted-foreground">Desicant level quality</SelectLabel>
+                                            <SelectItem value="1">Good</SelectItem>
+                                            <SelectItem value="2">Satisfactory</SelectItem>
+                                            <SelectItem value="3">Acceptable</SelectItem>
+                                            <SelectItem value="4">Unacceptable</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </Field>
                         </div>
                     </div>
                 </div>
+
+                {data.has_abnormality && (
+                    <AbnormalityFormSection
+                        data={data}
+                        causeCodes={causeCodes.data}
+                        departments={departments.data}
+                        workCenters={workCenters.data}
+                        findingClauses={findingClauses.data}
+                        findingPriorities={findingPriorities.data}
+                        findingStatuses={findingStatuses.data}
+                        processing={processing}
+                        setData={setData}
+                        errors={errors}
+                        showAssignmentFields={showAssignmentFields}
+                        startTabIndex={16}
+                    />
+                )}
             </div>
-
-            <Separator className="mb-5" />
-
-            <div className="grid grid-cols-1 gap-2 space-y-6 sm:grid-cols-3 sm:space-y-0">
-                <div className="grid grid-cols-2 gap-2 sm:col-span-2">
-                    <div className="grid gap-2">
-                        <Label htmlFor="temperature_oil">Oil temp</Label>
-                        <Input
-                            id="temperature_oil"
-                            type="text"
-                            tabIndex={15}
-                            autoComplete="temperature_oil"
-                            inputMode="numeric"
-                            value={data.temperature_oil}
-                            placeholder="&deg;C"
-                            onChange={(e) => setData('temperature_oil', e.target.value)}
-                            disabled={processing}
-                        />
-                        <InputError message={errors.temperature_oil} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="temperature_winding">Winding temp</Label>
-                        <Input
-                            id="temperature_winding"
-                            type="text"
-                            tabIndex={16}
-                            autoComplete="temperature_winding"
-                            inputMode="numeric"
-                            value={data.temperature_winding}
-                            placeholder="&deg;C"
-                            onChange={(e) => setData('temperature_winding', e.target.value)}
-                            disabled={processing}
-                        />
-                        <InputError message={errors.temperature_winding} />
-                    </div>
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="desicant_level_id">Desicant</Label>
-                    <Select disabled={processing} onValueChange={(e) => setData('desicant_level_id', e)} value={data.desicant_level_id}>
-                        <SelectTrigger tabIndex={17} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Good" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Desicant level quality</SelectLabel>
-                                <SelectItem value="1">Good</SelectItem>
-                                <SelectItem value="2">Satisfactory</SelectItem>
-                                <SelectItem value="3">Acceptable</SelectItem>
-                                <SelectItem value="4">Unacceptable</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <InputError message={errors.desicant_level_id} />
-                </div>
-            </div>
-
             {canSubmit && (
                 <ButtonSubmit
                     processing={processing}
-                    tabIndex={18}
-                    disabled={processing}
+                    tabIndex={24}
+                    disabled={processing || data.temperature_oil == '' || data.temperature_winding == '' || requiredIfField || abnormalitiesField}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={isEditing ? 'Updated' : 'Saved'}
                     showSuccessMessage={showSuccessMessage}

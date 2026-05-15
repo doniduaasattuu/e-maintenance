@@ -1,22 +1,31 @@
 <?php
 
 use App\Models\Equipment;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentInspectionForm;
+use App\Models\EquipmentStatus;
 use App\Models\InspectionPanel;
 use Database\Seeders\EquipmentClassSeeder;
+use Database\Seeders\EquipmentStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed([EquipmentClassSeeder::class]);
+    $this->seed([EquipmentClassSeeder::class, EquipmentStatusSeeder::class]);
 
     $this->generatePermissions(['Inspection', 'InspectionPanel']);
 });
 
 test('store fails validation', function () {
     $inspector = createInspectorUser();
+
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 1,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $response = $this
@@ -57,8 +66,13 @@ test('store fails validation', function () {
 
 test('store success validation', function () {
     $inspector = createInspectorUser();
+
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 1,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $response = $this
@@ -78,6 +92,7 @@ test('store success validation', function () {
             'current_s' => 220,
             'current_t' => 330,
             'inspected_by' => $inspector->id,
+            'has_abnormality' => '0',
         ]);
 
     $response->assertSessionHasNoErrors([
@@ -101,10 +116,26 @@ test('store success validation', function () {
 test('update fails validation', function () {
     $inspector = createInspectorUser();
     $inspectionPanel = InspectionPanel::factory()->create();
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionPanel->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
 
     $response = $this
         ->actingAs($inspector)
-        ->patch(route('inspectionpanels.update', $inspectionPanel->id), [
+        ->patch(route('inspectionpanels.update', [
+            'equipment' => $equipment->id,
+            'inspectionPanel' => $inspectionPanel->id,
+        ]), [
             'is_operational' => 's',
             'is_clean' => 'g',
             'temperature_incoming_r' => 's',
@@ -140,10 +171,26 @@ test('update fails validation', function () {
 test('update inspection panel success validation', function () {
     $inspector = createInspectorUser();
     $inspectionPanel = InspectionPanel::factory()->create();
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionPanel->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
 
     $response = $this
         ->actingAs($inspector)
-        ->patch(route('inspectionpanels.update', $inspectionPanel->id), [
+        ->patch(route('inspectionpanels.update', [
+            'equipment' => $equipment->id,
+            'inspectionPanel' => $inspectionPanel->id,
+        ]), [
             'is_operational' => 1,
             'is_clean' => 1,
             'temperature_incoming_r' => 30,

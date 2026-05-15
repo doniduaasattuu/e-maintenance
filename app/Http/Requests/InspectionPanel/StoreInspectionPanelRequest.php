@@ -3,6 +3,7 @@
 namespace App\Http\Requests\InspectionPanel;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreInspectionPanelRequest extends FormRequest
 {
@@ -14,6 +15,13 @@ class StoreInspectionPanelRequest extends FormRequest
         return true;
     }
 
+    // protected function prepareForValidation()
+    // {
+    //     $this->merge([
+    //         'has_abnormality' => filter_var($this->has_abnormality, FILTER_VALIDATE_BOOLEAN),
+    //     ]);
+    // }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,20 +30,50 @@ class StoreInspectionPanelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'equipment_id' => ['nullable', 'exists:App\Models\Equipment,id'],
+            // Data Inspeksi Utama
+            'equipment_id' => ['required', 'exists:equipments,id'],
             'is_operational' => ['nullable', 'boolean'],
             'is_clean' => ['nullable', 'boolean'],
-            'temperature_incoming_r' =>  ['nullable', 'numeric', 'max:150'],
-            'temperature_incoming_s' =>  ['nullable', 'numeric', 'max:150'],
-            'temperature_incoming_t' =>  ['nullable', 'numeric', 'max:150'],
-            'temperature_cabinet' =>  ['nullable', 'numeric', 'max:150'],
-            'temperature_outgoing_r' =>  ['nullable', 'numeric', 'max:150'],
-            'temperature_outgoing_s' =>  ['nullable', 'numeric', 'max:150'],
-            'temperature_outgoing_t' =>  ['nullable', 'numeric', 'max:150'],
-            'current_r' =>  ['nullable', 'numeric', 'max:9999,99'],
-            'current_s' =>  ['nullable', 'numeric', 'max:9999,99'],
-            'current_t' =>  ['nullable', 'numeric', 'max:9999,99'],
+            'temperature_incoming_r' => ['nullable', 'numeric', 'max:150'],
+            'temperature_incoming_s' => ['nullable', 'numeric', 'max:150'],
+            'temperature_incoming_t' => ['nullable', 'numeric', 'max:150'],
+            'temperature_cabinet' => ['required_if:is_operational,1', 'nullable', 'numeric', 'max:150'],
+            'temperature_outgoing_r' => ['nullable', 'numeric', 'max:150'],
+            'temperature_outgoing_s' => ['nullable', 'numeric', 'max:150'],
+            'temperature_outgoing_t' => ['nullable', 'numeric', 'max:150'],
+            'current_r' => ['nullable', 'numeric', 'max:9999'],
+            'current_s' => ['nullable', 'numeric', 'max:9999'],
+            'current_t' => ['nullable', 'numeric', 'max:9999'],
             'inspected_by' => ['nullable', 'exists:App\Models\User,id'],
+
+            // Field Kontrol
+            'has_abnormality' => ['required', 'boolean'],
+
+            // Data Abnormality (Hanya wajib jika has_abnormality = true)
+            'finding_clause_id'    => ['required_if:has_abnormality,true', 'nullable', 'exists:finding_clauses,id'],
+            'finding_status_id'   => ['required_if:has_abnormality,true', 'nullable', 'exists:finding_statuses,id'],
+            'finding_priority_id' => ['required_if:has_abnormality,true', 'nullable', 'exists:finding_priorities,id'],
+            'cause_code_id'       => ['required_if:has_abnormality,true', 'nullable', 'exists:cause_codes,id'],
+            'department_id'       => ['required_if:has_abnormality,true', 'nullable', 'exists:departments,id'],
+            'work_center_id'      => ['required_if:has_abnormality,true', 'nullable', 'exists:work_centers,id'],
+            'description'         => ['required_if:has_abnormality,true', 'nullable', 'string', 'min:10'],
+
+            // Images
+            'images' => [
+                Rule::requiredIf(filter_var($this->has_abnormality, FILTER_VALIDATE_BOOLEAN)),
+                'nullable',
+                'array',
+                'min:1',
+                'max:5'
+            ],
+            'images.*'            => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'temperature_cabinet.required_if' => 'The temperature cabinet field is required when equipment is operational.',
         ];
     }
 }

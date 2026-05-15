@@ -1,10 +1,10 @@
 import InspectionTransformerForm, { InspectionTransformerData } from '@/components/forms/inspection-transformer-form';
-import HeadingSmall from '@/components/heading-small';
+import FoundAbnormalityCheckbox from '@/components/found-abnormality-checkbox';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, Equipment } from '@/types';
+import { BreadcrumbItem, CauseCode, Department, Equipment, FindingClause, FindingPriority, FindingStatus, WorkCenter } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -12,10 +12,36 @@ interface Props {
     equipment: {
         data: Equipment;
     };
+    findingClauses: {
+        data: FindingClause[];
+    };
+    findingStatuses: {
+        data: FindingStatus[];
+    };
+    findingPriorities: {
+        data: FindingPriority[];
+    };
+    causeCodes: {
+        data: CauseCode[];
+    };
+    departments: {
+        data: Department[];
+    };
+    workCenters: {
+        data: WorkCenter[];
+    };
 }
 
-export default function InspectionTransformerCreate({ equipment }: Props) {
-    const { can } = usePermissions();
+export default function InspectionTransformerCreate({
+    equipment,
+    findingClauses,
+    findingStatuses,
+    findingPriorities,
+    causeCodes,
+    departments,
+    workCenters,
+}: Props) {
+    const { user, can } = usePermissions();
     const equipmentClassName = equipment.data.eclass?.name.toLocaleLowerCase();
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
@@ -29,7 +55,7 @@ export default function InspectionTransformerCreate({ equipment }: Props) {
         },
         {
             title: 'Inspection',
-            href: route('inspections.create', equipment.data.id),
+            href: '#',
         },
     ];
 
@@ -52,6 +78,15 @@ export default function InspectionTransformerCreate({ equipment }: Props) {
         temperature_oil: '',
         temperature_winding: '',
         desicant_level_id: '1',
+        has_abnormality: false,
+        finding_clause_id: '',
+        cause_code_id: '',
+        description: '',
+        department_id: user.department_id ? user.department_id.toString() : '',
+        work_center_id: user.work_center_id ? user.work_center_id.toString() : '',
+        finding_status_id: '1',
+        finding_priority_id: '1',
+        images: null,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -59,25 +94,7 @@ export default function InspectionTransformerCreate({ equipment }: Props) {
         post(route('inspectiontransformers.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                reset(
-                    'is_operational',
-                    'is_clean',
-                    'primary_current_r',
-                    'primary_current_s',
-                    'primary_current_t',
-                    'primary_voltage_r',
-                    'primary_voltage_s',
-                    'primary_voltage_t',
-                    'secondary_current_r',
-                    'secondary_current_s',
-                    'secondary_current_t',
-                    'secondary_voltage_r',
-                    'secondary_voltage_s',
-                    'secondary_voltage_t',
-                    'temperature_oil',
-                    'temperature_winding',
-                    'desicant_level_id',
-                );
+                reset();
             },
         });
     };
@@ -86,9 +103,13 @@ export default function InspectionTransformerCreate({ equipment }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Inspection" />
 
-            <EquipmentLayout equipment={equipment.data} className="max-w-xl">
+            <EquipmentLayout equipment={equipment.data} className={data.has_abnormality ? 'w-full max-w-6xl' : 'w-full max-w-xl'}>
                 <div className="space-y-6">
-                    <HeadingSmall title="Inspection" description={`Equipment inspection form ${equipmentClassName}.`} />
+                    <FoundAbnormalityCheckbox
+                        equipmentClassName={equipmentClassName}
+                        hasAbnormality={data.has_abnormality}
+                        onChecked={(checked) => setData('has_abnormality', checked)}
+                    />
                     <InspectionTransformerForm
                         data={data}
                         setData={setData}
@@ -97,6 +118,12 @@ export default function InspectionTransformerCreate({ equipment }: Props) {
                         recentlySuccessful={recentlySuccessful}
                         submit={submit}
                         canSubmit={can.store_inspection && can.store_inspectiontransformer}
+                        findingClauses={findingClauses}
+                        findingStatuses={findingStatuses}
+                        findingPriorities={findingPriorities}
+                        causeCodes={causeCodes}
+                        departments={departments}
+                        workCenters={workCenters}
                     />
                 </div>
             </EquipmentLayout>
