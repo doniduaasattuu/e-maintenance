@@ -155,7 +155,7 @@ class InspectionAirConditionerController extends Controller
 
         return Inertia::render('inspection/air-conditioner/edit', [
             'inspectionAirConditioner' => new InspectionAirConditionResource($inspectionAirConditioner),
-            'equipment' => new EquipmentResource($equipment->load('eclass')),
+            'equipment' => new EquipmentResource($equipment->load(['eclass', 'status'])),
         ]);
     }
 

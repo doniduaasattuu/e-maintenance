@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InspectionPanel\StoreInspectionPanelRequest;
 use App\Http\Requests\InspectionPanel\UpdateInspectionPanelRequest;
 use App\Http\Resources\EquipmentResource;
+use App\Http\Resources\InspectionMotorResource;
 use App\Http\Resources\InspectionPanelResource;
 use App\Models\Equipment;
 use App\Models\Finding;
@@ -160,7 +161,7 @@ class InspectionPanelController extends Controller
 
         return Inertia::render('inspection/panel/edit', [
             'inspectionPanel' => new InspectionPanelResource($inspectionPanel),
-            'equipment' => new EquipmentResource($equipment->load('eclass'))
+            'equipment' => new EquipmentResource($equipment->load(['eclass', 'status'])),
         ]);
     }
 

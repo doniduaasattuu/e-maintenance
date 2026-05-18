@@ -121,6 +121,7 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
                             value={data.rectification_action}
                             placeholder="Explain how the issue was fixed (e.g., 'Cleaned the electrical terminals, tightened all loose bolts to 50Nm, and verified stable temperature via thermal scan.')"
                         />
+
                         <FieldError>{errors.rectification_action}</FieldError>
                     </Field>
 
@@ -189,6 +190,17 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
                             onChange={handleFileChange}
                             accept=".jpg,.jpeg,.png,.webp"
                         />
+
+                        {data.images && data.images.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                                {Array.from(data.images).map((file, index) => (
+                                    <div key={index} className="relative size-16 overflow-hidden rounded border bg-slate-100">
+                                        <img src={URL.createObjectURL(file)} alt="preview" className="size-full object-cover" />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                         <FieldError>{errors.images || errorCompression}</FieldError>
                         <FieldDescription>
                             <div className="space-y-1">

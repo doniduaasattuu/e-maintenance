@@ -115,7 +115,7 @@ export default function InspectionAirConditionerEdit({
                 <HeadingSmall
                     title={`${equipmentClassName ? equipmentClassName.toUpperCase() : 'Inspection'}`}
                     description="Equipment inspection update form."
-                />{' '}
+                />
                 <InspectionAirConditionerForm
                     data={data}
                     errors={errors}

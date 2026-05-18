@@ -22,7 +22,7 @@ export default function FunctionalLocationImage({ functionalLocation }: Function
     const { can } = usePermissions();
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'FunctionalLocations',
+            title: 'Functional Locations',
             href: route('functional-locations.index'),
         },
         {

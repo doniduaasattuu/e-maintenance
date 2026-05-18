@@ -11,12 +11,10 @@ use App\Models\Finding;
 use App\Models\FindingImage;
 use App\Models\FindingType;
 use App\Models\InspectionTransformer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use Throwable;
 
 class InspectionTransformerController extends Controller
 {
@@ -165,7 +163,7 @@ class InspectionTransformerController extends Controller
 
         return Inertia::render('inspection/transformer/edit', [
             'inspectionTransformer' => new InspectionTransformerResource($inspectionTransformer),
-            'equipment' => new EquipmentResource($equipment->load('eclass'))
+            'equipment' => new EquipmentResource($equipment->load(['eclass', 'status'])),
         ]);
     }
 

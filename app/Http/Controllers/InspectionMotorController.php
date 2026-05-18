@@ -162,7 +162,7 @@ class InspectionMotorController extends Controller
 
         return Inertia::render('inspection/motor/edit', [
             'inspectionMotor' => new InspectionMotorResource($inspectionMotor),
-            'equipment' => new EquipmentResource($equipment->load('eclass'))
+            'equipment' => new EquipmentResource($equipment->load(['eclass', 'status'])),
         ]);
     }
 

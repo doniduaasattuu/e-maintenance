@@ -65,8 +65,18 @@ export default function EquipmentLayout({ equipment, className, children }: Prop
         },
     ];
 
+    const filteredSidebarNavItems: NavItem[] = sidebarNavItems.filter((item) => {
+        if (item.title == 'Inspection') {
+            if (equipment.status?.code === 'INST') {
+                return item;
+            }
+        } else {
+            return item;
+        }
+    });
+
     return (
-        <AssetLayout sidebarNavItems={sidebarNavItems} className={className}>
+        <AssetLayout sidebarNavItems={filteredSidebarNavItems} className={className}>
             {children}
         </AssetLayout>
     );
