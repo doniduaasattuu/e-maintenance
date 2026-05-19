@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
+    Route::post('findings/{finding}/image', [FindingImageController::class, 'update'])->name('findings.images.update');
+    Route::delete('findings/{finding}/image/{image}', [FindingImageController::class, 'destroy'])->name('finding.image.delete');
+
     Route::get('findings/archived/export', [ArchivedFindingController::class, 'export'])->name('findings.archived.export');
 
     Route::get('findings/archived', [ArchivedFindingController::class, 'index'])->name('findings.archived');
@@ -26,10 +29,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('audits', AuditController::class)->except('update');
     Route::post('audits/{finding}', [AuditController::class, 'update'])->name('audits.update');
     Route::post('audits/{finding}/close', [AuditController::class, 'close'])->name('audits.close');
+    Route::get('audits/{finding}/images/edit', [FindingImageController::class, 'edit'])->name('audits.images.edit');
+
     // ABNORMALITY
     Route::resource('abnormalities', AbnormalityController::class)->except('update');
     Route::post('abnormalities/{finding}', [AbnormalityController::class, 'update'])->name('abnormalities.update');
     Route::post('abnormalities/{finding}/close', [AbnormalityController::class, 'close'])->name('abnormalities.close');
+    Route::get('abnormalities/{finding}/images/edit', [FindingImageController::class, 'edit'])->name('abnormalities.images.edit');
 
     // FINDING TYPE
     Route::get('finding-types/export', [FindingTypeController::class, 'export'])->name('finding-types.export');

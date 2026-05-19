@@ -1,6 +1,6 @@
 import FindingForm, { FindingFormData } from '@/components/forms/finding-form';
 import AppLayout from '@/layouts/app-layout';
-import FormLayout from '@/layouts/form/layout';
+import FindingEditLayout from '@/layouts/finding/edit/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, CauseCode, Department, Finding, FindingClause, FindingPriority, FindingStatus, WorkCenter } from '@/types';
 import { useForm } from '@inertiajs/react';
@@ -81,7 +81,7 @@ export default function FindingEdit({
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <FormLayout moduleKey="ABNORMALITY" mode="edit">
+            <FindingEditLayout finding={finding.data} type="ABN" moduleKey="ABNORMALITY" mode="edit" className="space-y-6">
                 <FindingForm
                     data={data}
                     findingClauses={findingClauses}
@@ -105,7 +105,7 @@ export default function FindingEdit({
                     causeCodes={causeCodes}
                     type="ABN"
                 />
-            </FormLayout>
+            </FindingEditLayout>
         </AppLayout>
     );
 }

@@ -160,7 +160,7 @@ abstract class FindingController extends Controller
         ]);
 
         return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/show", [
-            'finding' => new FindingResource($finding),
+            'finding' => new FindingResource($finding->load('type')),
             'type' => $this->getTypeCode(),
         ]);
     }
@@ -194,7 +194,7 @@ abstract class FindingController extends Controller
         $workCenters = WorkCenter::all();
 
         return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/edit", [
-            'finding' => new FindingResource($finding),
+            'finding' => new FindingResource($finding->load('type')),
             'findingClauses' => FindingClauseResource::collection($findingClauses),
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
             'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
