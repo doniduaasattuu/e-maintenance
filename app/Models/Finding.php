@@ -118,15 +118,20 @@ class Finding extends Model
     #[Scope]
     public function scopeForUserDepartment($query)
     {
+        // Jika admin, bypass semua filter departemen/pembuat
         if (auth()->user()->hasRole('Admin')) {
             return $query;
         }
 
         $userDeptId = auth()->user()->department_id;
+        $userId = auth()->id();
 
-        return $query->where(function ($q) use ($userDeptId) {
-            $q->where('department_id', $userDeptId)
-                ->orWhereNull('department_id');
+        return $query->where(function ($q) use ($userDeptId, $userId) {
+            $q->where(function ($subQ) use ($userDeptId) {
+                $subQ->where('department_id', $userDeptId)
+                    ->orWhereNull('department_id');
+            })
+                ->orWhere('inspected_by', $userId);
         });
     }
 
