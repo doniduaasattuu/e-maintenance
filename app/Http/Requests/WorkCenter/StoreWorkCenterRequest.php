@@ -30,6 +30,7 @@ class StoreWorkCenterRequest extends FormRequest
                 'regex:/^[A-Z]{3}\d{5}$/',
                 'unique:work_centers,code',
             ],
+            'department_id' => ['required', 'exists:departments,id'],
         ];
     }
 }

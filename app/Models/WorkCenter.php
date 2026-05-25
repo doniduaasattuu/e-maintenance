@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
@@ -17,6 +18,7 @@ class WorkCenter extends Model
     protected $fillable = [
         'code',
         'name',
+        'department_id',
     ];
 
     #[Scope]
@@ -36,6 +38,11 @@ class WorkCenter extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
     }
 
     public function findings(): HasMany

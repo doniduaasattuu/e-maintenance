@@ -191,6 +191,7 @@ export default function FindingForm({
                     onChange={(val) => setData('work_center_id', val)}
                     error={errors.work_center_id}
                     tabIndex={5}
+                    departmentId={data.department_id}
                     disabled={processing}
                     required={type === 'ABN'}
                 />

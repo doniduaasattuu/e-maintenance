@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Exports\WorkCenterExport;
 use App\Http\Requests\WorkCenter\StoreWorkCenterRequest;
 use App\Http\Requests\WorkCenter\UpdateWorkCenterRequest;
+use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\WorkCenterResource;
+use App\Models\Department;
 use App\Models\WorkCenter;
 use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
@@ -27,7 +29,7 @@ class WorkCenterController extends Controller
 
         $perPage = $this->getPerPage($request);
 
-        $workCenters = WorkCenter::search($request)->paginate($perPage)->withQueryString();
+        $workCenters = WorkCenter::with('department')->search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('work-center/index', [
             'workCenters' => WorkCenterResource::collection($workCenters),
@@ -45,7 +47,9 @@ class WorkCenterController extends Controller
     {
         Gate::authorize('create_workcenter');
 
-        return Inertia::render('work-center/create');
+        return Inertia::render('work-center/create', [
+            'departments' => DepartmentResource::collection(Department::all()),
+        ]);
     }
 
     /**
@@ -57,10 +61,7 @@ class WorkCenterController extends Controller
 
         $validated = $request->validated();
 
-        WorkCenter::create([
-            'code' => $validated['code'],
-            'name' => $validated['name'],
-        ]);
+        WorkCenter::create($validated);
 
         return back();
     }
@@ -82,6 +83,7 @@ class WorkCenterController extends Controller
 
         return Inertia::render('work-center/edit', [
             'workCenter' => new WorkCenterResource($workCenter),
+            'departments' => DepartmentResource::collection(Department::all()),
         ]);
     }
 
@@ -95,10 +97,7 @@ class WorkCenterController extends Controller
         try {
             $validated = $request->validated();
 
-            $workCenter->update([
-                'name' => $validated['name'],
-                'code' => $validated['code'],
-            ]);
+            $workCenter->update($validated);
 
             return back();
         } catch (Throwable $e) {

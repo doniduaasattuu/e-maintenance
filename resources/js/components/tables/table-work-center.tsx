@@ -58,6 +58,7 @@ export default function TableWorkCenter({ workCenters, withHeader = true, filter
                                 <TableHead className="text-muted-foreground">#</TableHead>
                                 <TableHead className="text-muted-foreground">Name</TableHead>
                                 <TableHead className="text-muted-foreground">Code</TableHead>
+                                <TableHead className="text-muted-foreground">Department</TableHead>
                                 <TableHead className="text-muted-foreground">Created at</TableHead>
                                 <TableHead className="text-muted-foreground">Updated at</TableHead>
                                 {can.delete_workcenter && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
@@ -76,6 +77,7 @@ export default function TableWorkCenter({ workCenters, withHeader = true, filter
                                             )}
                                         </TableCell>
                                         <TableCell className="font-medium">{workcenter.code}</TableCell>
+                                        <TableCell className="font-medium">{workcenter.department?.name ?? 'N/A'}</TableCell>
                                         <TableCell className="text-muted-foreground w-22.5">{workcenter.created_at}</TableCell>
                                         <TableCell className="text-muted-foreground w-22.5">{workcenter.updated_at}</TableCell>
 

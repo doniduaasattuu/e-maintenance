@@ -1,13 +1,16 @@
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { Department } from '@/types';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
+import DepartmentSelect from '../department-select';
 import RequiredLabel from '../required-label';
 import { Field, FieldError, FieldLabel } from '../ui/field';
 
 export type WorkCenterFormData = {
     code: string;
     name: string;
+    department_id?: string;
 };
 
 interface WorkCenterFormProps {
@@ -16,6 +19,9 @@ interface WorkCenterFormProps {
     errors: Partial<Record<keyof WorkCenterFormData, string>>;
     processing: boolean;
     recentlySuccessful: boolean;
+    departments: {
+        data: Department[];
+    };
     submit: FormEventHandler;
     canSubmit: boolean;
     buttonLabel: string;
@@ -31,6 +37,7 @@ export default function WorkCenterForm({
     submit,
     canSubmit,
     recentlySuccessful,
+    departments,
     successMessage,
     buttonLabel,
     className,
@@ -74,12 +81,23 @@ export default function WorkCenterForm({
                 <FieldError>{errors.code}</FieldError>
             </Field>
 
+            <DepartmentSelect
+                departments={departments?.data}
+                value={data.department_id}
+                onChange={(val) => setData('department_id', val)}
+                error={errors.department_id}
+                tabIndex={3}
+                disabled={processing}
+                required={true}
+                placeholder="Select Department"
+            />
+
             {canSubmit && (
                 <ButtonSubmit
                     processing={processing}
                     label={buttonLabel}
-                    disabled={processing || data.code == '' || data.name == ''}
-                    tabIndex={3}
+                    disabled={processing || data.code == '' || data.name == '' || data.department_id == ''}
+                    tabIndex={4}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}
                 />

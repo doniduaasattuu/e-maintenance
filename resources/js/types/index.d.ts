@@ -92,6 +92,8 @@ export interface WorkCenter {
     id: number;
     code: string;
     name: string;
+    department_id: number;
+    department?: Department;
     created_at: string;
     updated_at: string;
 }

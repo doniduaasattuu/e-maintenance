@@ -81,7 +81,7 @@ export default function FindingEdit({
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <FindingEditLayout finding={finding.data} type="ABN" moduleKey="ABNORMALITY" mode="edit" className="space-y-6">
+            <FindingEditLayout finding={finding.data} type="ABN" moduleKey="ABNORMALITY" mode="edit" className="w-full max-w-xl space-y-6">
                 <FindingForm
                     data={data}
                     findingClauses={findingClauses}

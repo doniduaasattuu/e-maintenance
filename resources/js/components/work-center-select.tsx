@@ -9,6 +9,7 @@ interface WorkCenterSelectProps {
     onChange: (value: string) => void;
     error?: string;
     disabled?: boolean;
+    departmentId?: string;
     tabIndex?: number;
     required?: boolean;
     placeholder?: string;
@@ -22,8 +23,11 @@ export default function WorkCenterSelect({
     disabled = false,
     tabIndex,
     required = true,
+    departmentId,
     placeholder = 'Responsible Work Center',
 }: WorkCenterSelectProps) {
+    workCenters = departmentId ? workCenters.filter((wc) => wc.department_id === Number(departmentId)) : workCenters;
+
     return (
         <Field>
             <FieldLabel htmlFor="work_center_id">

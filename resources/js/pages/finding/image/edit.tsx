@@ -45,9 +45,9 @@ export default function FindingImageEdit({ finding, type }: Props) {
                 mode="edit"
                 moduleKey={type == 'ABN' ? 'ABNORMALITY' : 'AUDIT'}
                 type={type}
-                className="space-y-6"
+                className="w-full max-w-6xl space-y-6"
             >
-                <Tabs defaultValue="before" className="w-full max-w-6xl">
+                <Tabs defaultValue="before" className="w-full">
                     <TabsList>
                         <TabsTrigger value="before">Before</TabsTrigger>
                         <TabsTrigger value="after">After</TabsTrigger>
