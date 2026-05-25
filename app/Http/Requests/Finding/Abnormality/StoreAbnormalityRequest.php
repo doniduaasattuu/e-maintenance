@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Finding\Abnormality;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreAbnormalityRequest extends FormRequest
 {
@@ -27,7 +28,12 @@ class StoreAbnormalityRequest extends FormRequest
             'description'               => ['required', 'string', 'min:10'],
             'functional_location_id'    => ['required', 'exists:functional_locations,id'],
             'department_id'             => ['required', 'exists:departments,id'],
-            'work_center_id'            => ['required', 'exists:work_centers,id'],
+            'work_center_id'            => [
+                'required',
+                Rule::exists('work_centers', 'id')->where(function ($query) {
+                    $query->where('department_id', $this->input('department_id'));
+                }),
+            ],
             'equipment_id'              => ['nullable', 'exists:equipments,id'],
             'finding_status_id'         => ['required', 'exists:finding_statuses,id'],
             'finding_priority_id'       => ['required', 'exists:finding_priorities,id'],
@@ -38,6 +44,13 @@ class StoreAbnormalityRequest extends FormRequest
                 'mimes:jpg,jpeg,png,webp',
                 'max:2048'
             ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'work_center_id.exists' => 'The selected work center is not registered with the department.',
         ];
     }
 }
