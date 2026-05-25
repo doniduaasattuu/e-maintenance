@@ -40,9 +40,11 @@ class FindingMomExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
     {
         return [
             $finding->id,
-            $finding->created_at->format('d-m-Y'),
+            $finding->created_at->format('d-M-y'),
             $finding->type->name ?? '-',
             $finding->status->name ?? '-',
+            $finding->clause->code ?? '-',
+            $finding->clause->description ?? '-',
             $finding->priority->label ?? '-',
             $finding->equipment->code ?? 'N/A',
             $finding->equipment->description ?? 'N/A',
@@ -54,7 +56,8 @@ class FindingMomExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
             $finding->inspector->name ?? '-',
             $finding->rectifier->name ?? '-',
             $finding->verifier->name ?? '-',
-            $finding->closed_at ?? '-',
+            $finding->created_at ? Carbon::parse($finding->created_at)->format('d-M-y') : '-',
+            $finding->closed_at ? Carbon::parse($finding->closed_at)->format('d-M-y') : '-',
         ];
     }
 
@@ -65,6 +68,8 @@ class FindingMomExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
             'Date',
             'Type',
             'Status',
+            'Clause Code',
+            'Clause Description',
             'Priority',
             'Equipment',
             'Equipment Description',
@@ -76,6 +81,7 @@ class FindingMomExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
             'Inspected By',
             'Action By',
             'Verified By',
+            'Created Date',
             'Approved Date',
         ];
     }

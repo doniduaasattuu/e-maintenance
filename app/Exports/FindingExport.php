@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Finding;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -80,9 +81,11 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
     {
         return [
             $finding->id,
-            $finding->created_at->format('d-m-Y'),
+            $finding->created_at->format('d-M-y'),
             $finding->type->name ?? '-',
             $finding->status->name ?? '-',
+            $finding->clause->code ?? '-',
+            $finding->clause->description ?? '-',
             $finding->priority->label ?? '-',
             $finding->equipment->code ?? 'N/A',
             $finding->equipment->description ?? 'N/A',
@@ -94,7 +97,8 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             $finding->inspector->name ?? '-',
             $finding->rectifier->name ?? '-',
             $finding->verifier->name ?? '-',
-            $finding->closed_at ?? '-',
+            $finding->created_at ? Carbon::parse($finding->created_at)->format('d-M-y') : '-',
+            $finding->closed_at ? Carbon::parse($finding->closed_at)->format('d-M-y') : '-',
         ];
     }
 
@@ -105,6 +109,8 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             'Date',
             'Type',
             'Status',
+            'Clause Code',
+            'Clause Description',
             'Priority',
             'Equipment',
             'Equipment Description',
@@ -116,6 +122,7 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             'Inspected By',
             'Action By',
             'Verified By',
+            'Created Date',
             'Approved Date',
         ];
     }
