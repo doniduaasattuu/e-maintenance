@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Policies\FindingPolicy;
 use App\Policies\RolePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -23,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::policy(Role::class, RolePolicy::class);
+        Gate::policy(Role::class, RolePolicy::class, FindingPolicy::class);
 
         Relation::enforceMorphMap([
             'USER' => 'App\Models\User',
@@ -31,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
             'INSPECTION_PANEL' => 'App\Models\InspectionPanel',
             'INSPECTION_TRANSFORMER' => 'App\Models\InspectionTransformer',
             'INSPECTION_AIR_CONDITIONER' => 'App\Models\InspectionAirConditioner',
+            'functional-location' => 'App\Models\FunctionalLocation',
             'equipment' => 'App\Models\Equipment',
             'material' => 'App\Models\Material',
         ]);

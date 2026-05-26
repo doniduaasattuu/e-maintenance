@@ -17,6 +17,7 @@ class FindingClauseResource extends JsonResource
         return [
             'id' => $this->id,
             'code' => $this->code,
+            'type' => $this->type,
             'title' => $this->title,
             'description' => $this->description,
             'created_at' => $this->created_at?->toFormattedDateString(),

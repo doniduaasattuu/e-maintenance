@@ -110,6 +110,16 @@ class User extends Authenticatable
         }
     }
 
+    #[Scope]
+    public function scopeWithDefaultRelations($query)
+    {
+        return $query->with([
+            'department',
+            'position',
+            'workCenter',
+        ]);
+    }
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class, 'department_id');
@@ -143,6 +153,11 @@ class User extends Authenticatable
     public function inspectedFindings(): HasMany
     {
         return $this->hasMany(Finding::class, 'inspected_by', 'id');
+    }
+
+    public function rectifiedFindings(): HasMany
+    {
+        return $this->hasMany(Finding::class, 'rectified_by', 'id');
     }
 
     public function verifiedFindings(): HasMany

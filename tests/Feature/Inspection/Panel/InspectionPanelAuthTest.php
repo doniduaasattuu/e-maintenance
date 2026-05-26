@@ -1,22 +1,30 @@
 <?php
 
 use App\Models\Equipment;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentInspectionForm;
+use App\Models\EquipmentStatus;
 use App\Models\InspectionPanel;
 use Database\Seeders\EquipmentClassSeeder;
+use Database\Seeders\EquipmentStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed([EquipmentClassSeeder::class]);
+    $this->seed([EquipmentClassSeeder::class, EquipmentStatusSeeder::class]);
 
     $this->generatePermissions(['Inspection', 'InspectionPanel']);
 });
 
 test('normal user cannot access inspection panel form', function () {
     $user = createNormalUser();
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 1,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $this->actingAs($user)
@@ -27,8 +35,12 @@ test('normal user cannot access inspection panel form', function () {
 test('inspector user can access inspection panel form', function () {
     $user = createInspectorUser();
 
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 1,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $this->actingAs($user)
@@ -39,8 +51,12 @@ test('inspector user can access inspection panel form', function () {
 test('normal user cannot store inspection panel data', function () {
     $user = createNormalUser();
 
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 1,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $this->actingAs($user)
@@ -59,6 +75,7 @@ test('normal user cannot store inspection panel data', function () {
             'current_s' => 220,
             'current_t' => 330,
             'inspected_by' => $user->id,
+            'has_abnormality' => '0',
         ])
         ->assertStatus(403);
 });
@@ -66,8 +83,12 @@ test('normal user cannot store inspection panel data', function () {
 test('inspector user can store inspection panel data', function () {
     $user = createInspectorUser();
 
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 1,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $this->actingAs($user)
@@ -87,8 +108,9 @@ test('inspector user can store inspection panel data', function () {
             'current_s' => 220,
             'current_t' => 330,
             'inspected_by' => $user->id,
+            'has_abnormality' => '0',
         ])
-        ->assertStatus(200);
+        ->assertStatus(302);
 });
 
 test('normal user cannot access inspection panel edit page', function () {
@@ -98,12 +120,26 @@ test('normal user cannot access inspection panel edit page', function () {
     $this->assertEmpty($inspectionPanelData);
 
     $inspectionPanel = InspectionPanel::factory()->create();
-    $inspectionPanel->inspectionForm()->create([
-        'equipment_id' => Equipment::factory()->create(['equipment_class_id' => 1])->id
+
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionPanel->id,
+        'formable_type' => $equipment->eclass->formable_type
     ]);
 
     $this->actingAs($user)
-        ->get(route('inspectionpanels.edit', $inspectionPanel->id))
+        ->get(route('inspectionpanels.edit', [
+            'equipment' => $equipment,
+            'inspectionPanel' => $inspectionPanel->id,
+        ]))
         ->assertStatus(403);
 });
 
@@ -114,11 +150,25 @@ test('inspector user can access inspection panel edit page', function () {
     $this->assertEmpty($inspectionPanelData);
 
     $inspectionPanel = InspectionPanel::factory()->create();
-    $inspectionPanel->inspectionForm()->create([
-        'equipment_id' => Equipment::factory()->create(['equipment_class_id' => 1])->id
+
+    $class = EquipmentClass::where('formable_type', 'PANEL')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionPanel->id,
+        'formable_type' => $equipment->eclass->formable_type
     ]);
 
     $this->actingAs($inspector)
-        ->get(route('inspectionpanels.edit', $inspectionPanel->id))
+        ->get(route('inspectionpanels.edit', [
+            'equipment' => $equipment,
+            'inspectionPanel' => $inspectionPanel->id,
+        ]))
         ->assertStatus(200);
 });

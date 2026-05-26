@@ -21,7 +21,7 @@ test('functional location index page accessible', function () {
         ->assertInertia(
             fn($page) => $page
                 ->component('functional-location/index')
-                ->has('functionalLocations.data', 15)
+                ->has('functionalLocations.data', 10)
         );
 });
 

@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EquipmentStatusExport;
 use App\Http\Requests\EquipmentStatus\StoreEquipmentStatusRequest;
 use App\Http\Requests\EquipmentStatus\UpdateEquipmentStatusRequest;
 use App\Http\Resources\EquipmentStatusResource;
 use App\Models\EquipmentStatus;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class EquipmentStatusController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,10 +25,16 @@ class EquipmentStatusController extends Controller
     {
         Gate::authorize('index_equipmentstatus');
 
-        $equipmentStatuses = EquipmentStatus::search($request)->paginate()->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $equipmentStatuses = EquipmentStatus::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('equipment-status/index', [
             'equipmentStatuses' => EquipmentStatusResource::collection($equipmentStatuses),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -115,5 +126,10 @@ class EquipmentStatusController extends Controller
                 'description' => $e->getMessage() ?? 'Equipment status is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new EquipmentStatusExport(), 'Equipment_Statuses_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

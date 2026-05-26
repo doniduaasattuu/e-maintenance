@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DepartmentResource;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -22,7 +24,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('auth/register');
+        $departments = Department::all(['id', 'code', 'name']);
+
+        return Inertia::render('auth/register', [
+            'departments' => DepartmentResource::collection($departments),
+        ]);
     }
 
     /**
@@ -36,6 +42,7 @@ class RegisteredUserController extends Controller
             'employee_id' => 'required|string|max_digits:8|unique:users,employee_id',
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'department_id' => 'required|numeric|exists:departments,id',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'registration_key' => ['required', Rule::in([config('services.registration_key')]),],
         ], [
@@ -46,6 +53,7 @@ class RegisteredUserController extends Controller
             'employee_id' => $request->employee_id,
             'name' => $request->name,
             'email' => $request->email,
+            'department_id' => $request->department_id,
             'password' => Hash::make($request->password),
         ]);
 

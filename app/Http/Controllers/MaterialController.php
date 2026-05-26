@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialExport;
 use App\Http\Requests\Material\StoreMaterialRequest;
 use App\Http\Requests\Material\UpdateMaterialRequest;
 use App\Http\Resources\MaterialResource;
@@ -10,15 +11,19 @@ use App\Http\Resources\MaterialUnitResource;
 use App\Models\Material;
 use App\Models\MaterialType;
 use App\Models\MaterialUnit;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class MaterialController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -26,7 +31,9 @@ class MaterialController extends Controller
     {
         Gate::authorize('index_material');
 
-        $materials = Material::with(['unit', 'type'])->search($request)->paginate()->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $materials = Material::with(['unit', 'type'])->search($request)->paginate($perPage)->withQueryString();
 
         if ($request->expectsJson() && $request->filled('query')) {
             return response()->json(MaterialResource::collection($materials));
@@ -36,6 +43,10 @@ class MaterialController extends Controller
             'materials' => MaterialResource::collection($materials),
             'materialUnits' => MaterialUnitResource::collection(MaterialUnit::all()),
             'materialTypes' => MaterialTypeResource::collection(MaterialType::all()),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -165,5 +176,15 @@ class MaterialController extends Controller
                 'description' => 'Failed to delete material: ' . $e->getMessage(),
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'functional_location_id' => $request->query('functional_location_id'),
+            'type_ids' => $request->query('type_ids'),
+        ];
+
+        return Excel::download(new MaterialExport($filters), 'Materials_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

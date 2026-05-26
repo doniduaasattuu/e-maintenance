@@ -12,33 +12,41 @@ import { CommandSeparator } from '@/components/ui/command';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import UserAvatar from '@/components/user-avatar';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { Department, Meta, Position, User, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
 import { RefreshCcw, Trash2 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
+import ButtonExport from '../button-export';
+import DialogUserExportExcel from '../dialog-user-export-excel';
 import EmptyIcon from '../empty-icon';
 import FilterWorkCenter from '../filter-work-center';
+import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableUserProps {
     users: {
         data: User[];
         meta: Meta;
     };
-    departments: {
+    departments?: {
         data: Department[];
     };
-    positions: {
+    positions?: {
         data: Position[];
     };
-    workCenters: {
+    workCenters?: {
         data: WorkCenter[];
     };
     roles: string[];
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableUser({ users, departments, positions, workCenters, roles }: TableUserProps) {
+export default function TableUser({ users, departments, positions, workCenters, roles, withHeader = true, filters }: TableUserProps) {
     const [open, setOpen] = React.useState<boolean>(false);
     const { can } = usePermissions();
     const meta = users.meta;
@@ -52,27 +60,37 @@ export default function TableUser({ users, departments, positions, workCenters, 
         router.post(route('users.restore', id));
     }
 
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
+
     return (
-        <TableLayout moduleKey={'USER'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['department', 'position', 'work-center', 'role']}>
-                        <FilterDepartment departments={departments.data} />
-                        <CommandSeparator />
-                        <FilterPosition positions={positions.data} />
-                        <CommandSeparator />
-                        <FilterWorkCenter workCenters={workCenters.data} />
-                        <CommandSeparator />
-                        <FilterRole roles={roles} />
-                        <CommandSeparator />
-                        <FilterWithTrashed />
-                    </Filter>
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                        <Filter open={open} setOpen={setOpen} keys={['department', 'position', 'work-center', 'role']}>
+                            <FilterDepartment departments={departments?.data ?? []} />
+                            <CommandSeparator />
+                            <FilterPosition positions={positions?.data ?? []} />
+                            <CommandSeparator />
+                            <FilterWorkCenter workCenters={workCenters?.data ?? []} />
+                            <CommandSeparator />
+                            <FilterRole roles={roles} />
+                            <CommandSeparator />
+                            <FilterWithTrashed />
+                        </Filter>
+                    </div>
+                    <ButtonGroup>
+                        {can.create_user && <ButtonAdd tabIndex={3} route={route('users.create')} />}
+                        {users.data.length > 0 && (
+                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        )}
+                    </ButtonGroup>
                 </div>
-                {can.create_user && <ButtonAdd tabIndex={2} route={route('users.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {users.data.length > 0 ? (
+                {users.data && users.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -165,6 +183,14 @@ export default function TableUser({ users, departments, positions, workCenters, 
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+
+            <DialogUserExportExcel
+                open={exportDialog}
+                setOpen={setExportDialog}
+                departments={departments}
+                positions={positions}
+                workCenters={workCenters}
+            />
+        </>
     );
 }

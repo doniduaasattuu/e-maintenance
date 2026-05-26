@@ -1,0 +1,59 @@
+<?php
+
+use App\Http\Controllers\AbnormalityController;
+use App\Http\Controllers\ArchivedFindingController;
+use App\Http\Controllers\AuditController;
+use App\Http\Controllers\CauseCodeController;
+use App\Http\Controllers\FindingClauseController;
+use App\Http\Controllers\FindingImageController;
+use App\Http\Controllers\FindingMomController;
+use App\Http\Controllers\FindingPriorityController;
+use App\Http\Controllers\FindingStatusController;
+use App\Http\Controllers\FindingTypeController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::post('findings/{finding}/image', [FindingImageController::class, 'update'])->name('findings.images.update');
+    Route::delete('findings/{finding}/image/{image}', [FindingImageController::class, 'destroy'])->name('finding.image.delete');
+
+    Route::get('findings/archived/export', [ArchivedFindingController::class, 'export'])->name('findings.archived.export');
+
+    Route::get('findings/archived', [ArchivedFindingController::class, 'index'])->name('findings.archived');
+
+    // EXPORT
+    Route::get('audits/export', [AuditController::class, 'export'])->name('audits.export');
+    Route::get('abnormalities/export', [AbnormalityController::class, 'export'])->name('abnormalities.export');
+
+    // AUDIT
+    Route::resource('audits', AuditController::class)->except('update');
+    Route::post('audits/{finding}', [AuditController::class, 'update'])->name('audits.update');
+    Route::post('audits/{finding}/close', [AuditController::class, 'close'])->name('audits.close');
+    Route::get('audits/{finding}/images/edit', [FindingImageController::class, 'edit'])->name('audits.images.edit');
+
+    // ABNORMALITY
+    Route::resource('abnormalities', AbnormalityController::class)->except('update');
+    Route::post('abnormalities/{finding}', [AbnormalityController::class, 'update'])->name('abnormalities.update');
+    Route::post('abnormalities/{finding}/close', [AbnormalityController::class, 'close'])->name('abnormalities.close');
+    Route::get('abnormalities/{finding}/images/edit', [FindingImageController::class, 'edit'])->name('abnormalities.images.edit');
+
+    // FINDING TYPE
+    Route::get('finding-types/export', [FindingTypeController::class, 'export'])->name('finding-types.export');
+    Route::resource('finding-types', FindingTypeController::class)->except(['show']);
+    // FINDING ClAUSE
+    Route::get('finding-clauses/export', [FindingClauseController::class, 'export'])->name('finding-clauses.export');
+    Route::resource('finding-clauses', FindingClauseController::class)->except(['show']);
+    // FINDING STATUS
+    Route::get('finding-statuses/export', [FindingStatusController::class, 'export'])->name('finding-statuses.export');
+    Route::resource('finding-statuses', FindingStatusController::class)->except(['show']);
+    // FINDING PRIORITY
+    Route::get('finding-priorities/export', [FindingPriorityController::class, 'export'])->name('finding-priorities.export');
+    Route::resource('finding-priorities', FindingPriorityController::class)->except(['show']);
+    // CAUSE CODE
+    Route::get('cause-codes/export', [CauseCodeController::class, 'export'])->name('cause-codes.export');
+    Route::resource('cause-codes', CauseCodeController::class)->except('show');
+    Route::post('findings/{finding}/images', [FindingImageController::class, 'store'])->name('findings.images.store');
+
+    Route::get('findings/mom', [FindingMomController::class, 'index'])->name('findings.mom');
+    Route::get('findings/mom/export', [FindingMomController::class, 'export'])->name('findings.mom.export');
+});

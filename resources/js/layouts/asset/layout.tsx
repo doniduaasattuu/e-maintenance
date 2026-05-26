@@ -3,7 +3,8 @@ import { Separator } from '@/components/ui/separator';
 import usePermissions from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
+import { useEffect, useRef } from 'react';
 
 interface Props {
     children: React.ReactNode | undefined;
@@ -13,6 +14,31 @@ interface Props {
 
 export default function AssetLayout({ children, className, sidebarNavItems }: Props) {
     const { can: permissions } = usePermissions();
+    const { url } = usePage();
+    const scrollContainerRef = useRef<HTMLElement>(null);
+
+    // UX Logic: Simpan dan Kembalikan posisi scroll
+    useEffect(() => {
+        const container = scrollContainerRef.current;
+        if (!container) return;
+
+        // 1. Ambil posisi terakhir dari sessionStorage saat mount/navigasi
+        const savedScrollPos = sessionStorage.getItem('sidebar-scroll-pos');
+        if (savedScrollPos) {
+            container.scrollLeft = parseInt(savedScrollPos, 10);
+            container.scrollTop = parseInt(savedScrollPos, 10);
+        }
+
+        // 2. Fungsi untuk menyimpan posisi saat user melakukan scroll
+        const handleScroll = () => {
+            // Kita simpan baik horizontal (untuk mobile) maupun vertical (untuk desktop)
+            const position = container.scrollLeft || container.scrollTop;
+            sessionStorage.setItem('sidebar-scroll-pos', position.toString());
+        };
+
+        container.addEventListener('scroll', handleScroll);
+        return () => container.removeEventListener('scroll', handleScroll);
+    }, [url]);
 
     if (typeof window === 'undefined') {
         return null;
@@ -22,7 +48,15 @@ export default function AssetLayout({ children, className, sidebarNavItems }: Pr
         <div className="space-y-6 px-4 py-6">
             <div className="flex flex-col space-y-6 lg:flex-row lg:space-x-12">
                 <aside className="max-w-xl lg:w-48">
-                    <nav className="flex flex-col space-y-1 space-x-0">
+                    <nav
+                        ref={scrollContainerRef}
+                        className={cn(
+                            'flex flex-col space-y-1 space-x-0',
+                            sidebarNavItems.length > 4
+                                ? 'flex flex-row space-y-1 space-x-1 overflow-x-scroll sm:flex-col sm:space-x-1 sm:overflow-x-hidden'
+                                : undefined,
+                        )}
+                    >
                         {sidebarNavItems.map((item, index) => {
                             const shouldRender = !item.permission || permissions[item.permission] === true;
                             const pathname = window.location.pathname;
@@ -56,9 +90,7 @@ export default function AssetLayout({ children, className, sidebarNavItems }: Pr
 
                 <Separator className="md:hidden" />
 
-                <div className="flex-1 md:max-w-6xl">
-                    <section className={cn('space-y-12', className)}>{children}</section>
-                </div>
+                <div className={className}>{children}</div>
             </div>
         </div>
     );

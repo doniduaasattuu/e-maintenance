@@ -1,259 +1,475 @@
+import { ButtonGroup } from '@/components/ui/button-group';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
-import { tableCaption } from '@/lib/utils';
-import { Department, Finding, FindingClause, FindingImage, FindingPriority, FindingStatus, Meta } from '@/types';
+import truncateText, { cn, tableCaption } from '@/lib/utils';
+import {
+    CauseCode,
+    Department,
+    Equipment,
+    Finding,
+    FindingClause,
+    FindingImage,
+    FindingPriority,
+    FindingStatus,
+    FunctionalLocation,
+    Meta,
+    WorkCenter,
+} from '@/types';
 import { router } from '@inertiajs/react';
-import { Edit, Info, MoreHorizontalIcon, Trash2, Upload } from 'lucide-react';
-import { useState } from 'react';
+import { Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
+import { ActionFindingDialog } from '../action-finding-dialog';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
 import { DateRangePopover } from '../date-range-popover';
+import DialogFindingExportExcel from '../dialog-finding-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
+import FilterCauseCode from '../filter-cause-code';
 import FilterDepartment from '../filter-department';
 import FilterFindingClause from '../filter-finding-clause';
 import FilterFindingPriority from '../filter-finding-priority';
 import FilterFindingStatus from '../filter-finding-status';
+import FilterWorkCenter from '../filter-work-center';
 import { GeneratePagination } from '../generate-pagination';
 import Lightbox from '../light-box';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import { CommandSeparator } from '../ui/command';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
-import { UploadImageDialog } from '../upload-image-dialog';
 
 interface FindingTableProps {
+    mode: 'standalone' | 'functional-location' | 'equipment';
+    asset?: Equipment | FunctionalLocation;
+    isArchived?: boolean;
+    isMom?: boolean;
+    findingTypeCode?: 'AUD' | 'ABN';
     findings: {
         data: Finding[];
         meta: Meta;
     };
-    findingClauses: {
+    findingClauses?: {
         data: FindingClause[];
     };
-    findingPriorities: {
+    findingPriorities?: {
         data: FindingPriority[];
     };
-    findingStatuses: {
+    findingStatuses?: {
         data: FindingStatus[];
     };
-    departments: {
+    departments?: {
         data: Department[];
+    };
+    workCenters?: {
+        data: WorkCenter[];
+    };
+    causeCodes?: {
+        data: CauseCode[];
+    };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
     };
 }
 
-export default function TableFinding({ findings, findingClauses, findingPriorities, findingStatuses, departments }: FindingTableProps) {
+export function FindingStatusCell({ finding, className }: { finding: Finding; className?: string }) {
+    return (
+        <TableCell className={cn('align-center', className)}>
+            <Badge
+                variant={finding?.status?.name.toLowerCase() === 'open' ? 'destructive' : 'default'}
+                className={`text-[10px] tracking-wider uppercase ${finding?.status?.name.toLowerCase() === 'closed' && 'bg-green-500 text-black'}`}
+            >
+                {finding.status?.name}
+            </Badge>
+        </TableCell>
+    );
+}
+
+export function FindingPriorityAndDueDateCell({ finding, className }: { finding: Finding; className?: string }) {
+    return (
+        <TableCell className={cn('align-center', className)}>
+            <div className="flex flex-col gap-1">
+                <span className="text-sm">{finding.priority?.label}</span>
+                <span
+                    className={`w-fit rounded-full px-2 py-0.5 text-[11px] ${finding.is_overdue ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-700'}`}
+                >
+                    {finding.due_date_readable}
+                </span>
+            </div>
+        </TableCell>
+    );
+}
+
+export function FindingDescriptionCell({ finding }: { finding: Finding }) {
+    return (
+        <TableCell className="align-center">
+            <p className="text-xs text-wrap">{truncateText(finding.description, 100)}</p>
+        </TableCell>
+    );
+}
+
+export function FindingBeforeCell({
+    finding,
+    setSelectedImage,
+}: {
+    finding: Finding;
+    setSelectedImage: Dispatch<SetStateAction<FindingImage | null>>;
+}) {
+    return (
+        <TableCell className="align-center">
+            <div className="bg-muted relative aspect-video w-24 cursor-zoom-in overflow-hidden rounded-lg border shadow-sm transition-transform hover:scale-105">
+                {finding.gallery?.before?.[0]?.url ? (
+                    <img
+                        src={finding.gallery.before[0].url}
+                        className="h-full w-full object-cover"
+                        alt="Before"
+                        onClick={() => setSelectedImage(finding.gallery?.before?.[0] ?? null)}
+                    />
+                ) : (
+                    <div className="text-muted-foreground flex h-full items-center justify-center text-[10px]">No Image</div>
+                )}
+            </div>
+        </TableCell>
+    );
+}
+
+export function FindingAfterCell({
+    finding,
+    setSelectedImage,
+}: {
+    finding: Finding;
+    setSelectedImage: Dispatch<SetStateAction<FindingImage | null>>;
+}) {
+    return (
+        <TableCell className="align-center">
+            <div className="bg-muted relative aspect-video w-24 cursor-zoom-in overflow-hidden rounded-lg border shadow-sm transition-transform hover:scale-105">
+                {finding.gallery?.after?.[0]?.url ? (
+                    <img
+                        src={finding.gallery.after[0].url}
+                        className="h-full w-full object-cover"
+                        alt="After"
+                        onClick={() => setSelectedImage(finding.gallery?.after?.[0] ?? null)}
+                    />
+                ) : (
+                    <div className="text-muted-foreground flex h-full items-center justify-center text-[10px] italic">Pending</div>
+                )}
+            </div>
+        </TableCell>
+    );
+}
+
+export function FindingCauseCodeCell({ finding }: { finding: Finding }) {
+    return (
+        <TableCell>
+            <div className="flex flex-col gap-1">
+                <span className="text-xs font-medium">{finding.causeCode?.description}</span>
+                <span className="text-muted-foreground text-xs">{finding.causeCode?.code}</span>
+            </div>
+        </TableCell>
+    );
+}
+
+export default function TableFinding({
+    mode = 'standalone',
+    asset,
+    isMom = false,
+    isArchived = false,
+    findingTypeCode,
+    findings,
+    findingClauses,
+    findingPriorities,
+    findingStatuses,
+    departments,
+    workCenters,
+    causeCodes,
+    withHeader = true,
+    filters,
+}: FindingTableProps) {
     const [open, setOpen] = useState<boolean>(false);
     const { can } = usePermissions();
     const meta = findings.meta;
     const caption = tableCaption(meta);
     const [selectedImage, setSelectedImage] = useState<FindingImage | null>(null);
 
-    function handleShowFinding(id: number) {
-        router.get(route('findings.show', id));
+    function getEndpointFromFinding(finding: Finding): 'abnormalities' | 'audits' | undefined {
+        switch (finding.type?.code) {
+            case 'ABN':
+                return 'abnormalities';
+            case 'AUD':
+                return 'audits';
+            default:
+                return undefined;
+        }
     }
 
-    function handleEditFinding(id: number) {
-        router.get(route('findings.edit', id));
+    function isStandAlone(finding: Finding): boolean {
+        return mode == 'standalone' && getEndpointFromFinding(finding) != undefined;
     }
 
-    function handleCloseFinding(id: number) {
-        router.post(
-            route('findings.close', id),
-            {},
-            {
-                preserveScroll: true,
-                preserveState: true,
-            },
-        );
+    function handleShowFinding(finding: Finding) {
+        router.get(route(`${getEndpointFromFinding(finding)}.show`, finding.id));
     }
 
-    function handleDeletefinding(id: number) {
-        router.delete(route('findings.destroy', id));
+    function handleEditFinding(finding: Finding) {
+        if (isStandAlone(finding)) {
+            router.get(route(`${getEndpointFromFinding(finding)}.edit`, finding.id));
+        }
     }
+
+    function handleCloseFinding(finding: Finding) {
+        if (isStandAlone(finding)) {
+            router.post(
+                route(`${getEndpointFromFinding(finding)}.close`, finding.id),
+                {},
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                },
+            );
+        }
+    }
+
+    function handleDeletefinding(finding: Finding) {
+        if (isStandAlone(finding)) {
+            router.delete(route(`${getEndpointFromFinding(finding)}.destroy`, finding.id));
+        }
+    }
+
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
 
     return (
-        <TableLayout moduleKey={'FINDING'} className="md:max-w-full">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
-                        <FilterFindingClause findingClauses={findingClauses.data} />
-                        <CommandSeparator />
-                        <FilterFindingStatus findingStatuses={findingStatuses.data} />
-                        <CommandSeparator />
-                        <FilterFindingPriority findingPriorities={findingPriorities.data} />
-                        <CommandSeparator />
-                        <FilterDepartment departments={departments.data} />
-                    </Filter>
-                    <DateRangePopover />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                        <Filter open={open} setOpen={setOpen} keys={['clause', 'status', 'priority', 'department']}>
+                            {mode == 'standalone' && findingClauses?.data && (
+                                <FilterFindingClause filter={findingTypeCode} findingClauses={findingClauses?.data ?? []} />
+                            )}
+                            <CommandSeparator />
+                            {causeCodes?.data && (
+                                <>
+                                    <FilterCauseCode causeCodes={causeCodes?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            {findingStatuses?.data && (
+                                <>
+                                    <FilterFindingStatus findingStatuses={findingStatuses?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            {findingPriorities?.data && (
+                                <>
+                                    <FilterFindingPriority findingPriorities={findingPriorities?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            {departments?.data && (
+                                <>
+                                    <FilterDepartment departments={departments?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            {workCenters?.data && (
+                                <>
+                                    <FilterWorkCenter workCenters={workCenters?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                        </Filter>
+                        <DateRangePopover />
+                    </div>
+                    {isMom ? (
+                        <ButtonExport
+                            tabIndex={4}
+                            onClick={() => (window.location.href = route('findings.mom.export'))}
+                            label="Export"
+                            variant={'outline'}
+                        />
+                    ) : (
+                        <ButtonGroup>
+                            {can.create_finding &&
+                                !isArchived &&
+                                mode === 'standalone' &&
+                                (findingTypeCode != null && findingTypeCode == 'ABN' ? (
+                                    <ButtonAdd route={route('abnormalities.create')} tabIndex={3} />
+                                ) : (
+                                    <ButtonAdd route={route('audits.create')} tabIndex={3} />
+                                ))}
+                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        </ButtonGroup>
+                    )}
                 </div>
-                {can.create_finding && <ButtonAdd route={route('findings.create')} tabIndex={2} />}
-            </div>
-            {findings?.data?.length > 0 ? (
+            )}
+            {findings.data && findings.data.length > 0 ? (
                 <div className="grid min-w-0 overflow-x-auto rounded-md">
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                {can.close_finding && <TableHead className="w-12.5"></TableHead>}
-                                <TableHead className="w-40">Clause</TableHead>
-                                <TableHead className="w-25">Status</TableHead>
-                                <TableHead className="w-25">Priority & Due</TableHead>
-                                <TableHead className="min-w-100">Description</TableHead>
-                                <TableHead className="w-25">Before</TableHead>
-                                <TableHead className="w-25">After</TableHead>
-                                <TableHead className="w-17.5">Department</TableHead>
-                                <TableHead className="w-12.5">Created</TableHead>
-                                <TableHead className="w-12.5">Closed</TableHead>
-                                {can.delete_finding && <TableHead className="w-12.5"></TableHead>}
+                                <TableHead className="text-muted-foreground w-12.5">#</TableHead>
+                                <TableHead className="text-muted-foreground">Area & Clause</TableHead>
+                                <TableHead className="text-muted-foreground hidden md:table-cell">Status</TableHead>
+                                {!isArchived && <TableHead className="text-muted-foreground hidden md:table-cell">Priority & Due</TableHead>}
+                                <TableHead className="text-muted-foreground min-w-50">Description</TableHead>
+                                <TableHead className="text-muted-foreground">Before</TableHead>
+                                <TableHead className="text-muted-foreground">After</TableHead>
+                                <TableHead className="text-muted-foreground hidden min-w-50 md:table-cell">Rectification Action</TableHead>
+                                <TableHead className="text-muted-foreground min-w-30">Created</TableHead>
+                                {isArchived && <TableHead className="text-muted-foreground min-w-30">Closed</TableHead>}
+                                <TableHead className="text-muted-foreground min-w-20">Dept.</TableHead>
+                                <TableHead className="text-muted-foreground"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {findings.data?.map((finding: Finding) => (
                                 <TableRow key={finding.id}>
-                                    {can.close_finding && (
-                                        <TableCell className="align-center min-w-10">
+                                    {can.close_finding ? (
+                                        <TableCell className="align-center">
                                             <Checkbox
-                                                // Status tercentang jika nama status adalah 'closed'
                                                 checked={finding.status?.name.toLowerCase() === 'closed'}
-                                                // Nonaktifkan checkbox jika sudah closed agar user tidak bisa buka kembali
-                                                disabled={finding.status?.name.toLowerCase() === 'closed'}
-                                                // Panggil fungsi saat diklik
+                                                disabled={
+                                                    finding.status?.name.toLowerCase() === 'closed' ||
+                                                    (finding.gallery?.after && finding.gallery.after.length < 1)
+                                                }
                                                 onCheckedChange={(checked) => {
                                                     if (checked) {
-                                                        handleCloseFinding(finding.id);
+                                                        handleCloseFinding(finding);
                                                     }
                                                 }}
                                             />
                                         </TableCell>
+                                    ) : (
+                                        <TableCell onClick={() => router.get(route(`${getEndpointFromFinding(finding)}.show`, finding.id))}>
+                                            <Info className="h-4 w-4 text-blue-500" />
+                                        </TableCell>
                                     )}
-                                    <TableCell className="align-center min-w-55">
-                                        <div className="text-primary font-bold">{finding.clause?.code}</div>
-                                        <div className="text-muted-foreground mt-1 text-xs text-wrap" title={finding.clause?.description}>
-                                            {finding.clause?.description}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="align-center">
-                                        <Badge
-                                            variant={finding?.status?.name.toLowerCase() === 'open' ? 'destructive' : 'default'}
-                                            className={`text-[10px] tracking-wider uppercase ${finding?.status?.name.toLowerCase() === 'closed' && 'bg-green-500 text-black'}`}
-                                        >
-                                            {finding.status?.name}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="align-center">
-                                        <div className="flex flex-col gap-1">
-                                            <span className="text-md font-medium">{finding.priority?.label}</span>
-                                            <span
-                                                className={`w-fit rounded-full px-2 py-0.5 text-[11px] ${finding.is_overdue ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-700'}`}
-                                            >
-                                                {finding.due_date_readable}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-
-                                    <TableCell className="align-center w-100">
-                                        <p className="text-sm text-wrap">{finding.description}</p>
-                                    </TableCell>
-
-                                    <TableCell className="align-center">
-                                        <div className="bg-muted relative aspect-video w-24 cursor-zoom-in overflow-hidden rounded-lg border shadow-sm transition-transform hover:scale-105">
-                                            {finding.gallery?.before?.[0]?.url ? (
-                                                <img
-                                                    src={finding.gallery.before[0].url}
-                                                    className="h-full w-full object-cover"
-                                                    alt="Before"
-                                                    onClick={() => setSelectedImage(finding.gallery?.before?.[0] ?? null)}
-                                                />
-                                            ) : (
-                                                <div className="text-muted-foreground flex h-full items-center justify-center text-[10px]">
-                                                    No Image
-                                                </div>
-                                            )}
-                                        </div>
-                                    </TableCell>
-
-                                    <TableCell className="align-center">
-                                        <div className="bg-muted relative aspect-video w-24 cursor-zoom-in overflow-hidden rounded-lg border shadow-sm transition-transform hover:scale-105">
-                                            {finding.gallery?.after?.[0]?.url ? (
-                                                <img
-                                                    src={finding.gallery.after[0].url}
-                                                    className="h-full w-full object-cover"
-                                                    alt="After"
-                                                    onClick={() => setSelectedImage(finding.gallery?.after?.[0] ?? null)}
-                                                />
-                                            ) : (
-                                                <div className="text-muted-foreground flex h-full items-center justify-center text-[10px] italic">
-                                                    Pending
-                                                </div>
-                                            )}
-                                        </div>
-                                    </TableCell>
-
                                     <TableCell className="align-center">
                                         <div className="flex flex-col gap-1">
                                             <Tooltip>
-                                                <TooltipTrigger className="w-40 truncate text-left">{finding.department?.name}</TooltipTrigger>
+                                                <TooltipTrigger asChild>
+                                                    <span>{truncateText(finding.functionalLocation?.description ?? '', 20)}</span>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{finding.functionalLocation?.code}</TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <div className="text-muted-foreground flex gap-2 text-xs">
+                                                        <span>{finding?.clause?.code}</span>
+                                                        {finding?.type?.name && (
+                                                            <>
+                                                                {' - '}
+                                                                <span>{finding?.type?.name}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{finding?.clause?.description}</TooltipContent>
+                                            </Tooltip>
+                                        </div>
+                                    </TableCell>
+
+                                    <FindingStatusCell className="hidden md:table-cell" finding={finding} />
+
+                                    {!isArchived && <FindingPriorityAndDueDateCell className="hidden md:table-cell" finding={finding} />}
+
+                                    <FindingDescriptionCell finding={finding} />
+
+                                    <FindingBeforeCell finding={finding} setSelectedImage={setSelectedImage} />
+
+                                    <FindingAfterCell finding={finding} setSelectedImage={setSelectedImage} />
+
+                                    <TableCell className="align-center hidden md:table-cell">
+                                        <p className="text-xs text-wrap">{truncateText(finding.rectification_action ?? '', 100)}</p>
+                                    </TableCell>
+
+                                    <TableCell className="align-center text-xs">
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <span>{truncateText(finding?.inspector?.name ?? 'N/A', 15)}</span>
+                                            <Tooltip>
+                                                <TooltipTrigger className="text-left">
+                                                    <span className="text-muted-foreground">{finding?.created_at ?? 'N/A'}</span>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{finding?.created ?? '-'}</TooltipContent>
+                                            </Tooltip>
+                                        </div>
+                                    </TableCell>
+
+                                    {isArchived && (
+                                        <TableCell className="align-center text-xs">
+                                            <div className="grid grid-cols-1 gap-2">
+                                                <span>{truncateText(finding?.rectifier?.name ?? 'N/A', 15)}</span>
+                                                <Tooltip>
+                                                    <TooltipTrigger className="text-left">
+                                                        <span className="text-muted-foreground">{finding?.closed_at ?? 'N/A'}</span>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>{finding?.closed ?? '-'}</TooltipContent>
+                                                </Tooltip>
+                                            </div>
+                                        </TableCell>
+                                    )}
+
+                                    <TableCell className="align-center text-xs">
+                                        <div className="flex flex-col gap-1">
+                                            <Tooltip>
+                                                <TooltipTrigger className="truncate text-left text-xs">
+                                                    {truncateText(finding.department?.code ?? 'N/A', 15)}
+                                                </TooltipTrigger>
                                                 <TooltipContent>{finding.department?.name}</TooltipContent>
                                             </Tooltip>
-                                            <div className="text-muted-foreground">{finding.department?.code}</div>
+                                            <Tooltip>
+                                                <TooltipTrigger className="text-muted-foreground truncate text-left text-xs">
+                                                    {truncateText(finding.workCenter?.name ?? 'N/A', 15)}
+                                                </TooltipTrigger>
+                                                <TooltipContent>{finding.workCenter?.code ?? 'N/A'}</TooltipContent>
+                                            </Tooltip>
                                         </div>
                                     </TableCell>
 
-                                    <TableCell className="align-center">
-                                        <div className="text-muted-foreground flex flex-col text-xs">
-                                            <span>{finding?.inspector?.name}</span>
-                                            <span>{finding?.created_at}</span>
-                                        </div>
-                                    </TableCell>
-
-                                    <TableCell className="align-center">
-                                        <div className="text-muted-foreground flex flex-col text-xs">
-                                            <span>{finding?.verifier?.name}</span>
-                                            <span>{finding?.closed_at}</span>
-                                        </div>
-                                    </TableCell>
-
-                                    <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon" className="size-8">
-                                                    <MoreHorizontalIcon />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                {can.show_finding && (
-                                                    <DropdownMenuItem onClick={() => handleShowFinding(finding.id)}>
-                                                        <Info />
-                                                        Details
-                                                    </DropdownMenuItem>
-                                                )}
-
-                                                {can.edit_finding && can.update_finding && (
-                                                    <DropdownMenuItem onClick={() => handleEditFinding(finding.id)}>
-                                                        <Edit />
-                                                        Edit
-                                                    </DropdownMenuItem>
-                                                )}
-
-                                                {can.update_finding && (
-                                                    <UploadImageDialog finding={finding}>
-                                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                            <Upload />
-                                                            Upload photos
+                                    {mode === 'standalone' ? (
+                                        <TableCell className="text-right">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="size-8">
+                                                        <MoreHorizontalIcon />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    {finding.can?.show && (
+                                                        <DropdownMenuItem onClick={() => handleShowFinding(finding)}>
+                                                            <Info />
+                                                            Details
                                                         </DropdownMenuItem>
-                                                    </UploadImageDialog>
-                                                )}
+                                                    )}
 
-                                                {can.delete_finding && (
-                                                    <>
-                                                        <DropdownMenuSeparator />
+                                                    {finding.can?.update && (
+                                                        <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
+                                                            <Edit />
+                                                            Edit
+                                                        </DropdownMenuItem>
+                                                    )}
+
+                                                    {finding.status?.name.toLowerCase() != 'closed' && (
+                                                        <ActionFindingDialog finding={finding}>
+                                                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                <Wrench />
+                                                                Resolve
+                                                            </DropdownMenuItem>
+                                                        </ActionFindingDialog>
+                                                    )}
+
+                                                    {finding.can?.delete && (
                                                         <ActionConfirm
-                                                            action={() => handleDeletefinding(finding.id)}
+                                                            action={() => handleDeletefinding(finding)}
                                                             title="Delete Finding"
                                                             description="Are you sure? This will permanently delete the finding and its images from the storage."
                                                         >
@@ -265,11 +481,17 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
                                                                 Delete
                                                             </DropdownMenuItem>
                                                         </ActionConfirm>
-                                                    </>
-                                                )}
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    ) : (
+                                        <TableCell className="text-right">
+                                            <Button onClick={() => handleShowFinding(finding)} variant="ghost" size="icon" className="size-8">
+                                                <Info />
+                                            </Button>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -280,7 +502,20 @@ export default function TableFinding({ findings, findingClauses, findingPrioriti
             )}
             <GeneratePagination meta={meta} />
 
+            <DialogFindingExportExcel
+                asset={asset}
+                isArchived={isArchived}
+                findingTypeCode={findingTypeCode}
+                open={exportDialog}
+                setOpen={setExportDialog}
+                findingPriorities={findingPriorities}
+                findingStatuses={findingStatuses}
+                departments={departments}
+                workCenters={workCenters}
+                mode={mode}
+            />
+
             {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />}
-        </TableLayout>
+        </>
     );
 }

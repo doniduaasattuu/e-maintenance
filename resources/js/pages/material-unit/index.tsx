@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { MaterialUnit, Meta, type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
 import TableMaterialUnit from '../../components/tables/table-material-unit';
 
 const strings = UI_STRINGS;
@@ -17,14 +17,18 @@ interface UnitIndexProps {
         data: MaterialUnit[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function MaterialUnitIndex({ materialUnits }: UnitIndexProps) {
+export default function MaterialUnitIndex({ materialUnits, filters }: UnitIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Material Unit" />
-
-            <TableMaterialUnit materialUnits={materialUnits} />
+            <TableLayout moduleKey={'MATERIAL_UNIT'} className="md:max-w-2xl">
+                <TableMaterialUnit materialUnits={materialUnits} filters={filters} />
+            </TableLayout>
         </AppLayout>
     );
 }

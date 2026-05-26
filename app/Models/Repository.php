@@ -52,6 +52,11 @@ class Repository extends Model
         }
     }
 
+    public function url(): string
+    {
+        return asset('storage/' . $this->path);
+    }
+
     public function uploadedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');

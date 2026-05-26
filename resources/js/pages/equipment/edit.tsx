@@ -80,6 +80,7 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
                         submit={submit}
+                        funclocDismantleButton={true}
                         canSubmit={can.update_equipment}
                         buttonLabel="Update"
                         successMessage="Updated"

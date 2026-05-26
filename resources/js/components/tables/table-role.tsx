@@ -5,21 +5,26 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { Meta, Role } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
 
 interface TableRoleProps {
     roles: {
         data: Role[];
         meta: Meta;
     };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableRole({ roles }: TableRoleProps) {
+export default function TableRole({ roles, withHeader = true, filters }: TableRoleProps) {
     const { can } = usePermissions();
     const meta = roles.meta;
     const caption = tableCaption(meta);
@@ -29,13 +34,18 @@ export default function TableRole({ roles }: TableRoleProps) {
     }
 
     return (
-        <TableLayout moduleKey={'ROLE'} className="md:max-w-2xl">
-            <div className="flex justify-between gap-2">
-                <SearchBar tabIndex={1} />
-                {can.create_role && <ButtonAdd tabIndex={2} route={route('roles.create')} />}
-            </div>
+        <>
+            {withHeader && (
+                <div className="flex justify-between gap-2">
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                    </div>
+                    {can.create_role && <ButtonAdd tabIndex={3} route={route('roles.create')} />}
+                </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {roles.data.length > 0 ? (
+                {roles.data && roles.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -85,6 +95,6 @@ export default function TableRole({ roles }: TableRoleProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

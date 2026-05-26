@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DepartmentExport;
 use App\Http\Requests\Department\StoreDepartmentRequest;
 use App\Http\Requests\Department\UpdateDepartmentRequest;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\DivisionResource;
 use App\Models\Department;
 use App\Models\Division;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DepartmentController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -21,10 +26,16 @@ class DepartmentController extends Controller
     {
         Gate::authorize('index_department');
 
-        $departments = Department::with('division')->search($request)->paginate()->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $departments = Department::with('division')->search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('department/index', [
             'departments' => DepartmentResource::collection($departments),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -121,5 +132,10 @@ class DepartmentController extends Controller
             'type' => 'success',
             'description' => 'Department deleted successfully',
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new DepartmentExport(), 'Departments_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

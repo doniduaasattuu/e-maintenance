@@ -62,6 +62,15 @@ class Material extends Model
         }
     }
 
+    #[Scope]
+    public function scopeWithDefaultRelations($query)
+    {
+        return $query->with([
+            'unit',
+            'type',
+        ]);
+    }
+
     public function unit(): BelongsTo
     {
         return $this->belongsTo(MaterialUnit::class, 'material_unit_id');
@@ -80,5 +89,12 @@ class Material extends Model
     public function repositories(): BelongsToMany
     {
         return $this->belongsToMany(Repository::class);
+    }
+
+    public function equipments(): BelongsToMany
+    {
+        return $this->belongsToMany(Equipment::class, 'equipment_material', 'material_id', 'equipment_id')
+            ->withPivot('id', 'quantity', 'note')
+            ->withTimestamps();
     }
 }

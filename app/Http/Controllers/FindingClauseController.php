@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FindingClauseExport;
 use App\Http\Requests\FindingClause\StoreFindingClauseRequest;
 use App\Http\Requests\FindingClause\UpdateFindingClauseRequest;
 use App\Http\Resources\FindingClauseResource;
+use App\Http\Resources\FindingTypeResource;
 use App\Models\FindingClause;
+use App\Models\FindingType;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class FindingClauseController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,10 +27,16 @@ class FindingClauseController extends Controller
     {
         Gate::authorize('index_findingclause');
 
-        $findingClauses = FindingClause::search($request)->paginate()->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $findingClauses = FindingClause::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('finding-clause/index', [
             'findingClauses' => FindingClauseResource::collection($findingClauses),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -33,8 +46,11 @@ class FindingClauseController extends Controller
     public function create()
     {
         Gate::authorize('create_findingclause');
+        $findingTypes = FindingType::get();
 
-        return Inertia::render('finding-clause/create');
+        return Inertia::render('finding-clause/create', [
+            'findingTypes' => FindingTypeResource::collection($findingTypes),
+        ]);
     }
 
     /**
@@ -70,9 +86,11 @@ class FindingClauseController extends Controller
     public function edit(FindingClause $findingClause)
     {
         Gate::authorize('edit_findingclause');
+        $findingTypes = FindingType::get();
 
         return Inertia::render('finding-clause/edit', [
             'findingClause' => new FindingClauseResource($findingClause),
+            'findingTypes' => FindingTypeResource::collection($findingTypes),
         ]);
     }
 
@@ -100,6 +118,25 @@ class FindingClauseController extends Controller
      */
     public function destroy(FindingClause $findingClause)
     {
-        //
+        Gate::authorize('delete_findingclause');
+
+        try {
+            $findingClause->delete();
+
+            return back()->with('message', [
+                'type' => 'success',
+                'description' => 'Finding clause deleted successfully',
+            ]);
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Finding clause is not found',
+            ]);
+        }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new FindingClauseExport(), 'Finding_Clauses_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

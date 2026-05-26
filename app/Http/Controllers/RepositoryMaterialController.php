@@ -6,12 +6,15 @@ use App\Http\Resources\MaterialResource;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Material;
 use App\Models\Repository;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Throwable;
 
 class RepositoryMaterialController extends Controller
 {
+    use HasPerPagePreference;
+
     public function store(Repository $repository, Material $material)
     {
         try {
@@ -32,14 +35,20 @@ class RepositoryMaterialController extends Controller
 
     public function show(Request $request, Material $material)
     {
+        $perPage = $this->getPerPage($request);
+
         $extensions = Repository::distinct()->pluck('extension');
-        $repositories = $material->repositories()->paginate(15);
+        $repositories = $material->repositories()->paginate($perPage);
 
         return Inertia::render('material/repositories', [
             'material' => new MaterialResource($material),
             'repositories' => RepositoryResource::collection($repositories),
             'extensions' => $extensions,
-            'renderable' => config('repository.renderable')
+            'renderable' => config('repository.renderable'),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

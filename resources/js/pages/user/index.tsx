@@ -1,5 +1,6 @@
 import TableUser from '@/components/tables/table-user';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Department, Meta, Position, User, WorkCenter } from '@/types';
 
@@ -26,12 +27,18 @@ type UserProps = {
         data: WorkCenter[];
     };
     roles: string[];
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
 
-export default function UserIndex({ users, departments, positions, workCenters, roles }: UserProps) {
+export default function UserIndex({ users, departments, positions, workCenters, roles, filters }: UserProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableUser users={users} departments={departments} positions={positions} workCenters={workCenters} roles={roles} />
+            <TableLayout moduleKey={'USER'} className="md:max-w-7xl">
+                <TableUser users={users} departments={departments} positions={positions} workCenters={workCenters} roles={roles} filters={filters} />
+            </TableLayout>
         </AppLayout>
     );
 }

@@ -1,22 +1,29 @@
 <?php
 
 use App\Models\Equipment;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentInspectionForm;
+use App\Models\EquipmentStatus;
 use App\Models\InspectionAirConditioner;
 use Database\Seeders\EquipmentClassSeeder;
+use Database\Seeders\EquipmentStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed([EquipmentClassSeeder::class]);
+    $this->seed([EquipmentClassSeeder::class, EquipmentStatusSeeder::class]);
 
     $this->generatePermissions(['Inspection', 'InspectionAirConditioner']);
 });
 
 test('store fails validation', function () {
     $inspector = createInspectorUser();
+    $class = EquipmentClass::where('formable_type', 'AC')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 4,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $response = $this
@@ -32,6 +39,7 @@ test('store fails validation', function () {
             'is_evaporator_clean' => 's',
             'is_condensor_clean' => 's',
             'inspected_by' => $inspector->id,
+            'has_abnormality' => '0',
         ]);
 
     $response->assertSessionHasErrors([
@@ -48,8 +56,11 @@ test('store fails validation', function () {
 
 test('store success validation', function () {
     $inspector = createInspectorUser();
+    $class = EquipmentClass::where('formable_type', 'AC')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 4,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $response = $this
@@ -65,6 +76,7 @@ test('store success validation', function () {
             'is_evaporator_clean' => Arr::random([0, 1]),
             'is_condensor_clean' => Arr::random([0, 1]),
             'inspected_by' => $inspector->id,
+            'has_abnormality' => '0',
         ]);
 
     $response->assertSessionHasNoErrors([
@@ -84,10 +96,31 @@ test('store success validation', function () {
 test('update fails validation', function () {
     $inspector = createInspectorUser();
     $inspectionAirConditioner = InspectionAirConditioner::factory()->create();
+    $classAc = EquipmentClass::where('formable_type', 'AC')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $classAc->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionAirConditioner->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
+
+    $this->assertNotNull($equipment);
 
     $response = $this
         ->actingAs($inspector)
-        ->patch(route('inspectionairconditioners.update', $inspectionAirConditioner->id), [
+        ->patch(route(
+            'inspectionairconditioners.update',
+            [
+                'equipment' => $equipment->id,
+                'inspectionAirConditioner' => $inspectionAirConditioner->id,
+            ]
+        ), [
             'is_operational' => 's',
             'is_drain_leaking' => 's',
             'current_load' => 's',
@@ -114,10 +147,28 @@ test('update fails validation', function () {
 test('update inspection air conditioner success validation', function () {
     $inspector = createInspectorUser();
     $inspectionAirConditioner = InspectionAirConditioner::factory()->create();
+    $classAc = EquipmentClass::where('formable_type', 'AC')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $classAc->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionAirConditioner->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
+
+    $this->assertNotNull($equipment);
 
     $response = $this
         ->actingAs($inspector)
-        ->patch(route('inspectionairconditioners.update', $inspectionAirConditioner->id), [
+        ->patch(route('inspectionairconditioners.update', [
+            'equipment' => $equipment->id,
+            'inspectionAirConditioner' => $inspectionAirConditioner->id,
+        ]), [
             'is_operational' => Arr::random([0, 1]),
             'is_drain_leaking' => Arr::random([0, 1]),
             'current_load' => fake()->numberBetween(0, 30),
@@ -127,6 +178,7 @@ test('update inspection air conditioner success validation', function () {
             'is_evaporator_clean' => Arr::random([0, 1]),
             'is_condensor_clean' => Arr::random([0, 1]),
             'inspected_by' => $inspector->id,
+            'has_abnormality' => '0',
         ]);
 
     $response->assertSessionHasNoErrors([
@@ -139,22 +191,64 @@ test('update inspection air conditioner success validation', function () {
         'is_evaporator_clean',
         'is_condensor_clean',
     ]);
+});
 
-    // $inspectionAirConditioner->refresh();
-    // expect($inspectionAirConditioner->is_operational)->toBe(0);
-    // expect($inspectionAirConditioner->is_drain_leaking)->toBe(0);
-    // expect($inspectionAirConditioner->number_of_greasing)->toBe(91,);
-    // expect($inspectionAirConditioner->temperature_de)->toBe(31);
-    // expect($inspectionAirConditioner->temperature_body)->toBe(41);
-    // expect($inspectionAirConditioner->temperature_nde)->toBe(51);
-    // expect($inspectionAirConditioner->vibration_dev)->toBe(0.11);
-    // expect($inspectionAirConditioner->vibration_deh)->toBe(0.21);
-    // expect($inspectionAirConditioner->vibration_dea)->toBe(0.31);
-    // expect($inspectionAirConditioner->vibration_def)->toBe(0.41);
-    // expect($inspectionAirConditioner->is_noisy_de)->toBe(1);
-    // expect($inspectionAirConditioner->vibration_ndev)->toBe(0.51);
-    // expect($inspectionAirConditioner->vibration_ndeh)->toBe(0.61);
-    // expect($inspectionAirConditioner->vibration_ndef)->toBe(0.71);
-    // expect($inspectionAirConditioner->is_noisy_nde)->toBe(1);
-    // expect($inspectionAirConditioner->inspected_by)->toBe($inspector->id);
+test('normal user cannot access inspection ac edit page', function () {
+    $user = createNormalUser();
+
+    $inspectionAcData = InspectionAirConditioner::all();
+    $this->assertEmpty($inspectionAcData);
+
+    $inspectionAc = InspectionAirConditioner::factory()->create();
+
+    $class = EquipmentClass::where('formable_type', 'AC')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionAc->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('inspectionairconditioners.edit', [
+            'equipment' => $equipment,
+            'inspectionAirConditioner' => $inspectionAc->id,
+        ]))
+        ->assertStatus(403);
+});
+
+test('inspector user can access inspection ac edit page', function () {
+    $inspector = createInspectorUser();
+
+    $inspectionAcData = InspectionAirConditioner::all();
+    $this->assertEmpty($inspectionAcData);
+
+    $inspectionAc = InspectionAirConditioner::factory()->create();
+
+    $class = EquipmentClass::where('formable_type', 'AC')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionAc->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
+
+    $this->actingAs($inspector)
+        ->get(route('inspectionairconditioners.edit', [
+            'equipment' => $equipment,
+            'inspectionAirConditioner' => $inspectionAc->id,
+        ]))
+        ->assertStatus(200);
 });

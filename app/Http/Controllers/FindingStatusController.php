@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FindingStatusExport;
 use App\Http\Requests\FindingStatus\StoreFindingStatusRequest;
 use App\Http\Requests\FindingStatus\UpdateFindingStatusRequest;
 use App\Http\Resources\FindingStatusResource;
 use App\Models\FindingStatus;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class FindingStatusController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,10 +25,16 @@ class FindingStatusController extends Controller
     {
         Gate::authorize('index_findingstatus');
 
-        $findingStatuses = FindingStatus::search($request)->paginate()->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $findingStatuses = FindingStatus::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('finding-status/index', [
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -115,5 +126,10 @@ class FindingStatusController extends Controller
                 'description' => $e->getMessage() ?? 'Finding status is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new FindingStatusExport(), 'Finding_Statuses_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

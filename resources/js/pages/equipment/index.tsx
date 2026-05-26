@@ -1,5 +1,6 @@
 import TableEquipment from '@/components/tables/table-equipment';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, EquipmentClass, EquipmentStatus, Meta } from '@/types';
 
@@ -22,12 +23,18 @@ type EquipmentProps = {
     equipmentStatuses: {
         data: EquipmentStatus[];
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
 
-export default function EquipmentIndex({ equipments, equipmentClasses, equipmentStatuses }: EquipmentProps) {
+export default function EquipmentIndex({ equipments, equipmentClasses, equipmentStatuses, filters }: EquipmentProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableEquipment equipments={equipments} equipmentClasses={equipmentClasses} equipmentStatuses={equipmentStatuses} />
+            <TableLayout moduleKey={'EQUIPMENT'} className="md:max-w-7xl">
+                <TableEquipment equipments={equipments} equipmentClasses={equipmentClasses} equipmentStatuses={equipmentStatuses} filters={filters} />
+            </TableLayout>
         </AppLayout>
     );
 }

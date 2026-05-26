@@ -29,12 +29,12 @@ class UpdateFindingPriorityRequest extends FormRequest
                 'max:50',
                 Rule::unique('finding_priorities', 'label')->ignore($this->finding_priority),
             ],
+            'color_code' => ['nullable', 'hex_color'],
+            'description' => ['required', 'string', 'max:255'],
             'sla_resolution_hours' => [
                 'nullable',
                 'numeric',
             ],
-            'description' => ['required', 'string', 'max:255'],
-            'color_code' => ['nullable', 'hex_color']
         ];
     }
 }

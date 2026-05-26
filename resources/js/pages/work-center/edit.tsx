@@ -2,7 +2,7 @@ import WorkCenterForm, { WorkCenterFormData } from '@/components/forms/work-cent
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import OrganizationsLayout from '@/layouts/organizations/layout';
-import { WorkCenter, type BreadcrumbItem } from '@/types';
+import { Department, WorkCenter, type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -21,13 +21,17 @@ interface WorkCenterEditProps {
     workCenter: {
         data: WorkCenter;
     };
+    departments: {
+        data: Department[];
+    };
 }
 
-export default function WorkCenterEdit({ workCenter }: WorkCenterEditProps) {
+export default function WorkCenterEdit({ workCenter, departments }: WorkCenterEditProps) {
     const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<WorkCenterFormData>>({
         code: workCenter.data.code,
         name: workCenter.data.name,
+        department_id: workCenter.data.department_id ? String(workCenter.data.department_id) : '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -49,6 +53,7 @@ export default function WorkCenterEdit({ workCenter }: WorkCenterEditProps) {
                     errors={errors}
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
+                    departments={departments}
                     submit={submit}
                     canSubmit={can.update_workcenter}
                     buttonLabel="Update"

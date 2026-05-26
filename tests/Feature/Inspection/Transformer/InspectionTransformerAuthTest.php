@@ -1,24 +1,33 @@
 <?php
 
 use App\Models\Equipment;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentInspectionForm;
+use App\Models\EquipmentStatus;
 use App\Models\InspectionTransformer;
 use App\Models\QualityRating;
 use Database\Seeders\EquipmentClassSeeder;
+use Database\Seeders\EquipmentStatusSeeder;
 use Database\Seeders\QualityRatingSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed([EquipmentClassSeeder::class, QualityRatingSeeder::class]);
+    $this->seed([EquipmentClassSeeder::class, EquipmentStatusSeeder::class, QualityRatingSeeder::class]);
 
     $this->generatePermissions(['Inspection', 'InspectionTransformer']);
 });
 
 test('normal user cannot access inspection transformer form', function () {
     $user = createNormalUser();
+
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 3,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $this->actingAs($user)
@@ -29,8 +38,12 @@ test('normal user cannot access inspection transformer form', function () {
 test('inspector user can access inspection transformer form', function () {
     $user = createInspectorUser();
 
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 3,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $this->actingAs($user)
@@ -41,8 +54,12 @@ test('inspector user can access inspection transformer form', function () {
 test('normal user cannot store inspection transformer data', function () {
     $user = createNormalUser();
 
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 3,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $this->actingAs($user)
@@ -64,7 +81,9 @@ test('normal user cannot store inspection transformer data', function () {
             'secondary_voltage_t' => 400,
             'temperature_oil' => 30,
             'temperature_winding' => 40,
+            'desicant_level_id' => 1,
             'inspected_by' => $user->id,
+            'has_abnormality' => '0',
         ])
         ->assertStatus(403);
 });
@@ -72,8 +91,12 @@ test('normal user cannot store inspection transformer data', function () {
 test('inspector user can store inspection transformer data', function () {
     $user = createInspectorUser();
 
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
     $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 3,
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
     ]);
 
     $qualityRating = QualityRating::all()->first();
@@ -100,8 +123,9 @@ test('inspector user can store inspection transformer data', function () {
             'temperature_winding' => 40,
             'desicant_level_id' => $qualityRating->id,
             'inspected_by' => $user->id,
+            'has_abnormality' => '0',
         ])
-        ->assertStatus(200);
+        ->assertStatus(302);
 });
 
 test('normal user cannot access inspection transformer edit page', function () {
@@ -112,8 +136,25 @@ test('normal user cannot access inspection transformer edit page', function () {
 
     $inspectionTransformer = InspectionTransformer::factory()->create();
 
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionTransformer->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
+
     $this->actingAs($user)
-        ->get(route('inspectiontransformers.edit', $inspectionTransformer->id))
+        ->get(route('inspectiontransformers.edit', [
+            'equipment' => $equipment->id,
+            'inspectionTransformer' => $inspectionTransformer->id
+        ]))
         ->assertStatus(403);
 });
 
@@ -124,11 +165,24 @@ test('inspector user can access inspection transformer edit page', function () {
     $this->assertEmpty($inspectionTransformerData);
 
     $inspectionTransformer = InspectionTransformer::factory()->create();
-    $inspectionTransformer->inspectionForm()->create([
-        'equipment_id' => Equipment::factory()->create(['equipment_class_id' => 3])->id
+    $class = EquipmentClass::where('formable_type', 'TRANSFORMER')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $class->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionTransformer->id,
+        'formable_type' => $equipment->eclass->formable_type
     ]);
 
     $this->actingAs($inspector)
-        ->get(route('inspectiontransformers.edit', $inspectionTransformer->id))
+        ->get(route('inspectiontransformers.edit', [
+            'equipment' => $equipment->id,
+            'inspectionTransformer' => $inspectionTransformer->id,
+        ]))
         ->assertStatus(200);
 });

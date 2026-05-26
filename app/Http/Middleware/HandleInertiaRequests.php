@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
-        $user = $request?->user()?->load('roles.permissions');
+        $user = $request?->user()?->load(['roles.permissions', 'department']);
         $roles = [];
         $permissions = [];
 
@@ -69,6 +69,25 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'message' => $request->session()->get('message'),
+            'notifications' => [
+                'findings' => [
+                    'audit_open' => $request->user() && !$request->user()->hasRole('Admin')
+                        ? \App\Models\Finding::forUserDepartment()
+                        ->ofType('AUD')
+                        ->open()
+                        ->count()
+                        : 0,
+                    'abnormality_open' => $request->user() && !$request->user()->hasRole('Admin')
+                        ? \App\Models\Finding::forUserDepartment()
+                        ->ofType('ABN')
+                        ->open()
+                        ->count()
+                        : 0,
+                ]
+            ],
+            'config' => [
+                'maximumFileUpload' => config('app.maximum_file_upload')
+            ],
         ];
     }
 }

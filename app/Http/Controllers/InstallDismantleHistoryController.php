@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InstallDismantleHistoryExport;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\InstallDismantleHistoryResource;
 use App\Models\Equipment;
 use App\Models\InstallDismantleHistory;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InstallDismantleHistoryController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -19,14 +24,20 @@ class InstallDismantleHistoryController extends Controller
     {
         Gate::authorize('index_installdismantlehistory');
 
+        $perPage = $this->getPerPage($request);
+
         $histories = InstallDismantleHistory::search($request)
             ->with(['equipment', 'equipment.eclass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->orderBy('changed_at', 'DESC')
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('install-dismantle/index', [
             'histories' => InstallDismantleHistoryResource::collection($histories),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -49,19 +60,25 @@ class InstallDismantleHistoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Equipment $equipment)
+    public function show(Request $request, Equipment $equipment)
     {
         Gate::authorize('show_installdismantlehistory');
+
+        $perPage = $this->getPerPage($request);
 
         $histories = InstallDismantleHistory::with(['equipment', 'equipment.eclass', 'fromStatus', 'toStatus', 'toStatus', 'fromFunctionalLocation', 'toFunctionalLocation', 'changedBy'])
             ->where('equipment_id', $equipment->id)
             ->orderBy('changed_at', 'DESC')
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('equipment/history', [
             'equipment' => new EquipmentResource($equipment),
             'histories' => InstallDismantleHistoryResource::collection($histories),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -87,5 +104,17 @@ class InstallDismantleHistoryController extends Controller
     public function destroy(InstallDismantleHistory $installDismantleHistory)
     {
         // Gate::authorize('delete_installdismantlehistory');
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'start_date'             => $request->query('start_date'),
+            'end_date'               => $request->query('end_date'),
+            'functional_location_id' => $request->query('functional_location_id'),
+            'equipment_id'           => $request->query('equipment_id'),
+        ];
+
+        return Excel::download(new InstallDismantleHistoryExport($filters), 'Install_Dismantle_Histories_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

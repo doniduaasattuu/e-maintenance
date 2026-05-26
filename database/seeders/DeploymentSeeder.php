@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DeploymentSeeder extends Seeder
@@ -12,18 +13,18 @@ class DeploymentSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class,
-            ElectricianSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
             EquipmentClassSeeder::class,
             EquipmentStatusSeeder::class,
-            QualityRatingSeeder::class,
-            MaterialUnitSeeder::class,
-            MaterialTypeSeeder::class,
             FindingClauseSeeder::class,
-            FindingStatusSeeder::class,
             FindingPrioritySeeder::class,
+            FindingStatusSeeder::class,
+            FindingTypeSeeder::class,
+            CauseCodeSeeder::class,
+            MaterialTypeSeeder::class,
+            MaterialUnitSeeder::class,
+            QualityRatingSeeder::class,
         ]);
     }
 }

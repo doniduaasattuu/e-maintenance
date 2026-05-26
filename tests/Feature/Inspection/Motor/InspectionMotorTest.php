@@ -1,28 +1,28 @@
 <?php
 
 use App\Models\Equipment;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentInspectionForm;
+use App\Models\EquipmentStatus;
 use App\Models\InspectionMotor;
 use Database\Seeders\EquipmentClassSeeder;
+use Database\Seeders\EquipmentStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed([EquipmentClassSeeder::class]);
+    $this->seed([EquipmentClassSeeder::class, EquipmentStatusSeeder::class]);
 
     $this->generatePermissions(['Inspection', 'InspectionMotor']);
 });
 
 test('store fails validation', function () {
     $inspector = createInspectorUser();
-    $equipment = Equipment::factory()->create([
-        'equipment_class_id' => 2,
-    ]);
 
     $response = $this
         ->actingAs($inspector)
         ->post(route('inspectionmotors.store'), [
-            'equipment_id' => $equipment->id,
             'is_operational' => 's',
             'is_clean' => 's',
             'number_of_greasing' => 'true',
@@ -39,6 +39,7 @@ test('store fails validation', function () {
             'vibration_ndef' => '0.70mm/s',
             'is_noisy_nde' => 'noise',
             'inspected_by' => $inspector->id,
+            'has_abnormality' => '0'
         ]);
 
     $response->assertSessionHasErrors([
@@ -86,6 +87,7 @@ test('store success validation', function () {
             'vibration_ndef' => '0.70',
             'is_noisy_nde' => 0,
             'inspected_by' => $inspector->id,
+            'has_abnormality' => '0',
         ]);
 
     $response->assertSessionHasNoErrors([
@@ -108,11 +110,28 @@ test('store success validation', function () {
 
 test('update fails validation', function () {
     $inspector = createInspectorUser();
+
     $inspectionMotor = InspectionMotor::factory()->create();
+    $classAc = EquipmentClass::where('formable_type', 'MOTOR')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $classAc->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionMotor->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
 
     $response = $this
         ->actingAs($inspector)
-        ->patch(route('inspectionmotors.update', $inspectionMotor->id), [
+        ->patch(route('inspectionmotors.update', [
+            'equipment' => $equipment->id,
+            'inspectionMotor' => $inspectionMotor->id,
+        ]), [
             'is_operational' => 's',
             'is_clean' => 's',
             'number_of_greasing' => 'true',
@@ -152,11 +171,28 @@ test('update fails validation', function () {
 
 test('update inspection motor success validation', function () {
     $inspector = createInspectorUser();
+
     $inspectionMotor = InspectionMotor::factory()->create();
+    $classAc = EquipmentClass::where('formable_type', 'MOTOR')->first();
+    $status = EquipmentStatus::where('code', 'INST')->first();
+
+    $equipment = Equipment::factory()->create([
+        'equipment_class_id' => $classAc->id,
+        'equipment_status_id' => $status->id,
+    ]);
+
+    EquipmentInspectionForm::create([
+        'equipment_id' => $equipment->id,
+        'formable_id' => $inspectionMotor->id,
+        'formable_type' => $equipment->eclass->formable_type
+    ]);
 
     $response = $this
         ->actingAs($inspector)
-        ->patch(route('inspectionmotors.update', $inspectionMotor->id), [
+        ->patch(route('inspectionmotors.update', [
+            'equipment' => $equipment->id,
+            'inspectionMotor' => $inspectionMotor->id
+        ]), [
             'is_operational' => 0,
             'is_clean' => 0,
             'number_of_greasing' => 91,

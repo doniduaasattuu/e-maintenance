@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('materials', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 8)->unique();
+            $table->string('code')->unique();
             $table->string('name');
             $table->integer('price')->nullable();
             $table->foreignId('material_unit_id')->nullable()->constrained('material_units')->cascadeOnUpdate()->restrictOnDelete();

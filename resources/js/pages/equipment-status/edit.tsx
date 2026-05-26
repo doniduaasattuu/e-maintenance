@@ -54,6 +54,7 @@ export default function EquipmentStatusEdit({ equipmentStatus }: EquipmentStatus
                     canSubmit={can.update_equipmentclass}
                     buttonLabel="Update"
                     className="max-w-xl"
+                    isEditing={true}
                 />
             </FormLayout>
         </AppLayout>

@@ -1,5 +1,6 @@
 import TableEquipmentClass from '@/components/tables/table-equipment-class';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, EquipmentClass, Meta } from '@/types';
 
@@ -16,12 +17,18 @@ interface EquipmentClassProps {
         data: EquipmentClass[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function EquipmentClassIndex({ equipmentClasses }: EquipmentClassProps) {
+export default function EquipmentClassIndex({ equipmentClasses, filters }: EquipmentClassProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableEquipmentClass equipmentClasses={equipmentClasses} />
+            <TableLayout moduleKey={'EQUIPMENT_CLASS'} className="md:max-w-7xl">
+                <TableEquipmentClass equipmentClasses={equipmentClasses} filters={filters} />
+            </TableLayout>
         </AppLayout>
     );
 }

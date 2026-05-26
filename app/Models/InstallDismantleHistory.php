@@ -76,6 +76,19 @@ class InstallDismantleHistory extends Model
         }
     }
 
+    #[Scope]
+    public function scopeWithAllRelations($query)
+    {
+        return $query->with([
+            'equipment',
+            'fromStatus',
+            'toStatus',
+            'fromFunctionalLocation',
+            'toFunctionalLocation',
+            'changedBy',
+        ]);
+    }
+
     public function equipment(): BelongsTo
     {
         return $this->belongsTo(Equipment::class);

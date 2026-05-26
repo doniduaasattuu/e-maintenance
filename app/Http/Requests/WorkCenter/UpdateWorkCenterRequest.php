@@ -36,6 +36,7 @@ class UpdateWorkCenterRequest extends FormRequest
                 'regex:/^[A-Z]{3}\d{5}$/',
                 Rule::unique('work_centers', 'code')->ignore($this->work_center),
             ],
+            'department_id' => ['required', 'exists:departments,id'],
         ];
     }
 }

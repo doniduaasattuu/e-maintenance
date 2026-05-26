@@ -17,15 +17,19 @@ interface DivisionIndexProps {
         data: Division[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function DivisionIndex({ divisions }: DivisionIndexProps) {
+export default function DivisionIndex({ divisions, filters }: DivisionIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Divisions" />
 
             <OrganizationsLayout>
-                <TableDivision divisions={divisions} />
+                <TableDivision divisions={divisions} filters={filters} />
             </OrganizationsLayout>
         </AppLayout>
     );

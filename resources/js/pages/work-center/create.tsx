@@ -2,7 +2,7 @@ import WorkCenterForm, { WorkCenterFormData } from '@/components/forms/work-cent
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import OrganizationsLayout from '@/layouts/organizations/layout';
-import { type BreadcrumbItem } from '@/types';
+import { Department, type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -17,11 +17,18 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function WorkCenterCreate() {
+interface Props {
+    departments: {
+        data: Department[];
+    };
+}
+
+export default function WorkCenterCreate({ departments }: Props) {
     const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<WorkCenterFormData>>({
         code: '',
         name: '',
+        department_id: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -46,6 +53,7 @@ export default function WorkCenterCreate() {
                     errors={errors}
                     processing={processing}
                     recentlySuccessful={recentlySuccessful}
+                    departments={departments}
                     submit={submit}
                     canSubmit={can.store_workcenter}
                     buttonLabel="Submit"

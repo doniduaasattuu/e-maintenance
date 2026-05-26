@@ -1,0 +1,143 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Exports\FindingExport;
+use App\Http\Requests\Finding\Audit\StoreAuditRequest;
+use App\Http\Requests\Finding\Audit\UpdateAuditRequest;
+use App\Models\Finding;
+use App\Models\FindingType;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
+
+class AuditController extends FindingController
+{
+    protected function getTypeCode(): string
+    {
+        return 'AUD';
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        return parent::index($request);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return parent::create();
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreAuditRequest $request)
+    {
+        try {
+            $this->performStore($request->validated());
+
+            return redirect()->route('audits.index')->with('message', [
+                'type' => 'success',
+                'description' => 'Audit and ' . count($request->file('images')) . ' photos saved successfully.',
+            ]);
+        } catch (\Throwable $e) {
+
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $finding = Finding::findOrFail($id);
+
+        return parent::display($finding);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $finding = Finding::findOrFail($id);
+
+        return parent::revise($finding);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateAuditRequest $request, Finding $finding)
+    {
+        try {
+            $this->performUpdate($request, $finding);
+
+            return back()->with('message', [
+                'type' => 'success',
+                'description' => 'Abnormality report updated successfully.',
+            ]);
+        } catch (\Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Mark finding as closed.
+     */
+    public function close(Request $request, string $id)
+    {
+        $finding = Finding::findOrFail($id);
+
+        parent::finish($request, $finding);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $finding = Finding::findOrFail($id);
+
+        try {
+            $this->delete($finding);
+
+            return back()->with('message', [
+                'type' => 'success',
+                'description' => 'Audit and photos deleted successfully.',
+            ]);
+        } catch (\Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'start_date'     => $request->query('start_date'),
+            'end_date'       => $request->query('end_date'),
+            'status_ids' => $request->query('status_ids'),
+            'department_ids' => $request->query('department_ids'),
+            'priority_ids' => $request->query('priority_ids'),
+            'type_id' => FindingType::where('code', $request->query('type_code'))->firstOrFail()->id,
+        ];
+
+        return Excel::download(new FindingExport($filters), 'Audit_Reports_' . now()->format('Ymd_His') . '.xlsx');
+    }
+}

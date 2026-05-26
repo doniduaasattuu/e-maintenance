@@ -5,21 +5,28 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { MaterialType, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableMaterialTypeProps {
     materialTypes: {
         data: MaterialType[];
         meta: Meta;
     };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableMaterialType({ materialTypes }: TableMaterialTypeProps) {
+export default function TableMaterialType({ materialTypes, withHeader = true, filters }: TableMaterialTypeProps) {
     const { can } = usePermissions();
     const meta = materialTypes.meta;
     const caption = tableCaption(meta);
@@ -28,15 +35,21 @@ export default function TableMaterialType({ materialTypes }: TableMaterialTypePr
         router.delete(route('material-types.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'MATERIAL_TYPE'} className="md:max-w-4xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                    </div>
+                    <ButtonGroup>
+                        {can.create_materialtype && <ButtonAdd tabIndex={3} route={route('material-types.create')} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('material-types.export'))} />
+                    </ButtonGroup>
                 </div>
-                {can.create_materialtype && <ButtonAdd tabIndex={2} route={route('material-types.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {materialTypes.data.length > 0 ? (
+                {materialTypes?.data && materialTypes?.data?.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -87,6 +100,6 @@ export default function TableMaterialType({ materialTypes }: TableMaterialTypePr
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

@@ -1,5 +1,6 @@
 import TableRole from '@/components/tables/table-role';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Meta, Role } from '@/types';
 
@@ -16,11 +17,17 @@ type RoleIndexProps = {
         data: Role[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
-export default function RoleIndex({ roles }: RoleIndexProps) {
+export default function RoleIndex({ roles, filters }: RoleIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableRole roles={roles} />
+            <TableLayout moduleKey={'ROLE'} className="md:max-w-2xl">
+                <TableRole roles={roles} filters={filters} />
+            </TableLayout>
         </AppLayout>
     );
 }

@@ -5,21 +5,28 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { EquipmentClass, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableEquipmentClassProps {
     equipmentClasses: {
         data: EquipmentClass[];
         meta: Meta;
     };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableEquipmentClass({ equipmentClasses }: TableEquipmentClassProps) {
+export default function TableEquipmentClass({ equipmentClasses, withHeader = true, filters }: TableEquipmentClassProps) {
     const { can } = usePermissions();
     const meta = equipmentClasses.meta;
     const caption = tableCaption(meta);
@@ -28,15 +35,21 @@ export default function TableEquipmentClass({ equipmentClasses }: TableEquipment
         router.delete(route('equipment-classes.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'EQUIPMENT_CLASS'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                    </div>
+                    <ButtonGroup>
+                        {can.create_equipmentclass && <ButtonAdd tabIndex={3} route={route('equipment-classes.create')} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('equipment-classes.export'))} />
+                    </ButtonGroup>
                 </div>
-                {can.create_equipmentclass && <ButtonAdd tabIndex={2} route={route('equipment-classes.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {equipmentClasses.data.length > 0 ? (
+                {equipmentClasses?.data && equipmentClasses?.data?.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -91,6 +104,6 @@ export default function TableEquipmentClass({ equipmentClasses }: TableEquipment
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

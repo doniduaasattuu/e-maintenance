@@ -1,19 +1,20 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
-import { useIsMobile } from '@/hooks/use-mobile';
-import truncateText, { cn } from '@/lib/utils';
-import { Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation } from '@/types';
-import { Info } from 'lucide-react';
-import React, { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { CauseCode, Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation, WorkCenter } from '@/types';
+import { ChangeEvent, FormEventHandler, useState } from 'react';
 import ButtonSubmit from '../button-submit';
-import CompressingDescription from '../compressing-description';
+import CauseCodeSelect from '../cause-code-select';
+import DepartmentSelect from '../department-select';
 import EquipmentSelect from '../equipment-select';
+import FindingClauseSelect from '../finding-clause-select';
+import FindingDescriptionInput from '../finding-description-input';
+import FindingPhotoInput from '../finding-photo-input';
+import FindingPrioritySelect from '../finding-priority-select';
+import FindingStatusSelect from '../finding-status-select';
 import FunctionalLocationSelect from '../functional-location-select';
 import RequiredLabel from '../required-label';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { Field, FieldDescription, FieldError, FieldLabel } from '../ui/field';
-import { Input } from '../ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
-import { Textarea } from '../ui/textarea';
+import { Field, FieldError, FieldLabel } from '../ui/field';
+import WorkCenterSelect from '../work-center-select';
 
 interface FindingFormProps {
     functionalLocation?: FunctionalLocation | null;
@@ -37,18 +38,27 @@ interface FindingFormProps {
     findingPriorities: {
         data: FindingPriority[];
     };
+    causeCodes: {
+        data: CauseCode[];
+    };
     departments: {
         data: Department[];
     };
+    workCenters: {
+        data: WorkCenter[];
+    };
     isEditing?: boolean;
     closedStatusId?: string | number | null;
+    type: string;
 }
 
 export type FindingFormData = {
     finding_clause_id: string;
     finding_status_id: string;
     finding_priority_id: string;
+    cause_code_id: string;
     department_id: string;
+    work_center_id: string;
     functional_location_id: string;
     equipment_id: string;
     description: string;
@@ -70,19 +80,25 @@ export default function FindingForm({
     findingClauses,
     findingStatuses,
     findingPriorities,
+    causeCodes,
     departments,
+    workCenters,
     functionalLocation,
     equipment,
     isEditing = false,
-    closedStatusId,
+    type,
 }: FindingFormProps) {
-    const [clauseDescription, setClauseDescription] = React.useState<string | null>(null);
-    const [clauseCode, setClauseCode] = React.useState<string | null>(null);
-
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
     const compressImage = useImageCompressor();
-    const [errorCompression, setErrorCompression] = useState<string | null>(null);
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
+
+    const disabledAudit =
+        data.finding_clause_id == '' ||
+        data.description == '' ||
+        data.functional_location_id == '' ||
+        data.finding_status_id == '' ||
+        data.finding_priority_id == '';
+    const disabledAbnormality = disabledAudit || data.cause_code_id == '' || data.department_id == '' || data.work_center_id == '';
+    const disabledWhen = type == 'AUD' ? disabledAudit : disabledAbnormality;
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -104,252 +120,155 @@ export default function FindingForm({
         } catch (error) {
             if (error instanceof Error) {
                 console.error('Compression failed: ', error);
-                setErrorCompression(error.message);
             }
         } finally {
             setIsCompressing(false);
         }
     };
 
-    const isStatusClosed = data.finding_status_id == closedStatusId;
-    const isMobile = useIsMobile();
+    findingClauses.data = findingClauses.data.filter((e: FindingClause) => {
+        return e.type.toLowerCase() == type.toLowerCase();
+    });
 
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
-            <Field>
-                <FieldLabel htmlFor="finding_clause_id">
-                    Finding Clause
-                    <RequiredLabel />
-                </FieldLabel>
-                <Select
-                    disabled={processing}
-                    onValueChange={(e) => {
-                        setData('finding_clause_id', e);
-                        setClauseDescription(findingClauses?.data?.[parseInt(e) - 1].description);
-                        setClauseCode(findingClauses?.data?.[parseInt(e) - 1].code);
-                    }}
+            {type == 'ABN' ? (
+                <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
+                    <FindingClauseSelect
+                        clauses={findingClauses?.data}
+                        value={data.finding_clause_id}
+                        onChange={(val) => setData('finding_clause_id', val)}
+                        error={errors.finding_clause_id}
+                        tabIndex={1}
+                        disabled={processing}
+                    />
+                    <CauseCodeSelect
+                        causeCodes={causeCodes?.data}
+                        value={data.cause_code_id}
+                        onChange={(val) => setData('cause_code_id', val)}
+                        error={errors.cause_code_id}
+                        disabled={processing}
+                    />
+                </div>
+            ) : (
+                <FindingClauseSelect
+                    clauses={findingClauses.data}
                     value={data.finding_clause_id}
-                >
-                    <SelectTrigger tabIndex={1} className="truncate overflow-hidden whitespace-nowrap">
-                        <SelectValue placeholder="Select clause" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel className="text-muted-foreground truncate">Finding Clause</SelectLabel>
-                            {findingClauses?.data?.map((fc: FindingClause) => {
-                                return (
-                                    <SelectItem key={fc.id} value={fc.id.toString()}>
-                                        {fc.code} - {isMobile ? truncateText(fc.description, 35) : fc.description}
-                                    </SelectItem>
-                                );
-                            })}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-                <FieldError>{errors.finding_clause_id}</FieldError>
-                {clauseCode && clauseDescription && (
-                    <Alert>
-                        <Info />
-                        <AlertTitle>{clauseCode}</AlertTitle>
-                        <AlertDescription>{clauseDescription}</AlertDescription>
-                    </Alert>
-                )}
-            </Field>
-
-            <Field>
-                <FieldLabel htmlFor="description">
-                    Description
-                    <RequiredLabel />
-                </FieldLabel>
-                <Textarea
-                    className="text-sm"
+                    onChange={(val) => setData('finding_clause_id', val)}
+                    error={errors.finding_clause_id}
+                    tabIndex={1}
                     disabled={processing}
-                    tabIndex={2}
-                    id="description"
-                    onChange={(val: React.ChangeEvent<HTMLTextAreaElement>) => setData('description', val.target.value)}
-                    value={data.description}
-                    placeholder="Explain the issue clearly (e.g., 'Oil leak detected on the main pump seal, dripping approx. 1 drop/sec. Requires seal replacement.')"
                 />
-                <FieldError>{errors.description}</FieldError>
-            </Field>
+            )}
 
-            <Field>
-                <FieldLabel htmlFor="functional_location_id">
-                    Funcloc (Area)
-                    <RequiredLabel />
-                </FieldLabel>
-                <FunctionalLocationSelect
-                    value={data.functional_location_id ?? ''}
-                    processing={processing}
-                    recentlySuccessful={recentlySuccessful}
-                    tabIndex={3}
-                    id="functional_location_id"
-                    currentValue={functionalLocation}
-                    onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
-                    placeholder="Select funcloc"
-                />
-                <FieldError>{errors.functional_location_id}</FieldError>
-            </Field>
+            <FindingDescriptionInput
+                value={data.description}
+                onChange={(val) => setData('description', val)}
+                error={errors.description}
+                tabIndex={3}
+                placeholder={
+                    type === 'ABN'
+                        ? "Describe the machine abnormality (e.g., 'Unusual vibration on motor bearing...')"
+                        : 'Describe the audit finding in detail...'
+                }
+                disabled={processing}
+            />
 
             <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
-                <Field>
-                    <FieldLabel htmlFor="department">Department</FieldLabel>
-                    <Select disabled={processing} onValueChange={(e) => setData('department_id', e)} value={data.department_id}>
-                        <SelectTrigger tabIndex={4} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Select a department" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Departments</SelectLabel>
-                                {departments?.data?.map((d) => {
-                                    return (
-                                        <SelectItem key={d.id} value={d.id.toString()}>
-                                            {d.code + ' - ' + d.name}
-                                        </SelectItem>
-                                    );
-                                })}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <FieldError>{errors.department_id}</FieldError>
-                </Field>
-                <Field>
-                    <FieldLabel htmlFor="equipment_id">Equipment</FieldLabel>
-                    <EquipmentSelect
-                        value={data.equipment_id ?? ''}
+                <DepartmentSelect
+                    departments={departments?.data}
+                    value={data.department_id}
+                    onChange={(val) => setData('department_id', val)}
+                    error={errors.department_id}
+                    tabIndex={4}
+                    disabled={processing}
+                    required={type === 'ABN'}
+                />
+
+                <WorkCenterSelect
+                    workCenters={workCenters?.data}
+                    value={data.work_center_id}
+                    onChange={(val) => setData('work_center_id', val)}
+                    error={errors.work_center_id}
+                    tabIndex={5}
+                    departmentId={data.department_id}
+                    disabled={processing}
+                    required={type === 'ABN'}
+                />
+            </div>
+
+            <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
+                <Field className={type != 'ABN' ? 'sm:col-span-2' : undefined}>
+                    <FieldLabel htmlFor="functional_location_id">
+                        Funcloc (Area)
+                        <RequiredLabel />
+                    </FieldLabel>
+                    <FunctionalLocationSelect
+                        value={data.functional_location_id ?? ''}
                         processing={processing}
                         recentlySuccessful={recentlySuccessful}
-                        tabIndex={5}
-                        id="equipment_id"
-                        currentValue={equipment}
-                        onChange={(val) => setData('equipment_id', val ? val.toString() : '')}
-                    />
-                    <FieldError>{errors.equipment_id}</FieldError>
-                </Field>
-            </div>
-
-            {/*             
-                <Field>
-                    <FieldLabel htmlFor="notification">Notification</FieldLabel>
-                    <Input
                         tabIndex={6}
-                        id="notification"
-                        value={data.notification}
-                        onChange={(e) => setData('notification', e.target.value)}
-                        placeholder="80012233"
-                        inputMode="numeric"
-                        disabled={processing}
-                        autoComplete="notification"
+                        id="functional_location_id"
+                        currentValue={functionalLocation}
+                        onChange={(val) => setData('functional_location_id', val ? val.toString() : '')}
+                        placeholder="Select funcloc"
                     />
-                    <FieldError>{errors.notification}</FieldError>
-                </Field> */}
+                    <FieldError>{errors.functional_location_id}</FieldError>
+                </Field>
+
+                {type == 'ABN' && (
+                    <Field>
+                        <FieldLabel htmlFor="equipment_id">Equipment</FieldLabel>
+                        <EquipmentSelect
+                            value={data.equipment_id ?? ''}
+                            processing={processing}
+                            recentlySuccessful={recentlySuccessful}
+                            tabIndex={7}
+                            id="equipment_id"
+                            currentValue={equipment}
+                            onChange={(val) => setData('equipment_id', val ? val.toString() : '')}
+                            functionalLocationId={data.functional_location_id}
+                        />
+                        <FieldError>{errors.equipment_id}</FieldError>
+                    </Field>
+                )}
+            </div>
 
             <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
-                <Field>
-                    <FieldLabel htmlFor="finding_status_id">
-                        Finding Status
-                        <RequiredLabel />
-                    </FieldLabel>
-                    <Select
-                        defaultValue="1"
-                        disabled={processing}
-                        onValueChange={(e) => setData('finding_status_id', e)}
-                        value={data.finding_status_id}
-                    >
-                        <SelectTrigger tabIndex={6} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Finding Status</SelectLabel>
-                                {findingStatuses?.data?.length > 0 &&
-                                    findingStatuses.data.map((fs) => {
-                                        return (
-                                            <SelectItem key={fs.id} value={fs.id.toString()}>
-                                                {fs.name}
-                                            </SelectItem>
-                                        );
-                                    })}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <FieldError>{errors.finding_status_id}</FieldError>
-                </Field>
-                <Field>
-                    <FieldLabel htmlFor="finding_priority_id">
-                        Finding Priority
-                        <RequiredLabel />
-                    </FieldLabel>
-                    <Select
-                        defaultValue="1"
-                        disabled={processing}
-                        onValueChange={(e) => setData('finding_priority_id', e)}
-                        value={data.finding_priority_id}
-                    >
-                        <SelectTrigger tabIndex={7} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Select priority" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Finding Priority</SelectLabel>
-                                {findingPriorities?.data?.map((fp) => {
-                                    return (
-                                        <SelectItem key={fp.id} value={fp.id.toString()}>
-                                            {fp.label}
-                                        </SelectItem>
-                                    );
-                                })}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <FieldError>{errors.finding_priority_id}</FieldError>
-                </Field>
+                <FindingStatusSelect
+                    statuses={findingStatuses?.data}
+                    value={data.finding_status_id}
+                    onChange={(val) => setData('finding_status_id', val)}
+                    error={errors.finding_status_id}
+                    tabIndex={8}
+                    disabled={processing}
+                />
+                <FindingPrioritySelect
+                    priorities={findingPriorities?.data}
+                    value={data.finding_priority_id}
+                    onChange={(val) => setData('finding_priority_id', val)}
+                    error={errors.finding_priority_id}
+                    tabIndex={9}
+                    disabled={processing}
+                />
             </div>
 
-            {(isStatusClosed || !isEditing) && (
-                <Field>
-                    <FieldLabel htmlFor="images">
-                        Photos
-                        <RequiredLabel />
-                    </FieldLabel>
-                    <Input
-                        tabIndex={8}
-                        type="file"
-                        id="images"
-                        multiple
-                        ref={fileInputRef}
-                        disabled={processing || isCompressing}
-                        onChange={handleFileChange}
-                        accept=".jpg,.jpeg,.png,.webp"
-                    />
-                    <FieldError>{errors.images || errorCompression}</FieldError>
-                    <FieldDescription>
-                        <div className="space-y-1">
-                            <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                                <Info className="text-muted-foreground size-3 shrink-0" />
-                                Upload between 2 to 5 photos.
-                            </div>
-                            <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                                <Info className="text-muted-foreground size-3 shrink-0" />
-                                Images will be automatically compressed to optimize upload speed and storage.
-                            </div>
-                        </div>
-                    </FieldDescription>
-                    {isCompressing && <CompressingDescription />}
-                </Field>
+            {!isEditing && (
+                <FindingPhotoInput
+                    images={data.images}
+                    onFileChange={handleFileChange}
+                    error={errors.images}
+                    isCompressing={isCompressing}
+                    disabled={processing}
+                    tabIndex={10}
+                />
             )}
 
             {canSubmit && (
                 <ButtonSubmit
                     processing={processing}
-                    disabled={
-                        processing ||
-                        data.finding_clause_id == '' ||
-                        data.functional_location_id == '' ||
-                        data.description == '' ||
-                        (!isEditing ? data.images == null : isStatusClosed && data.images == null)
-                    }
-                    tabIndex={9}
+                    disabled={processing || disabledWhen || (!isEditing ? data.images == null : false)}
+                    tabIndex={11}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}
                     label={buttonLabel}

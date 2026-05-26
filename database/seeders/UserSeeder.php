@@ -21,10 +21,5 @@ class UserSeeder extends Seeder
             PositionSeeder::class,
             WorkCenterSeeder::class,
         ]);
-
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-        ]);
     }
 }

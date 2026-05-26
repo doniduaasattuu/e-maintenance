@@ -23,6 +23,15 @@ class MaterialResource extends JsonResource
             'material_type_id' => $this->material_type_id,
             'unit' => new MaterialUnitResource($this->whenLoaded('unit')),
             'type' => new MaterialTypeResource($this->whenLoaded('type')),
+
+            'pivot' => $this->whenPivotLoaded('equipment_material', function () {
+                return [
+                    'id' => $this->pivot->id,
+                    'quantity' => $this->pivot->quantity,
+                    'note' => $this->pivot->note,
+                ];
+            }),
+
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),

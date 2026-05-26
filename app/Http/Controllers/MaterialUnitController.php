@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialUnitExport;
 use App\Http\Requests\MaterialUnit\StoreMaterialUnitRequest;
 use App\Http\Requests\MaterialUnit\UpdateMaterialUnitRequest;
 use App\Http\Resources\MaterialUnitResource;
 use App\Models\MaterialUnit;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class MaterialUnitController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,10 +25,16 @@ class MaterialUnitController extends Controller
     {
         Gate::authorize('index_materialunit');
 
-        $materialUnits = MaterialUnit::search($request)->paginate()->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $materialUnits = MaterialUnit::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('material-unit/index', [
             'materialUnits' => MaterialUnitResource::collection($materialUnits),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -121,5 +132,10 @@ class MaterialUnitController extends Controller
                 'description' => $e->getMessage() ?? 'Unit is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new MaterialUnitExport(), 'Material_Units_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

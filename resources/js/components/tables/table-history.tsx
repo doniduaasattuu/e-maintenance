@@ -1,8 +1,12 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { tableCaption } from '@/lib/utils';
 import { InstallDismantleHistory, Meta } from '@/types';
-import React from 'react';
+import { useState } from 'react';
+import ButtonExport from '../button-export';
+import DialogEquipmentHistoryExportExcel from '../dialog-equipment-history-export-excel';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
 
 interface HistoryTableProps {
@@ -10,19 +14,29 @@ interface HistoryTableProps {
         data: InstallDismantleHistory[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableHistory({ histories }: HistoryTableProps) {
+export default function TableHistory({ histories, filters }: HistoryTableProps) {
     const meta = histories.meta;
-    const caption = `Showing ${meta.from ?? 0} to ${meta.to ?? 0} of ${meta.total ?? 0} results`;
+    const caption = tableCaption(meta);
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
 
     return (
-        <React.Fragment>
+        <>
             <div className="flex justify-between gap-2">
-                <SearchBar />
+                <div className="flex justify-between gap-2">
+                    <SearchBar value={filters?.query} tabIndex={1} />
+                    <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                </div>
+
+                <ButtonExport tabIndex={2} onClick={() => setExportDialog(true)} />
             </div>
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {histories.data.length > 0 ? (
+                {histories.data && histories.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -85,6 +99,8 @@ export default function TableHistory({ histories }: HistoryTableProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </React.Fragment>
+
+            <DialogEquipmentHistoryExportExcel open={exportDialog} setOpen={setExportDialog} />
+        </>
     );
 }

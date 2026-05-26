@@ -2,19 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FindingExport;
+use App\Exports\FunctionalLocationExport;
 use App\Http\Requests\FunctionalLocation\StoreFunctionalLocationRequest;
 use App\Http\Requests\FunctionalLocation\UpdateFunctionalLocationRequest;
+use App\Http\Resources\CauseCodeResource;
+use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\EquipmentClassResource;
+use App\Http\Resources\EquipmentResource;
+use App\Http\Resources\EquipmentStatusResource;
+use App\Http\Resources\FindingClauseResource;
+use App\Http\Resources\FindingPriorityResource;
+use App\Http\Resources\FindingResource;
+use App\Http\Resources\FindingStatusResource;
 use App\Http\Resources\FunctionalLocationResource;
 use App\Http\Resources\WorkCenterResource;
+use App\Models\CauseCode;
+use App\Models\Department;
+use App\Models\EquipmentClass;
+use App\Models\EquipmentStatus;
+use App\Models\FindingClause;
+use App\Models\FindingPriority;
+use App\Models\FindingStatus;
 use App\Models\FunctionalLocation;
 use App\Models\WorkCenter;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class FunctionalLocationController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -22,7 +44,9 @@ class FunctionalLocationController extends Controller
     {
         Gate::authorize('index_functionallocation');
 
-        $functionalLocations = FunctionalLocation::search($request)->paginate()->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $functionalLocations = FunctionalLocation::search($request)->paginate($perPage)->withQueryString();
 
         if ($request->expectsJson() && $request->filled('query')) {
             return response()->json(FunctionalLocationResource::collection($functionalLocations));
@@ -30,6 +54,10 @@ class FunctionalLocationController extends Controller
 
         return Inertia::render('functional-location/index', [
             'functionalLocations' => FunctionalLocationResource::collection($functionalLocations),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -67,9 +95,34 @@ class FunctionalLocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(FunctionalLocation $functionalLocation)
+    public function show(Request $request, FunctionalLocation $functionalLocation)
     {
-        // Gate::authorize('show_functionallocation');
+        Gate::authorize('show_functionallocation');
+
+        $perPage = $this->getPerPage($request);
+        $equipmentClass = EquipmentClass::all();
+        $equipmentStatus = EquipmentStatus::all();
+
+        return Inertia::render('functional-location/show', [
+            'functionalLocation' => new FunctionalLocationResource($functionalLocation),
+            'equipments' => EquipmentResource::collection(
+                $functionalLocation->equipments()->with([
+                    'eclass',
+                    'status',
+                    'functionalLocation',
+                ])
+                    ->search($request)
+                    ->paginate($perPage)
+                    ->withQueryString(),
+
+            ),
+            'equipmentClasses' => EquipmentClassResource::collection($equipmentClass),
+            'equipmentStatuses' => EquipmentStatusResource::collection($equipmentStatus),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
+        ]);
     }
 
     /**
@@ -128,5 +181,14 @@ class FunctionalLocationController extends Controller
                 'description' => $e->getMessage() ?? 'Functional location is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'area' => $request->query('area'),
+        ];
+
+        return Excel::download(new FunctionalLocationExport($filters), 'Functional_Locations_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

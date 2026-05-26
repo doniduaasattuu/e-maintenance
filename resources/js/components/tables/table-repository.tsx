@@ -2,19 +2,23 @@ import { GeneratePagination } from '@/components/generate-pagination';
 import SearchBar from '@/components/search-bar';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { copyTextToClipboard, tableCaption } from '@/lib/utils';
 import { Meta, Repository } from '@/types';
-import { router } from '@inertiajs/react';
-import { Copy, Download, Edit, Trash2 } from 'lucide-react';
-import React from 'react';
+import { Link, router } from '@inertiajs/react';
+import { Copy, Download, Edit, MoreHorizontalIcon, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
+import DialogRepositoryExportExcel from '../dialog-repository-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterRepositoryExtension from '../filter-repository-extension';
-import TextLink from '../text-link';
+import { PerPageSelector } from '../per-page-selector';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { ButtonGroup } from '../ui/button-group';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface TableRepositoryProps {
     repositories: {
@@ -23,9 +27,14 @@ interface TableRepositoryProps {
     };
     extensions?: string[];
     renderable: string[];
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableRepository({ repositories, extensions, renderable }: TableRepositoryProps) {
+export default function TableRepository({ repositories, extensions, renderable, withHeader = true, filters }: TableRepositoryProps) {
     const { can } = usePermissions();
     const meta = repositories.meta;
     const caption = tableCaption(meta);
@@ -39,19 +48,29 @@ export default function TableRepository({ repositories, extensions, renderable }
         window.open(route('repositories.show', id));
     }
 
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
+
     return (
-        <TableLayout moduleKey={'REPOSITORY'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['ext']}>
-                        <FilterRepositoryExtension extensions={extensions} />
-                    </Filter>
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                        <Filter open={open} setOpen={setOpen} keys={['ext']}>
+                            <FilterRepositoryExtension extensions={extensions} />
+                        </Filter>
+                    </div>
+                    <ButtonGroup>
+                        {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={3} />}
+                        {repositories.data.length > 0 && (
+                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        )}
+                    </ButtonGroup>
                 </div>
-                {can.create_repository && <ButtonAdd route={route('repositories.create')} tabIndex={2} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {repositories.data.length > 0 ? (
+                {repositories.data && repositories.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -63,9 +82,6 @@ export default function TableRepository({ repositories, extensions, renderable }
                                 <TableHead className="text-muted-foreground">Uploaded by</TableHead>
                                 <TableHead className="text-muted-foreground">Uploaded at</TableHead>
                                 <TableHead className="text-muted-foreground text-right"></TableHead>
-                                <TableHead className="text-muted-foreground text-right"></TableHead>
-                                {can.edit_repository && <TableHead className="text-muted-foreground text-right"></TableHead>}
-                                {can.delete_repository && <TableHead className="text-muted-foreground text-right"></TableHead>}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -101,33 +117,43 @@ export default function TableRepository({ repositories, extensions, renderable }
                                         <TableCell className="text-muted-foreground max-w-50 truncate">{repository.mime_type}</TableCell>
                                         <TableCell className="text-muted-foreground w-22.5">{repository.uploadedBy?.name}</TableCell>
                                         <TableCell className="text-muted-foreground w-22.5">{repository.created_at}</TableCell>
-                                        <TableCell className="table-icon text-right">
-                                            <a href={`/repositories/${repository.id}`} title="Download">
-                                                <Download size={18} className="text-blue-500" />
-                                            </a>
+                                        <TableCell className="text-right">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button size="icon" variant="ghost" className="size-6">
+                                                        <MoreHorizontalIcon />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <a href={`/repositories/${repository.id}`} title="Download">
+                                                        <DropdownMenuItem>
+                                                            <Download size={18} className="text-blue-500" /> Download
+                                                        </DropdownMenuItem>
+                                                    </a>
+                                                    <DropdownMenuItem onClick={() => copyTextToClipboard(repository.url)}>
+                                                        <Copy size={18} /> Copy
+                                                    </DropdownMenuItem>
+                                                    {can.edit_repository && (
+                                                        <Link title="Edit" href={route('repositories.edit', repository.id)}>
+                                                            <DropdownMenuItem>
+                                                                <Edit size={18} className="text-green-500" /> Edit
+                                                            </DropdownMenuItem>
+                                                        </Link>
+                                                    )}
+                                                    {can.delete_repository && (
+                                                        <ActionConfirm
+                                                            action={() => handleDeleteRepository(repository.id)}
+                                                            title={`Delete Repository ${repository.title}?`}
+                                                            description="This action will remove this repository from database. This action cannot be undone."
+                                                        >
+                                                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                <Trash2 size={18} className="text-red-500" /> Delete
+                                                            </DropdownMenuItem>
+                                                        </ActionConfirm>
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </TableCell>
-                                        <TableCell className="table-icon text-right">
-                                            <Copy size={18} onClick={() => copyTextToClipboard(repository.url)} />
-                                        </TableCell>
-                                        {can.edit_repository && (
-                                            <TableCell className="table-icon text-right">
-                                                <TextLink title="Edit" href={route('repositories.edit', repository.id)}>
-                                                    <Edit size={18} className="text-green-500" />
-                                                </TextLink>
-                                            </TableCell>
-                                        )}
-
-                                        {can.delete_repository && (
-                                            <TableCell title="Delete" className="table-icon cursor-pointer text-right">
-                                                <ActionConfirm
-                                                    action={() => handleDeleteRepository(repository.id)}
-                                                    title={`Delete Repository ${repository.title}?`}
-                                                    description="This action will remove this repository from database. This action cannot be undone."
-                                                >
-                                                    <Trash2 size={18} className="text-red-500" />
-                                                </ActionConfirm>
-                                            </TableCell>
-                                        )}
                                     </TableRow>
                                 );
                             })}
@@ -138,6 +164,8 @@ export default function TableRepository({ repositories, extensions, renderable }
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+
+            <DialogRepositoryExportExcel open={exportDialog} setOpen={setExportDialog} extensions={extensions} />
+        </>
     );
 }

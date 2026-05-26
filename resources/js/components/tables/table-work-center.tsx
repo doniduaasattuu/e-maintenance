@@ -6,20 +6,27 @@ import { tableCaption } from '@/lib/utils';
 import { Meta, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
-import React from 'react';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
+import { ButtonGroup } from '../ui/button-group';
 
 interface WorkCenterTableProps {
     workCenters: {
         data: WorkCenter[];
         meta: Meta;
     };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
+export default function TableWorkCenter({ workCenters, withHeader = true, filters }: WorkCenterTableProps) {
     const { can } = usePermissions();
     const meta = workCenters.meta;
     const caption = tableCaption(meta);
@@ -29,13 +36,21 @@ export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
     }
 
     return (
-        <React.Fragment>
-            <div className="flex justify-between gap-2">
-                <SearchBar />
-                {can.create_workcenter && <ButtonAdd route={route('work-centers.create')} tabIndex={2} />}
-            </div>
+        <>
+            {withHeader && (
+                <div className="flex justify-between gap-2">
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                    </div>
+                    <ButtonGroup>
+                        {can.create_workcenter && <ButtonAdd route={route('work-centers.create')} tabIndex={3} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('work-centers.export'))} />
+                    </ButtonGroup>
+                </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {workCenters.data.length > 0 ? (
+                {workCenters.data && workCenters.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -43,6 +58,7 @@ export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
                                 <TableHead className="text-muted-foreground">#</TableHead>
                                 <TableHead className="text-muted-foreground">Name</TableHead>
                                 <TableHead className="text-muted-foreground">Code</TableHead>
+                                <TableHead className="text-muted-foreground">Department</TableHead>
                                 <TableHead className="text-muted-foreground">Created at</TableHead>
                                 <TableHead className="text-muted-foreground">Updated at</TableHead>
                                 {can.delete_workcenter && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
@@ -61,6 +77,7 @@ export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
                                             )}
                                         </TableCell>
                                         <TableCell className="font-medium">{workcenter.code}</TableCell>
+                                        <TableCell className="font-medium">{workcenter.department?.name ?? 'N/A'}</TableCell>
                                         <TableCell className="text-muted-foreground w-22.5">{workcenter.created_at}</TableCell>
                                         <TableCell className="text-muted-foreground w-22.5">{workcenter.updated_at}</TableCell>
 
@@ -85,6 +102,6 @@ export default function TableWorkCenter({ workCenters }: WorkCenterTableProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </React.Fragment>
+        </>
     );
 }

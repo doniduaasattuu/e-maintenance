@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialTypeExport;
 use App\Http\Requests\MaterialType\StoreMaterialTypeRequest;
 use App\Http\Requests\MaterialType\UpdateMaterialTypeRequest;
 use App\Http\Resources\MaterialTypeResource;
 use App\Models\MaterialType;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class MaterialTypeController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,10 +25,16 @@ class MaterialTypeController extends Controller
     {
         Gate::authorize('index_materialtype');
 
-        $material_types = MaterialType::search($request)->paginate()->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $material_types = MaterialType::search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('material-type/index', [
             'materialTypes' => MaterialTypeResource::collection($material_types),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -125,5 +136,10 @@ class MaterialTypeController extends Controller
                 'description' => $e->getMessage() ?? 'Material type is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new MaterialTypeExport(), 'Material_Types_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

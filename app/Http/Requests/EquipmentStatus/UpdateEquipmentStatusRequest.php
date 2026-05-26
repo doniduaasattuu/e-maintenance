@@ -23,13 +23,6 @@ class UpdateEquipmentStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => [
-                'required',
-                'string',
-                'max:11',
-                'uppercase',
-                Rule::unique('equipment_statuses', 'code')->ignore($this->equipment_status),
-            ],
             'name' => [
                 'required',
                 'string',

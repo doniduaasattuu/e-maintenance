@@ -2,24 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EquipmentExport;
+use App\Exports\FindingExport;
 use App\Http\Requests\Equipment\StoreEquipmentRequest;
 use App\Http\Requests\Equipment\UpdateEquipmentRequest;
+use App\Http\Resources\CauseCodeResource;
+use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
-use App\Http\Resources\RepositoryResource;
+use App\Http\Resources\FindingClauseResource;
+use App\Http\Resources\FindingPriorityResource;
+use App\Http\Resources\FindingResource;
+use App\Http\Resources\FindingStatusResource;
+use App\Http\Resources\WorkCenterResource;
+use App\Models\CauseCode;
+use App\Models\Department;
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
-use Illuminate\Http\Request;
+use App\Models\FindingClause;
+use App\Models\FindingPriority;
+use App\Models\FindingStatus;
+use App\Models\WorkCenter;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 use Throwable;
+
+use function Pest\Laravel\session;
 
 class EquipmentController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -27,18 +47,44 @@ class EquipmentController extends Controller
     {
         Gate::authorize('index_equipment');
 
-        $equipments = Equipment::with(['functionalLocation', 'eclass', 'status'])->search($request)->paginate(10)->withQueryString();
+        if ($request->expectsJson()) {
+            $query = Equipment::query()->with(['functionalLocation', 'eclass', 'status']);
+
+            if ($request->filled('query')) {
+                $query->search($request);
+            }
+
+            if ($request->filled('functionalLocationId')) {
+                $query->where('functional_location_id', $request->query('functionalLocationId'));
+            }
+
+            $equipments = $query->take(20)->get();
+
+            return response()->json(EquipmentResource::collection($equipments));
+        }
+
+        $perPage = $this->getPerPage($request);
+
+        $equipments = Equipment::with(['functionalLocation', 'eclass', 'status'])->search($request)->paginate($perPage)->withQueryString();
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
 
-        if ($request->expectsJson() && $request->filled('query')) {
-            return response()->json(EquipmentResource::collection($equipments));
-        }
+        // if ($request->expectsJson() && $request->filled('query')) {
+        //     if ($request->filled('functionalLocationId')) {
+        //         $equipments->where('functional_location_id', $request->query('functionalLocationId'));
+        //     }
+
+        //     return response()->json(EquipmentResource::collection($equipments));
+        // }
 
         return Inertia::render('equipment/index', [
             'equipments' => EquipmentResource::collection($equipments),
             'equipmentClasses' => EquipmentClassResource::collection($equipmentClasses),
             'equipmentStatuses' => EquipmentStatusResource::collection($equipmentStatuses),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -82,12 +128,39 @@ class EquipmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Equipment $equipment)
+    public function show(Request $request, Equipment $equipment)
     {
         Gate::authorize('show_equipment');
 
+        $perPage = $this->getPerPage($request);
+
+        $findingClauses = FindingClause::all();
+        $findingStatuses = FindingStatus::all();
+        $findingPriorities = FindingPriority::all();
+        $departments = Department::all();
+        $workCenters = WorkCenter::all();
+        $causeCodes = CauseCode::all();
+
+        $equipment->load([
+            'functionalLocation',
+            'eclass',
+            'status',
+        ]);
+
         return Inertia::render('equipment/show', [
-            'equipment' => new EquipmentResource($equipment->load(['functionalLocation', 'eclass', 'status'])),
+            'equipment' => new EquipmentResource($equipment),
+            'findings' => FindingResource::collection($equipment
+                ->findings()
+                ->search($request)
+                ->withAllRelations()
+                ->latest()
+                ->paginate($perPage)),
+            'findingClauses' => FindingClauseResource::collection($findingClauses),
+            'findingStatuses' => FindingStatusResource::collection($findingStatuses),
+            'findingPriorities' => FindingPriorityResource::collection($findingPriorities),
+            'departments' => DepartmentResource::collection($departments),
+            'workCenters' => WorkCenterResource::collection($workCenters),
+            'causeCodes' => CauseCodeResource::collection($causeCodes),
         ]);
     }
 
@@ -160,5 +233,27 @@ class EquipmentController extends Controller
                 'description' => 'Failed to delete equipment: ' . $e->getMessage(),
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'functional_location_id' => $request->query('functional_location_id'),
+            'status_ids' => $request->query('status_ids'),
+            'class_ids' => $request->query('class_ids'),
+        ];
+
+        return Excel::download(new EquipmentExport($filters), 'Equipments_' . now()->format('Ymd_His') . '.xlsx');
+    }
+
+    public function equipmentFindingExport(Request $request)
+    {
+        $filters = [
+            'equipment_id'   => $request->query('equipment_id'),
+            'start_date'     => $request->query('start_date'),
+            'end_date'       => $request->query('end_date'),
+        ];
+
+        return Excel::download(new FindingExport($filters), 'Equipment_Findings_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

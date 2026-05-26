@@ -1,5 +1,6 @@
 import TableMaterialType from '@/components/tables/table-material-type';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { MaterialType, Meta, type BreadcrumbItem } from '@/types';
 
@@ -16,12 +17,18 @@ interface MaterialTypeIndexProps {
         data: MaterialType[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function MaterialTypeIndex({ materialTypes }: MaterialTypeIndexProps) {
+export default function MaterialTypeIndex({ materialTypes, filters }: MaterialTypeIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableMaterialType materialTypes={materialTypes} />
+            <TableLayout moduleKey={'MATERIAL_TYPE'} className="md:max-w-4xl">
+                <TableMaterialType materialTypes={materialTypes} filters={filters} />
+            </TableLayout>
         </AppLayout>
     );
 }

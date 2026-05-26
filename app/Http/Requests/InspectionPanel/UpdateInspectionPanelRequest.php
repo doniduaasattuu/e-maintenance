@@ -28,7 +28,7 @@ class UpdateInspectionPanelRequest extends FormRequest
             'temperature_incoming_r' =>  ['nullable', 'numeric', 'max:150'],
             'temperature_incoming_s' =>  ['nullable', 'numeric', 'max:150'],
             'temperature_incoming_t' =>  ['nullable', 'numeric', 'max:150'],
-            'temperature_cabinet' =>  ['nullable', 'numeric', 'max:150'],
+            'temperature_cabinet' =>  ['required_if:is_operational,1', 'nullable', 'numeric', 'max:150'],
             'temperature_outgoing_r' =>  ['nullable', 'numeric', 'max:150'],
             'temperature_outgoing_s' =>  ['nullable', 'numeric', 'max:150'],
             'temperature_outgoing_t' =>  ['nullable', 'numeric', 'max:150'],
@@ -36,6 +36,13 @@ class UpdateInspectionPanelRequest extends FormRequest
             'current_s' =>  ['nullable', 'numeric', 'max:9999,99'],
             'current_t' =>  ['nullable', 'numeric', 'max:9999,99'],
             'inspected_by' => ['nullable', 'exists:App\Models\User,id'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'temperature_cabinet.required_if' => 'The temperature cabinet field is required when equipment is operational.',
         ];
     }
 }

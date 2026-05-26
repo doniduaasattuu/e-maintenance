@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Image\StoreImageRequest;
 use App\Http\Resources\EquipmentResource;
+use App\Http\Resources\FunctionalLocationResource;
 use App\Http\Resources\MaterialResource;
 use App\Models\Equipment;
+use App\Models\FunctionalLocation;
 use App\Models\Image;
 use App\Models\Material;
 use App\Services\ImageService;
@@ -15,7 +17,7 @@ use Inertia\Inertia;
 
 class ImageController extends Controller
 {
-    private $imageService;
+    private ImageService $imageService;
 
     public function __construct(ImageService $imageService)
     {
@@ -30,6 +32,16 @@ class ImageController extends Controller
         Gate::authorize('index_image');
 
         switch ($type) {
+            case 'functional-location':
+                $functionalLocation = FunctionalLocation::find($id);
+
+                return Inertia::render('functional-location/image/index', [
+                    'functionalLocation' => new FunctionalLocationResource($functionalLocation->load([
+                        'images' => function ($query) {
+                            $query->latest();
+                        }
+                    ])),
+                ]);
             case 'equipment':
                 $equipment = Equipment::find($id);
 
@@ -40,7 +52,6 @@ class ImageController extends Controller
                         }
                     ])),
                 ]);
-                break;
             case 'material':
                 $material = Material::find($id);
 
@@ -51,13 +62,11 @@ class ImageController extends Controller
                         }
                     ])),
                 ]);
-                break;
             default:
                 return back()->with('message', [
                     'type' => 'error',
                     'description' => 'Image model is not exists',
                 ]);
-                break;
         }
     }
 

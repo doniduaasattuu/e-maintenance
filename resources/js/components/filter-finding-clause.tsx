@@ -4,12 +4,19 @@ import truncateText, { cn } from '@/lib/utils';
 import { FindingClause } from '@/types';
 import { Check } from 'lucide-react';
 
-interface FilterFindingPrioritiesProps {
+interface FilterFindingClauseProps {
     findingClauses: FindingClause[];
+    filter?: 'AUD' | 'ABN';
 }
 
-export default function FilterFindingClause({ findingClauses }: FilterFindingPrioritiesProps) {
+export default function FilterFindingClause({ findingClauses, filter }: FilterFindingClauseProps) {
     const { selectedValues, toggleValue, handleClearAll } = useFilterParam('clause');
+
+    if (filter) {
+        findingClauses = findingClauses.filter((e: FindingClause) => {
+            return e.type.toLowerCase() == filter.toLowerCase();
+        });
+    }
 
     return (
         <CommandGroup heading="Finding Clause">

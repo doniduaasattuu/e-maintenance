@@ -58,7 +58,6 @@ export default function OrganizationsLayout({ className, children }: Props) {
                                     'inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-all',
                                     isActive && 'bg-muted sm:bg-background text-foreground',
                                 )}
-                                prefetch
                             >
                                 {item.title}
                             </Link>
@@ -68,7 +67,7 @@ export default function OrganizationsLayout({ className, children }: Props) {
 
                 <Separator className="my-6 md:hidden" />
 
-                <section className="max-w-3xl space-y-12">{children}</section>
+                <section className="max-w-6xl space-y-4">{children}</section>
             </div>
         </div>
     );

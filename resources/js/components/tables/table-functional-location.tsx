@@ -5,38 +5,57 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { FunctionalLocation, Meta } from '@/types';
-import { router } from '@inertiajs/react';
-import { Trash2 } from 'lucide-react';
+import { Link, router } from '@inertiajs/react';
+import { Edit, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import ButtonExport from '../button-export';
+import DialogFunctionalLocationExportExcel from '../dialog-functional-location-export-excel';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableFunctionalLocationProps {
     functionalLocations: {
         data: FunctionalLocation[];
         meta: Meta;
     };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableFunctionalLocation({ functionalLocations }: TableFunctionalLocationProps) {
+export default function TableFunctionalLocation({ functionalLocations, withHeader = true, filters }: TableFunctionalLocationProps) {
     const { can } = usePermissions();
     const meta = functionalLocations.meta;
     const caption = tableCaption(meta);
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
 
     function handleDeleteFunctionalLocation(id: number | string) {
         router.delete(route('functional-locations.destroy', id));
     }
+
     return (
-        <TableLayout moduleKey={'FUNCTIONAL_LOCATION'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                    </div>
+                    <ButtonGroup>
+                        {can.create_functionallocation && <ButtonAdd tabIndex={3} route={route('functional-locations.create')} />}
+                        {functionalLocations.data.length > 0 && (
+                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        )}
+                    </ButtonGroup>
                 </div>
-                {can.create_functionallocation && <ButtonAdd tabIndex={2} route={route('functional-locations.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {functionalLocations?.data?.length > 0 ? (
+                {functionalLocations.data && functionalLocations.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -45,6 +64,7 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                                 <TableHead className="text-muted-foreground">Description</TableHead>
                                 <TableHead className="text-muted-foreground">Created at</TableHead>
                                 <TableHead className={`text-muted-foreground ${can.delete_functionallocation ?? 'text-right'}`}>Updated at</TableHead>
+                                {can.edit_functionallocation && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                                 {can.delete_functionallocation && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                             </TableRow>
                         </TableHeader>
@@ -53,8 +73,8 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                                 return (
                                     <TableRow key={functionalLocation.id}>
                                         <TableCell>
-                                            {can.update_functionallocation ? (
-                                                <TextLink href={route('functional-locations.edit', functionalLocation.id)}>
+                                            {can.show_functionallocation ? (
+                                                <TextLink href={route('functional-locations.show', functionalLocation.id)}>
                                                     <span className="truncate font-medium">{functionalLocation.code}</span>
                                                 </TextLink>
                                             ) : (
@@ -68,6 +88,13 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                                         >
                                             {functionalLocation.updated_at}
                                         </TableCell>
+                                        {can.edit_functionallocation && (
+                                            <TableCell className="w-10 flex-col text-right align-top">
+                                                <Link href={route('functional-locations.edit', functionalLocation.id)}>
+                                                    <Edit size={18} className="text-blue-500" />
+                                                </Link>
+                                            </TableCell>
+                                        )}
                                         {can.delete_functionallocation && (
                                             <TableCell className="w-10 flex-col text-right align-top">
                                                 <ActionConfirm
@@ -89,6 +116,8 @@ export default function TableFunctionalLocation({ functionalLocations }: TableFu
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+
+            <DialogFunctionalLocationExportExcel open={exportDialog} setOpen={setExportDialog} />
+        </>
     );
 }

@@ -37,6 +37,7 @@ return new class extends Migration
             $table->id();
             $table->string('code', 8)->unique();
             $table->string('name', 50)->unique();
+            $table->foreignId('department_id')->nullable()->constrained('departments')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();
         });
 

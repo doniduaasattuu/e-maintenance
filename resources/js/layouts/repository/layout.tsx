@@ -23,7 +23,7 @@ export default function RepositoryLayout({ repository, className, children }: Pr
 
     return (
         <AssetLayout sidebarNavItems={sidebarNavItems} className={className}>
-            <div className="flex h-full flex-1 flex-col space-y-4 rounded-xl">{children}</div>
+            {children}
         </AssetLayout>
     );
 }

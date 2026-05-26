@@ -76,6 +76,16 @@ class Equipment extends Model
         }
     }
 
+    #[Scope]
+    public function scopeWithDefaultRelations($query)
+    {
+        return $query->with([
+            'functionalLocation',
+            'eclass',
+            'status',
+        ]);
+    }
+
     public function functionalLocation(): BelongsTo
     {
         return $this->belongsTo(FunctionalLocation::class);
@@ -106,6 +116,13 @@ class Equipment extends Model
         return $this->morphMany(Image::class, 'imageable');
     }
 
+    public function materials(): BelongsToMany
+    {
+        return $this->belongsToMany(Material::class, 'equipment_material', 'equipment_id', 'material_id')
+            ->withPivot('id', 'quantity', 'note')
+            ->withTimestamps();
+    }
+
     public function repositories(): BelongsToMany
     {
         return $this->belongsToMany(Repository::class);
@@ -113,6 +130,6 @@ class Equipment extends Model
 
     public function findings(): HasMany
     {
-        return $this->hasMany(Finding::class);
+        return $this->hasMany(Finding::class, 'equipment_id', 'id');
     }
 }

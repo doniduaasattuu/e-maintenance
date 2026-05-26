@@ -6,12 +6,15 @@ use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Equipment;
 use App\Models\Repository;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Throwable;
 
 class RepositoryEquipmentController extends Controller
 {
+    use HasPerPagePreference;
+
     public function store(Repository $repository, Equipment $equipment)
     {
         try {
@@ -31,14 +34,16 @@ class RepositoryEquipmentController extends Controller
 
     public function show(Request $request, Equipment $equipment)
     {
-        $extensions = Repository::distinct()->pluck('extension');
-        $repositories = $equipment->repositories()->paginate(15);
+        $perPage = $this->getPerPage($request);
+        $repositories = $equipment->repositories()->paginate($perPage);
 
         return Inertia::render('equipment/repositories', [
             'equipment' => new EquipmentResource($equipment),
             'repositories' => RepositoryResource::collection($repositories),
-            'extensions' => $extensions,
-            'renderable' => config('repository.renderable')
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 

@@ -27,7 +27,7 @@ test('department index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('department/index')
-                ->has('departments.data', 15)
+                ->has('departments.data', 10)
         );
 
     $this->actingAs($admin)
@@ -35,7 +35,7 @@ test('department index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('department/index')
-                ->has('departments.data', 5)
+                ->has('departments.data', 10)
         );
 });
 

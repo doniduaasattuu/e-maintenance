@@ -1,12 +1,12 @@
-import { FormEventHandler } from 'react';
+import { CauseCode, Department, FindingClause, FindingPriority, FindingStatus, WorkCenter } from '@/types';
+import React, { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
-import InputError from '../input-error';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
-import { Separator } from '../ui/separator';
+import AbnormalityFormSection, { AbnormalityData } from './abnormality-form-section';
+import BinarySelect from './binary-select';
+import HeaderSmall from './header-small';
+import NumericalInput from './numerical-input';
 
-export type InspectionPanelData = {
+export interface InspectionPanelData extends AbnormalityData {
     equipment_id: number;
     is_operational: string;
     is_clean: string;
@@ -20,7 +20,7 @@ export type InspectionPanelData = {
     current_r: string;
     current_s: string;
     current_t: string;
-};
+}
 
 export type InspectionPanelFormProps = {
     submit: FormEventHandler;
@@ -32,7 +32,39 @@ export type InspectionPanelFormProps = {
     showSuccessMessage?: boolean;
     isEditing?: boolean;
     canSubmit: boolean;
+    findingClauses: {
+        data: FindingClause[];
+    };
+    findingStatuses: {
+        data: FindingStatus[];
+    };
+    findingPriorities: {
+        data: FindingPriority[];
+    };
+    causeCodes: {
+        data: CauseCode[];
+    };
+    departments: {
+        data: Department[];
+    };
+    workCenters: {
+        data: WorkCenter[];
+    };
+    showAssignmentFields?: boolean;
 };
+
+const nullWhenStopped: Array<keyof InspectionPanelData> = [
+    'temperature_incoming_r',
+    'temperature_incoming_s',
+    'temperature_incoming_t',
+    'temperature_cabinet',
+    'temperature_outgoing_r',
+    'temperature_outgoing_s',
+    'temperature_outgoing_t',
+    'current_r',
+    'current_s',
+    'current_t',
+];
 
 export default function InspectionPanelForm({
     submit,
@@ -44,227 +76,157 @@ export default function InspectionPanelForm({
     showSuccessMessage = false,
     isEditing = false,
     canSubmit,
+    findingClauses,
+    findingStatuses,
+    findingPriorities,
+    causeCodes,
+    departments,
+    workCenters,
+    showAssignmentFields = false,
 }: InspectionPanelFormProps) {
+    React.useEffect(() => {
+        if (data.is_operational == '0') {
+            for (const field of nullWhenStopped) {
+                setData(field, '');
+            }
+        }
+    }, [data.is_operational, setData]);
+
+    const abnormalitiesField = data.has_abnormality
+        ? data.finding_clause_id == '' ||
+          data.cause_code_id == '' ||
+          data.description == '' ||
+          data.finding_status_id == '' ||
+          data.finding_priority_id == '' ||
+          data.images == null
+        : false;
+
     return (
         <form className="space-y-6" onSubmit={submit}>
-            <div className="grid grid-cols-2 gap-2">
-                <div className="grid gap-2">
-                    <Label htmlFor="equipment_class_id">Operated</Label>
-                    <Select disabled={processing} onValueChange={(e) => setData('is_operational', e)} value={data.is_operational}>
-                        <SelectTrigger tabIndex={1} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Operating status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Equipment is operational</SelectLabel>
-                                <SelectItem value="0">No</SelectItem>
-                                <SelectItem value="1">Yes</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <InputError message={errors.is_operational} />
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="equipment_class_id">Cleanliness</Label>
-                    <Select disabled={processing} onValueChange={(e) => setData('is_clean', e)} value={data.is_clean}>
-                        <SelectTrigger tabIndex={2} className="truncate overflow-hidden whitespace-nowrap">
-                            <SelectValue placeholder="Operating status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel className="text-muted-foreground">Equipment is clean</SelectLabel>
-                                <SelectItem value="0">No</SelectItem>
-                                <SelectItem value="1">Yes</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <InputError message={errors.is_clean} />
-                </div>
-            </div>
-
-            <Separator className="mb-5" />
-
-            <div className="space-y-5">
-                <div className="text-muted-foreground text-sm font-semibold">Temperature</div>
+            <div className={data.has_abnormality ? 'grid grid-cols-1 items-start gap-8 xl:grid-cols-2' : 'block'}>
                 <div className="space-y-6">
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="grid gap-2">
-                            <Label htmlFor="temperature_incoming_r">Incoming R</Label>
-                            <Input
-                                id="temperature_incoming_r"
-                                type="text"
-                                tabIndex={3}
-                                autoComplete="temperature_incoming_r"
-                                inputMode="numeric"
-                                value={data.temperature_incoming_r}
-                                placeholder="&deg;C"
-                                onChange={(e) => setData('temperature_incoming_r', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.temperature_incoming_r} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="temperature_incoming_s">Incoming S</Label>
-                            <Input
-                                id="temperature_incoming_s"
-                                type="text"
-                                tabIndex={4}
-                                autoComplete="temperature_incoming_s"
-                                inputMode="numeric"
-                                value={data.temperature_incoming_s}
-                                placeholder="&deg;C"
-                                onChange={(e) => setData('temperature_incoming_s', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.temperature_incoming_s} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="temperature_incoming_t">Incoming T</Label>
-                            <Input
-                                id="temperature_incoming_t"
-                                type="text"
-                                tabIndex={5}
-                                autoComplete="temperature_incoming_t"
-                                inputMode="numeric"
-                                value={data.temperature_incoming_t}
-                                placeholder="&deg;C"
-                                onChange={(e) => setData('temperature_incoming_t', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.temperature_incoming_t} />
-                        </div>
+                    <div className="grid grid-cols-2 gap-2">
+                        <BinarySelect
+                            errorMessage={errors.is_operational}
+                            onChange={(value) => setData('is_operational', value)}
+                            processing={processing}
+                            required={true}
+                            value={data.is_operational}
+                            tabIndex={1}
+                            id="is_operational"
+                            label="Operated"
+                            selectLabel="Equipment is operational"
+                            placeholder="Is the equipment operational?"
+                        />
+                        <BinarySelect
+                            errorMessage={errors.is_clean}
+                            onChange={(value) => setData('is_clean', value)}
+                            processing={processing}
+                            required={true}
+                            value={data.is_clean}
+                            tabIndex={2}
+                            id="is_clean"
+                            label="Cleanliness"
+                            selectLabel="Equipment is clean"
+                            placeholder="Is the equipment clean?"
+                        />
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="grid gap-2">
-                            <Label htmlFor="temperature_outgoing_r">Outgoing R</Label>
-                            <Input
-                                id="temperature_outgoing_r"
-                                type="text"
-                                tabIndex={6}
-                                autoComplete="temperature_outgoing_r"
-                                inputMode="numeric"
-                                value={data.temperature_outgoing_r}
-                                placeholder="&deg;C"
-                                onChange={(e) => setData('temperature_outgoing_r', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.temperature_outgoing_r} />
+                    <div className="space-y-6">
+                        <HeaderSmall title="Temperature" />
+
+                        <div className="grid grid-cols-3 gap-2">
+                            {Array.from(['temperature_incoming_r', 'temperature_incoming_s', 'temperature_incoming_t'] as const).map(
+                                (field, index) => (
+                                    <NumericalInput
+                                        key={field}
+                                        id={field}
+                                        label={`Incoming ${String.fromCharCode(82 + index)}`} // R, S, T
+                                        tabIndex={3 + index}
+                                        placeholder="°C"
+                                        value={data[field]}
+                                        onChange={(value) => setData(field, value)}
+                                        errorMessage={errors[field]}
+                                        disabled={processing || data.is_operational === '0'}
+                                    />
+                                ),
+                            )}
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="temperature_outgoing_s">Outgoing S</Label>
-                            <Input
-                                id="temperature_outgoing_s"
-                                type="text"
-                                tabIndex={7}
-                                autoComplete="temperature_outgoing_s"
-                                inputMode="numeric"
-                                value={data.temperature_outgoing_s}
-                                placeholder="&deg;C"
-                                onChange={(e) => setData('temperature_outgoing_s', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.temperature_outgoing_s} />
+                        <div className="grid grid-cols-3 gap-2">
+                            {Array.from(['temperature_outgoing_r', 'temperature_outgoing_s', 'temperature_outgoing_t'] as const).map(
+                                (field, index) => (
+                                    <NumericalInput
+                                        key={field}
+                                        id={field}
+                                        label={`Outgoing ${String.fromCharCode(82 + index)}`}
+                                        tabIndex={6 + index}
+                                        placeholder={'°C'}
+                                        value={data[field]}
+                                        onChange={(value) => setData(field, value)}
+                                        errorMessage={errors[field]}
+                                        disabled={processing || data.is_operational === '0'}
+                                    />
+                                ),
+                            )}
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="temperature_outgoing_t">Outgoing T</Label>
-                            <Input
-                                id="temperature_outgoing_t"
-                                type="text"
-                                tabIndex={8}
-                                autoComplete="temperature_outgoing_t"
-                                inputMode="numeric"
-                                value={data.temperature_outgoing_t}
-                                placeholder="&deg;C"
-                                onChange={(e) => setData('temperature_outgoing_t', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.temperature_outgoing_t} />
-                        </div>
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="temperature_cabinet">Cabinet</Label>
-                        <Input
+                        <NumericalInput
                             id="temperature_cabinet"
-                            type="text"
+                            label="Cabinet"
                             tabIndex={9}
-                            autoComplete="temperature_cabinet"
-                            inputMode="numeric"
+                            placeholder="°C"
                             value={data.temperature_cabinet}
-                            placeholder="&deg;C"
-                            onChange={(e) => setData('temperature_cabinet', e.target.value)}
-                            disabled={processing}
+                            onChange={(value) => setData('temperature_cabinet', value)}
+                            errorMessage={errors.temperature_cabinet}
+                            required={data.is_operational === '1'}
+                            disabled={processing || data.is_operational === '0'}
                         />
-                        <InputError message={errors.temperature_cabinet} />
+                    </div>
+
+                    <div className="space-y-6">
+                        <HeaderSmall title="Ampere" />
+                        <div className="grid grid-cols-3 gap-2">
+                            {Array.from(['current_r', 'current_s', 'current_t'] as const).map((field, index) => (
+                                <NumericalInput
+                                    key={field}
+                                    id={field}
+                                    label={`Phase ${String.fromCharCode(82 + index)}`}
+                                    tabIndex={10 + index}
+                                    placeholder="A"
+                                    value={data[field]}
+                                    onChange={(value) => setData(field, value)}
+                                    errorMessage={errors[field]}
+                                    disabled={processing || data.is_operational === '0'}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <Separator className="mb-5" />
-
-            <div className="space-y-5">
-                <div className="text-muted-foreground text-sm font-semibold">Current</div>
-                <div className="grid grid-cols-3 gap-2">
-                    <div className="grid gap-2">
-                        <Label htmlFor="current_r">Current R</Label>
-                        <Input
-                            id="current_r"
-                            type="text"
-                            tabIndex={10}
-                            autoComplete="current_r"
-                            inputMode="numeric"
-                            value={data.current_r}
-                            placeholder="A"
-                            onChange={(e) => setData('current_r', e.target.value)}
-                            disabled={processing}
-                        />
-                        <InputError message={errors.current_r} />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="current_s">Current S</Label>
-                        <Input
-                            id="current_s"
-                            type="text"
-                            tabIndex={11}
-                            autoComplete="current_s"
-                            inputMode="numeric"
-                            value={data.current_s}
-                            placeholder="A"
-                            onChange={(e) => setData('current_s', e.target.value)}
-                            disabled={processing}
-                        />
-                        <InputError message={errors.current_s} />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="current_t">Current T</Label>
-                        <Input
-                            id="current_t"
-                            type="text"
-                            tabIndex={12}
-                            autoComplete="current_t"
-                            inputMode="numeric"
-                            value={data.current_t}
-                            placeholder="A"
-                            onChange={(e) => setData('current_t', e.target.value)}
-                            disabled={processing}
-                        />
-                        <InputError message={errors.current_t} />
-                    </div>
-                </div>
+                {data.has_abnormality && (
+                    <AbnormalityFormSection
+                        data={data}
+                        causeCodes={causeCodes.data}
+                        departments={departments.data}
+                        workCenters={workCenters.data}
+                        findingClauses={findingClauses.data}
+                        findingPriorities={findingPriorities.data}
+                        findingStatuses={findingStatuses.data}
+                        processing={processing}
+                        setData={setData}
+                        errors={errors}
+                        showAssignmentFields={showAssignmentFields}
+                        startTabIndex={13}
+                    />
+                )}
             </div>
 
             {canSubmit && (
                 <ButtonSubmit
+                    tabIndex={21}
                     processing={processing}
-                    tabIndex={13}
-                    disabled={processing}
+                    disabled={processing || data.temperature_cabinet == '' || abnormalitiesField}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={isEditing ? 'Updated' : 'Saved'}
                     showSuccessMessage={showSuccessMessage}

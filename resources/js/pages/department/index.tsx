@@ -16,15 +16,19 @@ interface DepartmentIndexProps {
         data: Department[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function DepartmentIndex({ departments }: DepartmentIndexProps) {
+export default function DepartmentIndex({ departments, filters }: DepartmentIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Departments" />
 
             <OrganizationsLayout>
-                <TableDepartment departments={departments} />
+                <TableDepartment departments={departments} filters={filters} />
             </OrganizationsLayout>
         </AppLayout>
     );

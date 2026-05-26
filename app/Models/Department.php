@@ -45,6 +45,11 @@ class Department extends Model
         return $this->belongsTo(Division::class);
     }
 
+    public function workCenters(): HasMany
+    {
+        return $this->hasMany(WorkCenter::class);
+    }
+
     public function findings(): HasMany
     {
         return $this->hasMany(Finding::class, 'department_id', 'id');

@@ -21,7 +21,7 @@ test('material type index page accessible', function () {
         ->assertInertia(
             fn($page) => $page
                 ->component('material-type/index')
-                ->has('materialTypes.data', 15)
+                ->has('materialTypes.data', 10)
         );
 });
 

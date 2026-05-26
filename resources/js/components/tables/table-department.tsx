@@ -6,20 +6,27 @@ import { tableCaption } from '@/lib/utils';
 import { Department, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
-import React from 'react';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
+import { ButtonGroup } from '../ui/button-group';
 
 interface DepartmentTableProps {
     departments: {
         data: Department[];
         meta: Meta;
     };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableDepartment({ departments }: DepartmentTableProps) {
+export default function TableDepartment({ departments, withHeader = true, filters }: DepartmentTableProps) {
     const { can } = usePermissions();
     const meta = departments.meta;
     const caption = tableCaption(meta);
@@ -29,13 +36,21 @@ export default function TableDepartment({ departments }: DepartmentTableProps) {
     }
 
     return (
-        <React.Fragment>
-            <div className="flex justify-between gap-2">
-                <SearchBar />
-                {can.create_department && <ButtonAdd route={route('departments.create')} tabIndex={2} />}
-            </div>
+        <>
+            {withHeader && (
+                <div className="flex justify-between gap-2">
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                    </div>
+                    <ButtonGroup>
+                        {can.create_department && <ButtonAdd route={route('departments.create')} tabIndex={3} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('departments.export'))} />
+                    </ButtonGroup>
+                </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {departments.data.length > 0 ? (
+                {departments.data && departments.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -89,6 +104,6 @@ export default function TableDepartment({ departments }: DepartmentTableProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </React.Fragment>
+        </>
     );
 }

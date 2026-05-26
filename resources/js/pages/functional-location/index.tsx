@@ -1,5 +1,6 @@
 import TableFunctionalLocation from '@/components/tables/table-functional-location';
 import AppLayout from '@/layouts/app-layout';
+import TableLayout from '@/layouts/table/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, FunctionalLocation, Meta } from '@/types';
 
@@ -16,12 +17,18 @@ type FunctionalLocationProps = {
         data: FunctionalLocation[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 };
 
-export default function FunctionalLocationIndex({ functionalLocations }: FunctionalLocationProps) {
+export default function FunctionalLocationIndex({ functionalLocations, filters }: FunctionalLocationProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <TableFunctionalLocation functionalLocations={functionalLocations} />
+            <TableLayout moduleKey={'FUNCTIONAL_LOCATION'} className="md:max-w-7xl">
+                <TableFunctionalLocation functionalLocations={functionalLocations} filters={filters} />
+            </TableLayout>
         </AppLayout>
     );
 }

@@ -1,36 +1,52 @@
 import { ActionConfirm } from '@/components/action-confirm';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { Equipment, EquipmentClass, EquipmentStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
+import DialogEquipmentExportExcel from '../dialog-equipment-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterEquipmentClass from '../filter-equipment-class';
 import FilterEquipmentStatus from '../filter-equipment-status';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
 import TextLink from '../text-link';
+import { ButtonGroup } from '../ui/button-group';
 import { CommandSeparator } from '../ui/command';
 
 interface EquipmentTableProps {
+    mode?: 'standalone' | 'functional-location';
     equipments: {
         data: Equipment[];
         meta: Meta;
     };
-    equipmentClasses: {
+    equipmentClasses?: {
         data: EquipmentClass[];
     };
-    equipmentStatuses: {
+    equipmentStatuses?: {
         data: EquipmentStatus[];
+    };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
     };
 }
 
-export default function TableEquipment({ equipments, equipmentClasses, equipmentStatuses }: EquipmentTableProps) {
+export default function TableEquipment({
+    mode = 'standalone',
+    equipments,
+    equipmentClasses,
+    equipmentStatuses,
+    withHeader = true,
+    filters,
+}: EquipmentTableProps) {
     const [open, setOpen] = React.useState<boolean>(false);
     const { can } = usePermissions();
     const meta = equipments.meta;
@@ -40,21 +56,33 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
         router.delete(route('equipments.destroy', id));
     }
 
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
+
     return (
-        <TableLayout moduleKey={'EQUIPMENT'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['class', 'status']}>
-                        <FilterEquipmentClass equipmentClasses={equipmentClasses.data} />
-                        <CommandSeparator />
-                        <FilterEquipmentStatus equipmentStatuses={equipmentStatuses.data} />
-                    </Filter>
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                        <Filter open={open} setOpen={setOpen} keys={['class', 'status']}>
+                            <FilterEquipmentClass equipmentClasses={equipmentClasses?.data ?? []} />
+                            <CommandSeparator />
+                            <FilterEquipmentStatus equipmentStatuses={equipmentStatuses?.data ?? []} />
+                        </Filter>
+                    </div>
+                    {mode == 'standalone' && (
+                        <ButtonGroup>
+                            {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={3} />}
+                            {equipments.data.length > 0 && (
+                                <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                            )}
+                        </ButtonGroup>
+                    )}
                 </div>
-                {can.create_equipment && <ButtonAdd route={route('equipments.create')} tabIndex={2} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {equipments?.data?.length > 0 ? (
+                {equipments.data && equipments.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -64,7 +92,9 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                                 <TableHead className="text-muted-foreground">Class</TableHead>
                                 <TableHead className="text-muted-foreground">Functional Location</TableHead>
                                 <TableHead className="text-muted-foreground">Date</TableHead>
-                                {can.delete_equipment && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
+                                {mode == 'standalone' && can.delete_equipment && (
+                                    <TableHead className="text-muted-foreground w-10 text-right"></TableHead>
+                                )}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -114,7 +144,7 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                                             </div>
                                         </TableCell>
 
-                                        {can.delete_equipment && (
+                                        {mode == 'standalone' && can.delete_equipment && (
                                             <TableCell className="table-icon">
                                                 <ActionConfirm
                                                     action={() => handleDeleteEquipment(equipment.id)}
@@ -135,6 +165,13 @@ export default function TableEquipment({ equipments, equipmentClasses, equipment
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+
+            <DialogEquipmentExportExcel
+                equipmentStatuses={equipmentStatuses}
+                equipmentClasses={equipmentClasses}
+                open={exportDialog}
+                setOpen={setExportDialog}
+            />
+        </>
     );
 }

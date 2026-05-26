@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RepositoryExport;
 use App\Http\Requests\Repository\StoreRepositoryRequest;
 use App\Http\Requests\Repository\UpdateRepositoryRequest;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Repository;
 use App\Services\RepositoryService;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class RepositoryController extends Controller
 {
+    use HasPerPagePreference;
     private $repositoryService;
 
     public function __construct(RepositoryService $repositoryService)
@@ -28,13 +32,19 @@ class RepositoryController extends Controller
     {
         Gate::authorize('index_repository');
 
-        $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate(14)->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate($perPage)->withQueryString();
         $extensions = Repository::distinct()->pluck('extension');
 
         return Inertia::render('repository/index', [
             'repositories' => RepositoryResource::collection($repositories),
             'extensions' => $extensions,
-            'renderable' => config('repository.renderable')
+            'renderable' => config('repository.renderable'),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -142,5 +152,14 @@ class RepositoryController extends Controller
                 'description' => $e->getMessage() ?? 'Repository is not found',
             ]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'extension' => $request->query('extension'),
+        ];
+
+        return Excel::download(new RepositoryExport($filters), 'Documents_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

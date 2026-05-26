@@ -6,20 +6,27 @@ import { tableCaption } from '@/lib/utils';
 import { Division, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
-import React from 'react';
 import ButtonAdd from '../button-add';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
 import { GeneratePagination } from '../generate-pagination';
+import { PerPageSelector } from '../per-page-selector';
 import SearchBar from '../search-bar';
+import { ButtonGroup } from '../ui/button-group';
 
 interface DivisionTableProps {
     divisions: {
         data: Division[];
         meta: Meta;
     };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableDivision({ divisions }: DivisionTableProps) {
+export default function TableDivision({ divisions, withHeader = true, filters }: DivisionTableProps) {
     const { can } = usePermissions();
     const meta = divisions.meta;
     const caption = tableCaption(meta);
@@ -29,13 +36,21 @@ export default function TableDivision({ divisions }: DivisionTableProps) {
     }
 
     return (
-        <React.Fragment>
-            <div className="flex justify-between gap-2">
-                <SearchBar />
-                {can.create_division && <ButtonAdd route={route('divisions.create')} tabIndex={2} />}
-            </div>
+        <>
+            {withHeader && (
+                <div className="flex justify-between gap-2">
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                    </div>
+                    <ButtonGroup>
+                        {can.create_division && <ButtonAdd route={route('divisions.create')} tabIndex={3} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('divisions.export'))} />
+                    </ButtonGroup>
+                </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {divisions.data.length > 0 ? (
+                {divisions.data && divisions.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -85,6 +100,6 @@ export default function TableDivision({ divisions }: DivisionTableProps) {
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </React.Fragment>
+        </>
     );
 }

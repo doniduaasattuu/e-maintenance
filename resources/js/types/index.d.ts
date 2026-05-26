@@ -23,6 +23,7 @@ export interface NavItem {
     icon?: LucideIcon | null;
     isActive?: boolean;
     permission?: string;
+    roles?: string[];
     children?: string[];
     subItems?: NavItem[];
     multiple?: boolean;
@@ -48,6 +49,15 @@ export interface SharedData {
     sidebarOpen: boolean;
     permissions: Record<string, boolean>;
     message: Message;
+    notifications: {
+        findings: {
+            audit_open: number;
+            abnormality_open: number;
+        };
+    };
+    config: {
+        maximumFileUpload: number;
+    };
     [key: string]: unknown;
 }
 
@@ -82,6 +92,8 @@ export interface WorkCenter {
     id: number;
     code: string;
     name: string;
+    department_id: number;
+    department?: Department;
     created_at: string;
     updated_at: string;
 }
@@ -146,9 +158,13 @@ export interface Meta {
 export interface FunctionalLocation {
     id: number;
     code: string;
+    equipments?: Equipment[];
+    findings?: Finding[];
     description: string;
     created_at: string;
     updated_at: string;
+
+    images: null | Image[];
 }
 
 export interface EquipmentClass {
@@ -176,6 +192,7 @@ export interface Equipment {
     sort_field: string;
     description: string | null;
     functional_location_id: number | null;
+    findings?: Finding[];
     equipment_class_id: number | null;
     equipment_status_id: number | null;
     functionalLocation: FunctionalLocation | null;
@@ -339,6 +356,11 @@ export interface Material {
     unit: MaterialUnit | null;
     type: MaterialType | null;
     images: null | Image[];
+    pivot?: {
+        id: number;
+        quantity: number;
+        note: string;
+    };
 
     created_at: string;
     updated_at: string;
@@ -357,9 +379,19 @@ export interface Repository {
     updated_at: string;
 }
 
+export interface FindingType {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface FindingClause {
     id: number;
     code: string;
+    type: string;
     title: string;
     description: string;
     created_at: string;
@@ -384,20 +416,33 @@ export interface FindingPriority {
     updated_at: string;
 }
 
+export interface CauseCode {
+    id: number;
+    code: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface Finding {
     id: number;
     description: string;
+    rectification_action?: string;
     notification: string;
 
     // Relasi (Optional karena menggunakan whenLoaded di Resource)
+    type?: FindingType;
     clause?: FindingClause;
     status?: FindingStatus;
     priority?: FindingPriority;
+    causeCode?: CauseCode;
     department?: Department;
+    workCenter?: WorkCenter;
     equipment?: Equipment;
     functionalLocation?: FunctionalLocation;
 
-    inspector?: User;
+    inspector?: User | null;
+    rectifier?: USer | null;
     verifier?: User | null; // Bisa null jika belum diverifikasi
 
     images?: FindingImage[];
@@ -412,8 +457,15 @@ export interface Finding {
 
     // Timestamps
     created_at: string;
+    created: string;
     updated_at: string;
     closed_at: string | null;
+    closed: string | null;
+    can: {
+        show: boolean;
+        update: boolean;
+        delete: boolean;
+    };
 }
 
 export interface FindingImage {

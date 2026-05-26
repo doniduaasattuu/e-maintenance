@@ -3,7 +3,7 @@ import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, FindingClause } from '@/types';
+import { BreadcrumbItem, FindingClause, FindingType } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -23,15 +23,21 @@ interface FindingClauseEditProps {
     findingClause: {
         data: FindingClause;
     };
+    findingTypes: {
+        data: FindingType[];
+    };
 }
 
-export default function FindingClauseEdit({ findingClause }: FindingClauseEditProps) {
+export default function FindingClauseEdit({ findingClause, findingTypes }: FindingClauseEditProps) {
     const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<FindingClauseFormData>>({
         code: findingClause.data.code,
+        type: findingClause.data.type,
         title: findingClause.data.title,
         description: findingClause.data.description,
     });
+
+    console.log(findingClause);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -54,6 +60,8 @@ export default function FindingClauseEdit({ findingClause }: FindingClauseEditPr
                     canSubmit={can.update_findingclause}
                     buttonLabel="Update"
                     className="max-w-xl"
+                    isEditing={true}
+                    findingTypes={findingTypes}
                 />
             </FormLayout>
         </AppLayout>

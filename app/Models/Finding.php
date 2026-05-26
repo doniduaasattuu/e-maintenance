@@ -17,15 +17,20 @@ class Finding extends Model
     protected $table = 'findings';
 
     protected $fillable = [
+        "finding_type_id",
         "finding_clause_id",
         "finding_status_id",
         "finding_priority_id",
+        "cause_code_id",
         "department_id",
         "equipment_id",
+        "work_center_id",
         "functional_location_id",
         "description",
+        "rectification_action",
         "notification",
         "inspected_by",
+        "rectified_by",
         "verified_by",
         "closed_at",
     ];
@@ -35,15 +40,18 @@ class Finding extends Model
     {
         $search = trim($request->query('query'));
         $clause = $request->query('clause');
+        $causeCode = $request->query('causeCode');
         $status = $request->query('status');
         $priority = $request->query('priority');
         $department = $request->query('department');
+        $workCenter = $request->query('work-center');
 
         if ($search) {
             $builder->where(function ($query) use ($search) {
                 $query
                     ->where('description', 'LIKE', "%{$search}%")
                     ->orWhere('notification', 'LIKE', "%{$search}%")
+                    ->orWhere('rectification_action', 'LIKE', "%{$search}%")
                     ->orwhereRelation('equipment', function (Builder $q) use ($search) {
                         $q
                             ->where('code', 'LIKE', "%{$search}%")
@@ -64,6 +72,14 @@ class Finding extends Model
             });
         } elseif ($clause && is_string($clause)) {
             $builder->whereRelation('clause', 'code', $clause);
+        }
+
+        if ($causeCode && is_array($causeCode)) {
+            $builder->whereHas('causeCode', function ($query) use ($causeCode) {
+                $query->whereIn('code', $causeCode);
+            });
+        } elseif ($causeCode && is_string($causeCode)) {
+            $builder->whereRelation('causeCode', 'code', $causeCode);
         }
 
         if ($status && is_array($status)) {
@@ -89,6 +105,98 @@ class Finding extends Model
         } elseif ($department && is_string($department)) {
             $builder->whereRelation('department', 'code', $department);
         }
+
+        if ($workCenter && is_array($workCenter)) {
+            $builder->whereHas('workCenter', function ($query) use ($workCenter) {
+                $query->whereIn('code', $workCenter);
+            });
+        } elseif ($workCenter && is_string($workCenter)) {
+            $builder->whereRelation('workCenter', 'code', $workCenter);
+        }
+    }
+
+    #[Scope]
+    public function scopeForUserDepartment($query)
+    {
+        // Jika admin, bypass semua filter departemen/pembuat
+        if (auth()->user()->hasRole('Admin')) {
+            return $query;
+        }
+
+        $userDeptId = auth()->user()->department_id;
+        $userId = auth()->id();
+
+        return $query->where(function ($q) use ($userDeptId, $userId) {
+            $q->where(function ($subQ) use ($userDeptId) {
+                $subQ->where('department_id', $userDeptId)
+                    ->orWhereNull('department_id');
+            })
+                ->orWhere('inspected_by', $userId);
+        });
+    }
+
+    #[Scope]
+    public function scopeOfType($query, string $typeCode)
+    {
+        return $query->whereHas('type', fn($q) => $q->where('code', $typeCode));
+    }
+
+    #[Scope]
+    public function scopeOpen($query)
+    {
+        return $query->whereHas('status', fn($q) => $q->where('name', 'Open'));
+    }
+
+    #[Scope]
+    public function scopeActive($query)
+    {
+        return $query->whereHas('status', fn($q) => $q->where('name', '!=', 'Closed'));
+    }
+
+    #[Scope]
+    public function scopeArchived($query)
+    {
+        return $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+    }
+
+    #[Scope]
+    public function scopeWithDefaultRelations($query)
+    {
+        return $query->with([
+            'type',
+            'clause',
+            'status',
+            'priority',
+            'causeCode',
+            'inspector',
+            'verifier',
+            'images',
+        ]);
+    }
+
+    #[Scope]
+    public function scopeWithAllRelations($query)
+    {
+        return $query->with([
+            'type',
+            'clause',
+            'status',
+            'priority',
+            'causeCode',
+            'department',
+            'workCenter',
+            'equipment',
+            'functionalLocation',
+            'inspector',
+            'rectifier',
+            'verifier',
+            'images',
+        ]);
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(FindingType::class, "finding_type_id");
     }
 
     public function clause(): BelongsTo
@@ -106,9 +214,19 @@ class Finding extends Model
         return $this->belongsTo(FindingPriority::class, "finding_priority_id");
     }
 
+    public function causeCode(): BelongsTo
+    {
+        return $this->belongsTo(CauseCode::class, "cause_code_id");
+    }
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function workCenter(): BelongsTo
+    {
+        return $this->belongsTo(WorkCenter::class, 'work_center_id');
     }
 
     public function equipment(): BelongsTo
@@ -126,6 +244,11 @@ class Finding extends Model
         return $this->belongsTo(User::class, 'inspected_by');
     }
 
+    public function rectifier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'rectified_by');
+    }
+
     public function verifier(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by');
@@ -134,5 +257,68 @@ class Finding extends Model
     public function images(): HasMany
     {
         return $this->hasMany(FindingImage::class);
+    }
+
+    // CHART
+    public static function getChartData($model)
+    {
+        return $model::query()
+            ->select('id', 'code')
+            ->withCount(['findings as totalClosedFindings' => function ($query) {
+                // Gunakan logic archived/closed di sini
+                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            }])
+            ->limit(10)
+            ->get()
+            ->map(function ($dept) {
+                return [
+                    'code' => $dept->code,
+                    'totalClosedFindings' => $dept->totalClosedFindings,
+                ];
+            })
+            ->sortByDesc('totalClosedFindings')
+            ->values();
+    }
+
+    public static function getTopInspectors()
+    {
+        return \App\Models\User::query()
+            ->select('id', 'name')
+            ->withCount(['inspectedFindings as totalSolved'])
+            ->whereHas('inspectedFindings', function ($query) {
+                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            })
+            ->orderByDesc('totalSolved')
+            ->limit(10)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'name' => str()->before($user->name, ' '),
+                    'totalSolved' => $user->totalSolved,
+                ];
+            })
+            ->values();
+    }
+
+    public static function getTopResolvers()
+    {
+        return \App\Models\User::query()
+            ->select('id', 'name')
+            ->withCount(['rectifiedFindings as totalSolved' => function ($query) {
+                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            }])
+            ->whereHas('rectifiedFindings', function ($query) {
+                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            })
+            ->orderByDesc('totalSolved')
+            ->limit(10)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'name' => str()->before($user->name, ' '),
+                    'totalSolved' => $user->totalSolved,
+                ];
+            })
+            ->values();
     }
 }

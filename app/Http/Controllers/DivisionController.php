@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DivisionExport;
 use App\Http\Requests\Division\StoreDivisionRequest;
 use App\Http\Requests\Division\UpdateDivisionRequest;
 use App\Http\Resources\DivisionResource;
 use App\Models\Division;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class DivisionController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,12 +25,18 @@ class DivisionController extends Controller
     {
         Gate::authorize('index_division');
 
+        $perPage = $this->getPerPage($request);
+
         $divisions = Division::search($request)
-            ->paginate()
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('division/index', [
             'divisions' => DivisionResource::collection($divisions),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -120,5 +131,10 @@ class DivisionController extends Controller
             'type' => 'success',
             'description' => 'Division deleted successfully',
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new DivisionExport(), 'Divisions_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

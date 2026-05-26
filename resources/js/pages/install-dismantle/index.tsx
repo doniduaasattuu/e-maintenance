@@ -17,13 +17,17 @@ interface InstallDismantleHistoryProps {
         data: InstallDismantleHistory[];
         meta: Meta;
     };
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function InstallDismantleHistoryIndex({ histories }: InstallDismantleHistoryProps) {
+export default function InstallDismantleHistoryIndex({ histories, filters }: InstallDismantleHistoryProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <TableLayout moduleKey={'EQUIPMENT_HISTORY'} className="md:max-w-7xl">
-                <TableHistory histories={histories} />
+                <TableHistory histories={histories} filters={filters} />
             </TableLayout>
         </AppLayout>
     );

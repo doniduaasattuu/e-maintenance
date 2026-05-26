@@ -72,12 +72,13 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Image" />
 
-            <EquipmentLayout equipment={equipment.data} className="md:max-w-6xl">
+            <EquipmentLayout equipment={equipment.data} className="w-full max-w-6xl">
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Image" description="Images of equipment uploaded by users." />
                         {can.delete_image && (equipment?.data?.images?.length ?? 0) > 0 && (
                             <Button
+                                size={'sm'}
                                 variant={'outline'}
                                 onClick={() => {
                                     setCanDelete(!canDelete);

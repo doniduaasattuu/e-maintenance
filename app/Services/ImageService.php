@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\Image\StoreImageRequest;
 use App\Models\Equipment;
+use App\Models\FunctionalLocation;
 use App\Models\Image;
 use App\Models\Material;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +17,18 @@ class ImageService
         $id = $request->id;
 
         switch ($type) {
+            case 'functional-location':
+
+                $functionalLocation = FunctionalLocation::findOrFail($id);
+                $imagePath = $request->file('image')->store('images/functional-locations/' . $id, 'public');
+
+                Image::create([
+                    'path' => $imagePath,
+                    'imageable_id' => $functionalLocation->id,
+                    'imageable_type' => $type,
+                ]);
+
+                break;
             case 'equipment':
 
                 $equipment = Equipment::findOrFail($id);
@@ -44,7 +57,6 @@ class ImageService
                     'type' => 'error',
                     'description' => 'Image type is not exists',
                 ]);
-                break;
         }
     }
 

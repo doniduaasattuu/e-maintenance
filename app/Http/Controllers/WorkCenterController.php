@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\WorkCenterExport;
 use App\Http\Requests\WorkCenter\StoreWorkCenterRequest;
 use App\Http\Requests\WorkCenter\UpdateWorkCenterRequest;
+use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\WorkCenterResource;
+use App\Models\Department;
 use App\Models\WorkCenter;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class WorkCenterController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -20,10 +27,16 @@ class WorkCenterController extends Controller
     {
         Gate::authorize('index_workcenter');
 
-        $workCenters = WorkCenter::search($request)->paginate(10)->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $workCenters = WorkCenter::with('department')->search($request)->paginate($perPage)->withQueryString();
 
         return Inertia::render('work-center/index', [
             'workCenters' => WorkCenterResource::collection($workCenters),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -34,7 +47,9 @@ class WorkCenterController extends Controller
     {
         Gate::authorize('create_workcenter');
 
-        return Inertia::render('work-center/create');
+        return Inertia::render('work-center/create', [
+            'departments' => DepartmentResource::collection(Department::all()),
+        ]);
     }
 
     /**
@@ -46,10 +61,7 @@ class WorkCenterController extends Controller
 
         $validated = $request->validated();
 
-        WorkCenter::create([
-            'code' => $validated['code'],
-            'name' => $validated['name'],
-        ]);
+        WorkCenter::create($validated);
 
         return back();
     }
@@ -71,6 +83,7 @@ class WorkCenterController extends Controller
 
         return Inertia::render('work-center/edit', [
             'workCenter' => new WorkCenterResource($workCenter),
+            'departments' => DepartmentResource::collection(Department::all()),
         ]);
     }
 
@@ -84,10 +97,7 @@ class WorkCenterController extends Controller
         try {
             $validated = $request->validated();
 
-            $workCenter->update([
-                'name' => $validated['name'],
-                'code' => $validated['code'],
-            ]);
+            $workCenter->update($validated);
 
             return back();
         } catch (Throwable $e) {
@@ -111,5 +121,10 @@ class WorkCenterController extends Controller
             'type' => 'success',
             'description' => 'Work center deleted successfully',
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new WorkCenterExport(), 'Work_Centers_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

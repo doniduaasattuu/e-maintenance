@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UserExport;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\DepartmentResource;
@@ -12,14 +13,18 @@ use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
 use App\Models\WorkCenter;
+use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    use HasPerPagePreference;
+
     /**
      * Display a listing of the resource.
      */
@@ -27,7 +32,9 @@ class UserController extends Controller
     {
         Gate::authorize('index_user');
 
-        $users = User::with(['department', 'position', 'workCenter'])->search($request)->paginate(10)->withQueryString();
+        $perPage = $this->getPerPage($request);
+
+        $users = User::with(['department', 'position', 'workCenter'])->search($request)->paginate($perPage)->withQueryString();
         $departments = Department::all();
         $positions = Position::all();
         $workCenters = WorkCenter::all();
@@ -38,7 +45,10 @@ class UserController extends Controller
             'positions' => PositionResource::collection($positions),
             'workCenters' => WorkCenterResource::collection($workCenters),
             'roles' => Role::pluck('name'),
-            // 'filters' => $request->only(['query', 'department', 'position', 'role']),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+            ],
         ]);
     }
 
@@ -188,5 +198,16 @@ class UserController extends Controller
             'type' => 'success',
             'description' => 'User restored successfully',
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'department_ids' => $request->query('department_ids'),
+            'position_ids' => $request->query('position_ids'),
+            'work_center_ids' => $request->query('work_center_ids'),
+        ];
+
+        return Excel::download(new UserExport($filters), 'Users_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

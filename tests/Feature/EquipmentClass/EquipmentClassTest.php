@@ -24,7 +24,7 @@ test('equipment class index page accessible', function () {
         ->assertInertia(
             fn($page) => $page
                 ->component('equipment-class/index')
-                ->has('equipmentClasses.data', 15)
+                ->has('equipmentClasses.data', 10)
         );
 });
 

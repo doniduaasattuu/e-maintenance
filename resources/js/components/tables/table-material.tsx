@@ -5,16 +5,19 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { formatCurrency, tableCaption } from '@/lib/utils';
 import { Material, MaterialType, MaterialUnit, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
+import ButtonExport from '../button-export';
+import DialogMaterialExportExcel from '../dialog-material-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
 import FilterMaterialType from '../filter-material-type';
 import FilterMaterialUnit from '../filter-material-unit';
+import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 import { CommandSeparator } from '../ui/command';
 
 interface TableMaterialProps {
@@ -22,15 +25,20 @@ interface TableMaterialProps {
         data: Material[];
         meta: Meta;
     };
-    materialUnits: {
+    materialUnits?: {
         data: MaterialUnit[];
     };
-    materialTypes: {
+    materialTypes?: {
         data: MaterialType[];
+    };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
     };
 }
 
-export default function TableMaterial({ materials, materialUnits, materialTypes }: TableMaterialProps) {
+export default function TableMaterial({ materials, materialUnits, materialTypes, withHeader = true, filters }: TableMaterialProps) {
     const { can } = usePermissions();
     const meta = materials.meta;
     const caption = tableCaption(meta);
@@ -39,21 +47,32 @@ export default function TableMaterial({ materials, materialUnits, materialTypes 
     function handleDeleteMaterial(id: number | string) {
         router.delete(route('materials.destroy', id));
     }
+
+    const [exportDialog, setExportDialog] = useState<boolean>(false);
+
     return (
-        <TableLayout moduleKey={'MATERIAL'} className="md:max-w-7xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
-                    <Filter open={open} setOpen={setOpen} keys={['unit', 'type']}>
-                        <FilterMaterialUnit materialUnits={materialUnits.data} />
-                        <CommandSeparator />
-                        <FilterMaterialType materialTypes={materialTypes.data} />
-                    </Filter>
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                        <Filter open={open} setOpen={setOpen} keys={['unit', 'type']}>
+                            <FilterMaterialUnit materialUnits={materialUnits?.data ?? []} />
+                            <CommandSeparator />
+                            <FilterMaterialType materialTypes={materialTypes?.data ?? []} />
+                        </Filter>
+                    </div>
+                    <ButtonGroup>
+                        {can.create_material && <ButtonAdd tabIndex={3} route={route('materials.create')} />}
+                        {materials.data.length > 0 && (
+                            <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
+                        )}
+                    </ButtonGroup>
                 </div>
-                {can.create_material && <ButtonAdd tabIndex={2} route={route('materials.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {materials.data.length > 0 ? (
+                {materials.data && materials.data.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -112,6 +131,8 @@ export default function TableMaterial({ materials, materialUnits, materialTypes 
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+
+            <DialogMaterialExportExcel open={exportDialog} setOpen={setExportDialog} materialTypes={materialTypes} />
+        </>
     );
 }

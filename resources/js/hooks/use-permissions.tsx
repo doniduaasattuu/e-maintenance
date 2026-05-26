@@ -15,15 +15,10 @@ export default function usePermissions() {
     };
 
     return {
+        user: auth.user,
         can,
         hasRole,
         hasAnyRole,
         roles: auth.roles,
     };
 }
-
-// export default function usePermissions() {
-//     const { permissions } = usePage().props as unknown as { permissions: Record<string, boolean> };
-//     const can = permissions;
-//     return can;
-// }

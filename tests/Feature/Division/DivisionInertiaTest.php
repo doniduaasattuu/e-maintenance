@@ -22,7 +22,7 @@ test('division index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('division/index')
-                ->has('divisions.data', 15)
+                ->has('divisions.data', 10)
         );
 
     $this->actingAs($admin)
@@ -30,7 +30,7 @@ test('division index should be rendered', function () {
         ->assertInertia(
             fn(Assert $page) => $page
                 ->component('division/index')
-                ->has('divisions.data', 5)
+                ->has('divisions.data', 10)
         );
 });
 

@@ -49,6 +49,8 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         });
     };
 
+    const department = auth.user?.department?.name;
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Profile settings" />
@@ -94,10 +96,22 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="avatar">Avatar</Label>
+                            <Label htmlFor="department_id">Department</Label>
 
                             <Input
                                 tabIndex={3}
+                                id="department_id"
+                                type="department_id"
+                                className="bg-muted/50 mt-1 block w-full"
+                                value={department}
+                            />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="avatar">Avatar</Label>
+
+                            <Input
+                                tabIndex={4}
                                 id="avatar"
                                 type="file"
                                 ref={fileInputRef}
@@ -114,7 +128,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 <p className="text-muted-foreground -mt-4 text-sm">
                                     Your email address is unverified.{' '}
                                     <Link
-                                        tabIndex={4}
+                                        tabIndex={5}
                                         href={route('verification.send')}
                                         method="post"
                                         as="button"
@@ -134,7 +148,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                         <div className="flex items-center gap-4">
                             <ButtonSubmit
-                                tabIndex={5}
+                                tabIndex={6}
                                 processing={processing}
                                 label="Save"
                                 disabled={processing || data.name == '' || data.email == ''}
@@ -145,7 +159,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                     </form>
                 </div>
 
-                <DeleteUser />
+                {auth.user.name != 'Admin' && <DeleteUser />}
             </SettingsLayout>
         </AppLayout>
     );

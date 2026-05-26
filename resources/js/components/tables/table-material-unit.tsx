@@ -5,21 +5,28 @@ import SearchBar from '@/components/search-bar';
 import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
-import TableLayout from '@/layouts/table/layout';
 import { tableCaption } from '@/lib/utils';
 import { MaterialUnit, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import ButtonExport from '../button-export';
 import EmptyIcon from '../empty-icon';
+import { PerPageSelector } from '../per-page-selector';
+import { ButtonGroup } from '../ui/button-group';
 
 interface TableMaterialUnitProps {
     materialUnits: {
         data: MaterialUnit[];
         meta: Meta;
     };
+    withHeader?: boolean;
+    filters: {
+        query: string;
+        per_page: string;
+    };
 }
 
-export default function TableMaterialUnit({ materialUnits }: TableMaterialUnitProps) {
+export default function TableMaterialUnit({ materialUnits, withHeader = true, filters }: TableMaterialUnitProps) {
     const { can } = usePermissions();
     const meta = materialUnits.meta;
     const caption = tableCaption(meta);
@@ -28,15 +35,21 @@ export default function TableMaterialUnit({ materialUnits }: TableMaterialUnitPr
         router.delete(route('material-units.destroy', id));
     }
     return (
-        <TableLayout moduleKey={'MATERIAL_UNIT'} className="md:max-w-2xl">
-            <div className="flex justify-between gap-2">
+        <>
+            {withHeader && (
                 <div className="flex justify-between gap-2">
-                    <SearchBar tabIndex={1} />
+                    <div className="flex justify-between gap-2">
+                        <SearchBar value={filters?.query} tabIndex={1} />
+                        <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
+                    </div>
+                    <ButtonGroup>
+                        {can.create_materialunit && <ButtonAdd tabIndex={3} route={route('material-units.create')} />}
+                        <ButtonExport tabIndex={4} onClick={() => (window.location.href = route('material-units.export'))} />
+                    </ButtonGroup>
                 </div>
-                {can.create_materialunit && <ButtonAdd tabIndex={2} route={route('material-units.create')} />}
-            </div>
+            )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {materialUnits.data.length > 0 ? (
+                {materialUnits?.data && materialUnits?.data?.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
@@ -85,6 +98,6 @@ export default function TableMaterialUnit({ materialUnits }: TableMaterialUnitPr
                 )}
             </div>
             <GeneratePagination meta={meta} />
-        </TableLayout>
+        </>
     );
 }

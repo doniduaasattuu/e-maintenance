@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("label", 50);
             $table->string("description");
-            $table->string("color_code", 50)->nullable(true);
+            $table->string("color_code", 50)->nullable(true)->default('#2563EB');
             $table->integer("sla_resolution_hours")->nullable(true);
             $table->timestamps();
         });
