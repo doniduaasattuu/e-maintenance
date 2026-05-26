@@ -42,7 +42,7 @@ class AuditController extends FindingController
         try {
             $this->performStore($request->validated());
 
-            return back()->with('message', [
+            return redirect()->route('audits.index')->with('message', [
                 'type' => 'success',
                 'description' => 'Audit and ' . count($request->file('images')) . ' photos saved successfully.',
             ]);

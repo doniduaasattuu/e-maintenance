@@ -42,7 +42,7 @@ class AbnormalityController extends FindingController
         try {
             $this->performStore($request->validated());
 
-            return back()->with('message', [
+            return redirect()->route('abnormalities.index')->with('message', [
                 'type' => 'success',
                 'description' => 'Abnormality and ' . count($request->file('images')) . ' photos saved successfully.',
             ]);

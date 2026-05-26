@@ -1,5 +1,6 @@
 import { Toaster } from '@/components/ui/sonner';
 import { useAppearance } from '@/hooks/use-appearance';
+import { useIsMobile } from '@/hooks/use-mobile';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { cfl } from '@/lib/utils';
 import { SharedData, type BreadcrumbItem } from '@/types';
@@ -47,9 +48,11 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
         }
     }, [message]);
 
+    const isMobile = useIsMobile();
+
     return (
         <AppLayoutTemplate user={auth?.user} breadcrumbs={breadcrumbs} {...props}>
-            <Toaster theme={appearance === 'light' ? 'light' : appearance} />
+            <Toaster position={isMobile ? 'top-center' : 'bottom-right'} theme={appearance === 'light' ? 'light' : appearance} />
             {children}
         </AppLayoutTemplate>
     );
