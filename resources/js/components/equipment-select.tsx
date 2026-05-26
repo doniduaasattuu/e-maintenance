@@ -19,6 +19,7 @@ type Props = {
     isEditing?: boolean;
     className?: string;
     placeholder?: string;
+    functionalLocationId?: string | number | null;
 };
 
 export default function EquipmentSelect({
@@ -29,9 +30,9 @@ export default function EquipmentSelect({
     tabIndex,
     recentlySuccessful,
     processing,
-    isEditing,
     className,
     placeholder,
+    functionalLocationId,
 }: Props) {
     const [open, setOpen] = useState(false);
     const [input, setInput] = useState('');
@@ -39,32 +40,33 @@ export default function EquipmentSelect({
     // Gunakan state untuk UI yang reaktif, bukan Ref
     const [selectedLoc, setSelectedLoc] = useState<Equipment | null>(currentValue || null);
 
-    const fetchEquipments = useCallback(async (search: string) => {
-        try {
-            const res = await axios.get(route('equipments.index'), { params: { query: search } });
-            setOptions(res.data);
-        } catch (err) {
-            setOptions([]);
-        }
-    }, []);
+    const fetchEquipments = useCallback(
+        async (search: string) => {
+            try {
+                const res = await axios.get(route('equipments.index'), { params: { query: search, functionalLocationId: functionalLocationId } });
+                setOptions(res.data);
+            } catch (err) {
+                setOptions([]);
+            }
+        },
+        [functionalLocationId],
+    );
 
     useEffect(() => {
-        if (input?.trim().length > 0) {
-            const delayDebounce = setTimeout(() => fetchEquipments(input), 300);
+        if (input?.trim().length > 0 || functionalLocationId) {
+            const delayDebounce = setTimeout(() => {
+                fetchEquipments(input);
+            }, 300);
+
             return () => clearTimeout(delayDebounce);
         } else {
             setOptions(selectedLoc ? [selectedLoc] : []);
         }
-    }, [input, fetchEquipments, selectedLoc]);
+    }, [input, functionalLocationId, fetchEquipments, selectedLoc]);
 
     useEffect(() => {
         if (recentlySuccessful) setSelectedLoc(null);
     }, [recentlySuccessful]);
-
-    const handleDismantling = () => {
-        setSelectedLoc(null);
-        onChange(null);
-    };
 
     return (
         <div className={cn('flex w-full items-center gap-2', className)}>

@@ -47,15 +47,35 @@ class EquipmentController extends Controller
     {
         Gate::authorize('index_equipment');
 
+        if ($request->expectsJson()) {
+            $query = Equipment::query()->with(['functionalLocation', 'eclass', 'status']);
+
+            if ($request->filled('query')) {
+                $query->search($request);
+            }
+
+            if ($request->filled('functionalLocationId')) {
+                $query->where('functional_location_id', $request->query('functionalLocationId'));
+            }
+
+            $equipments = $query->take(20)->get();
+
+            return response()->json(EquipmentResource::collection($equipments));
+        }
+
         $perPage = $this->getPerPage($request);
 
         $equipments = Equipment::with(['functionalLocation', 'eclass', 'status'])->search($request)->paginate($perPage)->withQueryString();
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
 
-        if ($request->expectsJson() && $request->filled('query')) {
-            return response()->json(EquipmentResource::collection($equipments));
-        }
+        // if ($request->expectsJson() && $request->filled('query')) {
+        //     if ($request->filled('functionalLocationId')) {
+        //         $equipments->where('functional_location_id', $request->query('functionalLocationId'));
+        //     }
+
+        //     return response()->json(EquipmentResource::collection($equipments));
+        // }
 
         return Inertia::render('equipment/index', [
             'equipments' => EquipmentResource::collection($equipments),

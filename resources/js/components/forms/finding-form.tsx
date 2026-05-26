@@ -227,6 +227,7 @@ export default function FindingForm({
                             id="equipment_id"
                             currentValue={equipment}
                             onChange={(val) => setData('equipment_id', val ? val.toString() : '')}
+                            functionalLocationId={data.functional_location_id}
                         />
                         <FieldError>{errors.equipment_id}</FieldError>
                     </Field>
