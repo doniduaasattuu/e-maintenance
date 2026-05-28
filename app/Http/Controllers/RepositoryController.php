@@ -35,11 +35,10 @@ class RepositoryController extends Controller
         $perPage = $this->getPerPage($request);
 
         $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate($perPage)->withQueryString();
-        $extensions = Repository::distinct()->pluck('extension');
 
         return Inertia::render('repository/index', [
             'repositories' => RepositoryResource::collection($repositories),
-            'extensions' => $extensions,
+            'extensions' => Repository::distinct()->pluck('extension'),
             'renderable' => config('repository.renderable'),
             'filters' => [
                 'query' => $request->query('query'),
