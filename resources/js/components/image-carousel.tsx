@@ -27,7 +27,7 @@ export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
             <CarouselContent>
                 {images &&
                     images.map((image, index) => (
-                        <CarouselItem key={`${image.id}-${index}`} className="relative sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                        <CarouselItem key={`${image.id}-${index}`} className="relative sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                             {canDelete && (
                                 <div className="absolute top-3 right-3 z-10">
                                     <ActionConfirm
@@ -42,7 +42,7 @@ export function ImageCarousel({ model, canDelete }: ImageCarouselProps) {
                                 </div>
                             )}
                             <Card className="p-0" onClick={() => setSelectedImage(image)}>
-                                <CardContent className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-white/10">
+                                <CardContent className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-white/10 p-0">
                                     <span className="absolute top-2 left-2 z-10 text-sm">{`${images.length - index} of ${images.length}`}</span>
                                     <ImageWithFallback src={image.url} />
 

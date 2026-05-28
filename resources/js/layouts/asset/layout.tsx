@@ -50,12 +50,11 @@ export default function AssetLayout({ children, className, sidebarNavItems }: Pr
                 <aside className="max-w-xl lg:w-48">
                     <nav
                         ref={scrollContainerRef}
-                        className={cn(
-                            'flex flex-col space-y-1 space-x-0',
+                        className={
                             sidebarNavItems.length > 4
-                                ? 'flex flex-row space-y-1 space-x-1 overflow-x-scroll sm:flex-col sm:space-x-1 sm:overflow-x-hidden'
-                                : undefined,
-                        )}
+                                ? 'flex flex-row space-y-1 space-x-1 overflow-x-scroll lg:flex-col lg:space-x-1 lg:overflow-x-hidden'
+                                : 'flex flex-col space-y-1 space-x-0'
+                        }
                     >
                         {sidebarNavItems.map((item, index) => {
                             const shouldRender = !item.permission || permissions[item.permission] === true;

@@ -69,14 +69,6 @@ class EquipmentController extends Controller
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
 
-        // if ($request->expectsJson() && $request->filled('query')) {
-        //     if ($request->filled('functionalLocationId')) {
-        //         $equipments->where('functional_location_id', $request->query('functionalLocationId'));
-        //     }
-
-        //     return response()->json(EquipmentResource::collection($equipments));
-        // }
-
         return Inertia::render('equipment/index', [
             'equipments' => EquipmentResource::collection($equipments),
             'equipmentClasses' => EquipmentClassResource::collection($equipmentClasses),

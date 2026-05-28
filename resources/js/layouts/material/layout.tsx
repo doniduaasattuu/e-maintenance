@@ -24,13 +24,13 @@ export default function MaterialLayout({ material, children, className }: Props)
                 type: 'material',
             }),
             icon: null,
-            permission: 'show_image',
+            permission: 'index_image',
         },
         {
             title: repoTitle,
             href: route('materials.repositories', material.id),
             icon: null,
-            permission: 'show_repository',
+            permission: 'index_repository',
         },
     ];
 

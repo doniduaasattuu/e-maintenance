@@ -18,7 +18,7 @@ class EquipmentFindingController extends Controller
         $perPage = $this->getPerPage($request);
 
         return Inertia::render('equipment/findings', [
-            'equipment' => new EquipmentResource($equipment),
+            'equipment' => new EquipmentResource($equipment->load('status')),
             'findings' => FindingResource::collection(
                 $equipment->findings()
                     ->withAllRelations()
