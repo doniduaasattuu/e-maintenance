@@ -73,7 +73,7 @@ class InstallDismantleHistoryController extends Controller
             ->withQueryString();
 
         return Inertia::render('equipment/history', [
-            'equipment' => new EquipmentResource($equipment),
+            'equipment' => new EquipmentResource($equipment->load('status')),
             'histories' => InstallDismantleHistoryResource::collection($histories),
             'filters' => [
                 'query' => $request->query('query'),

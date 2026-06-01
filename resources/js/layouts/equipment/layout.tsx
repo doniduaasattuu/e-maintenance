@@ -22,13 +22,13 @@ export default function EquipmentLayout({ equipment, className, children }: Prop
             title: 'Finding',
             href: route('equipments.findings', equipment.id),
             icon: null,
-            permission: 'show_finding',
+            permission: 'index_finding',
         },
         {
             title: 'History',
             href: route('equipments.history', equipment.id),
             icon: null,
-            permission: 'show_installdismantlehistory',
+            permission: 'index_installdismantlehistory',
         },
         {
             title: 'Inspection',
@@ -49,19 +49,19 @@ export default function EquipmentLayout({ equipment, className, children }: Prop
                 type: 'equipment',
             }),
             icon: null,
-            permission: 'show_image',
+            permission: 'index_image',
         },
         {
             title: repoTitle,
             href: route('equipments.repositories', equipment.id),
             icon: null,
-            permission: 'show_repository',
+            permission: 'index_repository',
         },
         {
             title: 'Material',
             href: route('equipments.materials', equipment.id),
             icon: null,
-            permission: 'show_equipment',
+            permission: 'index_material',
         },
     ];
 

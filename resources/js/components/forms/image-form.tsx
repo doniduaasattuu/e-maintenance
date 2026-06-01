@@ -45,7 +45,15 @@ export default function ImageForm({ submit, fileInputRef, processing, setData, e
         <form onSubmit={submit} className="space-y-6">
             <Field className={className}>
                 <FieldLabel htmlFor="image">Upload</FieldLabel>
-                <Input type="file" id="image" ref={fileInputRef} disabled={processing} onChange={handleFileChange} accept=".jpg,.jpeg,.png,.webp" />
+                <Input
+                    type="file"
+                    id="image"
+                    ref={fileInputRef}
+                    disabled={processing}
+                    onChange={handleFileChange}
+                    accept=".jpg,.jpeg,.png,.webp"
+                    capture="environment"
+                />
 
                 {data.image && (
                     <div className="mt-2 flex flex-wrap gap-2">

@@ -38,8 +38,10 @@ class RepositoryEquipmentController extends Controller
         $repositories = $equipment->repositories()->paginate($perPage);
 
         return Inertia::render('equipment/repositories', [
-            'equipment' => new EquipmentResource($equipment),
+            'equipment' => new EquipmentResource($equipment->load('status')),
             'repositories' => RepositoryResource::collection($repositories),
+            'extensions' => Repository::distinct()->pluck('extension'),
+            'renderable' => config('repository.renderable'),
             'filters' => [
                 'query' => $request->query('query'),
                 'per_page' => (string) $perPage,

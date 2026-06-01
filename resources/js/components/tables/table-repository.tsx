@@ -90,7 +90,7 @@ export default function TableRepository({ repositories, extensions, renderable, 
                                     <TableRow key={repository.id}>
                                         <TableCell className="w-12.5">{meta.from + index}</TableCell>
                                         <TableCell className="max-w-md truncate font-medium">
-                                            {renderable.includes(repository.extension ?? '') ? (
+                                            {renderable.includes(repository.extension?.toLowerCase() ?? '') ? (
                                                 <a
                                                     target="_blank"
                                                     className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
