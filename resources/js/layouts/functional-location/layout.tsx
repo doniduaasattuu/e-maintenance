@@ -18,7 +18,7 @@ export default function FunctionalLocationLayout({ functionalLocation, className
             title: 'Finding',
             href: route('functional-locations.findings', functionalLocation.id),
             icon: null,
-            permission: 'show_finding',
+            permission: 'index_finding',
         },
         {
             title: 'Image',
@@ -27,7 +27,7 @@ export default function FunctionalLocationLayout({ functionalLocation, className
                 type: 'functional-location',
             }),
             icon: null,
-            permission: 'show_image',
+            permission: 'index_image',
         },
     ];
 

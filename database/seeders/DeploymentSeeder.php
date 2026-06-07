@@ -13,8 +13,6 @@ class DeploymentSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // UserSeeder::class,
-            // ElectricianSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
             EquipmentClassSeeder::class,

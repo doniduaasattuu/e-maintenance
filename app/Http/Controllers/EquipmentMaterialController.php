@@ -26,7 +26,7 @@ class EquipmentMaterialController extends Controller
             ->paginate($perPage);
 
         return Inertia::render('equipment/materials', [
-            'equipment' => new EquipmentResource($equipment),
+            'equipment' => new EquipmentResource($equipment->load('status')),
             'materials' => MaterialResource::collection($materials),
             'filters' => [
                 'query' => $request->query('query'),

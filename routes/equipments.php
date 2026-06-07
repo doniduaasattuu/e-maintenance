@@ -7,6 +7,7 @@ use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\EquipmentFindingController;
 use App\Http\Controllers\EquipmentTrendController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\InspectionPanelController;
 use App\Http\Controllers\InstallDismantleHistoryController;
 use App\Http\Controllers\RepositoryEquipmentController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // TREND
     Route::get('equipments/{equipment}/trend', [EquipmentTrendController::class, 'show'])->name('equipments.trend');
     // TREND EXPORT
+    Route::get('equipments/{equipment}/panel-trend/export', [InspectionPanelController::class, 'export'])->name('inspection.panel.export');
     // Route::get('equipments/{equipment}/trend/export', [EquipmentTrendController::class, 'export'])->name('equipments.trend.export');
 
     // EXPORT

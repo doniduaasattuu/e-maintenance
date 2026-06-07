@@ -47,6 +47,7 @@ class ImageController extends Controller
 
                 return Inertia::render('equipment/image/index', [
                     'equipment' => new EquipmentResource($equipment->load([
+                        'status',
                         'images' => function ($query) {
                             $query->latest();
                         }

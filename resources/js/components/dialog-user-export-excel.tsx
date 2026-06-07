@@ -36,8 +36,6 @@ export default function DialogUserExportExcel({ open, setOpen, departments, posi
     });
 
     const { data, setData } = useForm({
-        start_date: '',
-        end_date: '',
         department_ids: selectedDepartment as number[],
         position_ids: selectedPosition as number[],
         work_center_ids: selectedWorkCenter as number[],
@@ -79,9 +77,6 @@ export default function DialogUserExportExcel({ open, setOpen, departments, posi
     const handleExport = () => {
         setProcessing(true);
         const params = new URLSearchParams();
-
-        if (data.start_date) params.append('start_date', data.start_date);
-        if (data.end_date) params.append('end_date', data.end_date);
 
         data.department_ids.forEach((id) => {
             params.append('department_ids[]', id.toString());

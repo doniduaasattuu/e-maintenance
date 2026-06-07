@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import HeadingSmall from '@/components/heading-small';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
@@ -5,21 +6,14 @@ import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment } from '@/types';
 import { Head } from '@inertiajs/react';
 
-interface EquipmentTrendProps {
+interface EquipmentTrendLayoutProps {
     equipment: {
         data: Equipment;
     };
-    trendData: Record<string, unknown>;
-    filters: {
-        date_range: {
-            from: string;
-            to: string;
-        };
-    };
-    chartConfig: Record<string, unknown>;
+    children: React.ReactNode | undefined;
 }
 
-export default function EquipmentTrend({ equipment, trendData, filters, chartConfig }: EquipmentTrendProps) {
+export default function EquipmentTrendLayout({ equipment, children }: EquipmentTrendLayoutProps) {
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -31,11 +25,6 @@ export default function EquipmentTrend({ equipment, trendData, filters, chartCon
             href: route('equipments.index', equipment.data.id),
         },
     ];
-
-    console.log('Equipment:', equipment);
-    console.log('Trend Data:', trendData);
-    console.log('Chart Config:', chartConfig);
-    console.log('Filters:', filters);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -49,7 +38,7 @@ export default function EquipmentTrend({ equipment, trendData, filters, chartCon
                             description="Visualization of historical inspection parameter data to facilitate performance analysis and early detection of equipment anomalies."
                         />
                     </div>
-                    {/* Render your trend chart here using trendData and chartConfig */}
+                    {children}
                 </div>
             </EquipmentLayout>
         </AppLayout>
