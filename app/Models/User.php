@@ -67,7 +67,7 @@ class User extends Authenticatable
         $search = trim($request->query('query'));
         $department = $request->query('department');
         $position = $request->query('position');
-        $workCenterCode = trim($request->query('work-center'));
+        $workCenterCode = $request->query('work-center');
         $role = $request->query('role');
         $withTrashed = $request->boolean('withTrashed');
 

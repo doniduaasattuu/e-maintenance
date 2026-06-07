@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PanelTrendExport;
 use App\Http\Requests\InspectionPanel\StoreInspectionPanelRequest;
 use App\Http\Requests\InspectionPanel\UpdateInspectionPanelRequest;
 use App\Http\Resources\EquipmentResource;
@@ -12,10 +13,13 @@ use App\Models\Finding;
 use App\Models\FindingImage;
 use App\Models\FindingType;
 use App\Models\InspectionPanel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InspectionPanelController extends Controller
 {
@@ -147,9 +151,104 @@ class InspectionPanelController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, Equipment $equipment)
     {
-        // Gate::authorize('show_inspectionpanel');
+        Gate::authorize('index_inspectionpanel');
+
+        // 1. Ambil input Date Range (default 30 hari terakhir)
+        $startDate = $request->input('start_date', Carbon::now()->subDays(30)->toDateString());
+        $endDate = $request->input('end_date', Carbon::now()->toDateString());
+
+        $from = Carbon::parse($startDate)->startOfDay();
+        $to = Carbon::parse($endDate)->endOfDay();
+
+        // 2. Query Eager Loading via Polymorphic Relation
+        $inspections = $equipment->inspections()
+            ->with(['formable'])
+            ->whereBetween('created_at', [$from, $to])
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        // 3. Inisialisasi Group Data Array
+        $incomingPanel = [];
+        $outgoingPanel = [];
+        $cabinetPanel  = [];
+        $amperePanel   = [];
+
+        // 4. Mapping Data secara efisien dalam satu kali looping loop (O(n))
+        foreach ($inspections as $form) {
+            $details = $form->formable;
+
+            // Pastikan data formable adalah instansiasi dari InspectionPanel
+            if ($details instanceof \App\Models\InspectionPanel) {
+                $formattedDate = $form->created_at->format('d M'); // Hasil: "09 May"
+
+                $incomingPanel[] = [
+                    'Date' => $formattedDate,
+                    'r' => (float) $details->temperature_incoming_r,
+                    's' => (float) $details->temperature_incoming_s,
+                    't' => (float) $details->temperature_incoming_t,
+                ];
+
+                $outgoingPanel[] = [
+                    'Date' => $formattedDate,
+                    'r' => (float) $details->temperature_outgoing_r,
+                    's' => (float) $details->temperature_outgoing_s,
+                    't' => (float) $details->temperature_outgoing_t,
+                ];
+
+                $cabinetPanel[] = [
+                    'Date' => $formattedDate,
+                    'cabinet' => (float) $details->temperature_cabinet,
+                ];
+
+                $amperePanel[] = [
+                    'Date' => $formattedDate,
+                    'r' => (float) $details->current_r,
+                    's' => (float) $details->current_s,
+                    't' => (float) $details->current_t,
+                ];
+            }
+        }
+
+        // 5. Generate Chart Config sesuai standar ShadcnUI ChartConfig type
+        $configs = $this->getTrendChartConfigs();
+
+        return Inertia::render('equipment/trend/panel', [
+            'equipment' => new EquipmentResource($equipment->load('status', 'eclass')),
+            'filters' => [
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+            ],
+            'trends' => [
+                'incoming' => $incomingPanel,
+                'outgoing' => $outgoingPanel,
+                'cabinet'  => $cabinetPanel,
+                'ampere'   => $amperePanel,
+            ],
+            'configs' => $configs
+        ]);
+    }
+
+    /**
+     * Menyediakan struktur config warna & label terpusat dari backend
+     */
+    private function getTrendChartConfigs(): array
+    {
+        // Tema warna default ShadcnUI (var(--chart-1), dst)
+        $phaseConfig = [
+            'r' => ['label' => 'Phase R', 'color' => 'var(--chart-1)'],
+            's' => ['label' => 'Phase S', 'color' => 'var(--chart-2)'],
+            't' => ['label' => 'Phase T', 'color' => 'var(--chart-3)'],
+        ];
+
+        return [
+            'temperature' => $phaseConfig,
+            'ampere' => $phaseConfig,
+            'cabinet' => [
+                'cabinet' => ['label' => 'Cabinet', 'color' => 'var(--chart-5)'],
+            ]
+        ];
     }
 
     /**
@@ -181,5 +280,11 @@ class InspectionPanelController extends Controller
     public function destroy(string $id)
     {
         // Gate::authorize('delete_inspectionpanel');
+    }
+
+    public function export(Request $request, Equipment $equipment)
+    {
+
+        return Excel::download(new PanelTrendExport($equipment), 'Panel_trend.xlsx');
     }
 }

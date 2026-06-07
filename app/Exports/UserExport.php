@@ -27,23 +27,35 @@ class UserExport implements FromQuery, WithHeadings, WithMapping, WithStyles, Sh
 
         $department = $this->filters['department_ids'] ?? null;
         if ($department) {
-            is_array($department)
-                ? $query->whereIn('department_id', $department)
-                : $query->where('department_id', $department);
+            $query->where(function ($q) use ($department) {
+                is_array($department)
+                    ? $q->whereIn('department_id', $department)
+                    : $q->where('department_id', $department);
+
+                $q->orWhereNull('department_id');
+            });
         }
 
         $position = $this->filters['position_ids'] ?? null;
         if ($position) {
-            is_array($position)
-                ? $query->whereIn('position_id', $position)
-                : $query->where('position_id', $position);
+            $query->where(function ($q) use ($position) {
+                is_array($position)
+                    ? $q->whereIn('position_id', $position)
+                    : $q->where('position_id', $position);
+
+                $q->orWhereNull('position_id');
+            });
         }
 
         $workCenter = $this->filters['work_center_ids'] ?? null;
         if ($workCenter) {
-            is_array($workCenter)
-                ? $query->whereIn('work_center_id', $workCenter)
-                : $query->where('work_center_id', $workCenter);
+            $query->where(function ($q) use ($workCenter) {
+                is_array($workCenter)
+                    ? $q->whereIn('work_center_id', $workCenter)
+                    : $q->where('work_center_id', $workCenter);
+
+                $q->orWhereNull('work_center_id');
+            });
         }
 
         return $query->latest();
