@@ -118,7 +118,6 @@ class Finding extends Model
     #[Scope]
     public function scopeForUserDepartment($query)
     {
-        // Jika admin, bypass semua filter departemen/pembuat
         if (auth()->user()->hasRole('Admin')) {
             return $query;
         }
@@ -192,6 +191,20 @@ class Finding extends Model
             'verifier',
             'images',
         ]);
+    }
+
+    #[Scope]
+    public function scopeOfAreas(Builder $query, array $areas): Builder
+    {
+        return $query->whereHas('functionalLocation', function ($q) use ($areas) {
+            $q->where(function ($subQuery) use ($areas) {
+                foreach ($areas as $area) {
+                    if (!empty($area)) {
+                        $subQuery->orWhere('code', 'LIKE', $area . '%');
+                    }
+                }
+            });
+        });
     }
 
     public function type(): BelongsTo

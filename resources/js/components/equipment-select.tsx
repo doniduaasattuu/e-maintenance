@@ -111,7 +111,7 @@ export default function EquipmentSelect({
                                         <Check className={cn('mr-2 h-4 w-4', selectedLoc?.id === e.id ? 'opacity-100' : 'opacity-0')} />
                                         <div className="flex flex-col">
                                             <span className="font-medium">{e.code}</span>
-                                            <span className="text-muted-foreground line-clamp-1 text-xs">{e.sort_field}</span>
+                                            <span className="text-muted-foreground line-clamp-1 text-xs">{e.sort_field ?? e.description}</span>
                                         </div>
                                     </CommandItem>
                                 ))}

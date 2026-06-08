@@ -9,6 +9,7 @@ use App\Http\Resources\FindingClauseResource;
 use App\Http\Resources\FindingPriorityResource;
 use App\Http\Resources\FindingResource;
 use App\Http\Resources\FindingStatusResource;
+use App\Http\Resources\FunctionalLocationResource;
 use App\Http\Resources\WorkCenterResource;
 use App\Models\CauseCode;
 use App\Models\Department;
@@ -17,6 +18,7 @@ use App\Models\FindingImage;
 use App\Models\FindingPriority;
 use App\Models\FindingStatus;
 use App\Models\FindingType;
+use App\Models\FunctionalLocation;
 use App\Models\WorkCenter;
 use App\Traits\HasPerPagePreference;
 use Illuminate\Support\Facades\Gate;
@@ -48,6 +50,9 @@ abstract class FindingController extends Controller
             ->orderBy('created_at', 'DESC')
             ->active()
             ->forUserDepartment()
+            ->when($request->filled('area'), function ($query) use ($request) {
+                return $query->ofAreas($request->input('area'));
+            })
             ->whereHas('type', fn($q) => $q->where('code', $this->getTypeCode()))
             ->when($request->start_date && $request->end_date, function ($query) use ($request) {
                 $query->whereBetween('created_at', [
@@ -65,6 +70,12 @@ abstract class FindingController extends Controller
         $departments = Department::all();
         $workCenters = WorkCenter::all();
         $causeCodes = CauseCode::all();
+        $areaOptions = FunctionalLocation::query()
+            ->selectRaw('LEFT(code, 5) as value')
+            ->selectRaw('MIN(description) as label')
+            ->groupBy(DB::raw('LEFT(code, 5)'))
+            ->orderBy('value', 'asc')
+            ->get();
 
         return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/index", [
             'findings' => FindingResource::collection($findings),
@@ -74,6 +85,7 @@ abstract class FindingController extends Controller
             'departments' => DepartmentResource::collection($departments),
             'workCenters' => WorkCenterResource::collection($workCenters),
             'causeCodes' => CauseCodeResource::collection($causeCodes),
+            'areaOptions' => $areaOptions,
             'filters' => [
                 'query' => $request->query('query'),
                 'per_page' => (string) $perPage,

@@ -26,6 +26,7 @@ import { DateRangePopover } from '../date-range-popover';
 import DialogFindingExportExcel from '../dialog-finding-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
+import FilterArea from '../filter-area';
 import FilterCauseCode from '../filter-cause-code';
 import FilterDepartment from '../filter-department';
 import FilterFindingClause from '../filter-finding-clause';
@@ -71,6 +72,10 @@ interface FindingTableProps {
     causeCodes?: {
         data: CauseCode[];
     };
+    areaOptions: {
+        value: string;
+        label: string;
+    }[];
     withHeader?: boolean;
     filters: {
         query: string;
@@ -190,6 +195,7 @@ export default function TableFinding({
     causeCodes,
     withHeader = true,
     filters,
+    areaOptions,
 }: FindingTableProps) {
     const [open, setOpen] = useState<boolean>(false);
     const { can } = usePermissions();
@@ -270,6 +276,12 @@ export default function TableFinding({
                             {findingPriorities?.data && (
                                 <>
                                     <FilterFindingPriority findingPriorities={findingPriorities?.data ?? []} />
+                                    <CommandSeparator />
+                                </>
+                            )}
+                            {areaOptions && (
+                                <>
+                                    <FilterArea areaOptions={areaOptions} />
                                     <CommandSeparator />
                                 </>
                             )}
