@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

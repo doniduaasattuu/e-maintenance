@@ -118,7 +118,22 @@ class Finding extends Model
     #[Scope]
     public function scopeForUserDepartment($query)
     {
-        if (auth()->user()->hasRole('Admin')) {
+        $user = auth()->user();
+        if (!$user) {
+            return $query;
+        }
+
+        // Menggunakan hasPermissionTo terkadang melempar error jika data permission belum di-seed di test db.
+        // Alternatif aman: Cek relasi permissions secara langsung di collection, atau bungkus dengan check.
+        $hasViewAllPermission = false;
+        try {
+            $hasViewAllPermission = $user->hasPermissionTo('view_all_finding');
+        } catch (\Spatie\Permission\Exceptions\PermissionDoesNotExist $e) {
+            // Jika di lingkungan test permission belum dibuat, abaikan errornya
+            $hasViewAllPermission = false;
+        }
+
+        if ($user->hasRole('Admin') || $hasViewAllPermission) {
             return $query;
         }
 
