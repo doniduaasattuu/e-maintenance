@@ -102,6 +102,10 @@ abstract class FindingController extends Controller
             'causeCodes' => CauseCodeResource::collection($causeCodes),
             'departments' => DepartmentResource::collection($departments),
             'workCenters' => WorkCenterResource::collection($workCenters),
+            'defaultValue' => [
+                'finding_status_id' => $findingStatuses->where('name', 'Open')->first()->id ?? '1',
+                'finding_priority_id' => $findingPriorities->sortByDesc('sla_resolution_hours')->first()->id ?? '1',
+            ]
         ]);
     }
 

@@ -336,6 +336,12 @@ export default function TableFinding({
                                     {can.close_finding ? (
                                         <TableCell className="align-center">
                                             <Checkbox
+                                                className={
+                                                    finding.status?.name.toLowerCase() === 'closed' ||
+                                                    (finding.gallery?.after && finding.gallery.after.length < 1)
+                                                        ? undefined
+                                                        : 'border-2 border-gray-400'
+                                                }
                                                 checked={finding.status?.name.toLowerCase() === 'closed'}
                                                 disabled={
                                                     finding.status?.name.toLowerCase() === 'closed' ||

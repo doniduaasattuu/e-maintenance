@@ -38,6 +38,10 @@ type FindingCreateProps = {
     workCenters: {
         data: WorkCenter[];
     };
+    defaultValue: {
+        finding_status_id: string;
+        finding_priority_id: string;
+    };
 };
 
 export default function FindingCreate({
@@ -47,15 +51,14 @@ export default function FindingCreate({
     causeCodes,
     departments,
     workCenters,
+    defaultValue,
 }: FindingCreateProps) {
-    const findingStatusId = findingStatuses?.data?.find((s) => s.name.toLocaleLowerCase() === 'open')?.id?.toString() ?? '1';
-    const findingPriorityId = findingPriorities?.data?.find((p) => p.label.toLowerCase() === 'recommendation')?.id?.toString() ?? '1';
     const { user, can } = usePermissions();
 
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<FindingFormData>>({
         finding_clause_id: '',
-        finding_status_id: findingStatusId,
-        finding_priority_id: findingPriorityId,
+        finding_status_id: defaultValue.finding_status_id,
+        finding_priority_id: defaultValue.finding_priority_id,
         cause_code_id: '',
         department_id: user.department_id ? user.department_id.toString() : '',
         work_center_id: user.work_center_id ? user.work_center_id.toString() : '',
