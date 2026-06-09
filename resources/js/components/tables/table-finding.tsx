@@ -72,7 +72,7 @@ interface FindingTableProps {
     causeCodes?: {
         data: CauseCode[];
     };
-    areaOptions: {
+    areaOptions?: {
         value: string;
         label: string;
     }[];
@@ -80,6 +80,8 @@ interface FindingTableProps {
     filters: {
         query: string;
         per_page: string;
+        start_date?: string;
+        end_date?: string;
     };
 }
 
@@ -531,6 +533,7 @@ export default function TableFinding({
                 departments={departments}
                 workCenters={workCenters}
                 mode={mode}
+                filters={filters}
             />
 
             {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />}
