@@ -42,6 +42,8 @@ type FindingProps = {
     areaOptions: {
         value: string;
         label: string;
+        start_date?: string;
+        end_date?: string;
     }[];
 };
 

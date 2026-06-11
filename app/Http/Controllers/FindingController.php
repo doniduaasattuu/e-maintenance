@@ -21,6 +21,7 @@ use App\Models\FindingType;
 use App\Models\FunctionalLocation;
 use App\Models\WorkCenter;
 use App\Traits\HasPerPagePreference;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -89,6 +90,8 @@ abstract class FindingController extends Controller
             'filters' => [
                 'query' => $request->query('query'),
                 'per_page' => (string) $perPage,
+                'start_date' => $request->query('start_date') ?? Carbon::now()->subMonths(3)->format('Y-m-d'),
+                'end_date' => $request->query('end_date') ?? Carbon::now()->format('Y-m-d'),
             ],
         ]);
     }

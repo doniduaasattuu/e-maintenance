@@ -38,8 +38,8 @@ type FindingProps = {
     filters: {
         query: string;
         per_page: string;
-        start_date: string;
-        end_date: string;
+        start_date?: string;
+        end_date?: string;
     };
 };
 
