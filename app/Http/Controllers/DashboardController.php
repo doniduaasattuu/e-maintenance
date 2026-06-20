@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Equipment;
 use App\Models\Finding;
 use App\Models\FindingStatus;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -39,6 +38,60 @@ class DashboardController extends Controller
             })
             ->count();
 
+        $monthlyFindings = Finding::select(
+            DB::raw('YEAR(created_at) as year'),
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('COUNT(*) as total')
+        )
+            ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+        $chartMonthlyFindings = collect();
+
+        for ($i = 11; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+
+            $row = $monthlyFindings->first(function ($item) use ($date) {
+                return $item->year == $date->year
+                    && $item->month == $date->month;
+            });
+
+            $chartMonthlyFindings->push([
+                'month' => $date->format('M'),
+                'total' => $row?->total ?? 0,
+            ]);
+        }
+
+        $equipmentStatusChart = Equipment::query()
+            ->join(
+                'equipment_statuses',
+                'equipments.equipment_status_id',
+                '=',
+                'equipment_statuses.id'
+            )
+            ->select(
+                'equipment_statuses.code',
+                DB::raw('COUNT(equipments.id) as value')
+            )
+            ->groupBy('equipment_statuses.code')
+            ->orderBy('equipment_statuses.code')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'label' => $item->code,
+                    'value' => (int) $item->value,
+                    'fill' => match ($item->code) {
+                        'INST' => 'var(--chart-1)',
+                        'AVLB' => 'var(--chart-2)',
+                        'RPRD' => 'var(--chart-3)',
+                        default => 'var(--chart-4)',
+                    },
+                ];
+            });
+
         return Inertia::render('dashboard', [
             'stats' => [
                 'total' => [
@@ -65,6 +118,8 @@ class DashboardController extends Controller
             'chartClosedFindingWorkCenter' => Finding::getChartData(\App\Models\WorkCenter::class),
             'topInspectors' => Finding::getTopInspectors(),
             'topResolvers' => Finding::getTopResolvers(),
+            'chartMonthlyFindings' => $chartMonthlyFindings,
+            'equipmentStatusChart' => $equipmentStatusChart,
         ]);
     }
 }

@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
-import { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 // Interface sekarang lebih fleksibel menggunakan generic atau record
 interface ChartProps {
@@ -23,7 +21,7 @@ export function ChartBarDefault({ title, description, chartData, labelKey, value
             color: chartColor,
         },
     } satisfies ChartConfig;
-    const [timeRange, setTimeRange] = useState('90d');
+    // const [timeRange, setTimeRange] = useState('90d');
 
     return (
         <Card className="bg-sidebar">
@@ -32,7 +30,7 @@ export function ChartBarDefault({ title, description, chartData, labelKey, value
                     <CardTitle className="text-xl font-bold">{title}</CardTitle>
                     <CardDescription className="text-muted-foreground text-sm">{description}</CardDescription>
                 </div>
-                <Select disabled value={timeRange} onValueChange={setTimeRange}>
+                {/* <Select disabled value={timeRange} onValueChange={setTimeRange}>
                     <SelectTrigger className="hidden w-40 rounded-lg sm:ml-auto sm:flex" aria-label="Select a value">
                         <SelectValue placeholder="Last 3 months" />
                     </SelectTrigger>
@@ -47,7 +45,7 @@ export function ChartBarDefault({ title, description, chartData, labelKey, value
                             Last 7 days
                         </SelectItem>
                     </SelectContent>
-                </Select>
+                </Select> */}
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
