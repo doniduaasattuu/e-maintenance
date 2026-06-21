@@ -40,6 +40,7 @@ export default function FindingPhotoInput({
             </FieldLabel>
 
             <Input
+                capture="environment"
                 tabIndex={tabIndex}
                 type="file"
                 id="images"

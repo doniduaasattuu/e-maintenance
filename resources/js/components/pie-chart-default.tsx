@@ -16,7 +16,7 @@ interface ChartProps {
 export function PieChartDefault({ title, description, chartData, labelKey, valueKey, chartConfig }: ChartProps) {
     return (
         <Card className="bg-sidebar flex flex-col">
-            <CardHeader className="items-center pb-0">
+            <CardHeader className="mb-2 pb-0">
                 <div className="grid flex-1 gap-1">
                     <CardTitle className="text-xl font-bold">{title}</CardTitle>
                     <CardDescription className="text-muted-foreground text-sm">{description}</CardDescription>
@@ -24,7 +24,7 @@ export function PieChartDefault({ title, description, chartData, labelKey, value
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer config={chartConfig}>
-                    <PieChart>
+                    <PieChart margin={{ top: 10, bottom: 10 }}>
                         <ChartTooltip content={<ChartTooltipContent nameKey={valueKey} hideLabel />} />
                         <Pie
                             data={chartData}

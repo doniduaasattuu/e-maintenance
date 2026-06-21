@@ -42,18 +42,17 @@ export function ChartBarDefault({
             color: chartColor,
         },
     } satisfies ChartConfig;
-    // const [timeRange, setTimeRange] = useState('April');
     return (
         <Card className="bg-sidebar">
-            <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+            <CardHeader className="flex flex-row items-center gap-2 space-y-0 border-b py-5">
                 <div className="grid flex-1 gap-1">
                     <CardTitle className="text-xl font-bold">{title}</CardTitle>
                     <CardDescription className="text-muted-foreground text-sm">{description}</CardDescription>
                 </div>
                 {withSelect && (
                     <Select value={selectedMonth} onValueChange={onSelectChange}>
-                        <SelectTrigger className="hidden w-40 rounded-lg sm:ml-auto sm:flex" aria-label="Select a value">
-                            <SelectValue placeholder="Last 3 months" />
+                        <SelectTrigger className="w-30 rounded-lg sm:ml-auto sm:flex sm:w-40" aria-label="Select a value">
+                            <SelectValue placeholder="--Select--" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                             {availableMonths?.map((e) => (
