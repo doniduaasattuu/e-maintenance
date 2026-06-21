@@ -4,7 +4,7 @@ import { PieChartDefault } from '@/components/pie-chart-default';
 import { ChartConfig } from '@/components/ui/chart';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { AlertTriangle, CheckCircle, Clock, LayoutGrid } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -61,6 +61,21 @@ interface DashboardProps {
         value: number;
         fill: string;
     }[];
+    availableMonths: {
+        label: string;
+        value: string;
+    }[];
+    selectedMonth: string;
+    chartWeeklyFindings: {
+        week: string;
+        total: number;
+    }[];
+    chartInspectorFindings: {
+        inspector: string;
+        week: number;
+        total: number;
+        fill: string;
+    }[];
 }
 
 const equipmentStatusConfig = {
@@ -86,6 +101,10 @@ export default function Dashboard({
     topResolvers,
     chartMonthlyFindings,
     equipmentStatusChart,
+    availableMonths,
+    selectedMonth,
+    chartWeeklyFindings,
+    chartInspectorFindings,
 }: DashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -128,6 +147,38 @@ export default function Dashboard({
                         labelKey="label"
                         valueKey="value"
                         chartConfig={equipmentStatusConfig}
+                    />
+                </div>
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                    <ChartBarDefault
+                        withSelect={true}
+                        title="Weekly Finding"
+                        description="Total temuan per minggu dalam satu bulan"
+                        chartData={chartWeeklyFindings}
+                        labelKey="week"
+                        valueKey="value"
+                        availableMonths={availableMonths}
+                        selectedMonth={selectedMonth}
+                        onSelectChange={(value) => {
+                            router.get(
+                                route('dashboard'),
+                                {
+                                    month: value,
+                                },
+                                {
+                                    preserveState: true,
+                                    preserveScroll: true,
+                                },
+                            );
+                        }}
+                    />
+                    <ChartBarDefault
+                        labelKey="label"
+                        valueKey="value"
+                        chartData={chartInspectorFindings}
+                        title="Inspector Weekly"
+                        description="Total temuan inspector per minggu"
+                        xAxisAngle={-45}
                     />
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">

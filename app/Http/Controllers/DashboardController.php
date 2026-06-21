@@ -92,6 +92,99 @@ class DashboardController extends Controller
                 ];
             });
 
+        $availableMonths = collect();
+
+        for ($i = 11; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+
+            $availableMonths->push([
+                'label' => $date->format('F Y'),
+                'value' => $date->format('Y-m'),
+            ]);
+        }
+
+        $selectedMonth = request('month', now()->format('Y-m')) ?? Carbon::now()->format('Y-m');
+
+        $startDate = Carbon::createFromFormat('Y-m', $selectedMonth)
+            ->startOfMonth();
+
+        $endDate = Carbon::createFromFormat('Y-m', $selectedMonth)
+            ->endOfMonth();
+
+        $weeklyFindings = Finding::query()
+            ->selectRaw('FLOOR((DAY(created_at)-1)/7)+1 as week_number,
+        COUNT(*) as total')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('week_number')
+            ->orderBy('week_number')
+            ->get();
+
+        $chartWeeklyFindings = collect();
+        $weeklyTotal = 0;
+
+        for ($week = 1; $week <= 5; $week++) {
+
+            $row = $weeklyFindings->firstWhere(
+                'week_number',
+                $week
+            );
+
+            $chartWeeklyFindings->push([
+                'week' => "W-{$week}",
+                'value' => $row?->total ?? 0,
+            ]);
+
+            $weeklyTotal += $row?->total ?? 0;
+        }
+
+        $chartWeeklyFindings->push([
+            'week' => 'Total',
+            'value' => $weeklyTotal,
+        ]);
+
+        $inspectorFindings = Finding::query()
+            ->join('users', 'findings.inspected_by', '=', 'users.id')
+            ->selectRaw("
+        users.name as inspector,
+        CASE
+            WHEN DAY(findings.created_at) BETWEEN 1 AND 7 THEN 1
+            WHEN DAY(findings.created_at) BETWEEN 8 AND 14 THEN 2
+            WHEN DAY(findings.created_at) BETWEEN 15 AND 21 THEN 3
+            WHEN DAY(findings.created_at) BETWEEN 22 AND 28 THEN 4
+            ELSE 5
+        END as week_number,
+        COUNT(*) as total
+    ")
+            ->whereBetween('findings.created_at', [$startDate, $endDate])
+            ->groupBy(
+                'users.id',
+                'users.name',
+                'week_number'
+            )
+            ->orderBy('week_number')
+            ->orderByDesc('total')
+            ->get();
+
+        $chartInspectorFindings = $inspectorFindings
+            ->map(function ($item) {
+
+                return [
+                    'label' => $item->inspector,
+                    'week' => "W-{$item->week_number}",
+                    'week_number' => $item->week_number,
+                    'value' => (int) $item->total,
+
+                    'fill' => match ($item->week_number) {
+                        1 => 'var(--chart-1)',
+                        2 => 'var(--chart-2)',
+                        3 => 'var(--chart-3)',
+                        4 => 'var(--chart-4)',
+                        5 => 'var(--chart-5)',
+                    },
+                ];
+            })
+            ->values();
+
         return Inertia::render('dashboard', [
             'stats' => [
                 'total' => [
@@ -120,6 +213,10 @@ class DashboardController extends Controller
             'topResolvers' => Finding::getTopResolvers(),
             'chartMonthlyFindings' => $chartMonthlyFindings,
             'equipmentStatusChart' => $equipmentStatusChart,
+            'availableMonths' => $availableMonths,
+            'selectedMonth' => $selectedMonth,
+            'chartWeeklyFindings' => $chartWeeklyFindings,
+            'chartInspectorFindings' => $chartInspectorFindings
         ]);
     }
 }
