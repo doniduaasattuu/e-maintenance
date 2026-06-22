@@ -30,6 +30,12 @@ interface DialogFindingExportExcelProps {
     workCenters?: {
         data: WorkCenter[];
     };
+    filters: {
+        query: string;
+        per_page: string;
+        start_date?: string;
+        end_date?: string;
+    };
 }
 
 export default function DialogFindingExportExcel({
@@ -43,6 +49,7 @@ export default function DialogFindingExportExcel({
     findingStatuses,
     departments,
     workCenters,
+    filters,
 }: DialogFindingExportExcelProps) {
     const [processing, setProcessing] = React.useState<boolean>(false);
     const date = new Date();
@@ -75,8 +82,8 @@ export default function DialogFindingExportExcel({
             : [];
 
     const { data, setData } = useForm({
-        start_date: '',
-        end_date: '',
+        start_date: filters.start_date || format(startDate, 'yyyy-MM-dd'),
+        end_date: filters.end_date || format(endDate, 'yyyy-MM-dd'),
         status_ids: selectedStatus as number[],
         department_ids: selectedDepartments as number[],
         work_center_ids: selectedWorkCenters as number[],

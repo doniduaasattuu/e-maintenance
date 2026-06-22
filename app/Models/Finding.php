@@ -118,8 +118,22 @@ class Finding extends Model
     #[Scope]
     public function scopeForUserDepartment($query)
     {
-        // Jika admin, bypass semua filter departemen/pembuat
-        if (auth()->user()->hasRole('Admin')) {
+        $user = auth()->user();
+        if (!$user) {
+            return $query;
+        }
+
+        // Menggunakan hasPermissionTo terkadang melempar error jika data permission belum di-seed di test db.
+        // Alternatif aman: Cek relasi permissions secara langsung di collection, atau bungkus dengan check.
+        $hasViewAllPermission = false;
+        try {
+            $hasViewAllPermission = $user->hasPermissionTo('view_all_finding');
+        } catch (\Spatie\Permission\Exceptions\PermissionDoesNotExist $e) {
+            // Jika di lingkungan test permission belum dibuat, abaikan errornya
+            $hasViewAllPermission = false;
+        }
+
+        if ($user->hasRole('Admin') || $hasViewAllPermission) {
             return $query;
         }
 
@@ -192,6 +206,20 @@ class Finding extends Model
             'verifier',
             'images',
         ]);
+    }
+
+    #[Scope]
+    public function scopeOfAreas(Builder $query, array $areas): Builder
+    {
+        return $query->whereHas('functionalLocation', function ($q) use ($areas) {
+            $q->where(function ($subQuery) use ($areas) {
+                foreach ($areas as $area) {
+                    if (!empty($area)) {
+                        $subQuery->orWhere('code', 'LIKE', $area . '%');
+                    }
+                }
+            });
+        });
     }
 
     public function type(): BelongsTo

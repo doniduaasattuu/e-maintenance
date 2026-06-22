@@ -39,6 +39,12 @@ type FindingProps = {
         query: string;
         per_page: string;
     };
+    areaOptions: {
+        value: string;
+        label: string;
+        start_date?: string;
+        end_date?: string;
+    }[];
 };
 
 export default function FindingIndex({
@@ -50,6 +56,7 @@ export default function FindingIndex({
     findingClauses,
     causeCodes,
     filters,
+    areaOptions,
 }: FindingProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -65,6 +72,7 @@ export default function FindingIndex({
                     departments={departments}
                     workCenters={workCenters}
                     causeCodes={causeCodes}
+                    areaOptions={areaOptions}
                 />
             </TableLayout>
         </AppLayout>

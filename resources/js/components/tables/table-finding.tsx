@@ -26,6 +26,7 @@ import { DateRangePopover } from '../date-range-popover';
 import DialogFindingExportExcel from '../dialog-finding-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
+import FilterArea from '../filter-area';
 import FilterCauseCode from '../filter-cause-code';
 import FilterDepartment from '../filter-department';
 import FilterFindingClause from '../filter-finding-clause';
@@ -71,10 +72,16 @@ interface FindingTableProps {
     causeCodes?: {
         data: CauseCode[];
     };
+    areaOptions?: {
+        value: string;
+        label: string;
+    }[];
     withHeader?: boolean;
     filters: {
         query: string;
         per_page: string;
+        start_date?: string;
+        end_date?: string;
     };
 }
 
@@ -190,6 +197,7 @@ export default function TableFinding({
     causeCodes,
     withHeader = true,
     filters,
+    areaOptions,
 }: FindingTableProps) {
     const [open, setOpen] = useState<boolean>(false);
     const { can } = usePermissions();
@@ -273,6 +281,12 @@ export default function TableFinding({
                                     <CommandSeparator />
                                 </>
                             )}
+                            {areaOptions && (
+                                <>
+                                    <FilterArea areaOptions={areaOptions} />
+                                    <CommandSeparator />
+                                </>
+                            )}
                             {departments?.data && (
                                 <>
                                     <FilterDepartment departments={departments?.data ?? []} />
@@ -336,6 +350,12 @@ export default function TableFinding({
                                     {can.close_finding ? (
                                         <TableCell className="align-center">
                                             <Checkbox
+                                                className={
+                                                    finding.status?.name.toLowerCase() === 'closed' ||
+                                                    (finding.gallery?.after && finding.gallery.after.length < 1)
+                                                        ? undefined
+                                                        : 'border-2 border-gray-400'
+                                                }
                                                 checked={finding.status?.name.toLowerCase() === 'closed'}
                                                 disabled={
                                                     finding.status?.name.toLowerCase() === 'closed' ||
@@ -513,6 +533,7 @@ export default function TableFinding({
                 departments={departments}
                 workCenters={workCenters}
                 mode={mode}
+                filters={filters}
             />
 
             {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />}

@@ -29,11 +29,6 @@ class EquipmentStatusSeeder extends Seeder
                 'name' => 'Repaired',
                 'description' => 'Equipment has been repaired and is ready for use or reinstallation.'
             ],
-            // [
-            //     'code' => 'SCRP',
-            //     'name' => 'Scrapped',
-            //     'description' => 'Equipment is no longer in use and has been scrapped.'
-            // ],
         ];
 
         collect($equipment_statuses)->each(fn($e) => EquipmentStatus::create($e));

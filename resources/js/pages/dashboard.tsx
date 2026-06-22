@@ -1,8 +1,10 @@
 import { ChartBarDefault } from '@/components/chart-bar-default';
 import DashboardCard from '@/components/dashboard-card';
+import { PieChartDefault } from '@/components/pie-chart-default';
+import { ChartConfig } from '@/components/ui/chart';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { AlertTriangle, CheckCircle, Clock, LayoutGrid } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -50,7 +52,46 @@ interface DashboardProps {
         name: string;
         totalSolved: number;
     }[];
+    chartMonthlyFindings: {
+        month: string;
+        total: number;
+    }[];
+    equipmentStatusChart: {
+        status: string;
+        value: number;
+        fill: string;
+    }[];
+    availableMonths: {
+        label: string;
+        value: string;
+    }[];
+    selectedMonth: string;
+    chartWeeklyFindings: {
+        week: string;
+        total: number;
+    }[];
+    chartInspectorFindings: {
+        inspector: string;
+        week: number;
+        total: number;
+        fill: string;
+    }[];
 }
+
+const equipmentStatusConfig = {
+    INST: {
+        label: 'INST',
+        color: 'var(--chart-1)',
+    },
+    AVLB: {
+        label: 'AVLB',
+        color: 'var(--chart-2)',
+    },
+    RPRD: {
+        label: 'RPRD',
+        color: 'var(--chart-3)',
+    },
+} satisfies ChartConfig;
 
 export default function Dashboard({
     stats,
@@ -58,6 +99,12 @@ export default function Dashboard({
     chartClosedFindingWorkCenter,
     topInspectors,
     topResolvers,
+    chartMonthlyFindings,
+    equipmentStatusChart,
+    availableMonths,
+    selectedMonth,
+    chartWeeklyFindings,
+    chartInspectorFindings,
 }: DashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -87,15 +134,64 @@ export default function Dashboard({
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
+                        title="Monthly Finding"
+                        description="Total temuan per bulan dalam satu tahun"
+                        chartData={chartMonthlyFindings}
+                        labelKey="month"
+                        valueKey="total"
+                    />
+                    <PieChartDefault
+                        chartData={equipmentStatusChart}
+                        title="Equipment Status Overview"
+                        description="Penyebaran Equipment berdasarkan status."
+                        labelKey="label"
+                        valueKey="value"
+                        chartConfig={equipmentStatusConfig}
+                    />
+                </div>
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                    <ChartBarDefault
+                        withSelect={true}
+                        title="Weekly Finding"
+                        description="Total temuan per minggu dalam satu bulan"
+                        chartData={chartWeeklyFindings}
+                        labelKey="week"
+                        valueKey="value"
+                        availableMonths={availableMonths}
+                        selectedMonth={selectedMonth}
+                        onSelectChange={(value) => {
+                            router.get(
+                                route('dashboard'),
+                                {
+                                    month: value,
+                                },
+                                {
+                                    preserveState: true,
+                                    preserveScroll: true,
+                                },
+                            );
+                        }}
+                    />
+                    <ChartBarDefault
+                        labelKey="label"
+                        valueKey="value"
+                        chartData={chartInspectorFindings}
+                        title="Inspector Weekly"
+                        description="Total temuan inspector per minggu"
+                        xAxisAngle={-45}
+                    />
+                </div>
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                    <ChartBarDefault
                         title="Closed Findings Achievement"
-                        description="Distribusi temuan selesai per departemen"
+                        description="Distribusi temuan selesai per departemen sepanjang waktu"
                         chartData={chartClosedFindingDepartment}
                         labelKey="code"
                         valueKey="totalClosedFindings"
                     />
                     <ChartBarDefault
                         title="Top 10 Inspector"
-                        description="User yang paling aktif membuat temuan"
+                        description="User yang paling aktif membuat temuan sepanjang waktu"
                         chartData={topInspectors}
                         labelKey="name"
                         valueKey="totalSolved"

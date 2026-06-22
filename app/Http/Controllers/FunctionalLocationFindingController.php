@@ -7,6 +7,7 @@ use App\Http\Resources\FunctionalLocationResource;
 use App\Http\Resources\FindingResource;
 use App\Models\FunctionalLocation;
 use App\Traits\HasPerPagePreference;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -29,6 +30,12 @@ class FunctionalLocationFindingController extends Controller
                     ->paginate($perPage)
                     ->withQueryString()
             ),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+                'start_date' => $request->query('start_date') ?? Carbon::now()->subMonths(3)->format('Y-m-d'),
+                'end_date' => $request->query('end_date') ?? Carbon::now()->format('Y-m-d'),
+            ],
         ]);
     }
 

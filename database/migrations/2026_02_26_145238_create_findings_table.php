@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('finding_status_id')->constrained('finding_statuses')->cascadeOnUpdate()->restrictOnDelete();
             $table->foreignId('finding_priority_id')->constrained('finding_priorities')->cascadeOnUpdate()->restrictOnDelete();
             $table->foreignId('finding_clause_id')->constrained('finding_clauses')->cascadeOnUpdate()->restrictOnDelete();
-            $table->foreignId('cause_code_id')->nullable()->constrained('cause_codes')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('cause_code_id')->nullable()->constrained('cause_codes')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('department_id')->nullable()->constrained('departments')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('work_center_id')->nullable()->constrained('work_centers')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('equipment_id')->nullable()->constrained('equipments')->cascadeOnUpdate()->nullOnDelete();

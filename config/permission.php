@@ -216,6 +216,7 @@ return [
         'Finding' => [
             'close',
             'resolve',
+            'view_all',
         ],
     ],
 ];

@@ -28,6 +28,8 @@ interface FunctionalLocationFindingsProps {
     filters: {
         query: string;
         per_page: string;
+        start_date?: string;
+        end_date?: string;
     };
     findingClauses?: {
         data: FindingClause[];

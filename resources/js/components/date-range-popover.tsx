@@ -4,7 +4,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { router, usePage } from '@inertiajs/react';
 import { format, parseISO } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
@@ -19,27 +19,23 @@ export function DateRangePopover() {
         to: filters?.end_date ? parseISO(filters.end_date) : undefined,
     });
 
-    // Jalankan filter saat tanggal selesai dipilih (dari dan sampai)
-    useEffect(() => {
-        if (date?.from && date?.to) {
-            // 1. Ambil query string saat ini dari URL
+    const handleSelect = (range: DateRange | undefined) => {
+        setDate(range);
+
+        if (range?.from && range?.to) {
             const searchParams = new URLSearchParams(window.location.search);
 
-            // 2. Set parameter tanggal
-            searchParams.set('start_date', format(date.from, 'yyyy-MM-dd'));
-            searchParams.set('end_date', format(date.to, 'yyyy-MM-dd'));
+            searchParams.set('start_date', format(range.from, 'yyyy-MM-dd'));
 
-            // 3. Reset halaman ke 1 agar hasil filter tetap akurat
-            // searchParams.set('page', '1');
+            searchParams.set('end_date', format(range.to, 'yyyy-MM-dd'));
 
-            // 4. Lakukan request dengan mengirimkan seluruh searchParams yang sudah digabungkan
             router.get(window.location.pathname, Object.fromEntries(searchParams.entries()), {
                 preserveState: true,
                 replace: true,
-                preserveScroll: true, // Menjaga posisi scroll user
+                preserveScroll: true,
             });
         }
-    }, [date?.from, date?.to]);
+    };
 
     const handleResetDate = () => {
         const searchParams = new URLSearchParams(window.location.search);
@@ -85,7 +81,7 @@ export function DateRangePopover() {
                         mode="range"
                         defaultMonth={date?.from}
                         selected={date}
-                        onSelect={setDate}
+                        onSelect={handleSelect}
                         numberOfMonths={isMobile ? 1 : 2}
                         className="w-60 md:w-120"
                     />
