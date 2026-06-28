@@ -1,6 +1,7 @@
-import { ChartBarDefault } from '@/components/chart-bar-default';
+import { ChartBarDefault } from '@/components/chart/chart-bar-default';
+import { ChartBarStackedDefault } from '@/components/chart/chart-bar-stacked-default';
+import { PieChartDefault } from '@/components/chart/pie-chart-default';
 import DashboardCard from '@/components/dashboard-card';
-import { PieChartDefault } from '@/components/pie-chart-default';
 import { ChartConfig } from '@/components/ui/chart';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -76,6 +77,20 @@ interface DashboardProps {
         total: number;
         fill: string;
     }[];
+    chartPriorityWeekly: {
+        week: string;
+        priority1: number;
+        priority2: number;
+        priority3: number;
+    }[];
+    chartStatusWeekly: {
+        week: string;
+        open: number;
+        inProgress: number;
+        onHold: number;
+        review: number;
+        closed: number;
+    }[];
 }
 
 const equipmentStatusConfig = {
@@ -93,6 +108,19 @@ const equipmentStatusConfig = {
     },
 } satisfies ChartConfig;
 
+function refreshDashboard(value: string) {
+    router.get(
+        route('dashboard'),
+        {
+            month: value,
+        },
+        {
+            preserveState: true,
+            preserveScroll: true,
+        },
+    );
+}
+
 export default function Dashboard({
     stats,
     chartClosedFindingDepartment,
@@ -105,6 +133,8 @@ export default function Dashboard({
     selectedMonth,
     chartWeeklyFindings,
     chartInspectorFindings,
+    chartPriorityWeekly,
+    chartStatusWeekly,
 }: DashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -151,26 +181,15 @@ export default function Dashboard({
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
-                        withSelect={true}
                         title="Weekly Finding"
                         description="Total temuan per minggu dalam satu bulan"
                         chartData={chartWeeklyFindings}
                         labelKey="week"
                         valueKey="value"
+                        withSelect={true}
                         availableMonths={availableMonths}
                         selectedMonth={selectedMonth}
-                        onSelectChange={(value) => {
-                            router.get(
-                                route('dashboard'),
-                                {
-                                    month: value,
-                                },
-                                {
-                                    preserveState: true,
-                                    preserveScroll: true,
-                                },
-                            );
-                        }}
+                        onSelectChange={(value) => refreshDashboard(value)}
                     />
                     <ChartBarDefault
                         labelKey="label"
@@ -179,6 +198,74 @@ export default function Dashboard({
                         title="Inspector Weekly"
                         description="Total temuan inspector per minggu"
                         xAxisAngle={-45}
+                        withSelect={true}
+                        availableMonths={availableMonths}
+                        selectedMonth={selectedMonth}
+                        onSelectChange={(value) => refreshDashboard(value)}
+                    />
+                </div>
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                    <ChartBarStackedDefault
+                        title="Weekly Priority"
+                        description="Finding priority dalam satu minggu"
+                        chartData={chartPriorityWeekly}
+                        series={[
+                            {
+                                key: 'priority1',
+                                label: 'Priority-1',
+                                color: 'var(--chart-1)',
+                            },
+                            {
+                                key: 'priority2',
+                                label: 'Priority-2',
+                                color: 'var(--chart-2)',
+                            },
+                            {
+                                key: 'priority3',
+                                label: 'Priority-3',
+                                color: 'var(--chart-3)',
+                            },
+                        ]}
+                        withSelect={true}
+                        availableMonths={availableMonths}
+                        selectedMonth={selectedMonth}
+                        onSelectChange={(value) => refreshDashboard(value)}
+                    />
+                    <ChartBarStackedDefault
+                        title="Weekly Finding Status"
+                        description="Distribusi status finding per minggu"
+                        chartData={chartStatusWeekly}
+                        series={[
+                            {
+                                key: 'open',
+                                label: 'Open',
+                                color: 'var(--chart-1)',
+                            },
+                            {
+                                key: 'inProgress',
+                                label: 'In Progress',
+                                color: 'var(--chart-5)',
+                            },
+                            {
+                                key: 'onHold',
+                                label: 'On Hold',
+                                color: 'var(--chart-4)',
+                            },
+                            {
+                                key: 'review',
+                                label: 'Review',
+                                color: 'var(--chart-2)',
+                            },
+                            {
+                                key: 'closed',
+                                label: 'Closed',
+                                color: 'var(--chart-3)',
+                            },
+                        ]}
+                        withSelect={true}
+                        availableMonths={availableMonths}
+                        selectedMonth={selectedMonth}
+                        onSelectChange={(value) => refreshDashboard(value)}
                     />
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">

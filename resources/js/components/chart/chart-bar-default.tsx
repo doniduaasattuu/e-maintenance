@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 // Interface sekarang lebih fleksibel menggunakan generic atau record
 interface ChartProps {
@@ -76,8 +76,8 @@ export function ChartBarDefault({
                             axisLine={false}
                             tickFormatter={(value) => value.toString().slice(0, 5)}
                         />
-                        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                        <Bar dataKey={valueKey} fill={chartColor} radius={8}>
+                        <ChartTooltip cursor={true} content={<ChartTooltipContent hideLabel />} />
+                        <Bar dataKey={valueKey} fill={chartColor} radius={4}>
                             <LabelList position="top" offset={12} className="fill-foreground font-medium" fontSize={12} />
                         </Bar>
                     </BarChart>
