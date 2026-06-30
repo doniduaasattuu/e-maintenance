@@ -51,8 +51,14 @@ class DashboardController extends Controller
 
         $chartMonthlyFindings = collect();
 
+        $bDate = Carbon::create(
+            now()->year,
+            now()->month,
+            1
+        );
+
         for ($i = 11; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
+            $date = $bDate->copy()->subMonthsNoOverflow($i);
 
             $row = $monthlyFindings->first(function ($item) use ($date) {
                 return $item->year == $date->year
@@ -92,10 +98,17 @@ class DashboardController extends Controller
                 ];
             });
 
+
         $availableMonths = collect();
 
+        $baseDate = Carbon::create(
+            now()->year,
+            now()->month,
+            1
+        );
+
         for ($i = 11; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
+            $date = $baseDate->copy()->subMonthsNoOverflow($i);
 
             $availableMonths->push([
                 'label' => $date->format('F Y'),
