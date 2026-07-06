@@ -200,7 +200,7 @@ export default function TableFinding({
     areaOptions,
 }: FindingTableProps) {
     const [open, setOpen] = useState<boolean>(false);
-    const { can } = usePermissions();
+    const { can, user } = usePermissions();
     const meta = findings.meta;
     const caption = tableCaption(meta);
     const [selectedImage, setSelectedImage] = useState<FindingImage | null>(null);
@@ -346,7 +346,10 @@ export default function TableFinding({
                         </TableHeader>
                         <TableBody>
                             {findings.data?.map((finding: Finding) => (
-                                <TableRow key={finding.id}>
+                                <TableRow
+                                    className={`${finding.inspector?.id === user?.id || finding.workCenter?.id === user?.work_center_id ? 'bg-green-200' : undefined} hover:bg-yellow-200`}
+                                    key={finding.id}
+                                >
                                     {can.close_finding ? (
                                         <TableCell className="align-center">
                                             <Checkbox

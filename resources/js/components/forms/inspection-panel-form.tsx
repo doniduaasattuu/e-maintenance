@@ -101,6 +101,8 @@ export default function InspectionPanelForm({
           data.images == null
         : false;
 
+    const requiredIfField = data.is_operational == '1' ? data.temperature_cabinet == '' : false;
+
     return (
         <form className="space-y-6" onSubmit={submit}>
             <div className={data.has_abnormality ? 'grid grid-cols-1 items-start gap-8 xl:grid-cols-2' : 'block'}>
@@ -226,7 +228,7 @@ export default function InspectionPanelForm({
                 <ButtonSubmit
                     tabIndex={21}
                     processing={processing}
-                    disabled={processing || data.temperature_cabinet == '' || abnormalitiesField}
+                    disabled={processing || requiredIfField || abnormalitiesField}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={isEditing ? 'Updated' : 'Saved'}
                     showSuccessMessage={showSuccessMessage}

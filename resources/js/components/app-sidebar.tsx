@@ -5,18 +5,30 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BadgeCheck, Building2, DatabaseIcon, FolderOpen, Layers, LayoutGrid, ScanQrCodeIcon, ScanSearch, TextSearch, Users2 } from 'lucide-react';
+import {
+    BadgeCheck,
+    Building2,
+    DatabaseIcon,
+    FolderOpen,
+    Hand,
+    Layers,
+    LayoutGrid,
+    ScanQrCodeIcon,
+    ScanSearch,
+    TextSearch,
+    Users2,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const strings = UI_STRINGS;
 const mainNavItems: NavItem[] = [
     {
-        title: strings.DASHBOARD?.label ?? 'Dashboard',
+        title: strings?.DASHBOARD?.label ?? 'Dashboard',
         href: route('dashboard'),
         icon: LayoutGrid,
     },
     {
-        title: strings.QR_SCANNER?.label ?? 'QR Scanner',
+        title: strings?.QR_SCANNER?.label ?? 'QR Scanner',
         href: route('qr-scanner'),
         icon: ScanQrCodeIcon,
     },
@@ -26,17 +38,17 @@ const mainNavItems: NavItem[] = [
         icon: DatabaseIcon,
         subItems: [
             {
-                title: strings.FUNCTIONAL_LOCATION?.label ?? 'Functional Location',
+                title: strings?.FUNCTIONAL_LOCATION?.label ?? 'Functional Location',
                 href: route('functional-locations.index'),
                 permission: 'index_functionallocation',
             },
             {
-                title: strings.EQUIPMENT?.label ?? 'Equipment',
+                title: strings?.EQUIPMENT?.label ?? 'Equipment',
                 href: route('equipments.index'),
                 permission: 'index_equipment',
             },
             {
-                title: strings.MATERIAL?.label ?? 'Material',
+                title: strings?.MATERIAL?.label ?? 'Material',
                 href: route('materials.index'),
                 permission: 'index_material',
             },
@@ -49,52 +61,52 @@ const mainNavItems: NavItem[] = [
         roles: ['Admin'],
         subItems: [
             {
-                title: strings.EQUIPMENT_HISTORY?.label ?? 'Equipment History',
+                title: strings?.EQUIPMENT_HISTORY?.label ?? 'Equipment History',
                 href: route('equipment-histories.index'),
                 permission: 'index_installdismantlehistory',
             },
             {
-                title: strings.EQUIPMENT_CLASS?.label ?? 'Equipment Class',
+                title: strings?.EQUIPMENT_CLASS?.label ?? 'Equipment Class',
                 href: route('equipment-classes.index'),
                 permission: 'index_equipmentclass',
             },
             {
-                title: strings.EQUIPMENT_STATUS?.label ?? 'Equipment Status',
+                title: strings?.EQUIPMENT_STATUS?.label ?? 'Equipment Status',
                 href: route('equipment-statuses.index'),
                 permission: 'index_equipmentstatus',
             },
             {
-                title: strings.MATERIAL_UNIT?.label ?? 'Material Unit',
+                title: strings?.MATERIAL_UNIT?.label ?? 'Material Unit',
                 href: route('material-units.index'),
                 permission: 'index_materialunit',
             },
             {
-                title: strings.MATERIAL_TYPE?.label ?? 'Material Type',
+                title: strings?.MATERIAL_TYPE?.label ?? 'Material Type',
                 href: route('material-types.index'),
                 permission: 'index_materialtype',
             },
             {
-                title: strings.FINDING_TYPE?.label ?? 'Finding Type',
+                title: strings?.FINDING_TYPE?.label ?? 'Finding Type',
                 href: route('finding-types.index'),
                 permission: 'index_findingtype',
             },
             {
-                title: strings.FINDING_CLAUSE?.label ?? 'Finding Clause',
+                title: strings?.FINDING_CLAUSE?.label ?? 'Finding Clause',
                 href: route('finding-clauses.index'),
                 permission: 'index_findingclause',
             },
             {
-                title: strings.FINDING_STATUS?.label ?? 'Finding Status',
+                title: strings?.FINDING_STATUS?.label ?? 'Finding Status',
                 href: route('finding-statuses.index'),
                 permission: 'index_findingstatus',
             },
             {
-                title: strings.FINDING_PRIORITY?.label ?? 'Finding Priority',
+                title: strings?.FINDING_PRIORITY?.label ?? 'Finding Priority',
                 href: route('finding-priorities.index'),
                 permission: 'index_findingpriority',
             },
             {
-                title: strings.CAUSE_CODE?.label ?? 'Cause Code',
+                title: strings?.CAUSE_CODE?.label ?? 'Cause Code',
                 href: route('cause-codes.index'),
                 permission: 'index_causecode',
             },
@@ -106,30 +118,30 @@ const mainNavItems: NavItem[] = [
         icon: ScanSearch,
         subItems: [
             {
-                title: strings.AUDIT?.label ?? 'Audit',
+                title: strings?.AUDIT?.label ?? 'Audit',
                 href: route('audits.index'),
                 icon: TextSearch,
                 permission: 'index_audit',
             },
             {
-                title: strings.ABNORMALITY?.label ?? 'Abnormality',
+                title: strings?.ABNORMALITY?.label ?? 'Abnormality',
                 href: route('abnormalities.index'),
                 permission: 'index_abnormality',
             },
             {
-                title: strings.ARCHIVED_FINDING?.label ?? 'Archived',
+                title: strings?.ARCHIVED_FINDING?.label ?? 'Archived',
                 href: route('findings.archived'),
                 permission: 'index_finding',
             },
             {
-                title: strings.MOM?.label ?? 'Minutes of Meeting',
+                title: strings?.MOM?.label ?? 'Minutes of Meeting',
                 href: route('findings.mom'),
                 permission: 'index_finding',
             },
         ],
     },
     {
-        title: strings.REPOSITORY?.label ?? 'Repository',
+        title: strings?.REPOSITORY?.label ?? 'Document Control',
         href: route('repositories.index'),
         icon: FolderOpen,
         permission: 'index_repository',
@@ -137,19 +149,25 @@ const mainNavItems: NavItem[] = [
 ];
 const footerNavItems: NavItem[] = [
     {
-        title: strings.USER?.label ?? 'User',
+        title: strings?.USER?.label ?? 'User',
         href: route('users.index'),
         icon: Users2,
         permission: 'index_user',
     },
     {
-        title: strings.ROLE?.label ?? 'Role',
+        title: strings?.ROLE?.label ?? 'Role',
         href: route('roles.index'),
         icon: BadgeCheck,
         permission: 'index_role',
     },
     {
-        title: strings.ORGANIZATION?.label ?? 'Organization',
+        title: strings?.PERMISSION?.label ?? 'Permission',
+        href: route('permissions.index'),
+        icon: Hand,
+        permission: 'index_role',
+    },
+    {
+        title: strings?.ORGANIZATION?.label ?? 'Organization',
         href: route('departments.index'),
         icon: Building2,
         permission: 'index_department',
