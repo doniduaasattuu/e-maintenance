@@ -330,6 +330,7 @@ export default function TableFinding({
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
+                                <TableHead className="text-muted-foreground w-12.5">ID</TableHead>
                                 <TableHead className="text-muted-foreground w-12.5">#</TableHead>
                                 <TableHead className="text-muted-foreground">Area & Clause</TableHead>
                                 <TableHead className="text-muted-foreground hidden md:table-cell">Status</TableHead>
@@ -350,6 +351,7 @@ export default function TableFinding({
                                     className={`${finding.inspector?.id === user?.id || finding.workCenter?.id === user?.work_center_id ? 'bg-green-200' : undefined} hover:bg-yellow-200`}
                                     key={finding.id}
                                 >
+                                    <TableCell>{finding.id}</TableCell>
                                     {can.close_finding ? (
                                         <TableCell className="align-center">
                                             <Checkbox
