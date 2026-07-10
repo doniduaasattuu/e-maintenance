@@ -35,7 +35,7 @@ interface TableRepositoryProps {
 }
 
 export default function TableRepository({ repositories, extensions, renderable, withHeader = true, filters }: TableRepositoryProps) {
-    const { can } = usePermissions();
+    const { can, user } = usePermissions();
     const meta = repositories.meta;
     const caption = tableCaption(meta);
     const [open, setOpen] = React.useState<boolean>(false);
@@ -115,7 +115,9 @@ export default function TableRepository({ repositories, extensions, renderable, 
                                             <Badge variant="outline">{repository.extension}</Badge>
                                         </TableCell>
                                         <TableCell className="text-muted-foreground max-w-50 truncate">{repository.mime_type}</TableCell>
-                                        <TableCell className="text-muted-foreground w-22.5">{repository.uploadedBy?.name}</TableCell>
+                                        <TableCell className="text-muted-foreground w-22.5">
+                                            {repository.uploadedBy?.id == user.id ? 'You' : (repository.uploadedBy?.name ?? '')}
+                                        </TableCell>
                                         <TableCell className="text-muted-foreground w-22.5">{repository.created_at}</TableCell>
                                         <TableCell className="text-right">
                                             <DropdownMenu>
@@ -133,14 +135,14 @@ export default function TableRepository({ repositories, extensions, renderable, 
                                                     <DropdownMenuItem onClick={() => copyTextToClipboard(repository.url)}>
                                                         <Copy size={18} /> Copy
                                                     </DropdownMenuItem>
-                                                    {can.edit_repository && (
+                                                    {repository.can.update && (
                                                         <Link title="Edit" href={route('repositories.edit', repository.id)}>
                                                             <DropdownMenuItem>
                                                                 <Edit size={18} className="text-green-500" /> Edit
                                                             </DropdownMenuItem>
                                                         </Link>
                                                     )}
-                                                    {can.delete_repository && (
+                                                    {repository.can.delete && (
                                                         <ActionConfirm
                                                             action={() => handleDeleteRepository(repository.id)}
                                                             title={`Delete Repository ${repository.title}?`}

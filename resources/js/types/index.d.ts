@@ -377,6 +377,12 @@ export interface Repository {
     uploadedBy: User | null;
     created_at: string;
     updated_at: string;
+
+    can: {
+        show: boolean;
+        update: boolean;
+        delete: boolean;
+    };
 }
 
 export interface FindingType {
@@ -461,6 +467,7 @@ export interface Finding {
     updated_at: string;
     closed_at: string | null;
     closed: string | null;
+
     can: {
         show: boolean;
         update: boolean;

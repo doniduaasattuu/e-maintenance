@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Policies\FindingPolicy;
+use App\Policies\RepositoryPolicy;
 use App\Policies\RolePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -24,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::policy(Role::class, RolePolicy::class, FindingPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class, FindingPolicy::class, RepositoryPolicy::class);
 
         Relation::enforceMorphMap([
             'USER' => 'App\Models\User',

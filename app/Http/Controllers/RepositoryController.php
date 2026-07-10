@@ -30,7 +30,7 @@ class RepositoryController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('index_repository');
+        Gate::authorize('viewAny', Repository::class);
 
         $perPage = $this->getPerPage($request);
 
@@ -52,7 +52,7 @@ class RepositoryController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create_repository');
+        Gate::authorize('create', Repository::class);
 
         return Inertia::render('repository/create', [
             'maximum_file_upload' => config('app.maximum_file_upload'),
@@ -83,7 +83,7 @@ class RepositoryController extends Controller
      */
     public function show(Repository $repository)
     {
-        Gate::authorize('show_repository');
+        Gate::authorize('view', $repository);
 
         if (Storage::disk('public')->exists($repository->path)) {
 
@@ -104,7 +104,7 @@ class RepositoryController extends Controller
      */
     public function edit(Repository $repository)
     {
-        Gate::authorize('edit_repository');
+        Gate::authorize('update', $repository);
 
         return Inertia::render('repository/edit', [
             'repository' => new RepositoryResource($repository),
@@ -116,7 +116,7 @@ class RepositoryController extends Controller
      */
     public function update(UpdateRepositoryRequest $request, Repository $repository)
     {
-        Gate::authorize('update_repository');
+        Gate::authorize('update', $repository);
 
         try {
 
@@ -136,7 +136,7 @@ class RepositoryController extends Controller
      */
     public function destroy(Repository $repository)
     {
-        Gate::authorize('delete_repository');
+        Gate::authorize('delete', $repository);
 
         try {
             $this->repositoryService->destroy($repository);
