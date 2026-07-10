@@ -14,5 +14,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('permissions', PermissionController::class);
     Route::post('users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::post('users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
+    Route::post('users/{id}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset.password');
     Route::resource('users', UserController::class)->except('update');
 });
