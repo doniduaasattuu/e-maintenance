@@ -1,8 +1,6 @@
 import { ChartBarDefault } from '@/components/chart/chart-bar-default';
 import { ChartBarStackedDefault } from '@/components/chart/chart-bar-stacked-default';
-import { PieChartDefault } from '@/components/chart/pie-chart-default';
 import DashboardCard from '@/components/dashboard-card';
-import { ChartConfig } from '@/components/ui/chart';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
@@ -91,22 +89,27 @@ interface DashboardProps {
         review: number;
         closed: number;
     }[];
+    chartTopFindingAreas: {
+        code: string;
+        description: string;
+        totalFindings: number;
+    }[];
 }
 
-const equipmentStatusConfig = {
-    INST: {
-        label: 'INST',
-        color: 'var(--chart-1)',
-    },
-    AVLB: {
-        label: 'AVLB',
-        color: 'var(--chart-2)',
-    },
-    RPRD: {
-        label: 'RPRD',
-        color: 'var(--chart-3)',
-    },
-} satisfies ChartConfig;
+// const equipmentStatusConfig = {
+//     INST: {
+//         label: 'INST',
+//         color: 'var(--chart-1)',
+//     },
+//     AVLB: {
+//         label: 'AVLB',
+//         color: 'var(--chart-2)',
+//     },
+//     RPRD: {
+//         label: 'RPRD',
+//         color: 'var(--chart-3)',
+//     },
+// } satisfies ChartConfig;
 
 function refreshDashboard(value: string) {
     router.get(
@@ -128,13 +131,14 @@ export default function Dashboard({
     topInspectors,
     topResolvers,
     chartMonthlyFindings,
-    equipmentStatusChart,
+    // equipmentStatusChart,
     availableMonths,
     selectedMonth,
     chartWeeklyFindings,
     chartInspectorFindings,
     chartPriorityWeekly,
     chartStatusWeekly,
+    chartTopFindingAreas,
 }: DashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -170,14 +174,26 @@ export default function Dashboard({
                         labelKey="month"
                         valueKey="total"
                     />
-                    <PieChartDefault
+                    <ChartBarDefault
+                        title="Top 10 Finding Areas"
+                        description="Distribusi temuan selesai per area"
+                        chartData={chartTopFindingAreas}
+                        labelKey="code"
+                        valueKey="totalFindings"
+                        labelSliced={false}
+                        tickFormatter={(value) => {
+                            const parts = value.toString().split('-');
+                            return parts[parts.length - 1];
+                        }}
+                    />
+                    {/* <PieChartDefault
                         chartData={equipmentStatusChart}
                         title="Equipment Status Overview"
                         description="Penyebaran Equipment berdasarkan status."
                         labelKey="label"
                         valueKey="value"
                         chartConfig={equipmentStatusConfig}
-                    />
+                    /> */}
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
@@ -284,6 +300,7 @@ export default function Dashboard({
                         valueKey="totalSolved"
                     />
                 </div>
+
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
                         title="Closed Findings Achievement"

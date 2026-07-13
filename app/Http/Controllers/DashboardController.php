@@ -380,6 +380,36 @@ class DashboardController extends Controller
             'closed' => $totals['closed'],
         ]);
 
+
+        $chartTopFindingAreas = Finding::query()
+            ->join(
+                'functional_locations',
+                'findings.functional_location_id',
+                '=',
+                'functional_locations.id'
+            )
+            ->select(
+                'functional_locations.code',
+                'functional_locations.description',
+                DB::raw('COUNT(findings.id) as total_findings')
+            )
+            ->whereBetween('findings.created_at', [$startDate, $endDate])
+            ->groupBy(
+                'functional_locations.id',
+                'functional_locations.code',
+                'functional_locations.description'
+            )
+            ->orderByDesc('total_findings')
+            ->limit(10)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'code' => $item->code,
+                    'description' => $item->description,
+                    'totalFindings' => (int) $item->total_findings,
+                ];
+            });
+
         return Inertia::render('dashboard', [
             'stats' => [
                 'total' => [
@@ -414,6 +444,7 @@ class DashboardController extends Controller
             'chartInspectorFindings' => $chartInspectorFindings,
             'chartPriorityWeekly' => $chartPriorityWeekly,
             'chartStatusWeekly' => $chartStatusWeekly,
+            'chartTopFindingAreas' => $chartTopFindingAreas,
         ]);
     }
 }

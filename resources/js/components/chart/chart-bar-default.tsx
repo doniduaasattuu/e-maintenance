@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
+import { LabelPosition } from 'recharts/types/component/Label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 // Interface sekarang lebih fleksibel menggunakan generic atau record
@@ -20,6 +21,9 @@ interface ChartProps {
     selectedMonth?: string;
     onSelectChange?: (value: any) => void;
     xAxisAngle?: number;
+    labelPos?: LabelPosition | undefined;
+    labelSliced?: boolean;
+    tickFormatter?: (value: any) => string; // Opsional: fungsi untuk memformat tick pada XAxis
 }
 
 export function ChartBarDefault({
@@ -34,6 +38,9 @@ export function ChartBarDefault({
     selectedMonth,
     onSelectChange,
     xAxisAngle = undefined,
+    labelPos = 'top',
+    labelSliced = true,
+    tickFormatter = (value) => (labelSliced ? value.toString().slice(0, 5) : value),
 }: ChartProps) {
     // Konfigurasi dinamis berdasarkan valueKey yang dikirim
     const chartConfig = {
@@ -74,11 +81,11 @@ export function ChartBarDefault({
                             tickLine={false}
                             tickMargin={10}
                             axisLine={false}
-                            tickFormatter={(value) => value.toString().slice(0, 5)}
+                            tickFormatter={tickFormatter}
                         />
-                        <ChartTooltip cursor={true} content={<ChartTooltipContent hideLabel />} />
+                        <ChartTooltip cursor={true} content={<ChartTooltipContent labelKey={labelKey} />} />
                         <Bar dataKey={valueKey} fill={chartColor} radius={4}>
-                            <LabelList position="top" offset={12} className="fill-foreground font-medium" fontSize={12} />
+                            <LabelList position={labelPos} offset={12} className="fill-foreground font-medium" fontSize={12} />
                         </Bar>
                     </BarChart>
                 </ChartContainer>
