@@ -174,27 +174,33 @@ class DashboardController extends Controller
                 'users.name',
                 'week_number'
             )
-            ->orderBy('week_number')
-            ->orderByDesc('total')
             ->get();
 
         $chartInspectorFindings = $inspectorFindings
-            ->map(function ($item) {
+            ->groupBy('week_number')
+            ->flatMap(function ($items, $week) {
 
-                return [
-                    'label' => $item->inspector,
-                    'week' => "W-{$item->week_number}",
-                    'week_number' => $item->week_number,
-                    'value' => (int) $item->total,
+                return $items
+                    ->sortByDesc('total')
+                    ->take(3)
+                    ->values()
+                    ->map(function ($item) use ($week) {
 
-                    'fill' => match ($item->week_number) {
-                        1 => 'var(--chart-1)',
-                        2 => 'var(--chart-2)',
-                        3 => 'var(--chart-3)',
-                        4 => 'var(--chart-4)',
-                        5 => 'var(--chart-5)',
-                    },
-                ];
+                        return [
+                            'label' => $item->inspector,
+                            'week' => "W-{$week}",
+                            'week_number' => (int) $week,
+                            'value' => (int) $item->total,
+
+                            'fill' => match ((int) $week) {
+                                1 => 'var(--chart-1)',
+                                2 => 'var(--chart-2)',
+                                3 => 'var(--chart-3)',
+                                4 => 'var(--chart-4)',
+                                default => 'var(--chart-5)',
+                            },
+                        ];
+                    });
             })
             ->values();
 
