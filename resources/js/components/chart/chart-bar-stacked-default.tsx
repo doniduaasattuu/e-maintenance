@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface StackSeries {
@@ -29,6 +29,9 @@ interface Props {
     selectedMonth?: string;
 
     onSelectChange?: (value: string) => void;
+
+    xAxisKey?: string;
+    labelDataKey?: string;
 }
 
 export function ChartBarStackedDefault({
@@ -40,6 +43,8 @@ export function ChartBarStackedDefault({
     availableMonths,
     selectedMonth,
     onSelectChange,
+    xAxisKey = 'week',
+    labelDataKey,
 }: Props) {
     const chartConfig = series.reduce((acc, item) => {
         acc[item.key] = {
@@ -78,7 +83,7 @@ export function ChartBarStackedDefault({
                     <BarChart accessibilityLayer data={chartData}>
                         <CartesianGrid vertical={false} />
 
-                        <XAxis dataKey="week" tickLine={false} axisLine={false} />
+                        <XAxis dataKey={xAxisKey} tickLine={false} axisLine={false} />
 
                         <ChartTooltip content={<ChartTooltipContent />} />
 
@@ -91,7 +96,16 @@ export function ChartBarStackedDefault({
                                 stackId="stack"
                                 fill={`var(--color-${item.key})`}
                                 radius={index === 0 ? [0, 0, 4, 4] : index === series.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
-                            />
+                            >
+                                {index === series.length - 1 && labelDataKey && (
+                                    <LabelList
+                                        dataKey={labelDataKey}
+                                        position="top"
+                                        formatter={(value: number) => `${value}%`}
+                                        className="fill-foreground font-semibold"
+                                    />
+                                )}
+                            </Bar>
                         ))}
                     </BarChart>
                 </ChartContainer>

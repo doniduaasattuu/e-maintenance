@@ -167,12 +167,32 @@ export default function Dashboard({
                     </div>
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
-                    <ChartBarDefault
+                    {/* <ChartBarDefault
                         title="Monthly Finding"
                         description="Total temuan per bulan dalam satu tahun"
                         chartData={chartMonthlyFindings}
                         labelKey="month"
                         valueKey="total"
+                    /> */}
+                    <ChartBarStackedDefault
+                        title="Monthly Finding"
+                        description="Total temuan per bulan dalam satu tahun"
+                        chartData={chartMonthlyFindings}
+                        series={[
+                            {
+                                key: 'closed',
+                                label: 'Closed',
+                                color: 'var(--chart-2)',
+                            },
+                            {
+                                key: 'open',
+                                label: 'Open',
+                                color: 'var(--chart-1)',
+                            },
+                        ]}
+                        xAxisKey="month"
+                        labelDataKey="closing_rate"
+                        // valueKey="total"
                     />
                     <ChartBarDefault
                         title="Top 10 Finding Areas"

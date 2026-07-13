@@ -38,12 +38,32 @@ class DashboardController extends Controller
             })
             ->count();
 
-        $monthlyFindings = Finding::select(
-            DB::raw('YEAR(created_at) as year'),
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('COUNT(*) as total')
-        )
-            ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
+        $monthlyFindings = Finding::query()
+            ->leftJoin(
+                'finding_statuses',
+                'findings.finding_status_id',
+                '=',
+                'finding_statuses.id'
+            )
+            ->selectRaw("
+        YEAR(findings.created_at) as year,
+        MONTH(findings.created_at) as month,
+
+        SUM(CASE
+            WHEN finding_statuses.name = 'Closed'
+            THEN 1 ELSE 0
+        END) as closed,
+
+        SUM(CASE
+            WHEN finding_statuses.name <> 'Closed'
+            THEN 1 ELSE 0
+        END) as open
+    ")
+            ->where(
+                'findings.created_at',
+                '>=',
+                now()->subMonths(11)->startOfMonth()
+            )
             ->groupBy('year', 'month')
             ->orderBy('year')
             ->orderBy('month')
@@ -58,16 +78,32 @@ class DashboardController extends Controller
         );
 
         for ($i = 11; $i >= 0; $i--) {
-            $date = $bDate->copy()->subMonthsNoOverflow($i);
+
+            $date = $bDate
+                ->copy()
+                ->subMonthsNoOverflow($i);
 
             $row = $monthlyFindings->first(function ($item) use ($date) {
+
                 return $item->year == $date->year
                     && $item->month == $date->month;
             });
 
+            $open = (int) ($row?->open ?? 0);
+            $closed = (int) ($row?->closed ?? 0);
+
             $chartMonthlyFindings->push([
+
+                // 'month' => $date->format('M'),
                 'month' => $date->format('M'),
-                'total' => $row?->total ?? 0,
+
+                'closed' => (int) ($row->closed ?? 0),
+
+                'open' => (int) ($row->open ?? 0),
+
+                'closing_rate' => ($open + $closed) > 0
+                    ? round(($closed / ($open + $closed)) * 100)
+                    : 0,
             ]);
         }
 
