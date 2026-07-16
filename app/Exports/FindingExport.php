@@ -44,6 +44,7 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
                 ? $query->whereIn('equipment_id', $funclocIds)
                 : $query->where('equipment_id', $funclocIds);
         }
+
         $status = $this->filters['status_ids'] ?? null;
         if ($status) {
             is_array($status)
@@ -91,10 +92,12 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             $finding->priority->label ?? '-',
             $finding->equipment->code ?? 'N/A',
             $finding->equipment->description ?? 'N/A',
+            substr($finding->functionalLocation->code ?? '-', 0, 5) ?? '-',
             $finding->functionalLocation->code ?? '-',
             $finding->functionalLocation->description ?? '-',
             $finding->description,
             $finding->department->name ?? '-',
+            $finding->workCenter->name ?? '-',
             $finding->rectification_action ?? '-',
             $finding->inspector->name ?? '-',
             $finding->rectifier->name ?? '-',
@@ -118,10 +121,12 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             'Priority',
             'Equipment',
             'Equipment Description',
+            'Plant',
             'Funcloc',
             'Funcloc Description',
             'Finding Description',
             'Department',
+            'Work Center',
             'Rectification Plan',
             'Inspected By',
             'Action By',

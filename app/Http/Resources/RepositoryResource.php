@@ -25,6 +25,12 @@ class RepositoryResource extends JsonResource
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
             'uploadedBy' => new UserResource($this->whenLoaded('uploadedBy')),
+
+            'can' => [
+                'show' => $request->user()->can('view', $this->resource),
+                'update' => $request->user()->can('update', $this->resource),
+                'delete' => $request->user()->can('delete', $this->resource),
+            ]
         ];
     }
 }

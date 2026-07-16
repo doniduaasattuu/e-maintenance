@@ -13,56 +13,111 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Total Findings
-        $totalFindings = Finding::count();
-        $open = FindingStatus::where('name', 'Open')->first();
-        $closed = FindingStatus::where('name', 'Closed')->first();
+        // STATS
+        {
+            // 1. Total Findings
+            $totalFindings = Finding::count();
+            $open = FindingStatus::where('name', 'Open')->first();
+            $closed = FindingStatus::where('name', 'Closed')->first();
 
-        // 2. Open Findings (Belum ditutup)
-        $openFindings = Finding::where('finding_status_id', $open->id)->count();
+            // 2. Open Findings (Belum ditutup)
+            $openFindings = Finding::where('finding_status_id', $open->id)->count();
 
-        // 3. Closed Findings (Sudah ditutup)
-        $closedFindings = Finding::where('finding_status_id', $closed->id)->count();
+            // 3. Closed Findings (Sudah ditutup)
+            $closedFindings = Finding::where('finding_status_id', $closed->id)->count();
 
-        // 4. Logika Perbandingan (Contoh: Dibandingkan dengan bulan lalu)
-        $lastMonth = Finding::where('created_at', '<', Carbon::now()->subMonth())->count();
-        $diff = $totalFindings - $lastMonth;
+            // 4. Logika Perbandingan (Contoh: Dibandingkan dengan bulan lalu)
+            $lastMonth = Finding::where('created_at', '<', Carbon::now()->subMonth())->count();
+            $diff = $totalFindings - $lastMonth;
 
-        $slaExceeded = Finding::whereNull('closed_at')
-            ->with('priority')
-            ->get()
-            ->filter(function ($finding) {
-                $deadline = \Illuminate\Support\Carbon::parse($finding->created_at)
-                    ->addHours($finding->priority->sla_resolution_hours);
-                return $deadline->isPast();
-            })
-            ->count();
+            $slaExceeded = Finding::whereNull('closed_at')
+                ->with('priority')
+                ->get()
+                ->filter(function ($finding) {
+                    $deadline = \Illuminate\Support\Carbon::parse($finding->created_at)
+                        ->addHours($finding->priority->sla_resolution_hours);
+                    return $deadline->isPast();
+                })
+                ->count();
+        }
 
-        $monthlyFindings = Finding::select(
-            DB::raw('YEAR(created_at) as year'),
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('COUNT(*) as total')
-        )
-            ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
-            ->groupBy('year', 'month')
-            ->orderBy('year')
-            ->orderBy('month')
-            ->get();
+        // MONTHLY FINDINGS
+        {
+            $monthlyFindings = Finding::query()
+                ->leftJoin(
+                    'finding_statuses',
+                    'findings.finding_status_id',
+                    '=',
+                    'finding_statuses.id'
+                )
+                ->selectRaw("
+        YEAR(findings.created_at) as year,
+        MONTH(findings.created_at) as month,
 
-        $chartMonthlyFindings = collect();
+        SUM(CASE
+            WHEN finding_statuses.name = 'Closed'
+            THEN 1 ELSE 0
+        END) as closed,
 
-        for ($i = 11; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
+        SUM(CASE
+            WHEN finding_statuses.name <> 'Closed'
+            THEN 1 ELSE 0
+        END) as open
+    ")
+                ->where(
+                    'findings.created_at',
+                    '>=',
+                    now()->subMonths(11)->startOfMonth()
+                )
+                ->groupBy('year', 'month')
+                ->orderBy('year')
+                ->orderBy('month')
+                ->get();
 
-            $row = $monthlyFindings->first(function ($item) use ($date) {
-                return $item->year == $date->year
-                    && $item->month == $date->month;
-            });
+            $chartMonthlyFindings = collect();
 
-            $chartMonthlyFindings->push([
-                'month' => $date->format('M'),
-                'total' => $row?->total ?? 0,
-            ]);
+            $date = Carbon::create(
+                now()->year,
+                now()->month,
+                1
+            );
+
+            for ($i = 11; $i >= 0; $i--) {
+
+                $d = $date
+                    ->copy()
+                    ->subMonthsNoOverflow($i);
+
+                $row = $monthlyFindings->first(function ($item) use ($d) {
+                    return $item->year == $d->year
+                        && $item->month == $d->month;
+                });
+
+                $open = (int) ($row?->open ?? 0);
+                $closed = (int) ($row?->closed ?? 0);
+
+                $chartMonthlyFindings->push([
+                    'month' => $d->format('M'),
+                    'closed' => (int) ($row->closed ?? 0),
+                    'open' => (int) ($row->open ?? 0),
+                    'closing_rate' => ($open + $closed) > 0
+                        ? round(($closed / ($open + $closed)) * 100)
+                        : 0,
+                ]);
+            }
+
+            $seriesMonthlyFindings = [
+                [
+                    'key' => 'closed',
+                    'label' => 'Closed',
+                    'color' => 'var(--chart-2)',
+                ],
+                [
+                    'key' => 'open',
+                    'label' => 'Open',
+                    'color' => 'var(--chart-5)',
+                ],
+            ];
         }
 
         $equipmentStatusChart = Equipment::query()
@@ -92,14 +147,15 @@ class DashboardController extends Controller
                 ];
             });
 
+
         $availableMonths = collect();
 
         for ($i = 11; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
+            $d = $date->copy()->subMonthsNoOverflow($i);
 
             $availableMonths->push([
-                'label' => $date->format('F Y'),
-                'value' => $date->format('Y-m'),
+                'label' => $d->format('F Y'),
+                'value' => $d->format('Y-m'),
             ]);
         }
 
@@ -161,27 +217,33 @@ class DashboardController extends Controller
                 'users.name',
                 'week_number'
             )
-            ->orderBy('week_number')
-            ->orderByDesc('total')
             ->get();
 
         $chartInspectorFindings = $inspectorFindings
-            ->map(function ($item) {
+            ->groupBy('week_number')
+            ->flatMap(function ($items, $week) {
 
-                return [
-                    'label' => $item->inspector,
-                    'week' => "W-{$item->week_number}",
-                    'week_number' => $item->week_number,
-                    'value' => (int) $item->total,
+                return $items
+                    ->sortByDesc('total')
+                    ->take(3)
+                    ->values()
+                    ->map(function ($item) use ($week) {
 
-                    'fill' => match ($item->week_number) {
-                        1 => 'var(--chart-1)',
-                        2 => 'var(--chart-2)',
-                        3 => 'var(--chart-3)',
-                        4 => 'var(--chart-4)',
-                        5 => 'var(--chart-5)',
-                    },
-                ];
+                        return [
+                            'label' => $item->inspector,
+                            'week' => "W-{$week}",
+                            'week_number' => (int) $week,
+                            'value' => (int) $item->total,
+
+                            'fill' => match ((int) $week) {
+                                1 => 'var(--chart-1)',
+                                2 => 'var(--chart-2)',
+                                3 => 'var(--chart-3)',
+                                4 => 'var(--chart-4)',
+                                default => 'var(--chart-5)',
+                            },
+                        ];
+                    });
             })
             ->values();
 
@@ -361,6 +423,36 @@ class DashboardController extends Controller
             'closed' => $totals['closed'],
         ]);
 
+
+        $chartTopFindingAreas = Finding::query()
+            ->join(
+                'functional_locations',
+                'findings.functional_location_id',
+                '=',
+                'functional_locations.id'
+            )
+            ->select(
+                'functional_locations.code',
+                'functional_locations.description',
+                DB::raw('COUNT(findings.id) as total_findings')
+            )
+            ->whereBetween('findings.created_at', [$startDate, $endDate])
+            ->groupBy(
+                'functional_locations.id',
+                'functional_locations.code',
+                'functional_locations.description'
+            )
+            ->orderByDesc('total_findings')
+            ->limit(10)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'code' => $item->code,
+                    'description' => $item->description,
+                    'totalFindings' => (int) $item->total_findings,
+                ];
+            });
+
         return Inertia::render('dashboard', [
             'stats' => [
                 'total' => [
@@ -383,11 +475,17 @@ class DashboardController extends Controller
                     'desc' => 'Temuan yang melewati batas SLA',
                 ],
             ],
+
+            'monthlyFinding' => [
+                'chart' => $chartMonthlyFindings,
+                'series' => $seriesMonthlyFindings,
+            ],
+
+
             'chartClosedFindingDepartment' => Finding::getChartData(\App\Models\Department::class),
             'chartClosedFindingWorkCenter' => Finding::getChartData(\App\Models\WorkCenter::class),
             'topInspectors' => Finding::getTopInspectors(),
             'topResolvers' => Finding::getTopResolvers(),
-            'chartMonthlyFindings' => $chartMonthlyFindings,
             'equipmentStatusChart' => $equipmentStatusChart,
             'availableMonths' => $availableMonths,
             'selectedMonth' => $selectedMonth,
@@ -395,6 +493,7 @@ class DashboardController extends Controller
             'chartInspectorFindings' => $chartInspectorFindings,
             'chartPriorityWeekly' => $chartPriorityWeekly,
             'chartStatusWeekly' => $chartStatusWeekly,
+            'chartTopFindingAreas' => $chartTopFindingAreas,
         ]);
     }
 }

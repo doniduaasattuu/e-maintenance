@@ -40,7 +40,6 @@ export default function FindingPhotoInput({
             </FieldLabel>
 
             <Input
-                capture="environment"
                 tabIndex={tabIndex}
                 type="file"
                 id="images"
@@ -48,7 +47,7 @@ export default function FindingPhotoInput({
                 ref={fileInputRef}
                 disabled={disabled || isCompressing}
                 onChange={onFileChange}
-                accept=".jpg,.jpeg,.png,.webp"
+                accept="image/jpg, image/jpeg, image/png, image/webp"
                 className="cursor-pointer"
             />
 

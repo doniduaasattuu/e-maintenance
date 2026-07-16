@@ -210,4 +210,22 @@ class UserController extends Controller
 
         return Excel::download(new UserExport($filters), 'Users_' . now()->format('Ymd_His') . '.xlsx');
     }
+
+    public function resetPassword(Request $request, $id)
+    {
+        Gate::authorize('reset_password_user');
+
+        $request->validate([
+            'new_password' => 'required|string|min:8',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->password = bcrypt($request->input('new_password'));
+        $user->save();
+
+        return back()->with('message', [
+            'type' => 'success',
+            'description' => 'Password reset successfully',
+        ]);
+    }
 }

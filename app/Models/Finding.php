@@ -49,7 +49,8 @@ class Finding extends Model
         if ($search) {
             $builder->where(function ($query) use ($search) {
                 $query
-                    ->where('description', 'LIKE', "%{$search}%")
+                    ->where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%")
                     ->orWhere('notification', 'LIKE', "%{$search}%")
                     ->orWhere('rectification_action', 'LIKE', "%{$search}%")
                     ->orwhereRelation('equipment', function (Builder $q) use ($search) {

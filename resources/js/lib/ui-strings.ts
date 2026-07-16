@@ -264,8 +264,8 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
     },
 
     REPOSITORY: {
-        label: 'Repository',
-        plural: 'Repositories',
+        label: 'Document Control',
+        plural: 'Document Controls',
         description: 'Centralized document storage module',
         create: {
             header: 'Upload to Repository',
@@ -304,6 +304,21 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         edit: {
             header: 'Edit Role',
             description: 'Modify the access rights and capabilities assigned to this role.',
+        },
+    },
+
+    PERMISSION: {
+        label: 'Permission',
+        plural: 'Permissions',
+        description:
+            'Defines the scope of access rights and responsibilities within the system, ensuring users can only perform actions assigned to their function.',
+        create: {
+            header: 'Create Permission',
+            description: 'Create a new permission for specific user responsibilities.',
+        },
+        edit: {
+            header: 'Edit Permission',
+            description: 'Modify the access rights and capabilities assigned to this permission.',
         },
     },
 
@@ -365,19 +380,6 @@ const TENANT_OVERRIDES: Record<string, Partial<Record<string, Partial<UIEntry>>>
             edit: {
                 header: 'Edit Finding',
                 description: 'Update the finding details, evidence, or current resolution progress.',
-            },
-        },
-        REPOSITORY: {
-            label: 'Document Control',
-            plural: 'Document Controls',
-            description: 'Centralized document storage module',
-            create: {
-                header: 'Upload to Repository',
-                description: 'Upload a new technical document, manual, or reference file.',
-            },
-            edit: {
-                header: 'Edit Repository File',
-                description: 'Update file metadata, description, or replace with a newer version.',
             },
         },
     },

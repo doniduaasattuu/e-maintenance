@@ -15,14 +15,17 @@ import usePermissions from '@/hooks/use-permissions';
 import { tableCaption } from '@/lib/utils';
 import { Department, Meta, Position, User, WorkCenter } from '@/types';
 import { router } from '@inertiajs/react';
-import { RefreshCcw, Trash2 } from 'lucide-react';
+import { KeyRound, MoreHorizontalIcon, RefreshCcw, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 import ButtonExport from '../button-export';
 import DialogUserExportExcel from '../dialog-user-export-excel';
 import EmptyIcon from '../empty-icon';
 import FilterWorkCenter from '../filter-work-center';
 import { PerPageSelector } from '../per-page-selector';
+import { ResetPasswordDialog } from '../reset-password-dialog';
+import { Button } from '../ui/button';
 import { ButtonGroup } from '../ui/button-group';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface TableUserProps {
     users: {
@@ -148,7 +151,49 @@ export default function TableUser({ users, departments, positions, workCenters, 
                                                 <span className="text-muted-foreground">{user.updated_at}</span>
                                             </div>
                                         </TableCell>
-                                        {can.delete_user && user.deleted_at === null ? (
+                                        <TableCell className="text-right">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button size="icon" variant="ghost" className="size-6">
+                                                        <MoreHorizontalIcon />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <ResetPasswordDialog user={user}>
+                                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                            <KeyRound size={18} className="text-blue-500" /> Reset Password
+                                                        </DropdownMenuItem>
+                                                    </ResetPasswordDialog>
+
+                                                    {can.delete_user && user.deleted_at === null ? (
+                                                        <ActionConfirm
+                                                            action={() => handleDeleteUser(user.id)}
+                                                            title={`Delete User ${user.name}?`}
+                                                            description="This action will remove this user from database."
+                                                        >
+                                                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                <Trash2 size={18} className="text-red-500" /> Delete
+                                                            </DropdownMenuItem>
+                                                        </ActionConfirm>
+                                                    ) : (
+                                                        can.restore_user &&
+                                                        user.deleted_at !== null && (
+                                                            <ActionConfirm
+                                                                action={() => handleRestoreUser(user.id)}
+                                                                title={`Restore User ${user.name}?`}
+                                                                description="This action will restore user from database."
+                                                                actionLabel="Restore"
+                                                            >
+                                                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                    <RefreshCcw size={18} className="text-blue-500" /> Restore
+                                                                </DropdownMenuItem>
+                                                            </ActionConfirm>
+                                                        )
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                        {/* {can.delete_user && user.deleted_at === null ? (
                                             <TableCell className="w-10 flex-col text-right align-top">
                                                 <ActionConfirm
                                                     action={() => handleDeleteUser(user.id)}
@@ -172,7 +217,7 @@ export default function TableUser({ users, departments, positions, workCenters, 
                                                     </ActionConfirm>
                                                 </TableCell>
                                             )
-                                        )}
+                                        )} */}
                                     </TableRow>
                                 );
                             })}
