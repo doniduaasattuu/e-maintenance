@@ -51,10 +51,19 @@ interface DashboardProps {
         name: string;
         totalSolved: number;
     }[];
-    chartMonthlyFindings: {
-        month: string;
-        total: number;
-    }[];
+    monthlyFinding: {
+        chart: {
+            month: string;
+            closed: number;
+            open: number;
+            closing_rate: number;
+        }[];
+        series: {
+            key: string;
+            label: string;
+            color: string;
+        }[];
+    };
     equipmentStatusChart: {
         status: string;
         value: number;
@@ -130,7 +139,7 @@ export default function Dashboard({
     chartClosedFindingWorkCenter,
     topInspectors,
     topResolvers,
-    chartMonthlyFindings,
+    monthlyFinding,
     // equipmentStatusChart,
     availableMonths,
     selectedMonth,
@@ -140,6 +149,7 @@ export default function Dashboard({
     chartStatusWeekly,
     chartTopFindingAreas,
 }: DashboardProps) {
+    console.log(monthlyFinding);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -167,32 +177,13 @@ export default function Dashboard({
                     </div>
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
-                    {/* <ChartBarDefault
-                        title="Monthly Finding"
-                        description="Total temuan per bulan dalam satu tahun"
-                        chartData={chartMonthlyFindings}
-                        labelKey="month"
-                        valueKey="total"
-                    /> */}
                     <ChartBarStackedDefault
                         title="Monthly Finding"
                         description="Total temuan per bulan dalam satu tahun"
-                        chartData={chartMonthlyFindings}
-                        series={[
-                            {
-                                key: 'closed',
-                                label: 'Closed',
-                                color: 'var(--chart-2)',
-                            },
-                            {
-                                key: 'open',
-                                label: 'Open',
-                                color: 'var(--chart-1)',
-                            },
-                        ]}
+                        chartData={monthlyFinding.chart}
+                        series={monthlyFinding.series}
                         xAxisKey="month"
                         labelDataKey="closing_rate"
-                        // valueKey="total"
                     />
                     <ChartBarDefault
                         title="Top 10 Finding Areas"

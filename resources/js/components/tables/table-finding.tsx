@@ -348,7 +348,7 @@ export default function TableFinding({
                         <TableBody>
                             {findings.data?.map((finding: Finding) => (
                                 <TableRow
-                                    className={`${finding.inspector?.id === user?.id || finding.workCenter?.id === user?.work_center_id ? 'bg-green-200' : undefined} hover:bg-yellow-200`}
+                                    className={`${finding.inspector?.id === user?.id || finding.workCenter?.id === user?.work_center_id ? 'bg-green-200 dark:bg-green-900' : undefined} hover:bg-yellow-200 dark:hover:bg-orange-900`}
                                     key={finding.id}
                                 >
                                     <TableCell>{finding.id}</TableCell>

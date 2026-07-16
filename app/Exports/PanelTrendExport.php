@@ -41,12 +41,19 @@ class PanelTrendExport implements
             ->select([
                 'inspection_panels.*',
                 'equipment_inspection_forms.created_at as inspected_at',
+                'users.name as inspector_name',
             ])
             ->join(
                 'equipment_inspection_forms',
                 'equipment_inspection_forms.formable_id',
                 '=',
                 'inspection_panels.id'
+            )
+            ->join(
+                'users',
+                'users.id',
+                '=',
+                'inspection_panels.inspected_by'
             )
             ->where(
                 'equipment_inspection_forms.formable_type',
@@ -55,22 +62,6 @@ class PanelTrendExport implements
             ->where(
                 'equipment_inspection_forms.equipment_id',
                 $this->equipment->id
-            )
-            ->when(
-                $this->startDate,
-                fn($q) => $q->whereDate(
-                    'equipment_inspection_forms.created_at',
-                    '>=',
-                    $this->startDate
-                )
-            )
-            ->when(
-                $this->endDate,
-                fn($q) => $q->whereDate(
-                    'equipment_inspection_forms.created_at',
-                    '<=',
-                    $this->endDate
-                )
             )
             ->orderBy('equipment_inspection_forms.created_at')
             ->get();
@@ -97,6 +88,8 @@ class PanelTrendExport implements
             'Current R',
             'Current S',
             'Current T',
+
+            'Inspector',
         ];
     }
 
@@ -121,6 +114,8 @@ class PanelTrendExport implements
             $row->current_r,
             $row->current_s,
             $row->current_t,
+
+            $row->inspector_name,
         ];
     }
 

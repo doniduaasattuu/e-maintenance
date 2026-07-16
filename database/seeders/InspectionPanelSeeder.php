@@ -18,47 +18,76 @@ class InspectionPanelSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Pastikan ada user dan equipment untuk relasi
-        $user = User::first() ?? User::factory()->create();
-        $equipments = Equipment::all();
+        EquipmentInspectionForm::where(
+            'formable_type',
+            InspectionPanel::class
+        )->delete();
 
-        if ($equipments->isEmpty()) {
-            $this->command->warn('No equipment found. Please seed equipments first.');
+        InspectionPanel::truncate();
+
+        // Ambil seluruh user
+        $users = User::all();
+
+        if ($users->isEmpty()) {
+            $this->command->warn('No user found. Please seed users first.');
             return;
         }
 
-        // 2. Generate data untuk 30 hari terakhir
+        // Ambil hanya equipment class panel (ZCLASS_E008) maksimal 10 data
+        $equipments = Equipment::query()
+            ->whereHas('eclass', function ($query) {
+                $query->where('code', 'ZCLASS_E008');
+            })
+            ->orderBy('id')
+            ->limit(10)
+            ->get();
+
+        if ($equipments->isEmpty()) {
+            $this->command->warn('No panel equipment found.');
+            return;
+        }
+
+        // Generate inspeksi 30 hari terakhir
         foreach ($equipments as $equipment) {
-            // Hanya seed untuk equipment yang relevan (misal: panel listrik)
-            // Anda bisa menambahkan pengecekan equipment_class jika perlu
 
             for ($i = 30; $i >= 0; $i--) {
+
                 $inspectionDate = Carbon::now()->subDays($i);
 
-                // Buat record InspectionPanel
+                // Pilih inspector secara random
+                $user = $users->random();
+                $baseTemp = rand(34, 38);
+                $baseCurrent = rand(105, 115);
+
                 $panel = InspectionPanel::create([
                     'is_operational' => Arr::random([0, 1]),
                     'is_clean' => Arr::random([0, 1]),
-                    'temperature_incoming_r' => rand(3000, 4500) / 100,
-                    'temperature_incoming_s' => rand(3000, 4500) / 100,
-                    'temperature_incoming_t' => rand(3000, 4500) / 100,
+
+                    'temperature_incoming_r' => $baseTemp + fake()->randomFloat(2, -1, 1),
+                    'temperature_incoming_s' => $baseTemp + fake()->randomFloat(2, -1, 1),
+                    'temperature_incoming_t' => $baseTemp + fake()->randomFloat(2, -1, 1),
+
+                    'temperature_outgoing_r' => $baseTemp + fake()->randomFloat(2, -1, 1),
+                    'temperature_outgoing_s' => $baseTemp + fake()->randomFloat(2, -1, 1),
+                    'temperature_outgoing_t' => $baseTemp + fake()->randomFloat(2, -1, 1),
+
                     'temperature_cabinet' => rand(3000, 5000) / 100,
-                    'temperature_outgoing_r' => rand(3000, 4500) / 100,
-                    'temperature_outgoing_s' => rand(3000, 4500) / 100,
-                    'temperature_outgoing_t' => rand(3000, 4500) / 100,
-                    'current_r' => rand(100, 120),
-                    'current_s' => rand(100, 120),
-                    'current_t' => rand(100, 120),
+
+                    'current_r' => $baseCurrent + fake()->randomFloat(2, -2, 2),
+                    'current_s' => $baseCurrent + fake()->randomFloat(2, -2, 2),
+                    'current_t' => $baseCurrent + fake()->randomFloat(2, -2, 2),
+
                     'inspected_by' => $user->id,
+
                     'created_at' => $inspectionDate,
                     'updated_at' => $inspectionDate,
                 ]);
 
-                // Buat relasi di tabel equipment_inspection_forms
                 EquipmentInspectionForm::create([
                     'equipment_id' => $equipment->id,
                     'formable_id' => $panel->id,
                     'formable_type' => InspectionPanel::class,
+
                     'created_at' => $inspectionDate,
                     'updated_at' => $inspectionDate,
                 ]);
