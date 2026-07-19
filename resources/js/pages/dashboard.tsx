@@ -1,5 +1,6 @@
 import { ChartBarDefault } from '@/components/chart/chart-bar-default';
 import { ChartBarStackedDefault } from '@/components/chart/chart-bar-stacked-default';
+import { ChartPieDefault } from '@/components/chart/pie-chart-default';
 import DashboardCard from '@/components/dashboard-card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -90,6 +91,11 @@ interface DashboardProps {
         priority2: number;
         priority3: number;
     }[];
+    prioritySeries: {
+        key: string;
+        label: string;
+        color: string;
+    }[];
     chartStatusWeekly: {
         week: string;
         open: number;
@@ -99,9 +105,10 @@ interface DashboardProps {
         closed: number;
     }[];
     chartTopFindingAreas: {
-        code: string;
+        label: string;
         description: string;
-        totalFindings: number;
+        value: number;
+        fill: string;
     }[];
 }
 
@@ -146,10 +153,11 @@ export default function Dashboard({
     chartWeeklyFindings,
     chartInspectorFindings,
     chartPriorityWeekly,
+    prioritySeries,
     chartStatusWeekly,
     chartTopFindingAreas,
 }: DashboardProps) {
-    console.log(monthlyFinding);
+    console.log(prioritySeries);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -185,7 +193,14 @@ export default function Dashboard({
                         xAxisKey="month"
                         labelDataKey="closing_rate"
                     />
-                    <ChartBarDefault
+                    <ChartPieDefault
+                        title="Top 10 Finding Areas"
+                        description="Distribusi finding berdasarkan area"
+                        chartData={chartTopFindingAreas}
+                        labelKey="label"
+                        valueKey="value"
+                    />
+                    {/* <ChartBarDefault
                         title="Top 10 Finding Areas"
                         description="Distribusi temuan selesai per area"
                         chartData={chartTopFindingAreas}
@@ -196,7 +211,7 @@ export default function Dashboard({
                             const parts = value.toString().split('-');
                             return parts[parts.length - 1];
                         }}
-                    />
+                    /> */}
                     {/* <PieChartDefault
                         chartData={equipmentStatusChart}
                         title="Equipment Status Overview"
@@ -236,23 +251,7 @@ export default function Dashboard({
                         title="Weekly Priority"
                         description="Finding priority dalam satu minggu"
                         chartData={chartPriorityWeekly}
-                        series={[
-                            {
-                                key: 'priority1',
-                                label: 'Priority-1',
-                                color: 'var(--chart-1)',
-                            },
-                            {
-                                key: 'priority2',
-                                label: 'Priority-2',
-                                color: 'var(--chart-2)',
-                            },
-                            {
-                                key: 'priority3',
-                                label: 'Priority-3',
-                                color: 'var(--chart-3)',
-                            },
-                        ]}
+                        series={prioritySeries}
                         withSelect={true}
                         availableMonths={availableMonths}
                         selectedMonth={selectedMonth}

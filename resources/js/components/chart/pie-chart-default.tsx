@@ -1,64 +1,61 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { LabelList, Pie, PieChart } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
-interface ChartProps {
+import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+
+interface Props {
     title: string;
     description: string;
+
     chartData: any[];
+
     labelKey: string;
+
     valueKey: string;
-    chartConfig: any;
 }
 
-export function PieChartDefault({ title, description, chartData, labelKey, valueKey, chartConfig }: ChartProps) {
+export function ChartPieDefault({ title, description, chartData, labelKey, valueKey }: Props) {
+    const chartConfig = chartData.reduce((acc, item) => {
+        acc[item[labelKey]] = {
+            label: item[labelKey],
+            color: item.fill,
+        };
+
+        return acc;
+    }, {} as ChartConfig);
+
     return (
-        <Card className="bg-sidebar flex flex-col">
-            <CardHeader className="mb-2 pb-0">
-                <div className="grid flex-1 gap-1">
-                    <CardTitle className="text-xl font-bold">{title}</CardTitle>
-                    <CardDescription className="text-muted-foreground text-sm">{description}</CardDescription>
-                </div>
+        <Card className="bg-sidebar">
+            <CardHeader>
+                <CardTitle className="text-xl font-bold">{title}</CardTitle>
+                <CardDescription className="text-muted-foreground text-sm">{description}</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0">
-                <ChartContainer config={chartConfig}>
-                    <PieChart margin={{ top: 10, bottom: 10 }}>
+
+            <CardContent>
+                <ChartContainer config={chartConfig} className="mx-auto">
+                    <PieChart>
                         <ChartTooltip content={<ChartTooltipContent nameKey={valueKey} hideLabel />} />
-                        <Pie
-                            data={chartData}
-                            dataKey={valueKey}
-                            labelLine={false}
-                            // label={({ name }) => name}
-                            label={({ payload, ...props }) => {
-                                return (
-                                    <text
-                                        cx={props.cx}
-                                        cy={props.cy}
-                                        x={props.x}
-                                        y={props.y}
-                                        textAnchor={props.textAnchor}
-                                        dominantBaseline={props.dominantBaseline}
-                                        fill="var(--foreground)"
-                                    >
-                                        {payload.label}
-                                    </text>
-                                );
-                            }}
-                            nameKey={labelKey}
-                        >
-                            <LabelList dataKey={valueKey} position="inside" fill="white" formatter={(value: number) => value.toLocaleString()} />
+
+                        <Pie data={chartData} dataKey={valueKey} nameKey={labelKey}>
+                            <LabelList
+                                dataKey={labelKey}
+                                className="fill-background"
+                                stroke="none"
+                                fontSize={10}
+                                formatter={(value: string) => value.split('-').pop()}
+                            />
                         </Pie>
+
+                        <ChartLegend
+                            content={<ChartLegendContent nameKey="label" />}
+                            className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
+                        />
                     </PieChart>
                 </ChartContainer>
             </CardContent>
-            {/* <CardFooter className="flex-col gap-2 text-sm">
-                <div className="flex items-center gap-2 leading-none font-medium">
-                    Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                </div>
-                <div className="text-muted-foreground leading-none">Showing total visitors for the last 6 months</div>
-            </CardFooter> */}
         </Card>
     );
 }

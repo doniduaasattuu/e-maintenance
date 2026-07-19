@@ -247,6 +247,10 @@ class DashboardController extends Controller
             })
             ->values();
 
+        $priorities = \App\Models\FindingPriority::query()
+            ->orderBy('id')
+            ->get();
+
         $priorityFindings = Finding::query()
             ->join(
                 'finding_priorities',
@@ -275,52 +279,132 @@ class DashboardController extends Controller
             ->orderBy('week_number')
             ->get();
 
-        $chartPriorityWeekly = collect();
+        $prioritySeries = collect();
 
-        $totalPriority1 = 0;
-        $totalPriority2 = 0;
-        $totalPriority3 = 0;
+        foreach ($priorities as $priority) {
+
+            $key = \Illuminate\Support\Str::slug($priority->label, '_');
+
+            $prioritySeries->push([
+                'key'   => $key,
+                'label' => $priority->label,
+                'color' => $priority->color_code,
+            ]);
+        }
+
+        $totals = [];
+
+        foreach ($prioritySeries as $series) {
+            $totals[$series['key']] = 0;
+        }
+
+        $chartPriorityWeekly = collect();
 
         for ($week = 1; $week <= 5; $week++) {
 
-            $priority1 = optional(
-                $priorityFindings
-                    ->where('week_number', $week)
-                    ->firstWhere('label', 'PRIORITY 1')
-            )->total ?? 0;
-
-            $priority2 = optional(
-                $priorityFindings
-                    ->where('week_number', $week)
-                    ->firstWhere('label', 'PRIORITY 2')
-            )->total ?? 0;
-
-            $priority3 = optional(
-                $priorityFindings
-                    ->where('week_number', $week)
-                    ->firstWhere('label', 'PRIORITY 3')
-            )->total ?? 0;
-
-            $chartPriorityWeekly->push([
+            $row = [
                 'week' => "W-{$week}",
+            ];
 
-                'priority1' => (int)$priority1,
-                'priority2' => (int)$priority2,
-                'priority3' => (int)$priority3,
-            ]);
+            foreach ($prioritySeries as $series) {
 
-            $totalPriority1 += $priority1;
-            $totalPriority2 += $priority2;
-            $totalPriority3 += $priority3;
+                $total = optional(
+                    $priorityFindings
+                        ->where('week_number', $week)
+                        ->firstWhere('label', $series['label'])
+                )->total ?? 0;
+
+                $row[$series['key']] = (int) $total;
+
+                $totals[$series['key']] += $total;
+            }
+
+            $chartPriorityWeekly->push($row);
         }
 
-        $chartPriorityWeekly->push([
+        $totalRow = [
             'week' => 'Total',
+        ];
 
-            'priority1' => $totalPriority1,
-            'priority2' => $totalPriority2,
-            'priority3' => $totalPriority3,
-        ]);
+        foreach ($prioritySeries as $series) {
+            $totalRow[$series['key']] = $totals[$series['key']];
+        }
+
+        $chartPriorityWeekly->push($totalRow);
+        //     $priorityFindings = Finding::query()
+        //         ->join(
+        //             'finding_priorities',
+        //             'findings.finding_priority_id',
+        //             '=',
+        //             'finding_priorities.id'
+        //         )
+        //         ->selectRaw("
+        //     CASE
+        //         WHEN DAY(findings.created_at) BETWEEN 1 AND 7 THEN 1
+        //         WHEN DAY(findings.created_at) BETWEEN 8 AND 14 THEN 2
+        //         WHEN DAY(findings.created_at) BETWEEN 15 AND 21 THEN 3
+        //         WHEN DAY(findings.created_at) BETWEEN 22 AND 28 THEN 4
+        //         ELSE 5
+        //     END as week_number,
+
+        //     finding_priorities.label,
+
+        //     COUNT(*) as total
+        // ")
+        //         ->whereBetween('findings.created_at', [$startDate, $endDate])
+        //         ->groupBy(
+        //             'week_number',
+        //             'finding_priorities.label'
+        //         )
+        //         ->orderBy('week_number')
+        //         ->get();
+
+        //     $chartPriorityWeekly = collect();
+
+        //     $totalPriority1 = 0;
+        //     $totalPriority2 = 0;
+        //     $totalPriority3 = 0;
+
+        //     for ($week = 1; $week <= 5; $week++) {
+
+        //         $priority1 = optional(
+        //             $priorityFindings
+        //                 ->where('week_number', $week)
+        //                 ->firstWhere('label', 'PRIORITY 1')
+        //         )->total ?? 0;
+
+        //         $priority2 = optional(
+        //             $priorityFindings
+        //                 ->where('week_number', $week)
+        //                 ->firstWhere('label', 'PRIORITY 2')
+        //         )->total ?? 0;
+
+        //         $priority3 = optional(
+        //             $priorityFindings
+        //                 ->where('week_number', $week)
+        //                 ->firstWhere('label', 'PRIORITY 3')
+        //         )->total ?? 0;
+
+        //         $chartPriorityWeekly->push([
+        //             'week' => "W-{$week}",
+
+        //             'priority1' => (int)$priority1,
+        //             'priority2' => (int)$priority2,
+        //             'priority3' => (int)$priority3,
+        //         ]);
+
+        //         $totalPriority1 += $priority1;
+        //         $totalPriority2 += $priority2;
+        //         $totalPriority3 += $priority3;
+        //     }
+
+        //     $chartPriorityWeekly->push([
+        //         'week' => 'Total',
+
+        //         'priority1' => $totalPriority1,
+        //         'priority2' => $totalPriority2,
+        //         'priority3' => $totalPriority3,
+        //     ]);
 
         $statusFindings = Finding::query()
             ->join(
@@ -445,11 +529,15 @@ class DashboardController extends Controller
             ->orderByDesc('total_findings')
             ->limit(10)
             ->get()
-            ->map(function ($item) {
+            ->values()
+            ->map(function ($item, $index) {
+
                 return [
-                    'code' => $item->code,
+                    'label' => $item->code,
                     'description' => $item->description,
-                    'totalFindings' => (int) $item->total_findings,
+                    'value' => (int) $item->total_findings,
+
+                    'fill' => 'var(--chart-' . (($index % 5) + 1) . ')',
                 ];
             });
 
@@ -490,6 +578,7 @@ class DashboardController extends Controller
             'availableMonths' => $availableMonths,
             'selectedMonth' => $selectedMonth,
             'chartWeeklyFindings' => $chartWeeklyFindings,
+            'prioritySeries' => $prioritySeries,
             'chartInspectorFindings' => $chartInspectorFindings,
             'chartPriorityWeekly' => $chartPriorityWeekly,
             'chartStatusWeekly' => $chartStatusWeekly,
