@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\Models\Role;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,5 +39,9 @@ class AppServiceProvider extends ServiceProvider
             'equipment' => 'App\Models\Equipment',
             'material' => 'App\Models\Material',
         ]);
+
+        DB::listen(function ($query) {
+            Log::info($query->sql); // The SQL string
+        });
     }
 }

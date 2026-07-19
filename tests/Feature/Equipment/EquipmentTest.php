@@ -75,6 +75,7 @@ test('store equipment successfully', function () {
         ]);
 
     $response
+        ->assertStatus(302)
         ->assertRedirect(route('equipments.create'));
 
     $functionalLocation = Equipment::where('code', 'EMO123456')->first();
