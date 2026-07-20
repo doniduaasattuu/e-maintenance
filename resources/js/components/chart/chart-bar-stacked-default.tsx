@@ -20,7 +20,6 @@ interface Props {
     series: StackSeries[];
 
     withSelect?: boolean;
-
     availableMonths?: {
         label: string;
         value: string;
@@ -79,7 +78,7 @@ export function ChartBarStackedDefault({
             </CardHeader>
 
             <CardContent>
-                <ChartContainer config={chartConfig}>
+                <ChartContainer config={chartConfig} className="mx-auto h-105 w-full sm:h-auto">
                     <BarChart accessibilityLayer data={chartData}>
                         <CartesianGrid vertical={false} />
 

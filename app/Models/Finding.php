@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Finding extends Model
 {
@@ -294,7 +295,6 @@ class Finding extends Model
         return $model::query()
             ->select('id', 'code')
             ->withCount(['findings as totalClosedFindings' => function ($query) {
-                // Gunakan logic archived/closed di sini
                 $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
             }])
             ->limit(10)
@@ -329,25 +329,496 @@ class Finding extends Model
             ->values();
     }
 
-    public static function getTopResolvers()
+    public static function getTopResolvers($startDate, $endDate)
     {
-        return \App\Models\User::query()
+        return User::query()
             ->select('id', 'name')
-            ->withCount(['rectifiedFindings as totalSolved' => function ($query) {
-                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
-            }])
-            ->whereHas('rectifiedFindings', function ($query) {
-                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            ->withCount([
+                'rectifiedFindings as totalSolved' => function ($query) use ($startDate, $endDate) {
+                    $query
+                        ->whereBetween('closed_at', [$startDate, $endDate])
+                        ->whereHas('status', function ($q) {
+                            $q->where('name', 'Closed');
+                        });
+                }
+            ])
+            ->whereHas('rectifiedFindings', function ($query) use ($startDate, $endDate) {
+                $query
+                    ->whereBetween('closed_at', [$startDate, $endDate])
+                    ->whereHas('status', function ($q) {
+                        $q->where('name', 'Closed');
+                    });
             })
             ->orderByDesc('totalSolved')
             ->limit(10)
             ->get()
             ->map(function ($user) {
                 return [
-                    'name' => str()->before($user->name, ' '),
+                    'name' => str($user->name)->before(' '),
                     'totalSolved' => $user->totalSolved,
                 ];
             })
             ->values();
+    }
+
+    public static function getTopFindingAreas(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate)
+    {
+        return Finding::query()
+            ->join(
+                'functional_locations',
+                'findings.functional_location_id',
+                '=',
+                'functional_locations.id'
+            )
+            ->select(
+                'functional_locations.code',
+                'functional_locations.description',
+                DB::raw('COUNT(findings.id) as total_findings')
+            )
+            ->whereBetween('findings.created_at', [$startDate, $endDate])
+            ->groupBy(
+                'functional_locations.id',
+                'functional_locations.code',
+                'functional_locations.description'
+            )
+            ->orderByDesc('total_findings')
+            ->limit(5)
+            ->get()
+            ->values()
+            ->map(function ($item, $index) {
+
+                return [
+                    // format standar Recharts
+                    'name' => $item->code,
+                    'value' => (int) $item->total_findings,
+
+                    // informasi tambahan
+                    'description' => $item->description,
+
+                    // tetap simpan jika diperlukan komponen lain
+                    'label' => $item->description,
+
+                    'fill' => 'var(--chart-' . (($index % 5) + 1) . ')',
+                ];
+            });
+    }
+
+    public static function getStats()
+    {
+        $totalFindings = Finding::count();
+        $open = FindingStatus::where('name', 'Open')->first();
+        $closed = FindingStatus::where('name', 'Closed')->first();
+
+        // 2. Open Findings (Belum ditutup)
+        $openFindings = Finding::where('finding_status_id', $open->id)->count();
+
+        // 3. Closed Findings (Sudah ditutup)
+        $closedFindings = Finding::where('finding_status_id', $closed->id)->count();
+
+        // 4. Logika Perbandingan (Contoh: Dibandingkan dengan bulan lalu)
+        $lastMonth = Finding::where('created_at', '<', \Illuminate\Support\Carbon::now()->subMonth())->count();
+        $diff = $totalFindings - $lastMonth;
+
+        $slaExceeded = Finding::whereNull('closed_at')
+            ->with('priority')
+            ->get()
+            ->filter(function ($finding) {
+                $deadline = \Illuminate\Support\Carbon::parse($finding->created_at)
+                    ->addHours($finding->priority->sla_resolution_hours);
+                return $deadline->isPast();
+            })
+            ->count();
+
+        return [
+            'totalFindings' => $totalFindings,
+            'openFindings' => $openFindings,
+            'closedFindings' => $closedFindings,
+            'diff' => $diff,
+            'slaExceeded' => $slaExceeded,
+        ];
+    }
+
+    public static function getMonthlyFinding()
+    {
+
+        $monthlyFindings = Finding::query()
+            ->leftJoin(
+                'finding_statuses',
+                'findings.finding_status_id',
+                '=',
+                'finding_statuses.id'
+            )
+            ->selectRaw("
+        YEAR(findings.created_at) as year,
+        MONTH(findings.created_at) as month,
+
+        SUM(CASE
+            WHEN finding_statuses.name = 'Closed'
+            THEN 1 ELSE 0
+        END) as closed,
+
+        SUM(CASE
+            WHEN finding_statuses.name <> 'Closed'
+            THEN 1 ELSE 0
+        END) as open
+    ")
+            ->where(
+                'findings.created_at',
+                '>=',
+                now()->subMonths(11)->startOfMonth()
+            )
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+        $chartMonthlyFindings = collect();
+
+        $date = \Illuminate\Support\Carbon::create(
+            now()->year,
+            now()->month,
+            1
+        );
+
+        for ($i = 11; $i >= 0; $i--) {
+
+            $d = $date
+                ->copy()
+                ->subMonthsNoOverflow($i);
+
+            $row = $monthlyFindings->first(function ($item) use ($d) {
+                return $item->year == $d->year
+                    && $item->month == $d->month;
+            });
+
+            $open = (int) ($row?->open ?? 0);
+            $closed = (int) ($row?->closed ?? 0);
+
+            $chartMonthlyFindings->push([
+                'month' => $d->format('M'),
+                'closed' => (int) ($row->closed ?? 0),
+                'open' => (int) ($row->open ?? 0),
+                'closing_rate' => ($open + $closed) > 0
+                    ? round(($closed / ($open + $closed)) * 100)
+                    : 0,
+            ]);
+        }
+
+        $seriesMonthlyFindings = [
+            [
+                'key' => 'closed',
+                'label' => 'Closed',
+                'color' => 'var(--chart-2)',
+            ],
+            [
+                'key' => 'open',
+                'label' => 'Open',
+                'color' => 'var(--chart-5)',
+            ],
+        ];
+
+        return [
+            'chart' => $chartMonthlyFindings,
+            'series' => $seriesMonthlyFindings,
+        ];
+    }
+
+
+    public static function getWeeklyFinding(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate)
+    {
+
+        $weeklyFindings = Finding::query()
+            ->selectRaw('FLOOR((DAY(created_at)-1)/7)+1 as week_number,
+        COUNT(*) as total')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('week_number')
+            ->orderBy('week_number')
+            ->get();
+
+        $chartWeeklyFindings = collect();
+        $weeklyTotal = 0;
+
+        for ($week = 1; $week <= 5; $week++) {
+
+            $row = $weeklyFindings->firstWhere(
+                'week_number',
+                $week
+            );
+
+            $chartWeeklyFindings->push([
+                'week' => "W-{$week}",
+                'value' => $row?->total ?? 0,
+            ]);
+
+            $weeklyTotal += $row?->total ?? 0;
+        }
+
+        $chartWeeklyFindings->push([
+            'week' => 'Total',
+            'value' => $weeklyTotal,
+        ]);
+
+        return [
+            'chart' => $chartWeeklyFindings,
+        ];
+    }
+
+    public static function getStatusWeekly(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate)
+    {
+
+        $statusFindings = Finding::query()
+            ->join(
+                'finding_statuses',
+                'findings.finding_status_id',
+                '=',
+                'finding_statuses.id'
+            )
+            ->selectRaw("
+        CASE
+            WHEN DAY(findings.created_at) BETWEEN 1 AND 7 THEN 1
+            WHEN DAY(findings.created_at) BETWEEN 8 AND 14 THEN 2
+            WHEN DAY(findings.created_at) BETWEEN 15 AND 21 THEN 3
+            WHEN DAY(findings.created_at) BETWEEN 22 AND 28 THEN 4
+            ELSE 5
+        END as week_number,
+
+        finding_statuses.id,
+        finding_statuses.name,
+
+        COUNT(*) as total
+    ")
+            ->whereBetween('findings.created_at', [$startDate, $endDate])
+            ->groupBy(
+                'week_number',
+                'finding_statuses.id',
+                'finding_statuses.name'
+            )
+            ->orderBy('week_number')
+            ->orderBy('finding_statuses.id')
+            ->get();
+
+        $chartStatusWeekly = collect();
+
+        $totals = [
+            'open' => 0,
+            'inProgress' => 0,
+            'onHold' => 0,
+            'review' => 0,
+            'closed' => 0,
+        ];
+
+        for ($week = 1; $week <= 5; $week++) {
+
+            $row = [
+                'week' => "W-{$week}",
+
+                'open' => 0,
+                'inProgress' => 0,
+                'onHold' => 0,
+                'review' => 0,
+                'closed' => 0,
+            ];
+
+            foreach (
+                $statusFindings
+                    ->where('week_number', $week)
+                as $status
+            ) {
+
+                switch ($status->id) {
+
+                    case 1:
+                        $row['open'] = (int)$status->total;
+                        $totals['open'] += $status->total;
+                        break;
+
+                    case 2:
+                        $row['inProgress'] = (int)$status->total;
+                        $totals['inProgress'] += $status->total;
+                        break;
+
+                    case 3:
+                        $row['onHold'] = (int)$status->total;
+                        $totals['onHold'] += $status->total;
+                        break;
+
+                    case 4:
+                        $row['review'] = (int)$status->total;
+                        $totals['review'] += $status->total;
+                        break;
+
+                    case 5:
+                        $row['closed'] = (int)$status->total;
+                        $totals['closed'] += $status->total;
+                        break;
+                }
+            }
+
+            $chartStatusWeekly->push($row);
+        }
+
+        $chartStatusWeekly->push([
+            'week' => 'Total',
+
+            'open' => $totals['open'],
+            'inProgress' => $totals['inProgress'],
+            'onHold' => $totals['onHold'],
+            'review' => $totals['review'],
+            'closed' => $totals['closed'],
+        ]);
+
+        return [
+            'chart' => $chartStatusWeekly,
+        ];
+    }
+
+    public static function getPriorityWeekly(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate)
+    {
+
+        $priorities = \App\Models\FindingPriority::query()
+            ->orderBy('id')
+            ->get();
+
+        $priorityFindings = Finding::query()
+            ->join(
+                'finding_priorities',
+                'findings.finding_priority_id',
+                '=',
+                'finding_priorities.id'
+            )
+            ->selectRaw("
+        CASE
+            WHEN DAY(findings.created_at) BETWEEN 1 AND 7 THEN 1
+            WHEN DAY(findings.created_at) BETWEEN 8 AND 14 THEN 2
+            WHEN DAY(findings.created_at) BETWEEN 15 AND 21 THEN 3
+            WHEN DAY(findings.created_at) BETWEEN 22 AND 28 THEN 4
+            ELSE 5
+        END as week_number,
+
+        finding_priorities.label,
+
+        COUNT(*) as total
+    ")
+            ->whereBetween('findings.created_at', [$startDate, $endDate])
+            ->groupBy(
+                'week_number',
+                'finding_priorities.label'
+            )
+            ->orderBy('week_number')
+            ->get();
+
+        $prioritySeries = collect();
+
+        foreach ($priorities as $priority) {
+
+            $key = \Illuminate\Support\Str::slug($priority->label, '_');
+
+            $prioritySeries->push([
+                'key'   => $key,
+                'label' => $priority->label,
+                'color' => $priority->color_code,
+            ]);
+        }
+
+        $totals = [];
+
+        foreach ($prioritySeries as $series) {
+            $totals[$series['key']] = 0;
+        }
+
+        $chartPriorityWeekly = collect();
+
+        for ($week = 1; $week <= 5; $week++) {
+
+            $row = [
+                'week' => "W-{$week}",
+            ];
+
+            foreach ($prioritySeries as $series) {
+
+                $total = optional(
+                    $priorityFindings
+                        ->where('week_number', $week)
+                        ->firstWhere('label', $series['label'])
+                )->total ?? 0;
+
+                $row[$series['key']] = (int) $total;
+
+                $totals[$series['key']] += $total;
+            }
+
+            $chartPriorityWeekly->push($row);
+        }
+
+        $totalRow = [
+            'week' => 'Total',
+        ];
+
+        foreach ($prioritySeries as $series) {
+            $totalRow[$series['key']] = $totals[$series['key']];
+        }
+
+        $chartPriorityWeekly->push($totalRow);
+
+        return [
+            'chart' => $chartPriorityWeekly,
+            'series' => $prioritySeries,
+        ];
+    }
+
+    public static function getInspectorWeekly(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate)
+    {
+        $inspectorFindings = Finding::query()
+            ->join('users', 'findings.inspected_by', '=', 'users.id')
+            ->selectRaw("
+        users.name as inspector,
+        CASE
+            WHEN DAY(findings.created_at) BETWEEN 1 AND 7 THEN 1
+            WHEN DAY(findings.created_at) BETWEEN 8 AND 14 THEN 2
+            WHEN DAY(findings.created_at) BETWEEN 15 AND 21 THEN 3
+            WHEN DAY(findings.created_at) BETWEEN 22 AND 28 THEN 4
+            ELSE 5
+        END as week_number,
+        COUNT(*) as total
+    ")
+            ->whereBetween('findings.created_at', [$startDate, $endDate])
+            ->groupBy(
+                'users.id',
+                'users.name',
+                'week_number'
+            )
+            ->get();
+
+        $chartInspectorFindings = $inspectorFindings
+            ->groupBy('week_number')
+            ->flatMap(function ($items, $week) {
+
+                return $items
+                    ->sortByDesc('total')
+                    ->take(3)
+                    ->values()
+                    ->map(function ($item) use ($week) {
+
+                        return [
+                            'label' => $item->inspector,
+                            'week' => "W-{$week}",
+                            'week_number' => (int) $week,
+                            'value' => (int) $item->total,
+
+                            'fill' => match ((int) $week) {
+                                1 => 'var(--chart-1)',
+                                2 => 'var(--chart-2)',
+                                3 => 'var(--chart-3)',
+                                4 => 'var(--chart-4)',
+                                default => 'var(--chart-5)',
+                            },
+                        ];
+                    });
+            })
+            ->values();
+
+        return [
+            'chart' => $chartInspectorFindings,
+        ];
     }
 }

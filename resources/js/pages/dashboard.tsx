@@ -85,6 +85,19 @@ interface DashboardProps {
         total: number;
         fill: string;
     }[];
+    priorityWeekly: {
+        chart: {
+            week: string;
+            priority1: number;
+            priority2: number;
+            priority3: number;
+        }[];
+        series: {
+            key: string;
+            label: string;
+            color: string;
+        }[];
+    };
     chartPriorityWeekly: {
         week: string;
         priority1: number;
@@ -150,14 +163,12 @@ export default function Dashboard({
     // equipmentStatusChart,
     availableMonths,
     selectedMonth,
+    priorityWeekly,
     chartWeeklyFindings,
     chartInspectorFindings,
-    chartPriorityWeekly,
-    prioritySeries,
     chartStatusWeekly,
     chartTopFindingAreas,
 }: DashboardProps) {
-    console.log(prioritySeries);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -194,32 +205,16 @@ export default function Dashboard({
                         labelDataKey="closing_rate"
                     />
                     <ChartPieDefault
-                        title="Top 10 Finding Areas"
+                        withSelect={true}
+                        selectedMonth={selectedMonth}
+                        availableMonths={availableMonths}
+                        title="Top 5 Finding Areas"
                         description="Distribusi finding berdasarkan area"
                         chartData={chartTopFindingAreas}
                         labelKey="label"
                         valueKey="value"
+                        onSelectChange={(value) => refreshDashboard(value)}
                     />
-                    {/* <ChartBarDefault
-                        title="Top 10 Finding Areas"
-                        description="Distribusi temuan selesai per area"
-                        chartData={chartTopFindingAreas}
-                        labelKey="code"
-                        valueKey="totalFindings"
-                        labelSliced={false}
-                        tickFormatter={(value) => {
-                            const parts = value.toString().split('-');
-                            return parts[parts.length - 1];
-                        }}
-                    /> */}
-                    {/* <PieChartDefault
-                        chartData={equipmentStatusChart}
-                        title="Equipment Status Overview"
-                        description="Penyebaran Equipment berdasarkan status."
-                        labelKey="label"
-                        valueKey="value"
-                        chartConfig={equipmentStatusConfig}
-                    /> */}
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
@@ -250,8 +245,8 @@ export default function Dashboard({
                     <ChartBarStackedDefault
                         title="Weekly Priority"
                         description="Finding priority dalam satu minggu"
-                        chartData={chartPriorityWeekly}
-                        series={prioritySeries}
+                        chartData={priorityWeekly['chart']}
+                        series={priorityWeekly['series']}
                         withSelect={true}
                         availableMonths={availableMonths}
                         selectedMonth={selectedMonth}
@@ -321,10 +316,23 @@ export default function Dashboard({
                     />
                     <ChartBarDefault
                         title="Top 10 Resolvers"
-                        description="User yang paling aktif menutup temuan"
+                        description="User dengan finding Closed terbanyak pada bulan terpilih"
                         chartData={topResolvers}
                         labelKey="name"
                         valueKey="totalSolved"
+                        withSelect={true}
+                        availableMonths={availableMonths}
+                        selectedMonth={selectedMonth}
+                        onSelectChange={(value) => {
+                            router.get(
+                                route('dashboard'),
+                                { month: value },
+                                {
+                                    preserveState: true,
+                                    preserveScroll: true,
+                                },
+                            );
+                        }}
                     />
                 </div>
             </div>
