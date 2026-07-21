@@ -88,41 +88,24 @@ export function ChartBarStackedDefault({
 
                         <ChartLegend content={<ChartLegendContent />} />
 
-                        {series.map((item, index) => {
-                            return labelDataKey != null ? (
-                                <Bar
-                                    key={item.key}
-                                    dataKey={item.key}
-                                    stackId="stack"
-                                    fill={`var(--color-${item.key})`}
-                                    radius={index === 0 ? [0, 0, 4, 4] : index === series.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
-                                >
-                                    {index === series.length - 1 && labelDataKey && (
-                                        <LabelList
-                                            dataKey={labelDataKey}
-                                            position="top"
-                                            formatter={(value: number) => `${value}%`}
-                                            className="fill-foreground text-[10px] font-normal sm:text-xs sm:font-semibold"
-                                        />
-                                    )}
-                                </Bar>
-                            ) : (
-                                <Bar
-                                    key={item.key}
-                                    dataKey={item.key}
-                                    stackId="stack"
-                                    fill={`var(--color-${item.key})`}
-                                    radius={index === 0 ? [0, 0, 4, 4] : index === series.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
-                                >
+                        {series.map((item, index) => (
+                            <Bar
+                                key={item.key}
+                                dataKey={item.key}
+                                stackId="stack"
+                                fill={`var(--color-${item.key})`}
+                                radius={index === 0 ? [0, 0, 4, 4] : index === series.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
+                            >
+                                {index === series.length - 1 && labelDataKey && (
                                     <LabelList
-                                        dataKey={`${item.key}_percent`}
-                                        position="center"
-                                        formatter={(value: number) => (value > 0 ? `${value}%` : '')}
-                                        className="fill-white text-[10px] font-semibold"
+                                        dataKey={labelDataKey}
+                                        position="top"
+                                        formatter={(value: number) => `${value}%`}
+                                        className="fill-foreground text-[10px] font-normal sm:text-xs sm:font-semibold"
                                     />
-                                </Bar>
-                            );
-                        })}
+                                )}
+                            </Bar>
+                        ))}
                     </BarChart>
                 </ChartContainer>
             </CardContent>

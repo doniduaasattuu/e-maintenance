@@ -909,4 +909,122 @@ class Finding extends Model
             'chart' => $chartInspectorFindings,
         ];
     }
+
+    public static function getDepartmentClosingRate(
+        \Carbon\Carbon $startDate,
+        \Carbon\Carbon $endDate
+    ) {
+        return Department::query()
+            ->leftJoin('findings', 'departments.id', '=', 'findings.department_id')
+            ->leftJoin(
+                'finding_statuses',
+                'findings.finding_status_id',
+                '=',
+                'finding_statuses.id'
+            )
+            ->select(
+                'departments.id',
+                'departments.code',
+                'departments.name',
+            )
+            ->selectRaw("
+            COUNT(findings.id) AS total_findings,
+
+            SUM(
+                CASE
+                    WHEN finding_statuses.name = 'Closed'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS closed_findings
+        ")
+            ->whereBetween('findings.created_at', [$startDate, $endDate])
+            ->groupBy(
+                'departments.id',
+                'departments.code',
+                'departments.name'
+            )
+            ->havingRaw('COUNT(findings.id) > 0')
+            ->get()
+            ->map(function ($dept) {
+
+                $total = (int) $dept->total_findings;
+                $closed = (int) $dept->closed_findings;
+
+                return [
+                    'code' => $dept->code,
+                    'name' => $dept->name,
+                    'totalFindings' => $total,
+                    'closedFindings' => $closed,
+                    'closingRate' => $total > 0
+                        ? round(($closed / $total) * 100, 1)
+                        : 0,
+                ];
+            })
+            ->sortByDesc('closingRate')
+            ->values();
+    }
+
+    public static function getWorkCenterClosingRate(
+        \Carbon\Carbon $startDate,
+        \Carbon\Carbon $endDate
+    ) {
+        return WorkCenter::query()
+            ->leftJoin(
+                'findings',
+                'work_centers.id',
+                '=',
+                'findings.work_center_id'
+            )
+            ->leftJoin(
+                'finding_statuses',
+                'findings.finding_status_id',
+                '=',
+                'finding_statuses.id'
+            )
+            ->select(
+                'work_centers.id',
+                'work_centers.code',
+                'work_centers.name'
+            )
+            ->selectRaw("
+            COUNT(findings.id) AS total_findings,
+
+            SUM(
+                CASE
+                    WHEN finding_statuses.name = 'Closed'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS closed_findings
+        ")
+            ->whereBetween(
+                'findings.created_at',
+                [$startDate, $endDate]
+            )
+            ->groupBy(
+                'work_centers.id',
+                'work_centers.code',
+                'work_centers.name'
+            )
+            ->havingRaw('COUNT(findings.id) > 0')
+            ->get()
+            ->map(function ($item) {
+
+                $total = (int) $item->total_findings;
+                $closed = (int) $item->closed_findings;
+
+                return [
+                    'code' => $item->code,
+                    'name' => $item->name,
+                    'totalFindings' => $total,
+                    'closedFindings' => $closed,
+                    'closingRate' => $total > 0
+                        ? round(($closed / $total) * 100, 1)
+                        : 0,
+                ];
+            })
+            ->sortByDesc('closingRate')
+            ->values();
+    }
 }

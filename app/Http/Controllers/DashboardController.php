@@ -41,8 +41,8 @@ class DashboardController extends Controller
             ->orderBy('week')
             ->get()
             ->map(fn($item) => [
-                'label' => "Week {$item->week}",
-                'value' => $item->week,
+                'label' => "Week-{$item->week}",
+                'value' => (string) $item->week,
             ]);
 
         return $availableWeeks;
@@ -65,6 +65,7 @@ class DashboardController extends Controller
 
         return Inertia::render('dashboard', [
             'selectedMonth' => $selectedMonth,
+            'selectedWeek' => (string) $selectedWeek,
             'stats' => [
                 'total' => [
                     'value' => $stats['totalFindings'],
@@ -104,6 +105,8 @@ class DashboardController extends Controller
             'chartInspectorFindings' => Finding::getInspectorWeekly($startDate, $endDate)['chart'],
             'chartStatusWeekly' => Finding::getStatusWeekly($startDate, $endDate)['chart'],
             'chartTopFindingAreas' => Finding::getTopFindingAreas($startDate, $endDate),
+            'departmentClosingRate' => Finding::getDepartmentClosingRate($startDate, $endDate),
+            'workCenterClosingRate' => Finding::getWorkCenterClosingRate($startDate, $endDate),
             // 'equipmentStatusChart' => $equipmentStatusChart,
         ]);
     }
