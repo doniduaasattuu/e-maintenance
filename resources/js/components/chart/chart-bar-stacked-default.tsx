@@ -20,7 +20,6 @@ interface Props {
     series: StackSeries[];
 
     withSelect?: boolean;
-
     availableMonths?: {
         label: string;
         value: string;
@@ -79,8 +78,8 @@ export function ChartBarStackedDefault({
             </CardHeader>
 
             <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <BarChart accessibilityLayer data={chartData}>
+                <ChartContainer config={chartConfig} className="mx-auto h-70 w-full sm:h-auto">
+                    <BarChart accessibilityLayer data={chartData} margin={{ top: 12 }}>
                         <CartesianGrid vertical={false} />
 
                         <XAxis dataKey={xAxisKey} tickLine={false} axisLine={false} />
@@ -102,7 +101,7 @@ export function ChartBarStackedDefault({
                                         dataKey={labelDataKey}
                                         position="top"
                                         formatter={(value: number) => `${value}%`}
-                                        className="fill-foreground font-semibold"
+                                        className="fill-foreground text-[10px] font-normal sm:text-xs sm:font-semibold"
                                     />
                                 )}
                             </Bar>
