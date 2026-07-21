@@ -293,7 +293,7 @@ class Finding extends Model
     public static function getChartData($model)
     {
         return $model::query()
-            ->select('id', 'code')
+            ->select('id', 'code', 'name')
             ->withCount(['findings as totalClosedFindings' => function ($query) {
                 $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
             }])
@@ -302,6 +302,7 @@ class Finding extends Model
             ->map(function ($dept) {
                 return [
                     'code' => $dept->code,
+                    'name' => $dept->name,
                     'totalClosedFindings' => $dept->totalClosedFindings,
                 ];
             })
@@ -309,28 +310,92 @@ class Finding extends Model
             ->values();
     }
 
-    public static function getTopInspectors()
-    {
-        return \App\Models\User::query()
+    public static function getTopInspectorsWeekly(
+        \Carbon\Carbon $startDate,
+        \Carbon\Carbon $endDate,
+        int $selectedWeek
+    ) {
+
+        $query = User::query()
             ->select('id', 'name')
-            ->withCount(['inspectedFindings as totalSolved'])
-            ->whereHas('inspectedFindings', function ($query) {
-                $query->whereHas('status', fn($q) => $q->where('name', 'Closed'));
+            ->withCount([
+                'inspectedFindings as totalFindings' => function ($query) use (
+                    $startDate,
+                    $endDate,
+                    $selectedWeek
+                ) {
+
+                    $query
+                        ->whereBetween('created_at', [$startDate, $endDate]);
+
+                    switch ($selectedWeek) {
+
+                        case 1:
+                            $query->whereDay('created_at', '<=', 7);
+                            break;
+
+                        case 2:
+                            $query->whereBetween(DB::raw('DAY(created_at)'), [8, 14]);
+                            break;
+
+                        case 3:
+                            $query->whereBetween(DB::raw('DAY(created_at)'), [15, 21]);
+                            break;
+
+                        case 4:
+                            $query->whereBetween(DB::raw('DAY(created_at)'), [22, 28]);
+                            break;
+
+                        case 5:
+                            $query->whereDay('created_at', '>=', 29);
+                            break;
+                    }
+                }
+            ])
+            ->having('totalFindings', '>', 0)
+            ->orderByDesc('totalFindings')
+            ->limit(10)
+            ->get();
+
+        return $query->map(function ($user) {
+
+            return [
+                'name' => str($user->name)->before(' '),
+                'totalFindings' => $user->totalFindings,
+            ];
+        })->values();
+    }
+
+    public static function getTopInspectors(
+        \Carbon\Carbon $startDate,
+        \Carbon\Carbon $endDate
+    ) {
+        return User::query()
+            ->select('id', 'name')
+            ->withCount([
+                'inspectedFindings as totalFindings' => function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('created_at', [$startDate, $endDate]);
+                }
+            ])
+            ->whereHas('inspectedFindings', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
             })
-            ->orderByDesc('totalSolved')
+            ->orderByDesc('totalFindings')
             ->limit(10)
             ->get()
             ->map(function ($user) {
                 return [
-                    'name' => str()->before($user->name, ' '),
-                    'totalSolved' => $user->totalSolved,
+                    'name' => str($user->name)->before(' '),
+                    'totalFindings' => $user->totalFindings,
                 ];
             })
             ->values();
     }
 
-    public static function getTopResolvers($startDate, $endDate)
-    {
+    public static function getTopResolvers(
+        \Carbon\Carbon $startDate,
+        \Carbon\Carbon $endDate
+    ) {
         return User::query()
             ->select('id', 'name')
             ->withCount([
@@ -734,6 +799,8 @@ class Finding extends Model
                 'week' => "W-{$week}",
             ];
 
+            $weekTotal = 0;
+
             foreach ($prioritySeries as $series) {
 
                 $total = optional(
@@ -744,7 +811,19 @@ class Finding extends Model
 
                 $row[$series['key']] = (int) $total;
 
+                $weekTotal += $total;
+
                 $totals[$series['key']] += $total;
+            }
+
+            // Hitung persentase setiap priority
+            foreach ($prioritySeries as $series) {
+
+                $key = $series['key'];
+
+                $row[$key . '_percent'] = $weekTotal > 0
+                    ? round(($row[$key] / $weekTotal) * 100)
+                    : 0;
             }
 
             $chartPriorityWeekly->push($row);
@@ -754,8 +833,17 @@ class Finding extends Model
             'week' => 'Total',
         ];
 
+        $grandTotal = array_sum($totals);
+
         foreach ($prioritySeries as $series) {
-            $totalRow[$series['key']] = $totals[$series['key']];
+
+            $key = $series['key'];
+
+            $totalRow[$key] = $totals[$key];
+
+            $totalRow[$key . '_percent'] = $grandTotal > 0
+                ? round(($totals[$key] / $grandTotal) * 100)
+                : 0;
         }
 
         $chartPriorityWeekly->push($totalRow);

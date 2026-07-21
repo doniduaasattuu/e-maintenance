@@ -6,6 +6,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { AlertTriangle, CheckCircle, Clock, LayoutGrid } from 'lucide-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -44,7 +45,7 @@ interface DashboardProps {
         code: string;
         totalClosedFindings: number;
     }[];
-    topInspectors: {
+    topInspectorsWeekly: {
         name: string;
         totalSolved: number;
     }[];
@@ -75,6 +76,7 @@ interface DashboardProps {
         value: string;
     }[];
     selectedMonth: string;
+    selectedWeek: string;
     chartWeeklyFindings: {
         week: string;
         total: number;
@@ -123,6 +125,10 @@ interface DashboardProps {
         value: number;
         fill: string;
     }[];
+    availableWeeks: {
+        label: string;
+        value: string;
+    }[];
 }
 
 // const equipmentStatusConfig = {
@@ -140,35 +146,47 @@ interface DashboardProps {
 //     },
 // } satisfies ChartConfig;
 
-function refreshDashboard(value: string) {
-    router.get(
-        route('dashboard'),
-        {
-            month: value,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-        },
-    );
-}
-
 export default function Dashboard({
     stats,
     chartClosedFindingDepartment,
     chartClosedFindingWorkCenter,
-    topInspectors,
+    topInspectorsWeekly,
     topResolvers,
     monthlyFinding,
     // equipmentStatusChart,
     availableMonths,
+    availableWeeks,
     selectedMonth,
+    selectedWeek,
     priorityWeekly,
     chartWeeklyFindings,
     chartInspectorFindings,
     chartStatusWeekly,
     chartTopFindingAreas,
 }: DashboardProps) {
+    const [month, setMonth] = useState(selectedMonth);
+    const [week, setWeek] = useState(selectedWeek);
+
+    function refreshDashboard(filters: { month?: string; week?: string }) {
+        const newMonth = filters.month ?? month;
+        const newWeek = filters.week ?? week;
+
+        setMonth(newMonth);
+        setWeek(newWeek);
+
+        router.get(
+            route('dashboard'),
+            {
+                month: newMonth,
+                week: newWeek,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -213,9 +231,14 @@ export default function Dashboard({
                         chartData={chartTopFindingAreas}
                         labelKey="label"
                         valueKey="value"
-                        onSelectChange={(value) => refreshDashboard(value)}
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                month: value,
+                            })
+                        }
                     />
                 </div>
+
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
                         title="Weekly Finding"
@@ -226,22 +249,12 @@ export default function Dashboard({
                         withSelect={true}
                         availableMonths={availableMonths}
                         selectedMonth={selectedMonth}
-                        onSelectChange={(value) => refreshDashboard(value)}
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                month: value,
+                            })
+                        }
                     />
-                    <ChartBarDefault
-                        labelKey="label"
-                        valueKey="value"
-                        chartData={chartInspectorFindings}
-                        title="Inspector Weekly"
-                        description="Total temuan inspector per minggu"
-                        xAxisAngle={-45}
-                        withSelect={true}
-                        availableMonths={availableMonths}
-                        selectedMonth={selectedMonth}
-                        onSelectChange={(value) => refreshDashboard(value)}
-                    />
-                </div>
-                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarStackedDefault
                         title="Weekly Priority"
                         description="Finding priority dalam satu minggu"
@@ -250,8 +263,14 @@ export default function Dashboard({
                         withSelect={true}
                         availableMonths={availableMonths}
                         selectedMonth={selectedMonth}
-                        onSelectChange={(value) => refreshDashboard(value)}
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                month: value,
+                            })
+                        }
                     />
+                </div>
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarStackedDefault
                         title="Weekly Finding Status"
                         description="Distribusi status finding per minggu"
@@ -286,33 +305,45 @@ export default function Dashboard({
                         withSelect={true}
                         availableMonths={availableMonths}
                         selectedMonth={selectedMonth}
-                        onSelectChange={(value) => refreshDashboard(value)}
-                    />
-                </div>
-                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
-                    <ChartBarDefault
-                        title="Closed Findings Achievement"
-                        description="Distribusi temuan selesai per departemen sepanjang waktu"
-                        chartData={chartClosedFindingDepartment}
-                        labelKey="code"
-                        valueKey="totalClosedFindings"
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                month: value,
+                            })
+                        }
                     />
                     <ChartBarDefault
-                        title="Top 10 Inspector"
-                        description="User yang paling aktif membuat temuan sepanjang waktu"
-                        chartData={topInspectors}
-                        labelKey="name"
-                        valueKey="totalSolved"
+                        labelKey="label"
+                        valueKey="value"
+                        chartData={chartInspectorFindings}
+                        title="Inspector Weekly"
+                        description="Total temuan inspector per minggu"
+                        xAxisAngle={-45}
+                        withSelect={true}
+                        availableMonths={availableMonths}
+                        selectedMonth={selectedMonth}
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                month: value,
+                            })
+                        }
                     />
                 </div>
 
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
-                        title="Closed Findings Achievement"
-                        description="Distribusi temuan selesai per work center"
-                        chartData={chartClosedFindingWorkCenter}
-                        labelKey="code"
-                        valueKey="totalClosedFindings"
+                        title="Top 10 Inspector Weekly"
+                        description="User yang paling aktif membuat temuan setiap minggunya"
+                        chartData={topInspectorsWeekly}
+                        labelKey="name"
+                        valueKey="totalFindings"
+                        withSelect={true}
+                        availableMonths={availableWeeks}
+                        selectedMonth={selectedWeek}
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                week: value,
+                            })
+                        }
                     />
                     <ChartBarDefault
                         title="Top 10 Resolvers"
@@ -323,16 +354,27 @@ export default function Dashboard({
                         withSelect={true}
                         availableMonths={availableMonths}
                         selectedMonth={selectedMonth}
-                        onSelectChange={(value) => {
-                            router.get(
-                                route('dashboard'),
-                                { month: value },
-                                {
-                                    preserveState: true,
-                                    preserveScroll: true,
-                                },
-                            );
-                        }}
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                month: value,
+                            })
+                        }
+                    />
+                </div>
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                    <ChartBarDefault
+                        title="Closed Findings Achievement"
+                        description="Distribusi temuan selesai per departemen sepanjang waktu"
+                        chartData={chartClosedFindingDepartment}
+                        labelKey="code"
+                        valueKey="totalClosedFindings"
+                    />{' '}
+                    <ChartBarDefault
+                        title="Closed Findings Achievement"
+                        description="Distribusi temuan selesai per work center"
+                        chartData={chartClosedFindingWorkCenter}
+                        labelKey="code"
+                        valueKey="totalClosedFindings"
                     />
                 </div>
             </div>

@@ -24,8 +24,34 @@ class DashboardController extends Controller
         return $availableMonths;
     }
 
+    private function getAvailableWeeks(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate)
+    {
+        $availableWeeks = Finding::query()
+            ->selectRaw("
+        DISTINCT
+        CASE
+            WHEN DAY(created_at) BETWEEN 1 AND 7 THEN 1
+            WHEN DAY(created_at) BETWEEN 8 AND 14 THEN 2
+            WHEN DAY(created_at) BETWEEN 15 AND 21 THEN 3
+            WHEN DAY(created_at) BETWEEN 22 AND 28 THEN 4
+            ELSE 5
+        END AS week
+    ")
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('week')
+            ->get()
+            ->map(fn($item) => [
+                'label' => "Week {$item->week}",
+                'value' => $item->week,
+            ]);
+
+        return $availableWeeks;
+    }
+
     public function index()
     {
+        $selectedWeek = request('week', 1);
+
         $selectedMonth = request('month', now()->format('Y-m')) ?? Carbon::now()->format('Y-m');
 
         $startDate = Carbon::createFromFormat('Y-m', $selectedMonth)
@@ -60,16 +86,16 @@ class DashboardController extends Controller
                     'desc' => 'Temuan yang melewati batas SLA',
                 ],
             ],
-
             'monthlyFinding' => [
                 'chart' => Finding::getMonthlyFinding()['chart'],
                 'series' => Finding::getMonthlyFinding()['series'],
             ],
             'chartClosedFindingDepartment' => Finding::getChartData(\App\Models\Department::class),
             'chartClosedFindingWorkCenter' => Finding::getChartData(\App\Models\WorkCenter::class),
-            'topInspectors' => Finding::getTopInspectors(),
+            'topInspectorsWeekly' => Finding::getTopInspectorsWeekly($startDate, $endDate, $selectedWeek),
             'topResolvers' => Finding::getTopResolvers($startDate, $endDate),
             'availableMonths' => $this->getAvailableMonths(),
+            'availableWeeks' => $this->getAvailableWeeks($startDate, $endDate),
             'chartWeeklyFindings' => Finding::getWeeklyFinding($startDate, $endDate)['chart'],
             'priorityWeekly' => [
                 'chart' => $priority['chart'],
