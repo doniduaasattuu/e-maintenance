@@ -107,6 +107,8 @@ class DashboardController extends Controller
             'chartTopFindingAreas' => Finding::getTopFindingAreas($startDate, $endDate),
             'departmentClosingRate' => Finding::getDepartmentClosingRate($startDate, $endDate),
             'workCenterClosingRate' => Finding::getWorkCenterClosingRate($startDate, $endDate),
+            'topFindingClauses' => Finding::getTopFindingClauses($startDate, $endDate),
+            'topFindingCauses' => Finding::getTopFindingCauses($startDate, $endDate),
             // 'equipmentStatusChart' => $equipmentStatusChart,
         ]);
     }

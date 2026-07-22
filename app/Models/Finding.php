@@ -1027,4 +1027,75 @@ class Finding extends Model
             ->sortByDesc('closingRate')
             ->values();
     }
+
+    public static function getTopFindingClauses(
+        \Carbon\Carbon $startDate,
+        \Carbon\Carbon $endDate
+    ) {
+        return static::query()
+            ->join(
+                'finding_clauses',
+                'findings.finding_clause_id',
+                '=',
+                'finding_clauses.id'
+            )
+            ->select(
+                'finding_clauses.code',
+                'finding_clauses.description'
+            )
+            ->selectRaw('COUNT(*) as total')
+            ->whereBetween(
+                'findings.created_at',
+                [$startDate, $endDate]
+            )
+            ->groupBy(
+                'finding_clauses.id',
+                'finding_clauses.code',
+                'finding_clauses.description'
+            )
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get()
+            ->map(fn($item) => [
+                'label' => $item->code,
+                'name' => $item->description,
+                'value' => $item->total,
+            ]);
+    }
+
+    public static function getTopFindingCauses(
+        \Carbon\Carbon $startDate,
+        \Carbon\Carbon $endDate
+    ) {
+        return static::query()
+            ->join(
+                'cause_codes',
+                'findings.cause_code_id',
+                '=',
+                'cause_codes.id'
+            )
+            ->select(
+                'cause_codes.id',
+                'cause_codes.code',
+                'cause_codes.description'
+            )
+            ->selectRaw('COUNT(findings.id) as total')
+            ->whereBetween(
+                'findings.created_at',
+                [$startDate, $endDate]
+            )
+            ->groupBy(
+                'cause_codes.id',
+                'cause_codes.code',
+                'cause_codes.description'
+            )
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get()
+            ->map(fn($item) => [
+                'label' => $item->code,
+                'name'  => $item->description,
+                'value' => (int) $item->total,
+            ]);
+    }
 }
