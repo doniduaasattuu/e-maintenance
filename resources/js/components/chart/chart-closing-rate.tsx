@@ -96,13 +96,12 @@ export function ClosingRateCard({ title, description, chartData, withSelect = fa
                                 <span>{item.closingRate}%</span>
                             </div>
 
-                            <Progress value={item.closingRate} className={cn(status.progress, 'h-2')} />
+                            <Progress value={item.closingRate} className={cn(status.progress, 'h-2 sm:h-3')} />
 
                             <div className="text-muted-foreground flex justify-between text-xs">
                                 <span>
                                     {item.closedFindings} / {item.totalFindings} Closed
                                 </span>
-
                                 <span>{item.totalFindings} Findings</span>
                             </div>
                         </div>

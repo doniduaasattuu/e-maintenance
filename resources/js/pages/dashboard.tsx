@@ -1,6 +1,7 @@
 import { ChartBarDefault } from '@/components/chart/chart-bar-default';
 import { ChartBarStackedDefault } from '@/components/chart/chart-bar-stacked-default';
 import { ClosingRateCard } from '@/components/chart/chart-closing-rate';
+import { HorizontalBarChart } from '@/components/chart/horizontal-bar-chart';
 import { ChartPieDefault } from '@/components/chart/pie-chart-default';
 import DashboardCard from '@/components/dashboard-card';
 import AppLayout from '@/layouts/app-layout';
@@ -144,6 +145,16 @@ interface DashboardProps {
         closedFindings: number;
         closingRate: number;
     }[];
+    topFindingClauses: {
+        label: string;
+        name: string;
+        value: number;
+    }[];
+    topFindingCauses: {
+        label: string;
+        name: string;
+        value: number;
+    }[];
 }
 
 // const equipmentStatusConfig = {
@@ -180,6 +191,8 @@ export default function Dashboard({
     chartTopFindingAreas,
     departmentClosingRate,
     workCenterClosingRate,
+    topFindingClauses,
+    topFindingCauses,
 }: DashboardProps) {
     const [month, setMonth] = useState(selectedMonth);
     const [week, setWeek] = useState(selectedWeek);
@@ -313,6 +326,38 @@ export default function Dashboard({
                         })
                     }
                 />
+
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                    <HorizontalBarChart
+                        title="Top 5 Clause"
+                        description="5 klausul temuan terbanyak"
+                        chartData={topFindingClauses}
+                        valueLabel="Findings"
+                        withSelect
+                        availableMonths={availableMonths}
+                        selectedMonth={selectedMonth}
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                month: value,
+                            })
+                        }
+                    />
+                    <HorizontalBarChart
+                        title="Top 5 Cause"
+                        description="5 penyebab temuan terbanyak"
+                        chartData={topFindingCauses}
+                        valueLabel="Findings"
+                        withSelect
+                        availableMonths={availableMonths}
+                        selectedMonth={selectedMonth}
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                month: value,
+                            })
+                        }
+                    />
+                </div>
+
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarStackedDefault
                         title="Weekly Finding Status"
@@ -380,6 +425,7 @@ export default function Dashboard({
                         labelKey="name"
                         valueKey="totalFindings"
                         withSelect={true}
+                        labelSliced={false}
                         availableMonths={availableWeeks}
                         selectedMonth={selectedWeek}
                         onSelectChange={(value) =>
@@ -395,6 +441,7 @@ export default function Dashboard({
                         labelKey="name"
                         valueKey="totalSolved"
                         withSelect={true}
+                        labelSliced={false}
                         availableMonths={availableMonths}
                         selectedMonth={selectedMonth}
                         onSelectChange={(value) =>
