@@ -155,6 +155,11 @@ interface DashboardProps {
         name: string;
         value: number;
     }[];
+    topMainPlants: {
+        label: string;
+        name: string;
+        value: number;
+    }[];
 }
 
 // const equipmentStatusConfig = {
@@ -193,6 +198,7 @@ export default function Dashboard({
     workCenterClosingRate,
     topFindingClauses,
     topFindingCauses,
+    topMainPlants,
 }: DashboardProps) {
     const [month, setMonth] = useState(selectedMonth);
     const [week, setWeek] = useState(selectedWeek);
@@ -357,6 +363,21 @@ export default function Dashboard({
                         }
                     />
                 </div>
+
+                <HorizontalBarChart
+                    title="Top Plant"
+                    description="Plant dengan jumlah finding terbanyak"
+                    chartData={topMainPlants}
+                    valueLabel="Findings"
+                    withSelect
+                    availableMonths={availableMonths}
+                    selectedMonth={selectedMonth}
+                    onSelectChange={(value) =>
+                        refreshDashboard({
+                            month: value,
+                        })
+                    }
+                />
 
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarStackedDefault

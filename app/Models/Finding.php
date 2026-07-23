@@ -1098,4 +1098,79 @@ class Finding extends Model
                 'value' => (int) $item->total,
             ]);
     }
+
+    public static function getTopSubPlants(
+        \Carbon\Carbon $startDate,
+        \Carbon\Carbon $endDate
+    ) {
+        return static::query()
+            ->join(
+                'functional_locations',
+                'findings.functional_location_id',
+                '=',
+                'functional_locations.id'
+            )
+            ->selectRaw("
+            SUBSTRING_INDEX(
+                SUBSTRING_INDEX(functional_locations.code, '-', 3),
+                '-',
+                -1
+            ) AS plant
+        ")
+            ->selectRaw("
+            COUNT(findings.id) AS total
+        ")
+            ->whereBetween(
+                'findings.created_at',
+                [$startDate, $endDate]
+            )
+            ->groupBy(DB::raw("
+            SUBSTRING_INDEX(
+                SUBSTRING_INDEX(functional_locations.code, '-', 3),
+                '-',
+                -1
+            )
+        "))
+            ->orderByDesc('total')
+            ->limit(10)
+            ->get()
+            ->map(fn($item) => [
+                'label' => $item->plant,
+                'name'  => $item->plant,
+                'value' => (int) $item->total,
+            ]);
+    }
+
+    public static function getTopMainPlants(
+        \Carbon\Carbon $startDate,
+        \Carbon\Carbon $endDate
+    ) {
+        return static::query()
+            ->join(
+                'functional_locations',
+                'findings.functional_location_id',
+                '=',
+                'functional_locations.id'
+            )
+            ->selectRaw("
+            SUBSTRING_INDEX(functional_locations.code, '-', 2) AS plant
+        ")
+            ->selectRaw("
+            COUNT(findings.id) AS total
+        ")
+            ->whereBetween(
+                'findings.created_at',
+                [$startDate, $endDate]
+            )
+            ->groupBy(DB::raw("
+            SUBSTRING_INDEX(functional_locations.code, '-', 2)
+        "))
+            ->orderByDesc('total')
+            ->get()
+            ->map(fn($item) => [
+                'label' => $item->plant,
+                'name'  => $item->plant,
+                'value' => (int) $item->total,
+            ]);
+    }
 }
