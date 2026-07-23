@@ -149,16 +149,25 @@ interface DashboardProps {
         label: string;
         name: string;
         value: number;
+        closedFindings: number;
+        closingRate: number;
+        percentage: number;
     }[];
     topFindingCauses: {
         label: string;
         name: string;
         value: number;
+        closedFindings: number;
+        closingRate: number;
+        percentage: number;
     }[];
     topMainPlants: {
         label: string;
         name: string;
         value: number;
+        closedFindings: number;
+        closingRate: number;
+        percentage: number;
     }[];
 }
 

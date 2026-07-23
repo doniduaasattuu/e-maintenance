@@ -1032,6 +1032,10 @@ class Finding extends Model
         \Carbon\Carbon $startDate,
         \Carbon\Carbon $endDate
     ) {
+        $totalFindings = static::query()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
         return static::query()
             ->join(
                 'finding_clauses',
@@ -1039,11 +1043,29 @@ class Finding extends Model
                 '=',
                 'finding_clauses.id'
             )
+            ->leftJoin(
+                'finding_statuses',
+                'findings.finding_status_id',
+                '=',
+                'finding_statuses.id'
+            )
             ->select(
+                'finding_clauses.id',
                 'finding_clauses.code',
                 'finding_clauses.description'
             )
-            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('
+            COUNT(findings.id) AS total
+        ')
+            ->selectRaw("
+            SUM(
+                CASE
+                    WHEN finding_statuses.name = 'Closed'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS closed
+        ")
             ->whereBetween(
                 'findings.created_at',
                 [$startDate, $endDate]
@@ -1056,17 +1078,39 @@ class Finding extends Model
             ->orderByDesc('total')
             ->limit(5)
             ->get()
-            ->map(fn($item) => [
-                'label' => $item->code,
-                'name' => $item->description,
-                'value' => $item->total,
-            ]);
+            ->map(function ($item) use ($totalFindings) {
+
+                $total = (int) $item->total;
+                $closed = (int) $item->closed;
+
+                return [
+                    'label' => $item->code,
+
+                    'name' => $item->description,
+
+                    'value' => $total,
+
+                    'closedFindings' => $closed,
+
+                    'closingRate' => $total > 0
+                        ? round(($closed / $total) * 100, 1)
+                        : 0,
+
+                    'percentage' => $totalFindings > 0
+                        ? round(($total / $totalFindings) * 100, 1)
+                        : 0,
+                ];
+            });
     }
 
     public static function getTopFindingCauses(
         \Carbon\Carbon $startDate,
         \Carbon\Carbon $endDate
     ) {
+        $totalFindings = static::query()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
         return static::query()
             ->join(
                 'cause_codes',
@@ -1074,12 +1118,29 @@ class Finding extends Model
                 '=',
                 'cause_codes.id'
             )
+            ->leftJoin(
+                'finding_statuses',
+                'findings.finding_status_id',
+                '=',
+                'finding_statuses.id'
+            )
             ->select(
                 'cause_codes.id',
                 'cause_codes.code',
                 'cause_codes.description'
             )
-            ->selectRaw('COUNT(findings.id) as total')
+            ->selectRaw('
+            COUNT(findings.id) AS total
+        ')
+            ->selectRaw("
+            SUM(
+                CASE
+                    WHEN finding_statuses.name = 'Closed'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS closed
+        ")
             ->whereBetween(
                 'findings.created_at',
                 [$startDate, $endDate]
@@ -1092,11 +1153,29 @@ class Finding extends Model
             ->orderByDesc('total')
             ->limit(5)
             ->get()
-            ->map(fn($item) => [
-                'label' => $item->code,
-                'name'  => $item->description,
-                'value' => (int) $item->total,
-            ]);
+            ->map(function ($item) use ($totalFindings) {
+
+                $total = (int) $item->total;
+                $closed = (int) $item->closed;
+
+                return [
+                    'label' => $item->code,
+
+                    'name' => $item->description,
+
+                    'value' => $total,
+
+                    'closedFindings' => $closed,
+
+                    'closingRate' => $total > 0
+                        ? round(($closed / $total) * 100, 1)
+                        : 0,
+
+                    'percentage' => $totalFindings > 0
+                        ? round(($total / $totalFindings) * 100, 1)
+                        : 0,
+                ];
+            });
     }
 
     public static function getTopSubPlants(
@@ -1145,6 +1224,10 @@ class Finding extends Model
         \Carbon\Carbon $startDate,
         \Carbon\Carbon $endDate
     ) {
+        $totalFindings = static::query()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
         return static::query()
             ->join(
                 'functional_locations',
@@ -1152,11 +1235,26 @@ class Finding extends Model
                 '=',
                 'functional_locations.id'
             )
+            ->leftJoin(
+                'finding_statuses',
+                'findings.finding_status_id',
+                '=',
+                'finding_statuses.id'
+            )
             ->selectRaw("
             SUBSTRING_INDEX(functional_locations.code, '-', 2) AS plant
         ")
             ->selectRaw("
             COUNT(findings.id) AS total
+        ")
+            ->selectRaw("
+            SUM(
+                CASE
+                    WHEN finding_statuses.name = 'Closed'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS closed
         ")
             ->whereBetween(
                 'findings.created_at',
@@ -1167,10 +1265,23 @@ class Finding extends Model
         "))
             ->orderByDesc('total')
             ->get()
-            ->map(fn($item) => [
-                'label' => $item->plant,
-                'name'  => $item->plant,
-                'value' => (int) $item->total,
-            ]);
+            ->map(function ($item) use ($totalFindings) {
+
+                $total = (int) $item->total;
+                $closed = (int) $item->closed;
+
+                return [
+                    'label' => $item->plant,
+                    'name' => $item->plant,
+                    'value' => $total,
+                    'closedFindings' => $closed,
+                    'closingRate' => $total > 0
+                        ? round(($closed / $total) * 100, 1)
+                        : 0,
+                    'percentage' => $totalFindings > 0
+                        ? round(($total / $totalFindings) * 100, 1)
+                        : 0,
+                ];
+            });
     }
 }
