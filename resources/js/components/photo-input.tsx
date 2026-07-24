@@ -5,7 +5,7 @@ import { Info, X } from 'lucide-react';
 import { ChangeEvent, useRef } from 'react';
 import CompressingDescription from './compressing-description';
 
-interface FindingPhotoInputProps {
+interface PhotoInputProps {
     images: File[] | null;
     onFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
     onRemoveImage?: (index: number) => void;
@@ -18,7 +18,7 @@ interface FindingPhotoInputProps {
     minFiles?: number;
 }
 
-export default function FindingPhotoInput({
+export default function PhotoInput({
     images,
     onFileChange,
     onRemoveImage,
@@ -29,7 +29,7 @@ export default function FindingPhotoInput({
     required = true,
     maxFiles = 5,
     minFiles = 1,
-}: FindingPhotoInputProps) {
+}: PhotoInputProps) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     return (

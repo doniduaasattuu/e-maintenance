@@ -5,9 +5,9 @@ import CauseCodeSelect from '../cause-code-select';
 import DepartmentSelect from '../department-select';
 import FindingClauseSelect from '../finding-clause-select';
 import FindingDescriptionInput from '../finding-description-input';
-import FindingPhotoInput from '../finding-photo-input';
 import FindingPrioritySelect from '../finding-priority-select';
 import FindingStatusSelect from '../finding-status-select';
+import PhotoInput from '../photo-input';
 import WorkCenterSelect from '../work-center-select';
 
 export interface AbnormalityData {
@@ -154,7 +154,7 @@ export default function AbnormalityFormSection({
                 />
             </div>
 
-            <FindingPhotoInput
+            <PhotoInput
                 images={data.images ?? null}
                 onFileChange={handleFileChange}
                 error={errors.images}

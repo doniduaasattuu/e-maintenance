@@ -1,5 +1,5 @@
 import EmptyIcon from '@/components/empty-icon';
-import ImageForm from '@/components/forms/image-form';
+import ImageForm, { FormData } from '@/components/forms/image-form';
 import HeadingSmall from '@/components/heading-small';
 import { ImageCarousel } from '@/components/image-carousel';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import EquipmentLayout from '@/layouts/equipment/layout';
 import { BreadcrumbItem, Equipment } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Edit } from 'lucide-react';
-import { FormEventHandler, useRef, useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 interface EquipmentImageProps {
     equipment: {
@@ -35,14 +35,8 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
         },
     ];
 
-    // FILE UPLOAD
-    type ImageForm = {
-        image?: File | null;
-    };
-
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const { data, setData, post, errors, processing, progress, reset, recentlySuccessful } = useForm<ImageForm>({
-        image: null,
+    const { data, setData, post, errors, processing, progress, reset, recentlySuccessful } = useForm<Required<FormData>>({
+        images: null,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -56,10 +50,7 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
             {
                 preserveScroll: true,
                 onSuccess: () => {
-                    reset('image');
-                    if (fileInputRef.current) {
-                        fileInputRef.current.value = '';
-                    }
+                    reset('images');
                 },
             },
         );
@@ -101,7 +92,6 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                     {can.create_image && (
                         <ImageForm
                             submit={submit}
-                            fileInputRef={fileInputRef}
                             processing={processing}
                             setData={setData}
                             progress={progress}

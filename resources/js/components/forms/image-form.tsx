@@ -1,49 +1,66 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
+import { cn } from '@/lib/utils';
 import { AxiosProgressEvent } from 'axios';
-import { Check } from 'lucide-react';
 import { ChangeEvent, FormEventHandler, useState } from 'react';
 import ButtonSubmit from '../button-submit';
-import CompressingDescription from '../compressing-description';
-import { Field, FieldDescription, FieldError, FieldLabel } from '../ui/field';
-import { Input } from '../ui/input';
+import PhotoInput from '../photo-input';
+
+export type FormData = {
+    images?: File[] | null;
+};
 
 interface ImageFormParams {
     submit: FormEventHandler;
-    fileInputRef: React.RefObject<HTMLInputElement | null>;
     processing: boolean;
     setData: (key: string, value: unknown) => void;
     progress: AxiosProgressEvent | null;
-    errors: Partial<Record<'image', string>>;
-    data: {
-        image?: File | null;
-    };
+    errors: Partial<Record<'images', string>>;
+    data: Required<FormData>;
     recentlySuccessful: boolean;
     className?: string;
 }
 
-export default function ImageForm({ submit, fileInputRef, processing, setData, errors, data, recentlySuccessful, className }: ImageFormParams) {
+export default function ImageForm({ submit, processing, setData, errors, data, recentlySuccessful, className }: ImageFormParams) {
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+        const files = e.target.files;
 
-        if (!file) return;
+        if (!files || files.length === 0) return;
+
         setIsCompressing(true);
 
         try {
-            const compressed = await compressImage(file);
-            setData('image', compressed);
+            const fileArray = Array.from(files);
+
+            const compressionPromises = fileArray.map(async (file) => {
+                return await compressImage(file);
+            });
+
+            const compressedFiles = await Promise.all(compressionPromises);
+
+            setData('images', compressedFiles);
         } catch (error) {
-            console.error('Compression failed: ', error);
+            if (error instanceof Error) {
+                console.error('Compression failed: ', error);
+            }
         } finally {
             setIsCompressing(false);
         }
     };
 
     return (
-        <form onSubmit={submit} className="space-y-6">
-            <Field className={className}>
+        <form onSubmit={submit} className={cn(className, 'space-y-6')}>
+            <PhotoInput
+                images={data.images}
+                onFileChange={handleFileChange}
+                error={errors.images}
+                isCompressing={isCompressing}
+                disabled={processing}
+                tabIndex={10}
+            />
+            {/* <Field className={className}>
                 <FieldLabel htmlFor="image">Upload</FieldLabel>
                 <Input
                     type="file"
@@ -72,10 +89,10 @@ export default function ImageForm({ submit, fileInputRef, processing, setData, e
                     </FieldDescription>
                 )}
                 {isCompressing && <CompressingDescription />}
-            </Field>
+            </Field> */}
             <ButtonSubmit
                 processing={processing}
-                disabled={processing || fileInputRef.current == null || data.image == null}
+                disabled={processing || data.images == null}
                 showSuccessMessage={true}
                 successMessage="Saved"
                 recentlySuccessful={recentlySuccessful}

@@ -8,10 +8,10 @@ import DepartmentSelect from '../department-select';
 import EquipmentSelect from '../equipment-select';
 import FindingClauseSelect from '../finding-clause-select';
 import FindingDescriptionInput from '../finding-description-input';
-import FindingPhotoInput from '../finding-photo-input';
 import FindingPrioritySelect from '../finding-priority-select';
 import FindingStatusSelect from '../finding-status-select';
 import FunctionalLocationSelect from '../functional-location-select';
+import PhotoInput from '../photo-input';
 import RequiredLabel from '../required-label';
 import { Field, FieldError, FieldLabel } from '../ui/field';
 import WorkCenterSelect from '../work-center-select';
@@ -254,7 +254,7 @@ export default function FindingForm({
             </div>
 
             {!isEditing && (
-                <FindingPhotoInput
+                <PhotoInput
                     images={data.images}
                     onFileChange={handleFileChange}
                     error={errors.images}

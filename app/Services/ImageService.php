@@ -20,36 +20,51 @@ class ImageService
             case 'functional-location':
 
                 $functionalLocation = FunctionalLocation::findOrFail($id);
-                $imagePath = $request->file('image')->store('images/functional-locations/' . $id, 'public');
 
-                Image::create([
-                    'path' => $imagePath,
-                    'imageable_id' => $functionalLocation->id,
-                    'imageable_type' => $type,
-                ]);
+                if (request()->hasFile('images')) {
+                    foreach (request()->file('images') as $image) {
+                        $path = $image->store('images/functional-locations/' . $id, 'public');
+
+                        Image::create([
+                            'path' => $path,
+                            'imageable_id' => $functionalLocation->id,
+                            'imageable_type' => $type,
+                        ]);
+                    }
+                }
 
                 break;
             case 'equipment':
 
                 $equipment = Equipment::findOrFail($id);
-                $imagePath = $request->file('image')->store('images/equipments/' . $id, 'public');
 
-                Image::create([
-                    'path' => $imagePath,
-                    'imageable_id' => $equipment->id,
-                    'imageable_type' => $type,
-                ]);
+                if (request()->hasFile('images')) {
+                    foreach (request()->file('images') as $image) {
+                        $path = $image->store('images/equipments/' . $id, 'public');
+
+                        Image::create([
+                            'path' => $path,
+                            'imageable_id' => $equipment->id,
+                            'imageable_type' => $type,
+                        ]);
+                    }
+                }
 
                 break;
             case 'material':
                 $material = Material::findOrFail($id);
-                $imagePath = $request->file('image')->store('images/materials/' . $id, 'public');
 
-                Image::create([
-                    'path' => $imagePath,
-                    'imageable_id' => $material->id,
-                    'imageable_type' => $type,
-                ]);
+                if (request()->hasFile('images')) {
+                    foreach (request()->file('images') as $image) {
+                        $path = $image->store('images/materials/' . $id, 'public');
+
+                        Image::create([
+                            'path' => $path,
+                            'imageable_id' => $material->id,
+                            'imageable_type' => $type,
+                        ]);
+                    }
+                }
 
                 break;
             default:
