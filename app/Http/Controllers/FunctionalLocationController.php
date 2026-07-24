@@ -32,7 +32,7 @@ class FunctionalLocationController extends Controller
 
         $perPage = $this->getPerPage($request);
 
-        $functionalLocations = FunctionalLocation::search($request)->paginate($perPage)->withQueryString();
+        $functionalLocations = FunctionalLocation::with('plant')->search($request)->paginate($perPage)->withQueryString();
 
         if ($request->expectsJson() && $request->filled('query')) {
             return response()->json(FunctionalLocationResource::collection($functionalLocations));

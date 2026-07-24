@@ -110,6 +110,7 @@ class DashboardController extends Controller
             'topFindingClauses' => Finding::getTopFindingClauses($startDate, $endDate),
             'topFindingCauses' => Finding::getTopFindingCauses($startDate, $endDate),
             'topMainPlants' => Finding::getTopMainPlants($startDate, $endDate),
+            'plantProgress' => Finding::getPlantProgress(),
             // 'equipmentStatusChart' => $equipmentStatusChart,
         ]);
     }

@@ -71,14 +71,12 @@ export function HorizontalBarChart({
                 {chartData.length === 0 && <div className="text-muted-foreground py-10 text-center text-sm">No data available.</div>}
 
                 {chartData.map((item) => {
-                    // const percentage = (item.value / maxValue) * 100;
-
                     return (
                         <div key={item.label} className="space-y-2">
                             <div className="flex items-start justify-between gap-3">
                                 <div className="min-w-0 flex-1">
                                     <div className="text-sm font-semibold">{item.label}</div>
-                                    <div className="text-muted-foreground truncate text-xs">{item.name} Closed</div>
+                                    <div className="text-muted-foreground truncate text-xs">{item.name}</div>
                                 </div>
 
                                 <div className="text-right">

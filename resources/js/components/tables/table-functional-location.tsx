@@ -61,6 +61,7 @@ export default function TableFunctionalLocation({ functionalLocations, withHeade
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">Code</TableHead>
+                                <TableHead className="text-muted-foreground">Plant</TableHead>
                                 <TableHead className="text-muted-foreground">Description</TableHead>
                                 <TableHead className="text-muted-foreground">Created at</TableHead>
                                 <TableHead className={`text-muted-foreground ${can.delete_functionallocation ?? 'text-right'}`}>Updated at</TableHead>
@@ -81,6 +82,7 @@ export default function TableFunctionalLocation({ functionalLocations, withHeade
                                                 <span className="truncate font-medium">{functionalLocation.code}</span>
                                             )}
                                         </TableCell>
+                                        <TableCell>{functionalLocation.plant?.name ?? 'N/A'}</TableCell>
                                         <TableCell className="max-w-sm truncate sm:max-w-md">{functionalLocation.description}</TableCell>
                                         <TableCell className="table-timestamp text-muted-foreground">{functionalLocation.created_at}</TableCell>
                                         <TableCell

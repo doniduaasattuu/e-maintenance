@@ -3,11 +3,13 @@ import { ChartBarStackedDefault } from '@/components/chart/chart-bar-stacked-def
 import { ClosingRateCard } from '@/components/chart/chart-closing-rate';
 import { HorizontalBarChart } from '@/components/chart/horizontal-bar-chart';
 import { ChartPieDefault } from '@/components/chart/pie-chart-default';
+import PlantProgress from '@/components/chart/plant-progress';
 import DashboardCard from '@/components/dashboard-card';
+import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { AlertTriangle, CheckCircle, Clock, LayoutGrid } from 'lucide-react';
+import { AlertTriangle, CheckCircle, LayoutGrid } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -169,6 +171,17 @@ interface DashboardProps {
         closingRate: number;
         percentage: number;
     }[];
+    plantProgress: {
+        plant: {
+            id: number;
+            code: string;
+            name: string;
+        };
+        closedFindings: number;
+        totalPlantFindings: number;
+        closingRate: number;
+        totalFindings: number;
+    }[];
 }
 
 // const equipmentStatusConfig = {
@@ -208,7 +221,9 @@ export default function Dashboard({
     topFindingClauses,
     topFindingCauses,
     topMainPlants,
+    plantProgress,
 }: DashboardProps) {
+    console.log(plantProgress);
     const [month, setMonth] = useState(selectedMonth);
     const [week, setWeek] = useState(selectedWeek);
 
@@ -253,9 +268,19 @@ export default function Dashboard({
                         </DashboardCard>
                     </div>
                     <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <DashboardCard title="SLA Exceeded" description={stats.slaExceeded.desc} value={stats.slaExceeded.value}>
-                            <Clock className="h-5 w-5 text-red-400" />
-                        </DashboardCard>
+                        <Card className="bg-sidebar flex h-full flex-col align-middle">
+                            <CardContent className="my-auto space-y-6">
+                                {plantProgress.map((p) => (
+                                    <PlantProgress
+                                        plant={p.plant.code}
+                                        closedFindings={p.closedFindings}
+                                        closingRate={p.closingRate}
+                                        totalFinding={p.totalFindings}
+                                        totalPlantFinding={p.totalPlantFindings}
+                                    />
+                                ))}
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">

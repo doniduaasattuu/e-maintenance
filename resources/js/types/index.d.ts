@@ -165,6 +165,7 @@ export interface FunctionalLocation {
     updated_at: string;
 
     images: null | Image[];
+    plant?: Plant;
 }
 
 export interface EquipmentClass {
@@ -484,4 +485,15 @@ export interface FindingImage {
     original_name: string;
     created_at: string;
     updated_at: string;
+}
+
+export interface Plant {
+    id: number;
+    code: string;
+    name: string;
+    sort_order: number;
+    created_at: string;
+    updated_at: string;
+
+    functionalLocation?: FunctionalLocation;
 }

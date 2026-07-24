@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FunctionalLocationResource extends JsonResource
+class PlantResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,13 +17,10 @@ class FunctionalLocationResource extends JsonResource
         return [
             'id' => $this->id,
             'code' => $this->code,
-            'description' => $this->description,
-            'equipments' => EquipmentResource::collection($this->whenLoaded('equipments')),
-            'findings' => FindingResource::collection($this->whenLoaded('findings')),
+            'name' => $this->name,
+            'sort_order' => $this->sort_order,
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
-            'images' => ImageResource::collection($this->whenLoaded('images')),
-            'plant' => new PlantResource($this->whenLoaded('plant')),
         ];
     }
 }

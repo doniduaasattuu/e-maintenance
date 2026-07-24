@@ -1284,4 +1284,76 @@ class Finding extends Model
                 ];
             });
     }
+
+    public static function getPlantProgress()
+    {
+        $totalFindings = static::count();
+
+        return static::query()
+            ->join(
+                'functional_locations',
+                'findings.functional_location_id',
+                '=',
+                'functional_locations.id'
+            )
+            ->join(
+                'plants',
+                'functional_locations.plant_id',
+                '=',
+                'plants.id'
+            )
+            ->leftJoin(
+                'finding_statuses',
+                'findings.finding_status_id',
+                '=',
+                'finding_statuses.id'
+            )
+            ->select(
+                'plants.id',
+                'plants.code',
+                'plants.name',
+                'plants.sort_order'
+            )
+            ->selectRaw('COUNT(findings.id) AS total')
+            ->selectRaw("
+            SUM(
+                CASE
+                    WHEN finding_statuses.name = 'Closed'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS closed
+        ")
+            ->groupBy(
+                'plants.id',
+                'plants.code',
+                'plants.name',
+                'plants.sort_order'
+            )
+            ->orderBy('plants.sort_order')
+            ->get()
+            ->map(function ($item) use ($totalFindings) {
+
+                $total = (int) $item->total;
+                $closed = (int) $item->closed;
+
+                return [
+                    'plant' => [
+                        'id' => $item->id,
+                        'code' => $item->code,
+                        'name' => $item->name,
+                    ],
+
+                    'closedFindings' => $closed,
+
+                    'totalPlantFindings' => $total,
+
+                    'closingRate' => $total > 0
+                        ? round(($closed / $total) * 100, 1)
+                        : 0,
+
+                    'totalFindings' => $totalFindings,
+                ];
+            });
+    }
 }
