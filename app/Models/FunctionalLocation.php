@@ -18,6 +18,7 @@ class FunctionalLocation extends Model
     protected $fillable = [
         'code',
         'description',
+        'plant_id',
     ];
 
     #[Scope]

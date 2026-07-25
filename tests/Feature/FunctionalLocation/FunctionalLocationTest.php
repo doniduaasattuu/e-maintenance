@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\FunctionalLocation;
+use App\Models\Plant;
+use Database\Factories\PlantFactory;
 use Database\Seeders\FunctionalLocationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -38,6 +40,7 @@ test('create functional location page accessible', function () {
 });
 
 test('store functional location successfully', function () {
+    $plant = Plant::factory()->create();
 
     $response = $this
         ->actingAs(createAdminUser())
@@ -45,6 +48,7 @@ test('store functional location successfully', function () {
         ->post(route('functional-locations.store'), [
             'code' => 'FP-01-PM3-CUT-RWD1',
             'description' => 'REWINDER #1 PM3',
+            'plant_id' => $plant->id,
         ]);
 
     $response
@@ -60,9 +64,10 @@ test('store fails validation', function () {
         ->post(route('functional-locations.store'), [
             'code' => 'fp-01--PM3',
             'description' => '',
+            'plant_id' => '',
         ]);
 
-    $response->assertSessionHasErrors(['code', 'description']);
+    $response->assertSessionHasErrors(['code', 'description', 'plant_id']);
 });
 
 test('edit page accessible', function () {
@@ -84,6 +89,7 @@ test('edit page accessible', function () {
 
 test('update functional location successfully', function () {
     $functionalLocation = FunctionalLocation::factory()->create();
+    $plant = Plant::factory()->create();
 
     $this
         ->actingAs(createAdminUser())
@@ -91,6 +97,7 @@ test('update functional location successfully', function () {
         ->put(route('functional-locations.update', $functionalLocation->id), [
             'code' => 'FP-01-PM3-P001',
             'description' => 'POMPA #1 PULPER SP-03',
+            'plant_id' => $plant->id,
         ])
         ->assertRedirect(route('functional-locations.edit', $functionalLocation->id));
 

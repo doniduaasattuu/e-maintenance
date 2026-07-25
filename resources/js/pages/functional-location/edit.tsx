@@ -5,8 +5,8 @@ import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FunctionalLocationLayout from '@/layouts/functional-location/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, FunctionalLocation } from '@/types';
-import { useForm } from '@inertiajs/react';
+import { BreadcrumbItem, FunctionalLocation, Plant } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 const strings = UI_STRINGS;
@@ -25,13 +25,17 @@ interface FunctionalLocationEditProps {
     functionalLocation: {
         data: FunctionalLocation;
     };
+    plants: {
+        data: Plant[];
+    };
 }
 
-export default function FunctionalLocationEdit({ functionalLocation }: FunctionalLocationEditProps) {
+export default function FunctionalLocationEdit({ functionalLocation, plants }: FunctionalLocationEditProps) {
     const { can } = usePermissions();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<FunctionalLocationFormData>>({
         code: functionalLocation.data.code,
         description: functionalLocation.data.description,
+        plant_id: functionalLocation.data?.plant_id?.toString() ?? '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -44,7 +48,9 @@ export default function FunctionalLocationEdit({ functionalLocation }: Functiona
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <FunctionalLocationLayout functionalLocation={functionalLocation.data} className="max-w-xl">
+            <Head title="Edit" />
+
+            <FunctionalLocationLayout functionalLocation={functionalLocation.data} className="w-full max-w-xl">
                 <div className="space-y-6">
                     <div className="flex items-center justify-between gap-2">
                         <HeadingSmall title="Edit" description="Update functional-location data and information." />
@@ -53,6 +59,7 @@ export default function FunctionalLocationEdit({ functionalLocation }: Functiona
                         </TextLink>
                     </div>
                     <FunctionalLocationForm
+                        plants={plants}
                         data={data}
                         setData={setData}
                         errors={errors}
@@ -61,7 +68,6 @@ export default function FunctionalLocationEdit({ functionalLocation }: Functiona
                         submit={submit}
                         canSubmit={can.update_functionallocation}
                         buttonLabel="Update"
-                        className="max-w-xl"
                     />
                 </div>
             </FunctionalLocationLayout>

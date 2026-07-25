@@ -163,6 +163,7 @@ export interface FunctionalLocation {
     description: string;
     created_at: string;
     updated_at: string;
+    plant_id?: number;
 
     images: null | Image[];
     plant?: Plant;

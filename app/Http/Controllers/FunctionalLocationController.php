@@ -9,9 +9,11 @@ use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
 use App\Http\Resources\FunctionalLocationResource;
+use App\Http\Resources\PlantResource;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
 use App\Models\FunctionalLocation;
+use App\Models\Plant;
 use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -54,7 +56,9 @@ class FunctionalLocationController extends Controller
     {
         Gate::authorize('create_functionallocation');
 
-        return Inertia::render('functional-location/create');
+        return Inertia::render('functional-location/create', [
+            'plants' => PlantResource::collection(Plant::all()),
+        ]);
     }
 
     /**
@@ -119,7 +123,8 @@ class FunctionalLocationController extends Controller
         Gate::authorize('edit_functionallocation');
 
         return Inertia::render('functional-location/edit', [
-            'functionalLocation' => new FunctionalLocationResource($functionalLocation),
+            'functionalLocation' => new FunctionalLocationResource($functionalLocation->load('plant')),
+            'plants' => PlantResource::collection(Plant::all()),
         ]);
     }
 
@@ -131,12 +136,7 @@ class FunctionalLocationController extends Controller
         Gate::authorize('update_functionallocation');
 
         try {
-            $validated = $request->validated();
-
-            $functionalLocation->update([
-                'code' => $validated['code'],
-                'description' => $validated['description'],
-            ]);
+            $functionalLocation->update($request->validated());
 
             return back();
         } catch (Throwable $e) {
