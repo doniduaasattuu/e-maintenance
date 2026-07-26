@@ -8,7 +8,7 @@ import DepartmentSelect from '../department-select';
 import EquipmentSelect from '../equipment-select';
 import FindingClauseSelect from '../finding-clause-select';
 import FindingDescriptionInput from '../finding-description-input';
-import FindingPrioritySelect from '../finding-priority-select';
+import FindingPriorityPoint from '../finding-priority-point';
 import FindingStatusSelect from '../finding-status-select';
 import FunctionalLocationSelect from '../functional-location-select';
 import PhotoInput from '../photo-input';
@@ -50,6 +50,20 @@ interface FindingFormProps {
     isEditing?: boolean;
     closedStatusId?: string | number | null;
     type: string;
+    priorityScales: {
+        safety: {
+            point: number;
+            label: string;
+        }[];
+        quality: {
+            point: number;
+            label: string;
+        }[];
+        breakdown: {
+            point: number;
+            label: string;
+        }[];
+    };
 }
 
 export type FindingFormData = {
@@ -87,6 +101,7 @@ export default function FindingForm({
     equipment,
     isEditing = false,
     type,
+    priorityScales,
 }: FindingFormProps) {
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
@@ -234,7 +249,8 @@ export default function FindingForm({
                 )}
             </div>
 
-            <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0">
+            {/* <div className="grid grid-cols-1 space-y-6 sm:grid-cols-2 sm:gap-2 sm:space-y-0"> */}
+            <div className="grid grid-cols-2 gap-2">
                 <FindingStatusSelect
                     statuses={findingStatuses?.data}
                     value={data.finding_status_id}
@@ -243,13 +259,11 @@ export default function FindingForm({
                     tabIndex={8}
                     disabled={processing}
                 />
-                <FindingPrioritySelect
-                    priorities={findingPriorities?.data}
-                    value={data.finding_priority_id}
-                    onChange={(val) => setData('finding_priority_id', val)}
-                    error={errors.finding_priority_id}
-                    tabIndex={9}
-                    disabled={processing}
+                <FindingPriorityPoint
+                    priorityScales={priorityScales}
+                    priorities={findingPriorities}
+                    selectedPriority={data.finding_priority_id}
+                    setData={(priority) => setData('finding_priority_id', priority.id.toString())}
                 />
             </div>
 

@@ -42,7 +42,6 @@ export default function FunctionalLocationForm({
     className,
     plants,
 }: FunctionalLocationFormProps) {
-    console.log(data);
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
             <Field>

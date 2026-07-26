@@ -420,6 +420,8 @@ export interface FindingPriority {
     description: string;
     sla_resolution_hours?: string;
     color_code?: string;
+    minimum_point: number;
+    maximum_point: number;
     created_at: string;
     updated_at: string;
 }

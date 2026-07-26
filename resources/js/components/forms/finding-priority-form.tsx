@@ -22,6 +22,8 @@ export type FindingPriorityFormData = {
     label: string;
     description: string;
     color_code: string;
+    minimum_point: string;
+    maximum_point: string;
     sla_resolution_hours: string;
 };
 
@@ -88,10 +90,46 @@ export default function FindingPriorityForm({
                 <FieldError>{errors.color_code}</FieldError>
             </Field>
 
+            <Field>
+                <FieldLabel htmlFor="minimum_point">
+                    Minimum Point
+                    <RequiredLabel />
+                </FieldLabel>
+                <Input
+                    tabIndex={3}
+                    id="minimum_point"
+                    value={data.minimum_point ?? ''}
+                    onChange={(e) => setData('minimum_point', e.target.value)}
+                    placeholder="Minimum point"
+                    disabled={processing}
+                    inputMode="numeric"
+                    autoComplete="minimum_point"
+                />
+                <FieldError>{errors.minimum_point}</FieldError>
+            </Field>
+
+            <Field>
+                <FieldLabel htmlFor="maximum_point">
+                    Maximum Point
+                    <RequiredLabel />
+                </FieldLabel>
+                <Input
+                    tabIndex={4}
+                    id="maximum_point"
+                    value={data.maximum_point ?? ''}
+                    onChange={(e) => setData('maximum_point', e.target.value)}
+                    placeholder="Maximum point"
+                    disabled={processing}
+                    inputMode="numeric"
+                    autoComplete="maximum_point"
+                />
+                <FieldError>{errors.maximum_point}</FieldError>
+            </Field>
+
             <div className="grid gap-2">
                 <FieldLabel htmlFor="sla_resolution_hours">SLA Resolution Hours</FieldLabel>
                 <Input
-                    tabIndex={3}
+                    tabIndex={5}
                     id="sla_resolution_hours"
                     value={data.sla_resolution_hours ?? ''}
                     onChange={(e) => setData('sla_resolution_hours', e.target.value)}
@@ -107,7 +145,7 @@ export default function FindingPriorityForm({
                 <ButtonSubmit
                     processing={processing}
                     disabled={processing || data.label == '' || data.description == ''}
-                    tabIndex={4}
+                    tabIndex={6}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}
                     label={buttonLabel}

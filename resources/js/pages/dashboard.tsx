@@ -252,26 +252,27 @@ export default function Dashboard({
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="grid auto-rows-min grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border">
                         <DashboardCard title="Total Findings" description={stats.total.desc} value={stats.total.value}>
                             <LayoutGrid className="h-5 w-5 text-blue-400" />
                         </DashboardCard>
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border">
                         <DashboardCard title="Open Findings" description={stats.open.desc} value={stats.open.value}>
                             <AlertTriangle className="h-5 w-5 text-amber-500" />
                         </DashboardCard>
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border">
                         <DashboardCard title="Closed Findings" description={stats.closed.desc} value={stats.closed.value}>
                             <CheckCircle className="h-5 w-5 text-green-400" />
                         </DashboardCard>
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <Card className="bg-sidebar flex h-full flex-col align-middle">
-                            <CardContent className="my-auto space-y-6">
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border">
+                        <Card className="bg-sidebar flex h-full flex-col">
+                            <CardContent className="my-auto space-y-4 pt-6">
                                 {plantProgress.map((p) => (
                                     <PlantProgress
+                                        key={p.plant.id}
                                         plant={p.plant.code}
                                         closedFindings={p.closedFindings}
                                         closingRate={p.closingRate}

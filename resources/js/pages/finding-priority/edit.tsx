@@ -31,6 +31,8 @@ export default function FindingPrioritiesEdit({ findingPriority }: FindingPriori
         label: findingPriority.data.label,
         description: findingPriority.data?.description ?? '',
         color_code: findingPriority.data?.color_code ?? '',
+        minimum_point: findingPriority.data?.minimum_point?.toString() ?? '',
+        maximum_point: findingPriority.data?.maximum_point?.toString() ?? '',
         sla_resolution_hours: findingPriority.data?.sla_resolution_hours ?? '',
     });
 

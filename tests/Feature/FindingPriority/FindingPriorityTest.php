@@ -4,8 +4,6 @@ use App\Models\FindingPriority;
 use Database\Seeders\FindingPrioritySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use function Pest\Laravel\assertDatabaseEmpty;
-
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
@@ -45,7 +43,9 @@ test('store finding priority successfully', function () {
         ->from(route('finding-priorities.create'))
         ->post(route('finding-priorities.store'), [
             'label' => 'Ignored',
-            'description' => 'Ignored due to schedulded next shutdown.'
+            'description' => 'Ignored due to schedulded next shutdown.',
+            'minimum_point' => 0,
+            'maximum_point' => 2,
         ]);
 
     $response
@@ -61,6 +61,8 @@ test('store fails validation', function () {
         ->post(route('finding-priorities.store'), [
             'label' => '',
             'description' => '',
+            'minimum_point' => 0,
+            'maximum_point' => 2,
         ]);
 
     $response->assertSessionHasErrors(['label', 'description']);
@@ -72,6 +74,8 @@ test('store fails duplicate validation', function () {
         ->post(route('finding-priorities.store'), [
             'label' => 'Minor',
             'description' => '',
+            'minimum_point' => 0,
+            'maximum_point' => 2,
         ]);
 
     $response->assertSessionHasErrors(['label', 'description']);
@@ -104,6 +108,8 @@ test('update finding priority successfully', function () {
         ->put(route('finding-priorities.update', $findingPriority->id), [
             'label' => 'Deleted',
             'description' => 'Finding is deleted',
+            'minimum_point' => 0,
+            'maximum_point' => 2,
         ])
         ->assertRedirect(route('finding-priorities.edit', $findingPriority->id));
 
@@ -122,6 +128,8 @@ test('update finding priority fails validation', function () {
         ->patch(route('finding-priorities.update', $findingPriority->id), [
             'label' => '',
             'description' => '',
+            'minimum_point' => 0,
+            'maximum_point' => 2,
         ])
         ->assertSessionHasErrors(['label', 'description']);
 });

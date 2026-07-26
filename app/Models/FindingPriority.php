@@ -18,6 +18,8 @@ class FindingPriority extends Model
         "description",
         "sla_resolution_hours",
         "color_code",
+        "minimum_point",
+        "maximum_point",
     ];
 
     #[Scope]

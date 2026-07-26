@@ -30,6 +30,8 @@ class UpdateFindingPriorityRequest extends FormRequest
                 Rule::unique('finding_priorities', 'label')->ignore($this->finding_priority),
             ],
             'color_code' => ['nullable', 'hex_color'],
+            'minimum_point' => ['required', 'numeric', 'min:0'],
+            'maximum_point' => ['required', 'numeric', 'gt:minimum_point'],
             'description' => ['required', 'string', 'max:255'],
             'sla_resolution_hours' => [
                 'nullable',

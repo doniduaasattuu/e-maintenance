@@ -120,6 +120,46 @@ abstract class FindingController extends Controller
             'defaultValue' => [
                 'finding_status_id' => $findingStatuses->where('name', 'Open')->first()->id ?? '1',
                 'finding_priority_id' => $findingPriorities->sortByDesc('sla_resolution_hours')->first()->id ?? '1',
+            ],
+            'priorityScales' => [
+                'safety' => [
+                    [
+                        'label' => 'Ya',
+                        'point' => 10
+                    ],
+                    [
+                        'label' => 'Tidak',
+                        'point' => 0
+                    ],
+                ],
+                'quality' => [
+                    [
+                        'label' => 'Sudah terjadi',
+                        'point' => 5
+                    ],
+                    [
+                        'label' => 'Akan terjadi',
+                        'point' => 3
+                    ],
+                    [
+                        'label' => 'Tidak terjadi',
+                        'point' => 1
+                    ],
+                ],
+                'breakdown' => [
+                    [
+                        'label' => 'Sudah breakdown',
+                        'point' => 5
+                    ],
+                    [
+                        'label' => 'Akan breakdown',
+                        'point' => 3
+                    ],
+                    [
+                        'label' => 'Tidak breakdown',
+                        'point' => 1
+                    ],
+                ],
             ]
         ]);
     }
@@ -220,6 +260,46 @@ abstract class FindingController extends Controller
             'causeCodes' => CauseCodeResource::collection($causeCodes),
             'departments' => DepartmentResource::collection($departments),
             'workCenters' => WorkCenterResource::collection($workCenters),
+            'priorityScales' => [
+                'safety' => [
+                    [
+                        'label' => 'Ya',
+                        'point' => 10
+                    ],
+                    [
+                        'label' => 'Tidak',
+                        'point' => 0
+                    ],
+                ],
+                'quality' => [
+                    [
+                        'label' => 'Sudah terjadi',
+                        'point' => 5
+                    ],
+                    [
+                        'label' => 'Akan terjadi',
+                        'point' => 3
+                    ],
+                    [
+                        'label' => 'Tidak terjadi',
+                        'point' => 1
+                    ],
+                ],
+                'breakdown' => [
+                    [
+                        'label' => 'Sudah breakdown',
+                        'point' => 5
+                    ],
+                    [
+                        'label' => 'Akan breakdown',
+                        'point' => 3
+                    ],
+                    [
+                        'label' => 'Tidak breakdown',
+                        'point' => 1
+                    ],
+                ],
+            ]
         ]);
     }
 
