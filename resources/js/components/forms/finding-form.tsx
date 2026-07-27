@@ -286,7 +286,7 @@ export default function FindingForm({
             {canSubmit && (
                 <ButtonSubmit
                     processing={processing}
-                    disabled={processing || disabledWhen || data.images == null}
+                    disabled={processing || disabledWhen || (!isEditing && data.images == null)}
                     tabIndex={11}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}
