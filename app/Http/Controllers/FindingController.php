@@ -71,11 +71,12 @@ abstract class FindingController extends Controller
         $departments = Department::all();
         $workCenters = WorkCenter::all();
         $causeCodes = CauseCode::all();
+        $expr = FunctionalLocation::areaExpression();
         $areaOptions = FunctionalLocation::query()
-            ->selectRaw('LEFT(code, 5) as value')
-            ->selectRaw('MIN(description) as label')
-            ->groupBy(DB::raw('LEFT(code, 5)'))
-            ->orderBy('value', 'asc')
+            ->selectRaw("$expr as value")
+            ->selectRaw("MIN(description) as label")
+            ->groupBy(DB::raw($expr))
+            ->orderBy('value')
             ->get();
 
         return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/index", [
@@ -120,6 +121,46 @@ abstract class FindingController extends Controller
             'defaultValue' => [
                 'finding_status_id' => $findingStatuses->where('name', 'Open')->first()->id ?? '1',
                 'finding_priority_id' => $findingPriorities->sortByDesc('sla_resolution_hours')->first()->id ?? '1',
+            ],
+            'priorityScales' => [
+                'safety' => [
+                    [
+                        'label' => 'Ya',
+                        'point' => 10
+                    ],
+                    [
+                        'label' => 'Tidak',
+                        'point' => 0
+                    ],
+                ],
+                'quality' => [
+                    [
+                        'label' => 'Sudah terjadi',
+                        'point' => 5
+                    ],
+                    [
+                        'label' => 'Akan terjadi',
+                        'point' => 3
+                    ],
+                    [
+                        'label' => 'Tidak terjadi',
+                        'point' => 1
+                    ],
+                ],
+                'breakdown' => [
+                    [
+                        'label' => 'Sudah breakdown',
+                        'point' => 5
+                    ],
+                    [
+                        'label' => 'Akan breakdown',
+                        'point' => 3
+                    ],
+                    [
+                        'label' => 'Tidak breakdown',
+                        'point' => 1
+                    ],
+                ],
             ]
         ]);
     }
@@ -220,6 +261,46 @@ abstract class FindingController extends Controller
             'causeCodes' => CauseCodeResource::collection($causeCodes),
             'departments' => DepartmentResource::collection($departments),
             'workCenters' => WorkCenterResource::collection($workCenters),
+            'priorityScales' => [
+                'safety' => [
+                    [
+                        'label' => 'Ya',
+                        'point' => 10
+                    ],
+                    [
+                        'label' => 'Tidak',
+                        'point' => 0
+                    ],
+                ],
+                'quality' => [
+                    [
+                        'label' => 'Sudah terjadi',
+                        'point' => 5
+                    ],
+                    [
+                        'label' => 'Akan terjadi',
+                        'point' => 3
+                    ],
+                    [
+                        'label' => 'Tidak terjadi',
+                        'point' => 1
+                    ],
+                ],
+                'breakdown' => [
+                    [
+                        'label' => 'Sudah breakdown',
+                        'point' => 5
+                    ],
+                    [
+                        'label' => 'Akan breakdown',
+                        'point' => 3
+                    ],
+                    [
+                        'label' => 'Tidak breakdown',
+                        'point' => 1
+                    ],
+                ],
+            ]
         ]);
     }
 

@@ -1,15 +1,15 @@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { toDateString } from '@/hooks/use-date';
 import { useImageCompressor } from '@/hooks/use-image-compressor';
 import { Finding } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { ChevronDownIcon, Info } from 'lucide-react';
-import { ChangeEvent, FormEventHandler, useEffect, useRef, useState } from 'react';
+import { ChevronDownIcon } from 'lucide-react';
+import { ChangeEvent, FormEventHandler, useEffect, useState } from 'react';
 import ButtonSubmit from './button-submit';
-import CompressingDescription from './compressing-description';
+import PhotoInput from './photo-input';
 import RequiredLabel from './required-label';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
@@ -29,10 +29,6 @@ type UploadImageData = {
 
 export function ActionFindingDialog({ children, finding }: ActionFindingDialogProps) {
     const [open, setOpen] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const compressImage = useImageCompressor();
-    const [errorCompression, setErrorCompression] = useState<string | null>(null);
-    const [isCompressing, setIsCompressing] = useState<boolean>(false);
 
     const [closedDate, setClosedDate] = useState<Date | undefined>(new Date());
     const [closedTime, setClosedTime] = useState<string | undefined>(closedDate?.toTimeString().slice(0, 8));
@@ -54,6 +50,9 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
         }
     }, [closedDate, closedTime, setData]);
 
+    const compressImage = useImageCompressor();
+    const [isCompressing, setIsCompressing] = useState<boolean>(false);
+
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
 
@@ -74,7 +73,6 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
         } catch (error) {
             if (error instanceof Error) {
                 console.error('Compression failed: ', error);
-                setErrorCompression(error.message);
             }
         } finally {
             setIsCompressing(false);
@@ -175,47 +173,19 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
                         </Field>
                     </div>
 
-                    <Field>
-                        <FieldLabel htmlFor="images">
-                            Photos
-                            <RequiredLabel />
-                        </FieldLabel>
-                        <Input
-                            tabIndex={4}
-                            type="file"
-                            id="images"
-                            multiple
-                            ref={fileInputRef}
-                            disabled={processing || isCompressing}
-                            onChange={handleFileChange}
-                            accept=".jpg,.jpeg,.png,.webp"
-                        />
+                    <PhotoInput
+                        images={data.images}
+                        onFileChange={handleFileChange}
+                        error={errors.images}
+                        isCompressing={isCompressing}
+                        disabled={processing}
+                        tabIndex={4}
+                        onRemoveImage={(index: number) => {
+                            const newImages = data.images?.filter((_, idx) => idx !== index) || null;
+                            setData('images', newImages && newImages.length > 0 ? newImages : null);
+                        }}
+                    />
 
-                        {data.images && data.images.length > 0 && (
-                            <div className="mt-2 flex flex-wrap gap-2">
-                                {Array.from(data.images).map((file, index) => (
-                                    <div key={index} className="relative size-16 overflow-hidden rounded border bg-slate-100">
-                                        <img src={URL.createObjectURL(file)} alt="preview" className="size-full object-cover" />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        <FieldError>{errors.images || errorCompression}</FieldError>
-                        <FieldDescription>
-                            <div className="space-y-1">
-                                <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                                    <Info className="text-muted-foreground size-3 shrink-0" />
-                                    Upload between 1 to 5 photos.
-                                </div>
-                                <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                                    <Info className="text-muted-foreground size-3 shrink-0" />
-                                    Images will be automatically compressed to optimize upload speed and storage.
-                                </div>
-                            </div>
-                        </FieldDescription>
-                        {isCompressing && <CompressingDescription />}
-                    </Field>
                     <DialogFooter>
                         <ButtonSubmit
                             tabIndex={5}

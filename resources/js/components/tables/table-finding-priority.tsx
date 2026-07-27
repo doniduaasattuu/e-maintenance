@@ -56,6 +56,7 @@ export default function TableFindingPriority({ findingPriorities, withHeader = t
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">Label</TableHead>
+                                <TableHead className="text-muted-foreground">Point</TableHead>
                                 <TableHead className="text-muted-foreground">Description</TableHead>
                                 <TableHead className="text-muted-foreground">SLA</TableHead>
                                 <TableHead className="text-muted-foreground">Created at</TableHead>
@@ -75,6 +76,9 @@ export default function TableFindingPriority({ findingPriorities, withHeader = t
                                             ) : (
                                                 <span className="font-medium">{findingPriority.label}</span>
                                             )}
+                                        </TableCell>
+                                        <TableCell className="max-w-75 truncate">
+                                            {findingPriority.minimum_point}-{findingPriority.maximum_point}
                                         </TableCell>
                                         <TableCell className="max-w-75 truncate">{findingPriority.description}</TableCell>
                                         <TableCell className="max-w-75 truncate">{findingPriority.sla_resolution_hours}</TableCell>

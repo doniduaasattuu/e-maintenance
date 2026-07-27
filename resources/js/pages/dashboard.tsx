@@ -3,11 +3,13 @@ import { ChartBarStackedDefault } from '@/components/chart/chart-bar-stacked-def
 import { ClosingRateCard } from '@/components/chart/chart-closing-rate';
 import { HorizontalBarChart } from '@/components/chart/horizontal-bar-chart';
 import { ChartPieDefault } from '@/components/chart/pie-chart-default';
+import PlantProgress from '@/components/chart/plant-progress';
 import DashboardCard from '@/components/dashboard-card';
+import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { AlertTriangle, CheckCircle, Clock, LayoutGrid } from 'lucide-react';
+import { AlertTriangle, CheckCircle, LayoutGrid } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -149,11 +151,36 @@ interface DashboardProps {
         label: string;
         name: string;
         value: number;
+        closedFindings: number;
+        closingRate: number;
+        percentage: number;
     }[];
     topFindingCauses: {
         label: string;
         name: string;
         value: number;
+        closedFindings: number;
+        closingRate: number;
+        percentage: number;
+    }[];
+    topMainPlants: {
+        label: string;
+        name: string;
+        value: number;
+        closedFindings: number;
+        closingRate: number;
+        percentage: number;
+    }[];
+    plantProgress: {
+        plant: {
+            id: number;
+            code: string;
+            name: string;
+        };
+        closedFindings: number;
+        totalPlantFindings: number;
+        closingRate: number;
+        totalFindings: number;
     }[];
 }
 
@@ -193,7 +220,10 @@ export default function Dashboard({
     workCenterClosingRate,
     topFindingClauses,
     topFindingCauses,
+    topMainPlants,
+    plantProgress,
 }: DashboardProps) {
+    console.log(plantProgress);
     const [month, setMonth] = useState(selectedMonth);
     const [week, setWeek] = useState(selectedWeek);
 
@@ -222,25 +252,36 @@ export default function Dashboard({
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="grid auto-rows-min grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border">
                         <DashboardCard title="Total Findings" description={stats.total.desc} value={stats.total.value}>
                             <LayoutGrid className="h-5 w-5 text-blue-400" />
                         </DashboardCard>
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border">
                         <DashboardCard title="Open Findings" description={stats.open.desc} value={stats.open.value}>
                             <AlertTriangle className="h-5 w-5 text-amber-500" />
                         </DashboardCard>
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border">
                         <DashboardCard title="Closed Findings" description={stats.closed.desc} value={stats.closed.value}>
                             <CheckCircle className="h-5 w-5 text-green-400" />
                         </DashboardCard>
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <DashboardCard title="SLA Exceeded" description={stats.slaExceeded.desc} value={stats.slaExceeded.value}>
-                            <Clock className="h-5 w-5 text-red-400" />
-                        </DashboardCard>
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border">
+                        <Card className="bg-sidebar flex h-full flex-col">
+                            <CardContent className="my-auto space-y-4 pt-6">
+                                {plantProgress.map((p) => (
+                                    <PlantProgress
+                                        key={p.plant.id}
+                                        plant={p.plant.code}
+                                        closedFindings={p.closedFindings}
+                                        closingRate={p.closingRate}
+                                        totalFinding={p.totalFindings}
+                                        totalPlantFinding={p.totalPlantFindings}
+                                    />
+                                ))}
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
@@ -357,6 +398,21 @@ export default function Dashboard({
                         }
                     />
                 </div>
+
+                <HorizontalBarChart
+                    title="Top Plant"
+                    description="Plant dengan jumlah finding terbanyak"
+                    chartData={topMainPlants}
+                    valueLabel="Findings"
+                    withSelect
+                    availableMonths={availableMonths}
+                    selectedMonth={selectedMonth}
+                    onSelectChange={(value) =>
+                        refreshDashboard({
+                            month: value,
+                        })
+                    }
+                />
 
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarStackedDefault

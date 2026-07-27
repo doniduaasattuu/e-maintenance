@@ -32,13 +32,16 @@ test('authorized user can upload image material', function () {
             'id' => $material->id,
             'type' => 'material',
         ]), [
-            'image' => UploadedFile::fake()->image('test.jpg'),
+            'images' => [
+                UploadedFile::fake()->image('test.jpg'),
+                UploadedFile::fake()->image('again.jpg'),
+            ],
         ])
         ->assertStatus(200)
         ->assertSessionHasNoErrors();
 
     $material->refresh();
-    $this->assertCount(1, $material->images);
+    $this->assertCount(2, $material->images);
 
     $image = $material->images()->first();
     $this->assertDatabaseHas('images', [
@@ -55,10 +58,10 @@ test('upload image material fails validation', function () {
 
     $this->actingAs($admin)
         ->post(route('images.material.store', ['material', $material->id]), [
-            'image' => null,
+            'images' => null,
         ])
         ->assertStatus(302)
-        ->assertSessionHasErrors(['image']);
+        ->assertSessionHasErrors(['images']);
 });
 
 test('delete image material fail not found', function () {

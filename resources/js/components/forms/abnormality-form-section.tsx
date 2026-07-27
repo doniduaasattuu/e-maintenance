@@ -5,9 +5,9 @@ import CauseCodeSelect from '../cause-code-select';
 import DepartmentSelect from '../department-select';
 import FindingClauseSelect from '../finding-clause-select';
 import FindingDescriptionInput from '../finding-description-input';
-import FindingPhotoInput from '../finding-photo-input';
 import FindingPrioritySelect from '../finding-priority-select';
 import FindingStatusSelect from '../finding-status-select';
+import PhotoInput from '../photo-input';
 import WorkCenterSelect from '../work-center-select';
 
 export interface AbnormalityData {
@@ -154,13 +154,17 @@ export default function AbnormalityFormSection({
                 />
             </div>
 
-            <FindingPhotoInput
+            <PhotoInput
                 images={data.images ?? null}
                 onFileChange={handleFileChange}
                 error={errors.images}
                 isCompressing={isCompressing}
                 disabled={processing}
                 tabIndex={startTabIndex + 7}
+                onRemoveImage={(index: number) => {
+                    const newImages = data.images?.filter((_, idx) => idx !== index) || null;
+                    setData('images', newImages && newImages.length > 0 ? newImages : null);
+                }}
             />
         </div>
     );

@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FunctionalLocation extends Model
 {
@@ -17,7 +19,15 @@ class FunctionalLocation extends Model
     protected $fillable = [
         'code',
         'description',
+        'plant_id',
     ];
+
+    public static function areaExpression(): string
+    {
+        return DB::getDriverName() === 'sqlite'
+            ? 'substr(code,1,5)'
+            : 'LEFT(code,5)';
+    }
 
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
@@ -46,5 +56,10 @@ class FunctionalLocation extends Model
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function plant(): BelongsTo
+    {
+        return $this->belongsTo(Plant::class);
     }
 }

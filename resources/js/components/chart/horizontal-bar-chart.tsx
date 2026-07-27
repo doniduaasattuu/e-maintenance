@@ -6,6 +6,9 @@ interface HorizontalBarItem {
     label: string;
     name: string;
     value: number;
+    closedFindings: number;
+    closingRate: number;
+    percentage: number;
 }
 
 interface Props {
@@ -38,8 +41,6 @@ export function HorizontalBarChart({
     selectedMonth,
     onSelectChange,
 }: Props) {
-    const maxValue = Math.max(...chartData.map((item) => item.value), 1);
-
     return (
         <Card className="bg-sidebar">
             <CardHeader className="flex flex-row items-center gap-2 space-y-0 border-b py-5">
@@ -70,24 +71,21 @@ export function HorizontalBarChart({
                 {chartData.length === 0 && <div className="text-muted-foreground py-10 text-center text-sm">No data available.</div>}
 
                 {chartData.map((item) => {
-                    const percentage = (item.value / maxValue) * 100;
-
                     return (
                         <div key={item.label} className="space-y-2">
                             <div className="flex items-start justify-between gap-3">
                                 <div className="min-w-0 flex-1">
                                     <div className="text-sm font-semibold">{item.label}</div>
-
                                     <div className="text-muted-foreground truncate text-xs">{item.name}</div>
                                 </div>
 
                                 <div className="text-right">
-                                    <div className="text-sm font-semibold">{item.value}</div>
-                                    <div className="text-muted-foreground text-xs">{valueLabel}</div>
+                                    <div className="text-sm font-semibold">{item.closedFindings + ' / ' + item.value + ' ' + valueLabel}</div>
+                                    <div className="text-muted-foreground text-xs">{item.closingRate}% Closed</div>
                                 </div>
                             </div>
 
-                            <Progress className="h-2 sm:h-3" value={percentage} />
+                            <Progress className="h-2 sm:h-3" value={item.percentage} />
                         </div>
                     );
                 })}

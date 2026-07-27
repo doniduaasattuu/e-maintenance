@@ -3,7 +3,7 @@ import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, Plant } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -19,11 +19,18 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function FunctionalLocationCreate() {
+export default function FunctionalLocationCreate({
+    plants,
+}: {
+    plants: {
+        data: Plant[];
+    };
+}) {
     const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<FunctionalLocationFormData>>({
         code: '',
         description: '',
+        plant_id: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -41,6 +48,7 @@ export default function FunctionalLocationCreate() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <FormLayout moduleKey="FUNCTIONAL_LOCATION" mode="create">
                 <FunctionalLocationForm
+                    plants={plants}
                     data={data}
                     setData={setData}
                     errors={errors}

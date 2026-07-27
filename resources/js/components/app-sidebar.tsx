@@ -61,6 +61,11 @@ const mainNavItems: NavItem[] = [
         roles: ['Admin'],
         subItems: [
             {
+                title: strings?.PLANT?.label ?? 'Plant',
+                href: route('plants.index'),
+                permission: 'index_plant',
+            },
+            {
                 title: strings?.EQUIPMENT_HISTORY?.label ?? 'Equipment History',
                 href: route('equipment-histories.index'),
                 permission: 'index_installdismantlehistory',

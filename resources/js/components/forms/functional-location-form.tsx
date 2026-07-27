@@ -1,9 +1,11 @@
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { Plant } from '@/types';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
 import RequiredLabel from '../required-label';
 import { Field, FieldError, FieldLabel } from '../ui/field';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface FunctionalLocationFormProps {
     data: Required<FunctionalLocationFormData>;
@@ -16,11 +18,15 @@ interface FunctionalLocationFormProps {
     buttonLabel: string;
     successMessage?: string;
     className?: string;
+    plants: {
+        data: Plant[];
+    };
 }
 
 export type FunctionalLocationFormData = {
     code: string;
     description: string;
+    plant_id?: string | null;
 };
 
 export default function FunctionalLocationForm({
@@ -34,6 +40,7 @@ export default function FunctionalLocationForm({
     buttonLabel,
     successMessage,
     className,
+    plants,
 }: FunctionalLocationFormProps) {
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
@@ -72,6 +79,28 @@ export default function FunctionalLocationForm({
                     autoComplete="description"
                 />
                 <FieldError>{errors.description}</FieldError>
+            </Field>
+
+            <Field>
+                <FieldLabel htmlFor="plant_id">
+                    Plant
+                    <RequiredLabel />
+                </FieldLabel>
+                <Select value={data.plant_id ?? ''} onValueChange={(e) => setData('plant_id', e)}>
+                    <SelectTrigger tabIndex={3}>
+                        <SelectValue placeholder="Select Plant" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            {plants?.data?.map((e) => (
+                                <SelectItem value={e.id.toString()}>
+                                    {e.code} - {e.name}
+                                </SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                <FieldError>{errors.plant_id}</FieldError>
             </Field>
 
             {canSubmit && (

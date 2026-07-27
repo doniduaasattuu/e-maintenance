@@ -41,7 +41,6 @@ class FindingImageController extends Controller
 
         $validated = $request->validate([
             'rectification_action'   => ['required', 'string', 'min:10'],
-            'images'                 => ['required', 'array', 'min:1', 'max:5'],
             'closed_at'            => [
                 'required',
                 'date_format:Y-m-d H:i:s',
@@ -51,6 +50,7 @@ class FindingImageController extends Controller
                     }
                 },
             ],
+            'images'                 => ['required', 'array', 'min:1', 'max:5'],
             'images.*'               => [
                 'image',
                 'mimes:jpg,jpeg,png,webp',
@@ -92,7 +92,7 @@ class FindingImageController extends Controller
 
             return back()->with('message', [
                 'type' => 'success',
-                'description' => 'Photos uploaded successfully',
+                'description' => 'Photos uploaded successfully.',
             ]);
         } catch (\Throwable $e) {
             DB::rollBack();

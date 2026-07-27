@@ -3,9 +3,12 @@
 use App\Http\Controllers\FunctionalLocationController;
 use App\Http\Controllers\FunctionalLocationFindingController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\PlantController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::resource('plants', PlantController::class);
 
     Route::prefix('functional-locations')->group(function () {
         // IMAGE

@@ -42,6 +42,20 @@ type FindingCreateProps = {
         finding_status_id: string;
         finding_priority_id: string;
     };
+    priorityScales: {
+        safety: {
+            point: number;
+            label: string;
+        }[];
+        quality: {
+            point: number;
+            label: string;
+        }[];
+        breakdown: {
+            point: number;
+            label: string;
+        }[];
+    };
 };
 
 export default function FindingCreate({
@@ -52,6 +66,7 @@ export default function FindingCreate({
     departments,
     workCenters,
     defaultValue,
+    priorityScales,
 }: FindingCreateProps) {
     const { user, can } = usePermissions();
 
@@ -96,6 +111,7 @@ export default function FindingCreate({
         <AppLayout breadcrumbs={breadcrumbs}>
             <FormLayout moduleKey="AUDIT" mode="create">
                 <FindingForm
+                    priorityScales={priorityScales}
                     type="AUD"
                     data={data}
                     findingClauses={findingClauses}

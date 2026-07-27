@@ -39,7 +39,9 @@ test('authorized user can upload image equipment', function () {
             'id' => $equipment->id,
             'type' => 'equipment',
         ]), [
-            'image' => UploadedFile::fake()->image('test.jpg'),
+            'images' => [
+                UploadedFile::fake()->image('test.jpg')
+            ],
         ])
         ->assertStatus(200)
         ->assertSessionHasNoErrors();
@@ -65,10 +67,10 @@ test('upload image equipment fails validation', function () {
             'id' => $equipment->id,
             'type' => 'equipment',
         ]), [
-            'image' => null,
+            'images' => null,
         ])
         ->assertStatus(302)
-        ->assertSessionHasErrors(['image']);
+        ->assertSessionHasErrors(['images']);
 });
 
 test('delete image equipment fail not found', function () {

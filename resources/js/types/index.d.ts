@@ -163,8 +163,10 @@ export interface FunctionalLocation {
     description: string;
     created_at: string;
     updated_at: string;
+    plant_id?: number;
 
     images: null | Image[];
+    plant?: Plant;
 }
 
 export interface EquipmentClass {
@@ -418,6 +420,8 @@ export interface FindingPriority {
     description: string;
     sla_resolution_hours?: string;
     color_code?: string;
+    minimum_point: number;
+    maximum_point: number;
     created_at: string;
     updated_at: string;
 }
@@ -484,4 +488,15 @@ export interface FindingImage {
     original_name: string;
     created_at: string;
     updated_at: string;
+}
+
+export interface Plant {
+    id: number;
+    code: string;
+    name: string;
+    sort_order: number;
+    created_at: string;
+    updated_at: string;
+
+    functionalLocation?: FunctionalLocation;
 }

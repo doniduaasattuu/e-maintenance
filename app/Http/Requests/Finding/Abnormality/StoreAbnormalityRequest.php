@@ -27,6 +27,7 @@ class StoreAbnormalityRequest extends FormRequest
             'cause_code_id'             => ['required', 'exists:cause_codes,id'],
             'description'               => ['required', 'string', 'min:10'],
             'functional_location_id'    => ['required', 'exists:functional_locations,id'],
+            'equipment_id'              => ['nullable', 'exists:equipments,id'],
             'department_id'             => ['required', 'exists:departments,id'],
             'work_center_id'            => [
                 'required',
@@ -34,7 +35,6 @@ class StoreAbnormalityRequest extends FormRequest
                     $query->where('department_id', $this->input('department_id'));
                 }),
             ],
-            'equipment_id'              => ['nullable', 'exists:equipments,id'],
             'finding_status_id'         => ['required', 'exists:finding_statuses,id'],
             'finding_priority_id'       => ['required', 'exists:finding_priorities,id'],
             'images'                    => ['required', 'array', 'min:1', 'max:5'],

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Policies\FindingPolicy;
 use App\Policies\RepositoryPolicy;
 use App\Policies\RolePolicy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\Models\Role;
@@ -27,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Builder::macro('last', function (string $column = null) {
+            return $this->latest($column)->first();
+        });
+
         Gate::policy(Role::class, RolePolicy::class, FindingPolicy::class, RepositoryPolicy::class);
 
         Relation::enforceMorphMap([

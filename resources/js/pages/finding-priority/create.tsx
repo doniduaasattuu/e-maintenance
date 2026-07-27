@@ -26,6 +26,8 @@ export default function FindingPriorityCreate() {
         description: '',
         color_code: '',
         sla_resolution_hours: '',
+        minimum_point: '',
+        maximum_point: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -34,7 +36,7 @@ export default function FindingPriorityCreate() {
         post(route('finding-priorities.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                reset('label', 'description', 'sla_resolution_hours');
+                reset('label', 'description', 'color_code', 'minimum_point', 'maximum_point', 'sla_resolution_hours');
             },
         });
     };

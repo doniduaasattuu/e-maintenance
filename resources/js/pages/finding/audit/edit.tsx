@@ -28,6 +28,20 @@ type FindingEditProps = {
     workCenters: {
         data: WorkCenter[];
     };
+    priorityScales: {
+        safety: {
+            point: number;
+            label: string;
+        }[];
+        quality: {
+            point: number;
+            label: string;
+        }[];
+        breakdown: {
+            point: number;
+            label: string;
+        }[];
+    };
 };
 
 export default function FindingEdit({
@@ -38,6 +52,7 @@ export default function FindingEdit({
     causeCodes,
     departments,
     workCenters,
+    priorityScales,
 }: FindingEditProps) {
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
@@ -83,6 +98,7 @@ export default function FindingEdit({
         <AppLayout breadcrumbs={breadcrumbs}>
             <FindingEditLayout finding={finding.data} moduleKey="AUDIT" mode="edit" type="AUD" className="w-full max-w-xl space-y-6">
                 <FindingForm
+                    priorityScales={priorityScales}
                     data={data}
                     findingClauses={findingClauses}
                     findingStatuses={findingStatuses}

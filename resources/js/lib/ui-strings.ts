@@ -337,6 +337,21 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         },
     },
 
+    PLANT: {
+        label: 'Plant',
+        plural: 'Plants',
+        description:
+            'Represents the organizational and logistical unit responsible for maintaining the technical object, managing its costs, and linking it to company structures',
+        create: {
+            header: 'Create Plant',
+            description: 'Add a new plant.',
+        },
+        edit: {
+            header: 'Edit Plant',
+            description: 'Update the plant.',
+        },
+    },
+
     INSPECTION_AIR_CONDITIONER: {
         label: 'AC Inspection',
         plural: 'AC Inspections',

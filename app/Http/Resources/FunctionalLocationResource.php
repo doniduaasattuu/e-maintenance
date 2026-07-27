@@ -22,7 +22,9 @@ class FunctionalLocationResource extends JsonResource
             'findings' => FindingResource::collection($this->whenLoaded('findings')),
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
+            'plant_id' => $this->plant_id,
             'images' => ImageResource::collection($this->whenLoaded('images')),
+            'plant' => new PlantResource($this->whenLoaded('plant')),
         ];
     }
 }

@@ -29,7 +29,8 @@ class UpdateFunctionalLocationRequest extends FormRequest
                 'regex:/^([A-Z0-9]+-)*[A-Z0-9]+$/',
                 Rule::unique('functional_locations', 'code')->ignore($this->functional_location),
             ],
-            'description' => ['required']
+            'description' => ['required'],
+            'plant_id' => ['required', 'exists:plants,id', 'numeric']
         ];
     }
 }
