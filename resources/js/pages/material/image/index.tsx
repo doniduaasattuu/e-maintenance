@@ -99,7 +99,7 @@ export default function MaterialImage({ material }: MaterialImageProps) {
                             errors={errors}
                             data={data}
                             recentlySuccessful={recentlySuccessful}
-                            className="max-w-xs"
+                            className="max-w-sm"
                         />
                     )}
                 </div>

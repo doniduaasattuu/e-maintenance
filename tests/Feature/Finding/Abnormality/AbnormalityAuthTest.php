@@ -67,7 +67,7 @@ test('guest cannot access abnormality create form', function () {
 });
 
 test('guest cannot access abnormality edit form', function () {
-    $finding = Finding::first();
+    $finding = Finding::factory()->create();
 
     $this
         ->get(route('abnormalities.edit', $finding->id))

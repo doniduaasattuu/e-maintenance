@@ -260,6 +260,7 @@ export default function FindingForm({
                     disabled={processing}
                 />
                 <FindingPriorityPoint
+                    tabIndex={9}
                     priorityScales={priorityScales}
                     priorities={findingPriorities}
                     selectedPriority={data.finding_priority_id}
@@ -275,13 +276,17 @@ export default function FindingForm({
                     isCompressing={isCompressing}
                     disabled={processing}
                     tabIndex={10}
+                    onRemoveImage={(index: number) => {
+                        const newImages = data.images?.filter((_, idx) => idx !== index) || null;
+                        setData('images', newImages && newImages.length > 0 ? newImages : null);
+                    }}
                 />
             )}
 
             {canSubmit && (
                 <ButtonSubmit
                     processing={processing}
-                    disabled={processing || disabledWhen}
+                    disabled={processing || disabledWhen || data.images == null}
                     tabIndex={11}
                     recentlySuccessful={recentlySuccessful}
                     successMessage={successMessage}

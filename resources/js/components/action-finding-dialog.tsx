@@ -180,6 +180,10 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
                         isCompressing={isCompressing}
                         disabled={processing}
                         tabIndex={4}
+                        onRemoveImage={(index: number) => {
+                            const newImages = data.images?.filter((_, idx) => idx !== index) || null;
+                            setData('images', newImages && newImages.length > 0 ? newImages : null);
+                        }}
                     />
 
                     <DialogFooter>

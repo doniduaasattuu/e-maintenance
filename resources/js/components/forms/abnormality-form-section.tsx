@@ -161,6 +161,10 @@ export default function AbnormalityFormSection({
                 isCompressing={isCompressing}
                 disabled={processing}
                 tabIndex={startTabIndex + 7}
+                onRemoveImage={(index: number) => {
+                    const newImages = data.images?.filter((_, idx) => idx !== index) || null;
+                    setData('images', newImages && newImages.length > 0 ? newImages : null);
+                }}
             />
         </div>
     );

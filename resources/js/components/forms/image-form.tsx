@@ -59,37 +59,12 @@ export default function ImageForm({ submit, processing, setData, errors, data, r
                 isCompressing={isCompressing}
                 disabled={processing}
                 tabIndex={10}
+                onRemoveImage={(index: number) => {
+                    const newImages = data.images?.filter((_, idx) => idx !== index) || null;
+                    setData('images', newImages && newImages.length > 0 ? newImages : null);
+                }}
             />
-            {/* <Field className={className}>
-                <FieldLabel htmlFor="image">Upload</FieldLabel>
-                <Input
-                    type="file"
-                    id="image"
-                    ref={fileInputRef}
-                    disabled={processing}
-                    onChange={handleFileChange}
-                    accept=".jpg,.jpeg,.png,.webp"
-                    capture="environment"
-                />
 
-                {data.image && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                        <div className="relative size-16 overflow-hidden rounded border bg-slate-100">
-                            <img src={URL.createObjectURL(data.image)} alt="preview" className="size-full object-cover" />
-                        </div>
-                    </div>
-                )}
-
-                <FieldError>{errors.image}</FieldError>
-
-                {data.image && data.image.size > 1 && (
-                    <FieldDescription className="flex items-center gap-1">
-                        <Check className="h-4 w-4" />
-                        {`Compressed to ${(data.image?.size / 1024 / 1024).toFixed(2)} MB`}
-                    </FieldDescription>
-                )}
-                {isCompressing && <CompressingDescription />}
-            </Field> */}
             <ButtonSubmit
                 processing={processing}
                 disabled={processing || data.images == null}

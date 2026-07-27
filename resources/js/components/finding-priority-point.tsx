@@ -29,9 +29,10 @@ export interface Props {
             point: number;
         }[];
     };
+    tabIndex?: number;
 }
 
-export default function FindingPriorityPoint({ selectedPriority, priorities, setData, priorityScales }: Props) {
+export default function FindingPriorityPoint({ selectedPriority, priorities, setData, priorityScales, tabIndex }: Props) {
     const safetyItems = priorityScales.safety;
     const qualityItems = priorityScales.quality;
     const breakdownItems = priorityScales.breakdown;
@@ -59,7 +60,7 @@ export default function FindingPriorityPoint({ selectedPriority, priorities, set
 
     return (
         <Field>
-            <FieldLabel htmlFor="finding_status_id">
+            <FieldLabel htmlFor="finding_priority_id">
                 Finding Priority
                 <RequiredLabel />
             </FieldLabel>
@@ -67,6 +68,8 @@ export default function FindingPriorityPoint({ selectedPriority, priorities, set
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger>
                     <Button
+                        tabIndex={tabIndex}
+                        id="finding_priority_id"
                         size={'sm'}
                         variant="outline"
                         onClick={(e) => {

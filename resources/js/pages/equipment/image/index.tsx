@@ -98,7 +98,7 @@ export default function EquipmentImage({ equipment }: EquipmentImageProps) {
                             errors={errors}
                             data={data}
                             recentlySuccessful={recentlySuccessful}
-                            className="max-w-xs"
+                            className="max-w-sm"
                         />
                     )}
                 </div>
