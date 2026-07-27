@@ -208,7 +208,7 @@ export default function Register({ departments }: RegisterProps) {
                     }
                 >
                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                    Create account
+                    {processing ? 'Creating your account' : 'Create account'}
                 </Button>
 
                 <div className="text-muted-foreground text-center text-sm">
