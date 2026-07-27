@@ -1,17 +1,19 @@
-import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { LoaderCircle, LogIn } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import { InputPassword } from '@/components/input-password';
+import RequiredLabel from '@/components/required-label';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import AuthLayout from '@/layouts/auth-layout';
+import { SharedData } from '@/types';
 
 type LoginForm = {
-    email: string;
+    identifier: string;
     password: string;
     remember: boolean;
 };
@@ -22,8 +24,11 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword = false }: LoginProps) {
+    const page = usePage<SharedData>();
+    const { name } = page.props;
+
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
-        email: '',
+        identifier: '',
         password: '',
         remember: false,
     });
@@ -36,29 +41,35 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
     };
 
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
+        <AuthLayout title={name ? name : 'Log in to your account'} description="Enter your email or employee id and password below to log in">
             <Head title="Log in" />
 
             <form className="space-y-6" onSubmit={submit}>
                 <Field>
-                    <FieldLabel htmlFor="email">Email address</FieldLabel>
+                    <FieldLabel htmlFor="identifier">
+                        Email / Employee ID
+                        <RequiredLabel />
+                    </FieldLabel>
                     <Input
-                        id="email"
-                        type="email"
+                        id="identifier"
+                        type="identifier"
                         required
                         autoFocus
                         tabIndex={1}
-                        autoComplete="email"
-                        value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
-                        placeholder="email@example.com"
+                        autoComplete="identifier"
+                        value={data.identifier}
+                        onChange={(e) => setData('identifier', e.target.value)}
+                        placeholder="Enter your email or employee ID"
                     />
-                    <FieldError>{errors.email}</FieldError>
+                    <FieldError>{errors.identifier}</FieldError>
                 </Field>
 
                 <Field className="grid gap-2">
                     <div className="flex items-center">
-                        <FieldLabel htmlFor="password">Password</FieldLabel>
+                        <FieldLabel htmlFor="password">
+                            Password
+                            <RequiredLabel />
+                        </FieldLabel>
                         {canResetPassword && (
                             <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={6}>
                                 Forgot password?
@@ -90,8 +101,7 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
                 </div>
 
                 <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
-                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                    Log in
+                    {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LogIn />} {processing ? 'Logging in' : 'Log in'}
                 </Button>
 
                 <div className="text-muted-foreground text-center text-sm">

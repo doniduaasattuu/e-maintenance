@@ -8,11 +8,30 @@ test('login screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
-test('users can authenticate using the login screen', function () {
+test('users can authenticate using email on the login screen', function () {
     $user = User::factory()->create();
 
     $response = $this->post('/login', [
-        'email' => $user->email,
+        'identifier' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('dashboard', absolute: false));
+    event(new \App\Events\UserActivityDetected($user->fresh()));
+
+    expect($user->refresh()->isOnline())->toBe(true);
+});
+
+test('users can authenticate using user id on the login screen', function () {
+    $user = User::factory()->create([
+        'employee_id' => '12345678'
+    ]);
+
+    $this->assertNotNull($user->employee_id);
+
+    $response = $this->post('/login', [
+        'identifier' => $user->employee_id,
         'password' => 'password',
     ]);
 
@@ -27,7 +46,7 @@ test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
     $this->post('/login', [
-        'email' => $user->email,
+        'identifier' => $user->email,
         'password' => 'wrong-password',
     ]);
 
