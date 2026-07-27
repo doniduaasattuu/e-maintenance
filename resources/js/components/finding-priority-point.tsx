@@ -170,7 +170,7 @@ export default function FindingPriorityPoint({ selectedPriority, priorities, set
                         </div>
                         <div className="text-muted-foreground flex items-center gap-2 text-xs">
                             <Info className="size-3 shrink-0" />
-                            Jumlah point &lt; 2 (Priority 3)
+                            Jumlah point &lt;= 2 (Priority 3)
                         </div>
                     </div>
                     <DialogFooter className="items-end">

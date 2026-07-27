@@ -8,6 +8,7 @@ use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FunctionalLocation extends Model
 {
@@ -20,6 +21,13 @@ class FunctionalLocation extends Model
         'description',
         'plant_id',
     ];
+
+    public static function areaExpression(): string
+    {
+        return DB::getDriverName() === 'sqlite'
+            ? 'substr(code,1,5)'
+            : 'LEFT(code,5)';
+    }
 
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void

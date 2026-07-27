@@ -71,11 +71,12 @@ abstract class FindingController extends Controller
         $departments = Department::all();
         $workCenters = WorkCenter::all();
         $causeCodes = CauseCode::all();
+        $expr = FunctionalLocation::areaExpression();
         $areaOptions = FunctionalLocation::query()
-            ->selectRaw('LEFT(code, 5) as value')
-            ->selectRaw('MIN(description) as label')
-            ->groupBy(DB::raw('LEFT(code, 5)'))
-            ->orderBy('value', 'asc')
+            ->selectRaw("$expr as value")
+            ->selectRaw("MIN(description) as label")
+            ->groupBy(DB::raw($expr))
+            ->orderBy('value')
             ->get();
 
         return Inertia::render("finding/{$this->map[$this->getTypeCode()]}/index", [
