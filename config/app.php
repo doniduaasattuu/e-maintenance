@@ -123,5 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'maximum_file_upload' => env('MAXIMUM_FILE_UPLOAD', '40960')
+    'maximum_file_upload' => env('MAXIMUM_FILE_UPLOAD', '40960'),
+    'prefer_funcloc_code' => env('PREFER_FUNCLOC_CODE', true),
 ];

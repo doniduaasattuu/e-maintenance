@@ -58,6 +58,7 @@ export interface SharedData {
     config: {
         maximumFileUpload: number;
     };
+    preferFunclocCode: boolean;
     [key: string]: unknown;
 }
 

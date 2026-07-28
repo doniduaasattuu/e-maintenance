@@ -41,7 +41,7 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
     };
 
     return (
-        <AuthLayout title={name ? name : 'Log in to your account'} description="Enter your email or employee id and password below to log in">
+        <AuthLayout title={name ? name : 'Log in to your account'} description="Enter your email or employee id and password to log in">
             <Head title="Log in" />
 
             <form className="space-y-6" onSubmit={submit}>
@@ -52,7 +52,7 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
                     </FieldLabel>
                     <Input
                         id="identifier"
-                        type="identifier"
+                        type="text"
                         required
                         autoFocus
                         tabIndex={1}
@@ -78,6 +78,7 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
                     </div>
                     <InputPassword
                         id="password"
+                        type="password"
                         required
                         tabIndex={2}
                         autoComplete="current-password"
