@@ -178,6 +178,9 @@ export interface EquipmentClass {
     description: string | null;
     created_at: string;
     updated_at: string;
+
+    equipments: Equipment[] | null;
+    types: EquipmentType[] | null;
 }
 
 export interface EquipmentStatus {
@@ -198,10 +201,12 @@ export interface Equipment {
     findings?: Finding[];
     equipment_class_id: number | null;
     equipment_status_id: number | null;
+    equipment_type_id: number | null;
     functionalLocation: FunctionalLocation | null;
 
     eclass: EquipmentClass | null;
     status: EquipmentStatus | null;
+    type: EquipmentType | null;
     images: null | Image[];
 
     created_at: string;
@@ -500,4 +505,17 @@ export interface Plant {
     updated_at: string;
 
     functionalLocation?: FunctionalLocation;
+}
+
+export interface EquipmentType {
+    id: number;
+    equipment_class_id: number;
+    code: string;
+    name: string;
+    description?: string;
+    is_active: number;
+    created_at: string;
+    updated_at: string;
+
+    equipmentClass: EquipmentClass | null;
 }

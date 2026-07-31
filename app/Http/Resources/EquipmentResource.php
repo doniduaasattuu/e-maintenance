@@ -22,6 +22,7 @@ class EquipmentResource extends JsonResource
             'functional_location_id' => $this->functional_location_id,
             'equipment_class_id' => $this->equipment_class_id,
             'equipment_status_id' => $this->equipment_status_id,
+            'equipment_type_id' => $this->equipment_type_id,
 
             'functionalLocation' => new FunctionalLocationResource($this->whenLoaded('functionalLocation')),
             'eclass' => new EquipmentClassResource($this->whenLoaded('eclass')),

@@ -101,6 +101,11 @@ class Equipment extends Model
         return $this->belongsTo(EquipmentStatus::class, 'equipment_status_id');
     }
 
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(EquipmentType::class, 'equipment_type_id');
+    }
+
     public function installDismantleHistories(): HasMany
     {
         return $this->hasMany(InstallDismantleHistory::class);

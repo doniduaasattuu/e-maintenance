@@ -2,23 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
-class EquipmentClass extends Model
+class EquipmentType extends Model
 {
-    use HasFactory;
-
-    protected $table = 'equipment_classes';
+    protected $table = 'equipment_types';
 
     protected $fillable = [
+        'equipment_class_id',
         'code',
         'name',
-        'formable_type',
         'description',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     #[Scope]
@@ -31,19 +34,18 @@ class EquipmentClass extends Model
                 $query
                     ->where('code', 'LIKE', "%{$search}%")
                     ->orWhere('name', 'LIKE', "%{$search}%")
-                    ->orWhere('formable', 'LIKE', "%{$search}%")
                     ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }
     }
 
-    public function equipments(): HasMany
+    public function equipmentClass(): BelongsTo
     {
-        return $this->hasMany(Equipment::class, 'equipment_class_id', 'id');
+        return $this->belongsTo(EquipmentClass::class);
     }
 
-    public function types(): HasMany
+    public function equipments(): HasMany
     {
-        return $this->hasMany(EquipmentType::class, 'equipment_class_id', 'id');
+        return $this->hasMany(Equipment::class);
     }
 }

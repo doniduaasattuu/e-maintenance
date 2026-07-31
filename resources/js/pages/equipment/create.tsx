@@ -1,9 +1,9 @@
-import EquipmentForm, { EquipmentFormData } from '@/components/forms/equipment-form';
+import EquipmentForm, { EquipmentFormData, EquipmentFormProps } from '@/components/forms/equipment-form';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import FormLayout from '@/layouts/form/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, EquipmentClass, EquipmentStatus } from '@/types';
+import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -19,16 +19,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-interface EquipmentCreateProps {
-    equipmentClasses: {
-        data: EquipmentClass[];
-    };
-    equipmentStatuses: {
-        data: EquipmentStatus[];
-    };
-}
-
-export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }: EquipmentCreateProps) {
+export default function EquipmentCreate({ equipmentClasses, equipmentStatuses, equipmentTypes }: EquipmentFormProps) {
     const { can } = usePermissions();
     const { data, setData, post, errors, processing, reset, recentlySuccessful } = useForm<Required<EquipmentFormData>>({
         code: '',
@@ -36,6 +27,7 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
         description: '',
         functional_location_id: '',
         equipment_class_id: '',
+        equipment_type_id: '',
         equipment_status_id: '',
     });
 
@@ -45,7 +37,15 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
         post(route('equipments.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                reset('code', 'sort_field', 'description', 'functional_location_id', 'equipment_class_id', 'equipment_status_id');
+                reset(
+                    'code',
+                    'sort_field',
+                    'description',
+                    'functional_location_id',
+                    'equipment_class_id',
+                    'equipment_type_id',
+                    'equipment_status_id',
+                );
             },
         });
     };
@@ -54,6 +54,7 @@ export default function EquipmentCreate({ equipmentClasses, equipmentStatuses }:
         <AppLayout breadcrumbs={breadcrumbs}>
             <FormLayout moduleKey="EQUIPMENT" mode="create">
                 <EquipmentForm
+                    equipmentTypes={equipmentTypes}
                     equipmentClasses={equipmentClasses}
                     equipmentStatuses={equipmentStatuses}
                     data={data}

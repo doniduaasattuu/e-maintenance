@@ -105,6 +105,21 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         },
     },
 
+    EQUIPMENT_TYPE: {
+        label: 'Equipment Type',
+        plural: 'Equipment Types',
+        description:
+            'Defines specific categories within an equipment class to determine inspection templates, maintenance procedures, and operational characteristics.',
+        create: {
+            header: 'Create Equipment Type',
+            description: 'Create a new equipment type under an equipment class.',
+        },
+        edit: {
+            header: 'Edit Equipment Type',
+            description: 'Modify the details or classification of an existing equipment type.',
+        },
+    },
+
     MATERIAL_UNIT: {
         label: 'Material Unit',
         plural: 'Material Units',

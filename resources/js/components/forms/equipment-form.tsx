@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import usePermissions from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
-import { EquipmentClass, EquipmentStatus, FunctionalLocation } from '@/types';
+import { Equipment, EquipmentClass, EquipmentStatus, EquipmentType, FunctionalLocation } from '@/types';
 import { Info } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import ButtonSubmit from '../button-submit';
@@ -18,10 +18,12 @@ export type EquipmentFormData = {
     description: string;
     functional_location_id: string;
     equipment_class_id: string;
+    equipment_type_id: string;
     equipment_status_id: string;
 };
 
-interface EquipmentFormProps {
+export interface EquipmentFormProps {
+    equipment?: Equipment;
     id?: number | undefined;
     functionalLocation?: FunctionalLocation | null;
     equipmentClasses: {
@@ -29,6 +31,9 @@ interface EquipmentFormProps {
     };
     equipmentStatuses: {
         data: EquipmentStatus[];
+    };
+    equipmentTypes: {
+        data: EquipmentType[];
     };
     data: Required<EquipmentFormData>;
     setData: <K extends keyof EquipmentFormData>(key: K, value: EquipmentFormData[K]) => void;
@@ -49,6 +54,7 @@ export default function EquipmentForm({
     functionalLocation,
     equipmentClasses,
     equipmentStatuses,
+    equipmentTypes,
     data,
     setData,
     errors,
@@ -133,30 +139,59 @@ export default function EquipmentForm({
                 <FieldError>{errors.functional_location_id}</FieldError>
             </Field>
 
-            <Field>
-                <FieldLabel htmlFor="equipment_class_id">
-                    Equipment class
-                    <RequiredLabel />
-                </FieldLabel>
-                <Select disabled={processing} onValueChange={(e) => setData('equipment_class_id', e)} value={data.equipment_class_id}>
-                    <SelectTrigger tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
-                        <SelectValue placeholder="Select a equipment class" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel className="text-muted-foreground">Equipment class</SelectLabel>
-                            {equipmentClasses.data.map((p) => {
-                                return (
-                                    <SelectItem key={p.id} value={p.id.toString()}>
-                                        {p.code + ' - ' + p.name}
-                                    </SelectItem>
-                                );
-                            })}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-                <FieldError>{errors.equipment_class_id}</FieldError>
-            </Field>
+            <div className="flex justify-between gap-2">
+                <Field>
+                    <FieldLabel htmlFor="equipment_class_id">
+                        Equipment class
+                        <RequiredLabel />
+                    </FieldLabel>
+                    <Select disabled={processing} onValueChange={(e) => setData('equipment_class_id', e)} value={data.equipment_class_id}>
+                        <SelectTrigger tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
+                            <SelectValue placeholder="Select a equipment class" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel className="text-muted-foreground">Equipment class</SelectLabel>
+                                {equipmentClasses &&
+                                    equipmentClasses.data.map((p) => {
+                                        return (
+                                            <SelectItem key={p.id} value={p.id.toString()}>
+                                                {p.code + ' - ' + p.name}
+                                            </SelectItem>
+                                        );
+                                    })}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <FieldError>{errors.equipment_class_id}</FieldError>
+                </Field>
+
+                <Field>
+                    <FieldLabel htmlFor="equipment_type_id">
+                        Equipment type
+                        <RequiredLabel />
+                    </FieldLabel>
+                    <Select disabled={processing} onValueChange={(e) => setData('equipment_type_id', e)} value={data.equipment_type_id}>
+                        <SelectTrigger tabIndex={6} className="truncate overflow-hidden whitespace-nowrap">
+                            <SelectValue placeholder="Select a equipment type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel className="text-muted-foreground">Equipment type</SelectLabel>
+                                {equipmentTypes &&
+                                    equipmentTypes.data.map((p) => {
+                                        return (
+                                            <SelectItem key={p.id} value={p.id.toString()}>
+                                                {p.code + ' - ' + p.name}
+                                            </SelectItem>
+                                        );
+                                    })}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <FieldError>{errors.equipment_type_id}</FieldError>
+                </Field>
+            </div>
 
             <Field>
                 <FieldLabel htmlFor="equipment_status_id">
@@ -170,13 +205,14 @@ export default function EquipmentForm({
                     <SelectContent>
                         <SelectGroup>
                             <SelectLabel className="text-muted-foreground">Equipment status</SelectLabel>
-                            {equipmentStatuses.data.map((p) => {
-                                return (
-                                    <SelectItem key={p.id} value={p.id.toString()}>
-                                        {p.code + ' - ' + p.name}
-                                    </SelectItem>
-                                );
-                            })}
+                            {equipmentStatuses &&
+                                equipmentStatuses.data.map((p) => {
+                                    return (
+                                        <SelectItem key={p.id} value={p.id.toString()}>
+                                            {p.code + ' - ' + p.name}
+                                        </SelectItem>
+                                    );
+                                })}
                         </SelectGroup>
                     </SelectContent>
                 </Select>

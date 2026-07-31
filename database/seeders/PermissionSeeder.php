@@ -25,6 +25,7 @@ class PermissionSeeder extends Seeder
             'Material',
             'EquipmentClass',
             'EquipmentStatus',
+            'EquipmentType',
             'InstallDismantleHistory',
             'Inspection',
             'InspectionMotor',

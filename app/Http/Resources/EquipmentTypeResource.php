@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EquipmentClassResource extends JsonResource
+class EquipmentTypeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,13 +18,13 @@ class EquipmentClassResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'name' => $this->name,
-            'formable_type' => $this->formable_type,
             'description' => $this->description,
+            'is_active' => $this->is_active,
+            'equipment_class_id' => $this->equipment_class_id,
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
 
-            'equipments' => EquipmentResource::collection($this->whenLoaded('equipments')),
-            'types' => EquipmentTypeResource::collection($this->whenLoaded('types')),
+            'equipmentClass' => new EquipmentClassResource($this->whenLoaded('equipmentClass')),
         ];
     }
 }

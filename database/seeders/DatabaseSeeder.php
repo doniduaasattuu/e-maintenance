@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             FunctionalLocationSeeder::class,
             EquipmentClassSeeder::class,
             EquipmentStatusSeeder::class,
+            EquipmentTypeSeeder::class,
             EquipmentSeeder::class,
             InspectionPanelSeeder::class,
             QualityRatingSeeder::class,

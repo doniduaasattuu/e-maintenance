@@ -6,7 +6,6 @@ use App\Exports\PanelTrendExport;
 use App\Http\Requests\InspectionPanel\StoreInspectionPanelRequest;
 use App\Http\Requests\InspectionPanel\UpdateInspectionPanelRequest;
 use App\Http\Resources\EquipmentResource;
-use App\Http\Resources\InspectionMotorResource;
 use App\Http\Resources\InspectionPanelResource;
 use App\Models\Equipment;
 use App\Models\Finding;
