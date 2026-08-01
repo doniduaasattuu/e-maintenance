@@ -188,7 +188,10 @@ class EquipmentController extends Controller
         try {
             $equipment->update($request->validated());
 
-            return back();
+            return redirect(route('equipments.edit', $equipment->id))->with('message', [
+                'type' => 'success',
+                'description' => 'Equipment updated successfully',
+            ]);
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',

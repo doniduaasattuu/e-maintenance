@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\EquipmentStatus;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class EquipmentStatusSeeder extends Seeder

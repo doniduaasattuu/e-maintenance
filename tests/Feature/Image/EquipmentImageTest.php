@@ -3,6 +3,7 @@
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
+use App\Models\EquipmentType;
 use App\Models\Image;
 use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\EquipmentSeeder;
@@ -85,6 +86,7 @@ test('test delete equipment and images are also automatically deleted', function
     $equipment = Equipment::factory()->create([
         'equipment_class_id' => EquipmentClass::first()->id,
         'equipment_status_id' => EquipmentStatus::first()->id,
+        'equipment_type_id' => EquipmentType::first()->id,
     ]);
 
     $this->assertNotNull($equipment);

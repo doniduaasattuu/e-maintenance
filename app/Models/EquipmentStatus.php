@@ -14,6 +14,13 @@ class EquipmentStatus extends Model
 
     protected $table = 'equipment_statuses';
 
+    public const INSTALLED = 'INST';
+
+    public function isInstalled(): bool
+    {
+        return $this->code === self::INSTALLED;
+    }
+
     protected $fillable = [
         'code',
         'name',

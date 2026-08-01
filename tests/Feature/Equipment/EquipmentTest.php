@@ -3,6 +3,7 @@
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
+use App\Models\EquipmentType;
 use App\Models\FunctionalLocation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -61,6 +62,9 @@ test('store equipment successfully', function () {
     $functionalLocation = FunctionalLocation::factory()->create();
     $equipmentClass = EquipmentClass::factory()->create();
     $equipmentStatus = EquipmentStatus::factory()->create();
+    $equipmentType = EquipmentType::factory()->create([
+        'equipment_class_id' => EquipmentClass::first()->id,
+    ]);
 
     $response = $this
         ->actingAs(createAdminUser())
@@ -71,7 +75,8 @@ test('store equipment successfully', function () {
             'description' => 'AC MOTOR;380V;4P;1500RPM;40A',
             'functional_location_id' => $functionalLocation->id,
             'equipment_class_id' => $equipmentClass->id,
-            'equipment_status_id' => $equipmentStatus->id
+            'equipment_status_id' => $equipmentStatus->id,
+            'equipment_type_id' => $equipmentType->id,
         ]);
 
     $response
@@ -124,11 +129,19 @@ test('update equipment successfully', function () {
     $equipment = Equipment::factory()->create();
     $functionalLocation = FunctionalLocation::factory()->create();
     $equipmentClass = EquipmentClass::factory()->create();
-    $equipmentStatus = EquipmentStatus::factory()->create();
+    $equipmentStatus = EquipmentStatus::firstOrCreate([
+        'id' => 1,
+        'code' => 'INST',
+        'name' => 'Installed',
+        'description' => 'Equipment is installed',
+    ]);
+    $equipmentType = EquipmentType::factory()->create([
+        'equipment_class_id' => EquipmentClass::factory()->create()->id,
+    ]);
 
     expect($equipment)->not()->toBe(null);
 
-    $this
+    $response = $this
         ->actingAs(createAdminUser())
         ->from(route('equipments.edit', $equipment->id))
         ->patch(route('equipments.update', $equipment->id), [
@@ -137,16 +150,24 @@ test('update equipment successfully', function () {
             'description' => 'AC MOTOR;380V;4P;1500RPM;40A',
             'functional_location_id' => $functionalLocation->id,
             'equipment_class_id' => $equipmentClass->id,
-            'equipment_status_id' => $equipmentStatus->id
+            'equipment_status_id' => $equipmentStatus->id,
+            'equipment_type_id' => $equipmentType->id,
         ])
         ->assertRedirect(route('equipments.edit', $equipment->id));
 
-    assertDatabaseHas('equipments', ['code' => 'ELP123456']);
+    $equipment->refresh();
+    $this->assertEquals($equipment->code, 'ELP123456');
+    $this->assertEquals($equipment->sort_field, 'PM3.VACUUM.M-CLEAN');
+    $this->assertEquals($equipment->description, 'AC MOTOR;380V;4P;1500RPM;40A');
+
+    $response->assertSessionHas('message', [
+        'type' => 'success',
+        'description' => 'Equipment updated successfully',
+    ]);
 });
 
 test('update equipment fails validation', function () {
     $equipment = Equipment::factory()->create();
-    $functionalLocation = FunctionalLocation::factory()->create();
 
     $this
         ->actingAs(createAdminUser())
@@ -156,8 +177,9 @@ test('update equipment fails validation', function () {
             'sort_field' => 'SUPER LONG SORT FIELD SHOULD BE FAILED VALIDATION IN EQUIPMENT STORE REQUEST BECAUSE MORE THAN 50 CHARACTER',
             'description' => '',
             'functional_location_id' => 'FP-01-PM3-OCC-PULP-P001',
-            'equipment_class_id' => '2',
-            'equipment_status_id' => '100',
+            'equipment_class_id' => null,
+            'equipment_status_id' => null,
+            'equipment_type_id' => null,
         ])
         ->assertSessionHasErrors([
             'code',
@@ -165,7 +187,8 @@ test('update equipment fails validation', function () {
             'description',
             'functional_location_id',
             'equipment_class_id',
-            'equipment_status_id'
+            'equipment_status_id',
+            'equipment_type_id',
         ]);
 });
 

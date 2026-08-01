@@ -28,6 +28,7 @@ class StoreEquipmentRequest extends FormRequest
             'functional_location_id' => ['nullable', 'required_if:equipment_status_id,1',  'prohibited_unless:equipment_status_id,1', 'exists:functional_locations,id'],
             'equipment_class_id' => ['required', 'exists:equipment_classes,id'],
             'equipment_status_id' => ['required', 'exists:equipment_statuses,id'],
+            'equipment_type_id' => ['required', 'exists:equipment_types,id'],
         ];
     }
 
