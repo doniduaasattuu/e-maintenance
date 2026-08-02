@@ -27,6 +27,7 @@ class EquipmentResource extends JsonResource
             'functionalLocation' => new FunctionalLocationResource($this->whenLoaded('functionalLocation')),
             'eclass' => new EquipmentClassResource($this->whenLoaded('eclass')),
             'status' => new EquipmentStatusResource($this->whenLoaded('status')),
+            'type' => new EquipmentTypeResource($this->whenLoaded('type')),
 
             'findings' => FindingResource::collection($this->whenLoaded('findings')),
 
