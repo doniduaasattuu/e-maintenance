@@ -10,21 +10,32 @@ use Illuminate\Support\Str;
 
 class RepositoryService
 {
+    private function generateFilename(string $title, string $extension): string
+    {
+        return Str::slug($title) . '.' . Str::lower($extension);
+    }
+
     public function store(StoreRepositoryRequest $request)
     {
         $validated = $request->validated();
-
         $file = $request->file('file');
-        $repoPath = $file->store('repositories', 'public');
-        $extension = $file->extension();
-        $mime_type = $file->getClientMimeType();
+        $extension = Str::lower($file->extension());
+        $filename = $this->generateFilename(
+            $validated['title'],
+            $extension
+        );
+        $path = $file->storeAs(
+            'repositories',
+            $filename,
+            'public'
+        );
 
         Repository::create([
-            'title'        => $validated['title'],
-            'uploaded_by'  => $validated['uploaded_by'],
-            'extension'    => Str::lower($extension),
-            'mime_type'    => $mime_type,
-            'path'         => $repoPath,
+            'title'       => $validated['title'],
+            'uploaded_by' => $validated['uploaded_by'],
+            'extension'   => $extension,
+            'mime_type'   => $file->getClientMimeType(),
+            'path'        => $path,
         ]);
     }
 
@@ -41,36 +52,63 @@ class RepositoryService
     {
         $validated = $request->validated();
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $extension = $file->extension();
-            $mime_type = $file->getClientMimeType();
+        $title = $validated['title'];
 
-            $oldExtension = $repository->extension;
+        if ($request->hasFile('file')) {
 
             if (Storage::disk('public')->exists($repository->path)) {
                 Storage::disk('public')->delete($repository->path);
             }
 
-            if ($oldExtension !== $extension) {
-                $newPath = str_replace('.' . $oldExtension, '.' . $extension, $repository->path);
-            } else {
-                $newPath = $repository->path;
-            }
+            $file = $request->file('file');
 
-            Storage::disk('public')->put($newPath, file_get_contents($file));
+            $extension = Str::lower($file->extension());
+
+            $filename = $this->generateFilename(
+                $title,
+                $extension
+            );
+
+            $path = $file->storeAs(
+                'repositories',
+                $filename,
+                'public'
+            );
 
             $repository->update([
-                'title'       => $validated['title'],
+                'title'       => $title,
                 'uploaded_by' => $validated['uploaded_by'],
-                'extension'   => Str::lower($extension),
-                'mime_type'   => $mime_type,
-                'path'        => $newPath,
+                'extension'   => $extension,
+                'mime_type'   => $file->getClientMimeType(),
+                'path'        => $path,
             ]);
-        } else {
-            $repository->update([
-                'title'        => $validated['title'],
-            ]);
+
+            return;
         }
+
+        // Tidak upload file, hanya rename file
+        $extension = $repository->extension;
+
+        $newFilename = $this->generateFilename(
+            $title,
+            $extension
+        );
+
+        $newPath = 'repositories/' . $newFilename;
+
+        if (
+            $repository->path !== $newPath &&
+            Storage::disk('public')->exists($repository->path)
+        ) {
+            Storage::disk('public')->move(
+                $repository->path,
+                $newPath
+            );
+        }
+
+        $repository->update([
+            'title' => $title,
+            'path'  => $newPath,
+        ]);
     }
 }

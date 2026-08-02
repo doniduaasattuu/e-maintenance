@@ -173,23 +173,22 @@ test('it replaces file and updates path correctly when extension changes', funct
 
     $newFile = UploadedFile::fake()->create('update_dokumen.xlsx', 100);
     $newExtension = 'xlsx';
-    $expectedNewPath = 'repositories/file_rahasia.xlsx';
 
     $response = actingAs(createAdminUser())
         ->post(route('repositories.update', $repository->id), [
-            'title' => 'Judul Baru',
+            'title' => 'New Title File With Different Extension',
             'file'  => $newFile,
         ]);
 
     $response->assertRedirect();
+    $expectedNewPath = 'repositories/' . Str::slug('New Title File With Different Extension') . '.' . $newExtension;
 
     Storage::disk('public')->assertMissing($oldPath);
-
     Storage::disk('public')->assertExists($expectedNewPath);
 
     assertDatabaseHas('repositories', [
         'id'        => $repository->id,
-        'title'     => 'Judul Baru',
+        'title'     => 'New Title File With Different Extension',
         'extension' => $newExtension,
         'path'      => $expectedNewPath,
     ]);
@@ -213,12 +212,14 @@ test('it only updates title if no file is uploaded', function () {
             'file'  => null,
         ]);
 
-    Storage::disk('public')->assertExists($path);
+    $newPath = 'repositories/' . Str::slug('Judul Diganti') . '.pdf';
+    Storage::disk('public')->assertMissing($path);
+    Storage::disk('public')->assertExists($newPath);
 
     assertDatabaseHas('repositories', [
         'id'    => $repository->id,
         'title' => 'Judul Diganti',
-        'path'  => $path,
+        'path'  => $newPath,
     ]);
 });
 
