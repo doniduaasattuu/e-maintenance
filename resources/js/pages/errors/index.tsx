@@ -17,6 +17,9 @@ export default function ErrorPage({ status, title, description }: { status: numb
     const user: User | undefined = auth?.user;
     const [processing, setProcessing] = useState<boolean>(false);
 
+    const preventRenderStatuses = [503];
+    const buttonRender = preventRenderStatuses.includes(status) ? false : true;
+
     const handleActionButton = () => {
         router.get(
             user ? route('dashboard') : route('login'),
@@ -40,21 +43,23 @@ export default function ErrorPage({ status, title, description }: { status: numb
                     <p className="text-muted-foreground max-w-xl">{description}</p>
                 </div>
 
-                <div className="mt-8">
-                    <Button onClick={handleActionButton} disabled={processing}>
-                        {user ? (
-                            <>
-                                {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LayoutGrid />}
-                                Dashboard
-                            </>
-                        ) : (
-                            <>
-                                {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <KeySquare />}
-                                Login
-                            </>
-                        )}
-                    </Button>
-                </div>
+                {buttonRender && (
+                    <div className="mt-8">
+                        <Button onClick={handleActionButton} disabled={processing}>
+                            {user ? (
+                                <>
+                                    {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LayoutGrid />}
+                                    Dashboard
+                                </>
+                            ) : (
+                                <>
+                                    {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <KeySquare />}
+                                    Login
+                                </>
+                            )}
+                        </Button>
+                    </div>
+                )}
             </div>
         </AppLayout>
     );
