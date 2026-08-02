@@ -415,7 +415,7 @@ const TENANT_OVERRIDES: Record<string, Partial<Record<string, Partial<UIEntry>>>
     },
 };
 
-const tenant = import.meta.env.VITE_APP_TENANT || 'DEFAULT';
+const tenant = import.meta.env.TENANT || 'FAJAR';
 
 export const UI_STRINGS = {
     ...DEFAULT_STRINGS,
