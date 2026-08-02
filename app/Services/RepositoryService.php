@@ -6,6 +6,7 @@ use App\Http\Requests\Repository\StoreRepositoryRequest;
 use App\Http\Requests\Repository\UpdateRepositoryRequest;
 use App\Models\Repository;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RepositoryService
 {
@@ -21,7 +22,7 @@ class RepositoryService
         Repository::create([
             'title'        => $validated['title'],
             'uploaded_by'  => $validated['uploaded_by'],
-            'extension'    => $extension,
+            'extension'    => Str::lower($extension),
             'mime_type'    => $mime_type,
             'path'         => $repoPath,
         ]);
@@ -62,7 +63,7 @@ class RepositoryService
             $repository->update([
                 'title'       => $validated['title'],
                 'uploaded_by' => $validated['uploaded_by'],
-                'extension'   => $extension,
+                'extension'   => Str::lower($extension),
                 'mime_type'   => $mime_type,
                 'path'        => $newPath,
             ]);

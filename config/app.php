@@ -125,4 +125,45 @@ return [
 
     'maximum_file_upload' => env('MAXIMUM_FILE_UPLOAD', '40960'),
     'prefer_funcloc_code' => env('PREFER_FUNCLOC_CODE', true),
+
+    'priority_scales' => [
+        'safety' => [
+            [
+                'label' => 'Ya',
+                'point' => 10
+            ],
+            [
+                'label' => 'Tidak',
+                'point' => 0
+            ],
+        ],
+        'quality' => [
+            [
+                'label' => 'Sudah terjadi',
+                'point' => 5
+            ],
+            [
+                'label' => 'Akan terjadi',
+                'point' => 3
+            ],
+            [
+                'label' => 'Tidak terjadi',
+                'point' => 1
+            ],
+        ],
+        'breakdown' => [
+            [
+                'label' => 'Sudah breakdown',
+                'point' => 5
+            ],
+            [
+                'label' => 'Akan breakdown',
+                'point' => 3
+            ],
+            [
+                'label' => 'Tidak breakdown',
+                'point' => 1
+            ],
+        ],
+    ],
 ];

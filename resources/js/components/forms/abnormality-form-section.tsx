@@ -1,4 +1,5 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
+import { handleImageUploadHelper } from '@/lib/utils';
 import { CauseCode, Department, FindingClause, FindingPriority, FindingStatus, WorkCenter } from '@/types';
 import { ChangeEvent, useState } from 'react';
 import CauseCodeSelect from '../cause-code-select';
@@ -56,30 +57,15 @@ export default function AbnormalityFormSection({
 }: AbnormalityFormSectionProps) {
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
-    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
 
-        if (!files || files.length === 0) return;
-
-        setIsCompressing(true);
-
-        try {
-            const fileArray = Array.from(files);
-
-            const compressionPromises = fileArray.map(async (file) => {
-                return await compressImage(file);
-            });
-
-            const compressedFiles = await Promise.all(compressionPromises);
-
-            setData('images', compressedFiles);
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error('Compression failed: ', error);
-            }
-        } finally {
-            setIsCompressing(false);
-        }
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        handleImageUploadHelper({
+            e,
+            compressFn: compressImage,
+            setIsCompressing,
+            setData,
+            fieldKey: 'images',
+        });
     };
 
     return (

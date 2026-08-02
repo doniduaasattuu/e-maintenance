@@ -1,5 +1,6 @@
 import { Meta } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
+import { ChangeEvent } from 'react';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
@@ -74,3 +75,75 @@ export default function truncateText(str: string, maxLength: number = 40) {
     }
     return str.slice(0, maxLength) + '...';
 }
+
+/**
+ * Memotong nama file secara aman tanpa merusak ekstensi gambar agar muat di VARCHAR(255)
+ */
+export const limitFileName = (fileName: string, maxLength: number = 255): string => {
+    if (fileName.length <= maxLength) return fileName;
+
+    const lastDotIndex = fileName.lastIndexOf('.');
+    if (lastDotIndex === -1) {
+        return fileName.substring(0, maxLength);
+    }
+
+    const extension = fileName.substring(lastDotIndex);
+    const nameWithoutExt = fileName.substring(0, lastDotIndex);
+    const allowedNameLength = maxLength - extension.length;
+
+    return nameWithoutExt.substring(0, allowedNameLength) + extension;
+};
+
+interface HandleImageUploadOptions {
+    e: ChangeEvent<HTMLInputElement>;
+    compressFn: (file: File) => Promise<Blob>;
+    setIsCompressing: (loading: boolean) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setData: (key: any, value: any) => void; // Menyesuaikan dengan Inertia useForm setData
+    fieldKey?: string; // Default: 'images'
+}
+
+/**
+ * Handler reusable untuk memproses upload gambar, kompresi, dan pembatasan nama file 255 karakter
+ */
+export const handleImageUploadHelper = async ({
+    e,
+    compressFn,
+    setIsCompressing,
+    setData,
+    fieldKey = 'images',
+}: HandleImageUploadOptions): Promise<void> => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsCompressing(true);
+
+    try {
+        const fileArray = Array.from(files);
+
+        const compressionPromises = fileArray.map(async (file) => {
+            // Jalankan fungsi kompresi eksternal yang di-passing
+            const compressedBlob = await compressFn(file);
+
+            // Batasi karakter nama file
+            const safeName = limitFileName(file.name, 255);
+
+            // Kembalikan ke objek File utuh dengan nama asli
+            return new File([compressedBlob], safeName, {
+                type: compressedBlob.type,
+                lastModified: Date.now(),
+            });
+        });
+
+        const compressedFiles = await Promise.all(compressionPromises);
+
+        // Update state formulir Inertia
+        setData(fieldKey, compressedFiles);
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error('Compression helper failed:', error);
+        }
+    } finally {
+        setIsCompressing(false);
+    }
+};

@@ -223,7 +223,6 @@ export default function Dashboard({
     topMainPlants,
     plantProgress,
 }: DashboardProps) {
-    console.log(plantProgress);
     const [month, setMonth] = useState(selectedMonth);
     const [week, setWeek] = useState(selectedWeek);
 

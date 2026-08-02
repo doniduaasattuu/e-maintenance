@@ -26,7 +26,7 @@ export default function Lightbox({ onClose, image }: LightboxProps) {
                 className="animate-in zoom-in-95 max-h-full max-w-full rounded-lg object-contain shadow-2xl duration-300"
             />
             {isFindingImage(image) && (
-                <div className="absolute bottom-8 rounded-full bg-black/40 px-4 py-2 text-sm text-white/70">{cfl(image.category)}</div>
+                <div className="absolute bottom-8 rounded-full bg-black/40 px-4 py-2 text-sm text-white/70">{cfl(image.original_name)}</div>
             )}
         </div>
     );
