@@ -23,12 +23,14 @@ class UpdateEquipmentRequest extends FormRequest
      */
     public function rules(): array
     {
+        $tenant = config('app.tenant', 'FAJAR');
+        $pattern = config("equipment.code_patterns.$tenant.regex");
+
         return [
             'code' => [
                 'required',
                 'string',
-                'size:9',
-                'regex:/^[A-Z]{3}\d{6}$/',
+                "regex:$pattern",
                 Rule::unique('equipments', 'code')->ignore($this->equipment),
             ],
 

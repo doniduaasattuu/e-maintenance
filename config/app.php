@@ -166,4 +166,6 @@ return [
             ],
         ],
     ],
+
+    'tenant' => env('TENANT', 'FAJAR'),
 ];

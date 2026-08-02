@@ -21,8 +21,11 @@ class StoreEquipmentRequest extends FormRequest
      */
     public function rules(): array
     {
+        $tenant = config('app.tenant', 'FAJAR');
+        $pattern = config("equipment.code_patterns.$tenant.regex");
+
         return [
-            'code' => ['required', 'string', 'size:9', 'regex:/^[A-Z]{3}\d{6}$/', 'unique:equipments,code'],
+            'code' => ['required', 'string', 'unique:equipments,code', "regex:$pattern"],
             'sort_field' => ['nullable', 'string', 'max:50'],
             'description' => ['required', 'string', 'max:255'],
             'functional_location_id' => ['nullable', 'required_if:equipment_status_id,1',  'prohibited_unless:equipment_status_id,1', 'exists:functional_locations,id'],

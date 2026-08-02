@@ -70,7 +70,7 @@ test('store equipment successfully', function () {
         ->actingAs(createAdminUser())
         ->from(route('equipments.create'))
         ->post(route('equipments.store'), [
-            'code' => 'EMO123456',
+            'code' => config('app.tenant') == 'FAJAR' ? 'ELP123456' : '70001001',
             'sort_field' => 'PM3.VACUUM.M-CLEAN',
             'description' => 'AC MOTOR;380V;4P;1500RPM;40A',
             'functional_location_id' => $functionalLocation->id,
@@ -83,7 +83,7 @@ test('store equipment successfully', function () {
         ->assertStatus(302)
         ->assertRedirect(route('equipments.create'));
 
-    $functionalLocation = Equipment::where('code', 'EMO123456')->first();
+    $functionalLocation = Equipment::where('code', config('app.tenant') == 'FAJAR' ? 'ELP123456' : '70001001',)->first();
     expect($functionalLocation)->not()->toBeNull();
 });
 
@@ -145,7 +145,7 @@ test('update equipment successfully', function () {
         ->actingAs(createAdminUser())
         ->from(route('equipments.edit', $equipment->id))
         ->patch(route('equipments.update', $equipment->id), [
-            'code' => 'ELP123456',
+            'code' => config('app.tenant') == 'FAJAR' ? 'ELP123456' : '70001001',
             'sort_field' => 'PM3.VACUUM.M-CLEAN',
             'description' => 'AC MOTOR;380V;4P;1500RPM;40A',
             'functional_location_id' => $functionalLocation->id,
@@ -156,7 +156,7 @@ test('update equipment successfully', function () {
         ->assertRedirect(route('equipments.edit', $equipment->id));
 
     $equipment->refresh();
-    $this->assertEquals($equipment->code, 'ELP123456');
+    $this->assertEquals($equipment->code, config('app.tenant') == 'FAJAR' ? 'ELP123456' : '70001001',);
     $this->assertEquals($equipment->sort_field, 'PM3.VACUUM.M-CLEAN');
     $this->assertEquals($equipment->description, 'AC MOTOR;380V;4P;1500RPM;40A');
 

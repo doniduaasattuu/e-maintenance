@@ -23,7 +23,7 @@ class EquipmentFactory extends Factory
         $equipmentClass = EquipmentClass::first() ?? EquipmentClass::factory()->create();
 
         return [
-            'code' => Str::upper(fake()->lexify('???')) . fake()->numerify('######'),
+            'code' => config('app.tenant') == 'FAJAR' ? Str::upper(fake()->lexify('???')) . fake()->numerify('######') : fake()->numerify('########'),
             'sort_field' => Str::upper(fake()->sentence(2)),
             'description' => Str::ucfirst(fake()->sentence(4)),
             'equipment_class_id' => $equipmentClass->id,
