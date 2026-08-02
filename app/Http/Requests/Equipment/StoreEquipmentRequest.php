@@ -21,7 +21,7 @@ class StoreEquipmentRequest extends FormRequest
      */
     public function rules(): array
     {
-        $tenant = env('TENANT', 'FAJAR');
+        $tenant = config('app.tenant', 'FAJAR');
         $pattern = config("equipment.code_patterns.$tenant.regex");
 
         return [
