@@ -78,7 +78,6 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
                     </div>
                     <InputPassword
                         id="password"
-                        type="password"
                         required
                         tabIndex={2}
                         autoComplete="current-password"

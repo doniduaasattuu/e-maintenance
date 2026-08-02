@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Models\Repository;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RenameRepositoryFiles extends Command
 {
@@ -12,7 +14,7 @@ class RenameRepositoryFiles extends Command
      *
      * @var string
      */
-    protected $signature = 'app:rename-repository-files';
+    protected $signature = 'repository:rename-files';
 
     /**
      * The console command description.
