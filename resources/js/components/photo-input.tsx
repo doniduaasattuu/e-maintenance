@@ -6,6 +6,7 @@ import { ChangeEvent, DragEvent, useRef, useState } from 'react';
 import CompressingDescription from './compressing-description';
 
 interface PhotoInputProps {
+    variant?: 'dropzone' | 'standard';
     images: File[] | null;
     onFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
     onRemoveImage?: (index: number) => void;
@@ -19,6 +20,7 @@ interface PhotoInputProps {
 }
 
 export default function PhotoInput({
+    variant = 'dropzone',
     images,
     onFileChange,
     onRemoveImage,
@@ -80,16 +82,8 @@ export default function PhotoInput({
             </FieldLabel>
 
             {/* Container Interaktif Dropzone */}
-            <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={triggerFileInput}
-                className={`relative cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-all duration-200 ${
-                    isDragging ? 'border-primary bg-primary/5 scale-[1.01]' : 'border-input hover:border-accent-foreground/30 bg-background'
-                } ${(disabled || isCompressing) && 'cursor-not-allowed opacity-50'}`}
-            >
-                {/* Input File Bawaan Shadcn UI (Disembunyikan secara visual) */}
+
+            {variant === 'standard' ? (
                 <Input
                     tabIndex={tabIndex}
                     type="file"
@@ -99,16 +93,38 @@ export default function PhotoInput({
                     disabled={disabled || isCompressing}
                     onChange={onFileChange}
                     accept="image/jpg, image/jpeg, image/png, image/webp"
-                    className="sr-only"
                 />
+            ) : (
+                <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={triggerFileInput}
+                    className={`relative cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-all duration-200 ${
+                        isDragging ? 'border-primary bg-primary/5 scale-[1.01]' : 'border-input hover:border-accent-foreground/30 bg-background'
+                    } ${(disabled || isCompressing) && 'cursor-not-allowed opacity-50'}`}
+                >
+                    {/* Input File Bawaan Shadcn UI (Disembunyikan secara visual) */}
+                    <Input
+                        tabIndex={tabIndex}
+                        type="file"
+                        id="images"
+                        multiple
+                        ref={fileInputRef}
+                        disabled={disabled || isCompressing}
+                        onChange={onFileChange}
+                        accept="image/jpg, image/jpeg, image/png, image/webp"
+                        className="sr-only"
+                    />
 
-                {/* Konten UI Informasi Teks di dalam Kotak */}
-                <div className="selective-none pointer-events-none flex flex-col items-center justify-center gap-2">
-                    <UploadCloud className={`size-6 ${isDragging ? 'text-primary animate-bounce' : 'text-muted-foreground'}`} />
-                    <p className="text-sm">{isDragging ? 'Drop the image here!' : 'Drag & drop images here, or click to select'}</p>
-                    <p className="text-muted-foreground text-xs">Supports jpg, jpeg, png, webp formats</p>
+                    {/* Konten UI Informasi Teks di dalam Kotak */}
+                    <div className="selective-none pointer-events-none flex flex-col items-center justify-center gap-2">
+                        <UploadCloud className={`size-6 ${isDragging ? 'text-primary animate-bounce' : 'text-muted-foreground'}`} />
+                        <p className="text-sm">{isDragging ? 'Drop the image here!' : 'Drag & drop images here, or click to select'}</p>
+                        <p className="text-muted-foreground text-xs">Supports jpg, jpeg, png, webp formats</p>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Area Preview File Gambar */}
             {images && images.length > 0 && (

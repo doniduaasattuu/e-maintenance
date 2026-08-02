@@ -1,4 +1,5 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { handleImageUploadHelper } from '@/lib/utils';
 import { CauseCode, Department, FindingClause, FindingPriority, FindingStatus, WorkCenter } from '@/types';
 import { ChangeEvent, useState } from 'react';
@@ -57,6 +58,7 @@ export default function AbnormalityFormSection({
 }: AbnormalityFormSectionProps) {
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
+    const isMobile = useIsMobile();
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         handleImageUploadHelper({
@@ -141,6 +143,7 @@ export default function AbnormalityFormSection({
             </div>
 
             <PhotoInput
+                variant={isMobile ? 'standard' : 'dropzone'}
                 images={data.images ?? null}
                 onFileChange={handleFileChange}
                 error={errors.images}

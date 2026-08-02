@@ -3,6 +3,7 @@ import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { toDateString } from '@/hooks/use-date';
 import { useImageCompressor } from '@/hooks/use-image-compressor';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { handleImageUploadHelper } from '@/lib/utils';
 import { Finding } from '@/types';
 import { useForm } from '@inertiajs/react';
@@ -30,6 +31,7 @@ type UploadImageData = {
 
 export function ActionFindingDialog({ children, finding }: ActionFindingDialogProps) {
     const [open, setOpen] = useState(false);
+    const isMobile = useIsMobile();
 
     const [closedDate, setClosedDate] = useState<Date | undefined>(new Date());
     const [closedTime, setClosedTime] = useState<string | undefined>(closedDate?.toTimeString().slice(0, 8));
@@ -159,6 +161,7 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
                     </div>
 
                     <PhotoInput
+                        variant={isMobile ? 'standard' : 'dropzone'}
                         images={data.images}
                         onFileChange={handleFileChange}
                         error={errors.images}

@@ -1,4 +1,5 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn, handleImageUploadHelper } from '@/lib/utils';
 import { AxiosProgressEvent } from 'axios';
 import { ChangeEvent, FormEventHandler, useState } from 'react';
@@ -23,6 +24,7 @@ interface ImageFormParams {
 export default function ImageForm({ submit, processing, setData, errors, data, recentlySuccessful, className }: ImageFormParams) {
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
+    const isMobile = useIsMobile();
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         handleImageUploadHelper({
@@ -37,6 +39,7 @@ export default function ImageForm({ submit, processing, setData, errors, data, r
     return (
         <form onSubmit={submit} className={cn(className, 'space-y-6')}>
             <PhotoInput
+                variant={isMobile ? 'standard' : 'dropzone'}
                 images={data.images}
                 onFileChange={handleFileChange}
                 error={errors.images}

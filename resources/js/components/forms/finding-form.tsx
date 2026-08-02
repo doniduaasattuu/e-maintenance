@@ -1,4 +1,5 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn, handleImageUploadHelper } from '@/lib/utils';
 import { CauseCode, Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation, WorkCenter } from '@/types';
 import { ChangeEvent, FormEventHandler, useState } from 'react';
@@ -105,6 +106,7 @@ export default function FindingForm({
 }: FindingFormProps) {
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
+    const isMobile = useIsMobile();
 
     const disabledAudit =
         data.finding_clause_id == '' ||
@@ -254,6 +256,7 @@ export default function FindingForm({
 
             {!isEditing && (
                 <PhotoInput
+                    variant={isMobile ? 'standard' : 'dropzone'}
                     images={data.images}
                     onFileChange={handleFileChange}
                     error={errors.images}
