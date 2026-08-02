@@ -22,6 +22,9 @@ class EquipmentClassResource extends JsonResource
             'description' => $this->description,
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
+
+            'equipments' => EquipmentResource::collection($this->whenLoaded('equipments')),
+            'types' => EquipmentTypeResource::collection($this->whenLoaded('types')),
         ];
     }
 }

@@ -13,6 +13,7 @@ use Database\Seeders\CauseCodeSeeder;
 use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\EquipmentSeeder;
 use Database\Seeders\EquipmentStatusSeeder;
+use Database\Seeders\EquipmentTypeSeeder;
 use Database\Seeders\FindingClauseSeeder;
 use Database\Seeders\FindingPrioritySeeder;
 use Database\Seeders\FindingStatusSeeder;
@@ -24,11 +25,13 @@ use Database\Seeders\MaterialUnitSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    Storage::fake('public');
     $this->generatePermissions(['Finding', 'Audit', 'Abnormality']);
     Permission::findOrCreate('view_all_finding');
 
@@ -42,6 +45,7 @@ beforeEach(function () {
         FunctionalLocationSeeder::class,
         EquipmentClassSeeder::class,
         EquipmentStatusSeeder::class,
+        EquipmentTypeSeeder::class,
         EquipmentSeeder::class,
         MaterialUnitSeeder::class,
         MaterialTypeSeeder::class,

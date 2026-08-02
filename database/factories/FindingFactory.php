@@ -106,7 +106,7 @@ class FindingFactory extends Factory
             'finding_status_id' => $findingStatus->id,
             'finding_priority_id' => FindingPriority::inRandomOrder()->first()->id,
             'cause_code_id' => $type->code == 'ABN' ? CauseCode::inRandomOrder()->first()->id : null,
-            'equipment_id' => Equipment::inRandomOrder()->first()->id ?? Equipment::factory(),
+            'equipment_id' => Equipment::inRandomOrder()->first()->id ?? Equipment::factory()->create()->id,
             'functional_location_id' => FunctionalLocation::inRandomOrder()->first()->id ?? FunctionalLocation::factory(),
             'description' => $description,
             'department_id' => Department::inRandomOrder()->first()->id,

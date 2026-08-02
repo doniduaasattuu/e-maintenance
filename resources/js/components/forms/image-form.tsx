@@ -1,5 +1,6 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
-import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn, handleImageUploadHelper } from '@/lib/utils';
 import { AxiosProgressEvent } from 'axios';
 import { ChangeEvent, FormEventHandler, useState } from 'react';
 import ButtonSubmit from '../button-submit';
@@ -23,36 +24,22 @@ interface ImageFormParams {
 export default function ImageForm({ submit, processing, setData, errors, data, recentlySuccessful, className }: ImageFormParams) {
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
+    const isMobile = useIsMobile();
 
-    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-
-        if (!files || files.length === 0) return;
-
-        setIsCompressing(true);
-
-        try {
-            const fileArray = Array.from(files);
-
-            const compressionPromises = fileArray.map(async (file) => {
-                return await compressImage(file);
-            });
-
-            const compressedFiles = await Promise.all(compressionPromises);
-
-            setData('images', compressedFiles);
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error('Compression failed: ', error);
-            }
-        } finally {
-            setIsCompressing(false);
-        }
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        handleImageUploadHelper({
+            e,
+            compressFn: compressImage,
+            setIsCompressing,
+            setData,
+            fieldKey: 'images',
+        });
     };
 
     return (
         <form onSubmit={submit} className={cn(className, 'space-y-6')}>
             <PhotoInput
+                variant={isMobile ? 'standard' : 'dropzone'}
                 images={data.images}
                 onFileChange={handleFileChange}
                 error={errors.images}

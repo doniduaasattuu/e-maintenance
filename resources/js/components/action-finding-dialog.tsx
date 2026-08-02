@@ -3,6 +3,8 @@ import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { toDateString } from '@/hooks/use-date';
 import { useImageCompressor } from '@/hooks/use-image-compressor';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { handleImageUploadHelper } from '@/lib/utils';
 import { Finding } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
@@ -29,6 +31,7 @@ type UploadImageData = {
 
 export function ActionFindingDialog({ children, finding }: ActionFindingDialogProps) {
     const [open, setOpen] = useState(false);
+    const isMobile = useIsMobile();
 
     const [closedDate, setClosedDate] = useState<Date | undefined>(new Date());
     const [closedTime, setClosedTime] = useState<string | undefined>(closedDate?.toTimeString().slice(0, 8));
@@ -53,30 +56,14 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
 
-    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-
-        if (!files || files.length === 0) return;
-
-        setIsCompressing(true);
-
-        try {
-            const fileArray = Array.from(files);
-
-            const compressionPromises = fileArray.map(async (file) => {
-                return await compressImage(file);
-            });
-
-            const compressedFiles = await Promise.all(compressionPromises);
-
-            setData('images', compressedFiles);
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error('Compression failed: ', error);
-            }
-        } finally {
-            setIsCompressing(false);
-        }
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        handleImageUploadHelper({
+            e,
+            compressFn: compressImage,
+            setIsCompressing,
+            setData,
+            fieldKey: 'images',
+        });
     };
 
     const submit: FormEventHandler = (e) => {
@@ -174,6 +161,7 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
                     </div>
 
                     <PhotoInput
+                        variant={isMobile ? 'standard' : 'dropzone'}
                         images={data.images}
                         onFileChange={handleFileChange}
                         error={errors.images}

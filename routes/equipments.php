@@ -6,6 +6,7 @@ use App\Http\Controllers\EquipmentMaterialController;
 use App\Http\Controllers\EquipmentStatusController;
 use App\Http\Controllers\EquipmentFindingController;
 use App\Http\Controllers\EquipmentTrendController;
+use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InspectionPanelController;
 use App\Http\Controllers\InstallDismantleHistoryController;
@@ -52,4 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // EQUIPMENT STATUS
     Route::get('equipment-statuses/export', [EquipmentStatusController::class, 'export'])->name('equipment-statuses.export');
     Route::resource('equipment-statuses', EquipmentStatusController::class);
+    // EQUIPMENt TYPE
+    // Route::get('equipment-types/export', [EquipmentTypeController::class, 'export'])->name('equipment-types.export');
+    Route::resource('equipment-types', EquipmentTypeController::class);
 });

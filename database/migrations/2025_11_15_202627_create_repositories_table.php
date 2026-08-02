@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('repositories', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->unique();
             $table->string('path');
             $table->string('extension')->nullable();
             $table->string('mime_type')->nullable();

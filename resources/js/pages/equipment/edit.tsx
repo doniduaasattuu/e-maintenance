@@ -5,7 +5,7 @@ import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, Equipment, EquipmentClass, EquipmentStatus } from '@/types';
+import { BreadcrumbItem, Equipment, EquipmentClass, EquipmentStatus, EquipmentType } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -19,9 +19,12 @@ interface EquipmentEditProps {
     equipmentStatuses: {
         data: EquipmentStatus[];
     };
+    equipmentTypes: {
+        data: EquipmentType[];
+    };
 }
 
-export default function EquipmentEdit({ equipment, equipmentClasses, equipmentStatuses }: EquipmentEditProps) {
+export default function EquipmentEdit({ equipment, equipmentClasses, equipmentStatuses, equipmentTypes }: EquipmentEditProps) {
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -45,6 +48,7 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
         description: equipment.data.description ?? '',
         functional_location_id: equipment.data.functional_location_id?.toString() ?? '',
         equipment_class_id: equipment.data.equipment_class_id?.toString() ?? '',
+        equipment_type_id: equipment.data.equipment_type_id?.toString() ?? '',
         equipment_status_id: equipment.data.equipment_status_id?.toString() ?? '',
     });
 
@@ -73,6 +77,7 @@ export default function EquipmentEdit({ equipment, equipmentClasses, equipmentSt
                         id={equipment.data.id}
                         functionalLocation={equipment.data.functionalLocation}
                         equipmentClasses={equipmentClasses}
+                        equipmentTypes={equipmentTypes}
                         equipmentStatuses={equipmentStatuses}
                         data={data}
                         setData={setData}

@@ -38,7 +38,13 @@ class FunctionalLocation extends Model
             $builder->where(function ($query) use ($search) {
                 $query
                     ->where('code', 'LIKE', "%{$search}%")
-                    ->orWhere('description', 'LIKE', "%{$search}%");
+                    ->orWhere('description', 'LIKE', "%{$search}%")
+                    ->orWhereRelation('equipments', function (Builder $q) use ($search) {
+                        $q
+                            ->where('code', 'LIKE', "%{$search}%")
+                            ->orWhere('sort_field', 'LIKE', "%{$search}%")
+                            ->orWhere('description', 'LIKE', "%{$search}%");
+                    });
             });
         }
     }

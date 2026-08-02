@@ -24,6 +24,7 @@ class Equipment extends Model
         'functional_location_id',
         'equipment_class_id',
         'equipment_status_id',
+        'equipment_type_id',
     ];
 
     protected static function booted()
@@ -83,6 +84,7 @@ class Equipment extends Model
             'functionalLocation',
             'eclass',
             'status',
+            'type',
         ]);
     }
 
@@ -99,6 +101,11 @@ class Equipment extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(EquipmentStatus::class, 'equipment_status_id');
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(EquipmentType::class, 'equipment_type_id');
     }
 
     public function installDismantleHistories(): HasMany

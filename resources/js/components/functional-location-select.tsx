@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { FunctionalLocation } from '@/types';
+import { FunctionalLocation, SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { ArrowUpRightFromSquareIcon, Check, ChevronsUpDown } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -37,6 +38,9 @@ export default function FunctionalLocationSelect({
     const [open, setOpen] = useState(false);
     const [input, setInput] = useState('');
     const [options, setOptions] = useState<FunctionalLocation[]>([]);
+    const page = usePage<SharedData>();
+    const { preferFunclocCode } = page.props;
+
     // Gunakan state untuk UI yang reaktif, bukan Ref
     const [selectedLoc, setSelectedLoc] = useState<FunctionalLocation | null>(currentValue || null);
 
@@ -86,7 +90,9 @@ export default function FunctionalLocationSelect({
                                 !selectedLoc && 'text-muted-foreground',
                             )}
                         >
-                            <span className="truncate">{selectedLoc ? selectedLoc.code : placeholder || 'Select location...'}</span>
+                            <span className="truncate">
+                                {selectedLoc ? (preferFunclocCode ? selectedLoc.code : selectedLoc.description) : placeholder || 'Select location...'}
+                            </span>
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
                         </Button>
                     </PopoverTrigger>

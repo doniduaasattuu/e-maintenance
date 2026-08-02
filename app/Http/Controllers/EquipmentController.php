@@ -11,6 +11,7 @@ use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
+use App\Http\Resources\EquipmentTypeResource;
 use App\Http\Resources\FindingClauseResource;
 use App\Http\Resources\FindingPriorityResource;
 use App\Http\Resources\FindingResource;
@@ -21,6 +22,7 @@ use App\Models\Department;
 use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
+use App\Models\EquipmentType;
 use App\Models\FindingClause;
 use App\Models\FindingPriority;
 use App\Models\FindingStatus;
@@ -33,8 +35,6 @@ use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Throwable;
-
-use function Pest\Laravel\session;
 
 class EquipmentController extends Controller
 {
@@ -65,7 +65,7 @@ class EquipmentController extends Controller
 
         $perPage = $this->getPerPage($request);
 
-        $equipments = Equipment::with(['functionalLocation', 'eclass', 'status'])->search($request)->paginate($perPage)->withQueryString();
+        $equipments = Equipment::with(['functionalLocation', 'eclass', 'status', 'type'])->search($request)->paginate($perPage)->withQueryString();
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
 
@@ -89,10 +89,12 @@ class EquipmentController extends Controller
 
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
+        $equipmentTypes = EquipmentType::all();
 
         return Inertia::render('equipment/create', [
             'equipmentClasses' => EquipmentClassResource::collection($equipmentClasses),
             'equipmentStatuses' => EquipmentStatusResource::collection($equipmentStatuses),
+            'equipmentTypes' => EquipmentTypeResource::collection($equipmentTypes),
         ]);
     }
 
@@ -137,6 +139,7 @@ class EquipmentController extends Controller
             'functionalLocation',
             'eclass',
             'status',
+            'type',
         ]);
 
         return Inertia::render('equipment/show', [
@@ -165,11 +168,13 @@ class EquipmentController extends Controller
 
         $equipmentClasses = EquipmentClass::all();
         $equipmentStatuses = EquipmentStatus::all();
+        $equipmentTypes = EquipmentType::all();
 
         return Inertia::render('equipment/edit', [
             'equipment' => new EquipmentResource($equipment->load('functionalLocation')),
             'equipmentClasses' => EquipmentClassResource::collection($equipmentClasses),
             'equipmentStatuses' => EquipmentStatusResource::collection($equipmentStatuses),
+            'equipmentTypes' => EquipmentTypeResource::collection($equipmentTypes),
         ]);
     }
 
@@ -183,7 +188,10 @@ class EquipmentController extends Controller
         try {
             $equipment->update($request->validated());
 
-            return back();
+            return redirect(route('equipments.edit', $equipment->id))->with('message', [
+                'type' => 'success',
+                'description' => 'Equipment updated successfully',
+            ]);
         } catch (Throwable $e) {
             return back()->with('message', [
                 'type' => 'error',

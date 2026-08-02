@@ -4,6 +4,7 @@ use App\Models\Equipment;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentInspectionForm;
 use App\Models\EquipmentStatus;
+use App\Models\EquipmentType;
 use App\Models\InspectionAirConditioner;
 use Database\Seeders\EquipmentClassSeeder;
 use Database\Seeders\EquipmentStatusSeeder;
@@ -233,10 +234,14 @@ test('inspector user can access inspection ac edit page', function () {
 
     $class = EquipmentClass::where('formable_type', 'AC')->first();
     $status = EquipmentStatus::where('code', 'INST')->first();
+    $type = EquipmentType::first() ?? EquipmentType::factory()->create([
+        'equipment_class_id' => $class->id,
+    ]);
 
     $equipment = Equipment::factory()->create([
         'equipment_class_id' => $class->id,
         'equipment_status_id' => $status->id,
+        'equipment_type_id' => $type->id,
     ]);
 
     EquipmentInspectionForm::create([

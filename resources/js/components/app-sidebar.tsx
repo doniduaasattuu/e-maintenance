@@ -81,6 +81,11 @@ const mainNavItems: NavItem[] = [
                 permission: 'index_equipmentstatus',
             },
             {
+                title: strings?.EQUIPMENT_TYPE?.label ?? 'Equipment Type',
+                href: route('equipment-types.index'),
+                permission: 'index_equipmenttype',
+            },
+            {
                 title: strings?.MATERIAL_UNIT?.label ?? 'Material Unit',
                 href: route('material-units.index'),
                 permission: 'index_materialunit',

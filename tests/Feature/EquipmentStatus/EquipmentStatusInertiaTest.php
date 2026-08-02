@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\EquipmentStatus;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 

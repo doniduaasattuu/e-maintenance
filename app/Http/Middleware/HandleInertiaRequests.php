@@ -88,6 +88,7 @@ class HandleInertiaRequests extends Middleware
             'config' => [
                 'maximumFileUpload' => config('app.maximum_file_upload')
             ],
+            'preferFunclocCode' => config('app.prefer_funcloc_code')
         ];
     }
 }

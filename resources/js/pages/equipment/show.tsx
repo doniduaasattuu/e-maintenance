@@ -72,14 +72,24 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                         <FieldLabel htmlFor="functional_location_id">Functional location</FieldLabel>
                         <Input readOnly id="functional_location_id" value={equipment.data.functionalLocation?.code ?? ''} />
                     </Field>
-                    <Field>
-                        <FieldLabel htmlFor="equipment_class_id">Equipment class</FieldLabel>
-                        <Input
-                            readOnly
-                            id="equipment_class_id"
-                            value={equipment.data.eclass ? equipment.data.eclass?.code + ' - ' + equipment.data.eclass?.name : ''}
-                        />
-                    </Field>
+                    <div className="flex justify-between gap-2">
+                        <Field>
+                            <FieldLabel htmlFor="equipment_class_id">Equipment class</FieldLabel>
+                            <Input
+                                readOnly
+                                id="equipment_class_id"
+                                value={equipment.data.eclass ? equipment.data.eclass?.code + ' - ' + equipment.data.eclass?.name : ''}
+                            />
+                        </Field>
+                        <Field>
+                            <FieldLabel htmlFor="equipment_type_id">Equipment type</FieldLabel>
+                            <Input
+                                readOnly
+                                id="equipment_type_id"
+                                value={equipment.data.type ? equipment.data.type?.code + ' - ' + equipment.data.type?.name : ''}
+                            />
+                        </Field>
+                    </div>
                     <Field>
                         <FieldLabel htmlFor="equipment_status_id">Equipment status</FieldLabel>
                         <Input

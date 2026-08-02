@@ -19,7 +19,7 @@ use Throwable;
 class RepositoryController extends Controller
 {
     use HasPerPagePreference;
-    private $repositoryService;
+    private RepositoryService $repositoryService;
 
     public function __construct(RepositoryService $repositoryService)
     {

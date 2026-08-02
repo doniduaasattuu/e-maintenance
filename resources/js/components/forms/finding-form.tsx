@@ -1,5 +1,6 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
-import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn, handleImageUploadHelper } from '@/lib/utils';
 import { CauseCode, Department, Equipment, FindingClause, FindingPriority, FindingStatus, FunctionalLocation, WorkCenter } from '@/types';
 import { ChangeEvent, FormEventHandler, useState } from 'react';
 import ButtonSubmit from '../button-submit';
@@ -105,6 +106,7 @@ export default function FindingForm({
 }: FindingFormProps) {
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
+    const isMobile = useIsMobile();
 
     const disabledAudit =
         data.finding_clause_id == '' ||
@@ -115,30 +117,14 @@ export default function FindingForm({
     const disabledAbnormality = disabledAudit || data.cause_code_id == '' || data.department_id == '' || data.work_center_id == '';
     const disabledWhen = type == 'AUD' ? disabledAudit : disabledAbnormality;
 
-    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-
-        if (!files || files.length === 0) return;
-
-        setIsCompressing(true);
-
-        try {
-            const fileArray = Array.from(files);
-
-            const compressionPromises = fileArray.map(async (file) => {
-                return await compressImage(file);
-            });
-
-            const compressedFiles = await Promise.all(compressionPromises);
-
-            setData('images', compressedFiles);
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error('Compression failed: ', error);
-            }
-        } finally {
-            setIsCompressing(false);
-        }
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        handleImageUploadHelper({
+            e,
+            compressFn: compressImage,
+            setIsCompressing,
+            setData,
+            fieldKey: 'images',
+        });
     };
 
     findingClauses.data = findingClauses.data.filter((e: FindingClause) => {
@@ -270,6 +256,7 @@ export default function FindingForm({
 
             {!isEditing && (
                 <PhotoInput
+                    variant={isMobile ? 'standard' : 'dropzone'}
                     images={data.images}
                     onFileChange={handleFileChange}
                     error={errors.images}

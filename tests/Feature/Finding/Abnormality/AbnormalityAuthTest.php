@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    Storage::fake('public');
     $this->generatePermissions(['Finding']);
 
     $this->seed([
