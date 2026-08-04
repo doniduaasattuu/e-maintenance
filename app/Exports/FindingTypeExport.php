@@ -36,8 +36,8 @@ class FindingTypeExport implements FromQuery, WithMapping, WithHeadings, ShouldA
             $findingType->code,
             $findingType->name,
             $findingType->description,
-            $findingType->created_at?->format('Y-d-m h:i:s'),
-            $findingType->updated_at?->format('Y-d-m h:i:s'),
+            $findingType->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $findingType->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

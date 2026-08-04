@@ -9,10 +9,11 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class MaterialExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithEvents
+class MaterialExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithEvents, WithTitle
 {
     protected array $filters;
 
@@ -56,8 +57,8 @@ class MaterialExport implements FromQuery, WithHeadings, WithMapping, WithStyles
             $material?->type?->description ?? '-',
             $material?->unit?->name ?? '-',
 
-            $material?->created_at ?? '-',
-            $material?->updated_at ?? '-',
+            $material->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $material->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 
@@ -96,5 +97,11 @@ class MaterialExport implements FromQuery, WithHeadings, WithMapping, WithStyles
         return [
             1    => ['font' => ['bold' => true]],
         ];
+    }
+
+    #[Override]
+    public function title(): string
+    {
+        return 'materials';
     }
 }

@@ -29,15 +29,15 @@ class EquipmentStatusExport implements FromQuery, WithMapping, WithHeadings, Sho
         ];
     }
 
-    public function map($EquipmentStatus): array
+    public function map($equipmentStatus): array
     {
         return [
-            $EquipmentStatus->id,
-            $EquipmentStatus->code,
-            $EquipmentStatus->name,
-            $EquipmentStatus->description,
-            $EquipmentStatus->created_at?->format('Y-d-m h:i:s'),
-            $EquipmentStatus->updated_at?->format('Y-d-m h:i:s'),
+            $equipmentStatus->id,
+            $equipmentStatus->code,
+            $equipmentStatus->name,
+            $equipmentStatus->description,
+            $equipmentStatus->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $equipmentStatus->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

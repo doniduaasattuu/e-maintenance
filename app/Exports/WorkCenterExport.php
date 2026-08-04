@@ -34,8 +34,8 @@ class WorkCenterExport implements FromQuery, WithMapping, WithHeadings, ShouldAu
             $workCenter->id,
             $workCenter->code,
             $workCenter->name,
-            $workCenter->created_at?->format('Y-d-m h:i:s'),
-            $workCenter->updated_at?->format('Y-d-m h:i:s'),
+            $workCenter->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $workCenter->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

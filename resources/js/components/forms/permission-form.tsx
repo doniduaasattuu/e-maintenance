@@ -1,22 +1,24 @@
 import ButtonSubmit from '@/components/button-submit';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import React, { FormEventHandler } from 'react';
+import { AlertCircle } from 'lucide-react';
+import { FormEventHandler } from 'react';
 import { Field, FieldError, FieldLabel } from '../ui/field';
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface PermissionFormParams {
     submit: FormEventHandler;
     data: Required<PermissionFormData>;
     setData: <K extends keyof PermissionFormData>(key: K, value: PermissionFormData[K]) => void;
     processing: boolean;
-    selectedPermissions: string[];
-    setSelectedPermissions: React.Dispatch<React.SetStateAction<string[]>>;
     errors: Partial<Record<keyof PermissionFormData, string>>;
     buttonLabel: string;
     canSubmit: boolean;
     recentlySuccessful: boolean;
     successMessage?: string;
     className?: string;
+    editing?: boolean;
 }
 
 export type PermissionFormData = {
@@ -34,6 +36,7 @@ export default function PermissionForm({
     recentlySuccessful,
     successMessage,
     className,
+    editing = false,
 }: PermissionFormParams) {
     return (
         <form onSubmit={submit} className={cn('space-y-6', className)}>
@@ -55,6 +58,19 @@ export default function PermissionForm({
                 </div>
                 <FieldError>{errors.name}</FieldError>
             </Field>
+
+            {editing && (
+                <div className="w-full">
+                    <Alert className="border border-yellow-400">
+                        <AlertCircle />
+                        <AlertTitle>Warning</AlertTitle>
+                        <AlertDescription>
+                            Changing the permission name may break existing role assignments and authorization checks. Proceed only if you understand
+                            the consequences.
+                        </AlertDescription>
+                    </Alert>
+                </div>
+            )}
 
             {canSubmit && (
                 <ButtonSubmit

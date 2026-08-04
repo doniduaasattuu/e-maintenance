@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FindingClause extends Model
 {
+    /** @use HasFactory<\Database\Factories\FindingClauseFactory> */
+    use HasFactory;
+
     protected $table = 'finding_clauses';
 
     protected $fillable = [

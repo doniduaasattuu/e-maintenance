@@ -30,16 +30,16 @@ class EquipmentClassExport implements FromQuery, WithMapping, WithHeadings, Shou
         ];
     }
 
-    public function map($EquipmentClass): array
+    public function map($equipmentClass): array
     {
         return [
-            $EquipmentClass->id,
-            $EquipmentClass->code,
-            $EquipmentClass->name,
-            $EquipmentClass->formable_type,
-            $EquipmentClass->description,
-            $EquipmentClass->created_at?->format('Y-d-m h:i:s'),
-            $EquipmentClass->updated_at?->format('Y-d-m h:i:s'),
+            $equipmentClass->id,
+            $equipmentClass->code,
+            $equipmentClass->name,
+            $equipmentClass->formable_type,
+            $equipmentClass->description,
+            $equipmentClass->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $equipmentClass->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

@@ -5,7 +5,7 @@ import FormLayout from '@/layouts/form/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
-import React, { FormEventHandler } from 'react';
+import { FormEventHandler } from 'react';
 
 const strings = UI_STRINGS;
 const breadcrumbs: BreadcrumbItem[] = [
@@ -21,7 +21,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function PermissionCreate() {
     const { can } = usePermissions();
-    const [selectedPermissions, setSelectedPermissions] = React.useState<string[]>([]);
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<Required<PermissionFormData>>({
         name: '',
     });
@@ -40,12 +39,10 @@ export default function PermissionCreate() {
             <FormLayout moduleKey="PERMISSION" mode="create">
                 <PermissionForm
                     buttonLabel="Create"
-                    canSubmit={can.store_role}
+                    canSubmit={can.store_permission}
                     data={data}
                     errors={errors}
                     processing={processing}
-                    selectedPermissions={selectedPermissions}
-                    setSelectedPermissions={setSelectedPermissions}
                     setData={setData}
                     submit={submit}
                     recentlySuccessful={recentlySuccessful}

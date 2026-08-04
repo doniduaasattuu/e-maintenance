@@ -10,10 +10,11 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ArchivedFindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents
+class ArchivedFindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents, WithTitle
 {
     protected array $filters;
 
@@ -132,5 +133,11 @@ class ArchivedFindingExport implements FromQuery, WithHeadings, WithMapping, Sho
         return [
             1    => ['font' => ['bold' => true]],
         ];
+    }
+
+    #[Override]
+    public function title(): string
+    {
+        return 'archived_findings';
     }
 }

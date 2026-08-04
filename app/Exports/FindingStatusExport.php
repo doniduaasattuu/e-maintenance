@@ -34,8 +34,8 @@ class FindingStatusExport implements FromQuery, WithMapping, WithHeadings, Shoul
             $findingStatus->id,
             $findingStatus->name,
             $findingStatus->description,
-            $findingStatus->created_at?->format('Y-d-m h:i:s'),
-            $findingStatus->updated_at?->format('Y-d-m h:i:s'),
+            $findingStatus->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $findingStatus->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

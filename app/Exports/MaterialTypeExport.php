@@ -34,8 +34,8 @@ class MaterialTypeExport implements FromQuery, WithMapping, WithHeadings, Should
             $materialType->id,
             $materialType->code,
             $materialType->description,
-            $materialType->created_at?->format('Y-d-m h:i:s'),
-            $materialType->updated_at?->format('Y-d-m h:i:s'),
+            $materialType->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $materialType->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

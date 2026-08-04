@@ -10,10 +10,11 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents
+class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents, WithTitle
 {
     protected array $filters;
 
@@ -156,5 +157,11 @@ class FindingExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
         return [
             1    => ['font' => ['bold' => true]],
         ];
+    }
+
+    #[Override]
+    public function title(): string
+    {
+        return 'findings';
     }
 }
