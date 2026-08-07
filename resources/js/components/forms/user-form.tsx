@@ -158,13 +158,20 @@ export default function UserForm({
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                 <Field>
                     <FieldLabel htmlFor="department">Department</FieldLabel>
-                    <Select disabled={processing} onValueChange={(e) => setData('department_id', e)} value={data.department_id}>
+                    <Select
+                        disabled={processing}
+                        value={data.department_id}
+                        onValueChange={(value) => setData('department_id', value == 'null' ? '' : value)}
+                    >
                         <SelectTrigger tabIndex={5} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select a department" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
                                 <SelectLabel className="text-muted-foreground">Departments</SelectLabel>
+                                <SelectItem className="text-muted-foreground" value="null">
+                                    -- None --
+                                </SelectItem>
                                 {departments.data.map((d) => {
                                     return (
                                         <SelectItem key={d.id} value={d.id.toString()}>
@@ -180,13 +187,20 @@ export default function UserForm({
 
                 <Field>
                     <FieldLabel htmlFor="position">Position</FieldLabel>
-                    <Select disabled={processing} onValueChange={(e) => setData('position_id', e)} value={data.position_id}>
+                    <Select
+                        disabled={processing}
+                        onValueChange={(value) => setData('position_id', value == 'null' ? '' : value)}
+                        value={data.position_id}
+                    >
                         <SelectTrigger tabIndex={6} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select a position" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
                                 <SelectLabel className="text-muted-foreground">Positions</SelectLabel>
+                                <SelectItem className="text-muted-foreground" value="null">
+                                    -- None --
+                                </SelectItem>
                                 {positions.data.map((p) => {
                                     return (
                                         <SelectItem key={p.id} value={p.id.toString()}>
@@ -204,13 +218,20 @@ export default function UserForm({
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                 <Field>
                     <FieldLabel htmlFor="work_center">Work Center</FieldLabel>
-                    <Select disabled={processing} onValueChange={(e) => setData('work_center_id', e)} value={data.work_center_id}>
+                    <Select
+                        disabled={processing}
+                        onValueChange={(value) => setData('work_center_id', value == 'null' ? '' : value)}
+                        value={data.work_center_id}
+                    >
                         <SelectTrigger tabIndex={7} className="truncate overflow-hidden whitespace-nowrap">
                             <SelectValue placeholder="Select a work center" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
                                 <SelectLabel className="text-muted-foreground">Work centers</SelectLabel>
+                                <SelectItem className="text-muted-foreground" value="null">
+                                    -- None --
+                                </SelectItem>
                                 {workCenters.data.map((p) => {
                                     return (
                                         <SelectItem key={p.id} value={p.id.toString()}>
