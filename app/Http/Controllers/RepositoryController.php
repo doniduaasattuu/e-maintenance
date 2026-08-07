@@ -36,6 +36,18 @@ class RepositoryController extends Controller
 
         $repositories = Repository::with('uploadedBy')->orderBy('id', 'DESC')->search($request)->paginate($perPage)->withQueryString();
 
+        if ($request->expectsJson()) {
+            $query = Repository::query();
+
+            if ($request->filled('query')) {
+                $query->search($request);
+            }
+
+            $repositories = $query->take(20)->get();
+
+            return response()->json(RepositoryResource::collection($repositories));
+        }
+
         return Inertia::render('repository/index', [
             'repositories' => RepositoryResource::collection($repositories),
             'extensions' => Repository::distinct()->pluck('extension'),

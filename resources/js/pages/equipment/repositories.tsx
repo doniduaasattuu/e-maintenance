@@ -1,10 +1,14 @@
+import EquipmentRepositoryDialog from '@/components/equipment-repository-dialog';
 import HeadingSmall from '@/components/heading-small';
 import TableRepository from '@/components/tables/table-repository';
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
 import { BreadcrumbItem, Equipment, Meta, Repository } from '@/types';
 import { Head } from '@inertiajs/react';
+import { Plus } from 'lucide-react';
+import React from 'react';
 
 interface EquipmentRepositoriesProps {
     equipment: {
@@ -40,14 +44,37 @@ export default function EquipmentRepositories({ equipment, repositories, rendera
         },
     ];
 
+    const [open, setOpen] = React.useState<boolean>(false);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={repoTitle} />
 
-            <EquipmentLayout equipment={equipment.data} className="w-full max-w-xl space-y-4 lg:max-w-4xl">
-                <HeadingSmall title={repoTitle} description="Technical records and operational manuals." />
-                <TableRepository filters={filters} repositories={repositories} renderable={renderable} extensions={extensions} withHeader={false} />
+            <EquipmentLayout equipment={equipment.data} className="w-full max-w-xl space-y-4 lg:max-w-6xl">
+                <div className="flex justify-between gap-2">
+                    <HeadingSmall title={repoTitle} description="Technical records and operational manuals." />
+                    <Button
+                        title="Add related documents"
+                        size={'sm'}
+                        variant={'outline'}
+                        onClick={() => setOpen(!open)}
+                        className="text-muted-foreground"
+                    >
+                        <Plus className="h-4 w-4" />
+                        Attach
+                    </Button>
+                </div>
+                <TableRepository
+                    hiddenDelete={true}
+                    filters={filters}
+                    repositories={repositories}
+                    renderable={renderable}
+                    extensions={extensions}
+                    withHeader={false}
+                />
             </EquipmentLayout>
+
+            <EquipmentRepositoryDialog equipment={equipment} repositories={repositories} open={open} setOpen={() => setOpen(false)} />
         </AppLayout>
     );
 }

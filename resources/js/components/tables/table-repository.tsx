@@ -32,9 +32,17 @@ interface TableRepositoryProps {
         query: string;
         per_page: string;
     };
+    hiddenDelete?: boolean;
 }
 
-export default function TableRepository({ repositories, extensions, renderable, withHeader = true, filters }: TableRepositoryProps) {
+export default function TableRepository({
+    repositories,
+    extensions,
+    renderable,
+    withHeader = true,
+    filters,
+    hiddenDelete = false,
+}: TableRepositoryProps) {
     const { can, user } = usePermissions();
     const meta = repositories.meta;
     const caption = tableCaption(meta);
@@ -142,7 +150,7 @@ export default function TableRepository({ repositories, extensions, renderable, 
                                                             </DropdownMenuItem>
                                                         </Link>
                                                     )}
-                                                    {repository.can.delete && (
+                                                    {!hiddenDelete && repository.can.delete && (
                                                         <ActionConfirm
                                                             action={() => handleDeleteRepository(repository.id)}
                                                             title={`Delete Repository ${repository.title}?`}

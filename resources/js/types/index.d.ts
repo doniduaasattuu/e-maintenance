@@ -208,6 +208,7 @@ export interface Equipment {
     status: EquipmentStatus | null;
     type: EquipmentType | null;
     images: null | Image[];
+    repositories: Repository[] | [null];
 
     created_at: string;
     updated_at: string;
