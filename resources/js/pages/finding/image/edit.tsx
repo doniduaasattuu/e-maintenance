@@ -53,21 +53,29 @@ export default function FindingImageEdit({ finding, type }: Props) {
                         <TabsTrigger value="after">After</TabsTrigger>
                     </TabsList>
                     <TabsContent value="before" className="w-full space-y-4">
-                        {before && before?.length > 0 ? <FindingImageManagement finding={finding.data} images={before} /> : <EmptyIcon />}
+                        {before && before?.length > 0 ? (
+                            <FindingImageManagement finding={finding.data} images={before} />
+                        ) : (
+                            <EmptyIcon className="h-55" />
+                        )}
 
                         {before && before?.length <= 4 && (
                             <>
                                 <Separator />
-                                <FindingImageForm category="before" finding={finding.data} className="max-w-xs" />
+                                <FindingImageForm category="before" finding={finding.data} className="max-w-sm" />
                             </>
                         )}
                     </TabsContent>
                     <TabsContent value="after" className="w-full space-y-4">
-                        {after && after?.length > 0 ? <FindingImageManagement finding={finding.data} images={after} /> : <EmptyIcon />}
+                        {after && after?.length > 0 ? (
+                            <FindingImageManagement finding={finding.data} images={after} />
+                        ) : (
+                            <EmptyIcon className="h-55" />
+                        )}
                         {after && after?.length <= 4 && (
                             <>
                                 <Separator />
-                                <FindingImageForm category="after" finding={finding.data} className="max-w-xs" />
+                                <FindingImageForm category="after" finding={finding.data} className="max-w-sm" />
                             </>
                         )}
                     </TabsContent>

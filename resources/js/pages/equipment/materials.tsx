@@ -76,8 +76,14 @@ export default function EquipmentMaterials({ equipment, materials }: EquipmentMa
                 <div className="flex items-center justify-between gap-2">
                     <HeadingSmall title={materialTitle} description="Catalog of spare parts and consumables associated with this asset." />
                     <ButtonGroup>
-                        {can.update_equipment && (
-                            <Button onClick={() => setIsAddOpen(true)} title="Insert new Material" size={'sm'} variant={'outline'}>
+                        {can.update_equipmentmaterial && (
+                            <Button
+                                onClick={() => setIsAddOpen(true)}
+                                title="Insert new Material"
+                                size={'sm'}
+                                variant={'outline'}
+                                className="text-muted-foreground"
+                            >
                                 <Plus className="h-4 w-4" />
                                 Add Material
                             </Button>

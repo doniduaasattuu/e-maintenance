@@ -6,6 +6,7 @@ export type PlantProgressProps = {
     totalPlantFinding: number;
     closingRate: number;
     totalFinding: number;
+    singlePlant?: boolean;
 };
 
 export default function PlantProgress({ plant, closedFindings, totalPlantFinding, closingRate, totalFinding }: PlantProgressProps) {
@@ -17,7 +18,7 @@ export default function PlantProgress({ plant, closedFindings, totalPlantFinding
                 <div className="text-sm font-semibold">{plant}</div>
                 <div className="text-sm font-semibold">{findingPercentage}%</div>
             </div>
-            <Progress className="h-2 sm:h-3" value={findingPercentage} />
+            <Progress className="h-2 sm:h-3" value={closingRate} />
             <div className="text-muted-foreground flex justify-between text-xs">
                 <span>
                     {closedFindings} / {totalPlantFinding} Closed

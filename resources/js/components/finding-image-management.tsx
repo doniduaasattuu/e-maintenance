@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { cn } from '@/lib/utils';
 import { Finding, FindingImage } from '@/types';
 import { router } from '@inertiajs/react';
 import { Maximize2, Trash2 } from 'lucide-react';
@@ -11,9 +12,10 @@ import Lightbox from './light-box';
 interface Props {
     finding: Finding;
     images: FindingImage[] | undefined;
+    className?: string;
 }
 
-export default function FindingImageManagement({ finding, images }: Props) {
+export default function FindingImageManagement({ finding, images, className }: Props) {
     const handleDeleteImage = (imageId: number) => {
         router.delete(
             route('finding.image.delete', {
@@ -26,11 +28,11 @@ export default function FindingImageManagement({ finding, images }: Props) {
     const [selectedImage, setSelectedImage] = useState<FindingImage | null>(null);
 
     return (
-        <Carousel className="w-full">
+        <Carousel className={cn('w-full', className)}>
             <CarouselContent>
                 {images &&
                     images.map((image, index) => (
-                        <CarouselItem key={`${image.id}-${index}`} className="relative sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                        <CarouselItem key={`${image.id}-${index}`} className="relative sm:basis-1/2 lg:basis-1/3 xl:basis-1/5">
                             <div className="absolute top-3 right-3 z-10">
                                 <ActionConfirm
                                     action={() => handleDeleteImage(image.id)}
