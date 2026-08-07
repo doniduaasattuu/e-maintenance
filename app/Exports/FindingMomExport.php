@@ -12,8 +12,9 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class FindingMomExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents
+class FindingMomExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents, WithTitle
 {
     public function query()
     {
@@ -114,5 +115,11 @@ class FindingMomExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
         return [
             1    => ['font' => ['bold' => true]],
         ];
+    }
+
+    #[Override]
+    public function title(): string
+    {
+        return 'moms_findings';
     }
 }

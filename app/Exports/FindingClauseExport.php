@@ -38,8 +38,8 @@ class FindingClauseExport implements FromQuery, WithMapping, WithHeadings, Shoul
             $findingClause->type,
             $findingClause->title,
             $findingClause->description,
-            $findingClause->created_at?->format('Y-d-m h:i:s'),
-            $findingClause->updated_at?->format('Y-d-m h:i:s'),
+            $findingClause->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $findingClause->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

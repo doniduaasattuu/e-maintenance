@@ -175,3 +175,15 @@ test('can restore deleted user', function () {
         ->post(route('users.restore', $user->id));
     $response->assertSessionHas('message.description', 'User restored successfully');
 });
+
+test('redirects verified users to the dashboard', function () {
+    $user = User::factory()->create([
+        'email_verified_at' => now(),
+    ]);
+
+    $response = $this
+        ->actingAs($user)
+        ->post(route('verification.send'));
+
+    $response->assertRedirect(route('dashboard'));
+});

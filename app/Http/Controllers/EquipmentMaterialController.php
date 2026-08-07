@@ -9,6 +9,7 @@ use App\Models\Equipment;
 use App\Models\Material;
 use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -18,6 +19,8 @@ class EquipmentMaterialController extends Controller
 
     public function show(Request $request, Equipment $equipment)
     {
+        Gate::authorize('show_equipmentmaterial');
+
         $perPage = $this->getPerPage($request);
 
         $materials = $equipment
@@ -40,6 +43,8 @@ class EquipmentMaterialController extends Controller
      */
     public function store(Request $request, Equipment $equipment)
     {
+        Gate::authorize('store_equipmentmaterial');
+
         $validated = $request->validate([
             'material_id' => 'required|exists:materials,id',
             'quantity' => 'required|numeric|min:1',
@@ -64,6 +69,8 @@ class EquipmentMaterialController extends Controller
      */
     public function update(Request $request, Equipment $equipment, Material $material)
     {
+        Gate::authorize('update_equipmentmaterial');
+
         $validated = $request->validate([
             'quantity' => 'required|numeric|min:1',
             'note' => 'nullable|string|max:255',
@@ -86,6 +93,8 @@ class EquipmentMaterialController extends Controller
      */
     public function destroy(Equipment $equipment, Material $material)
     {
+        Gate::authorize('delete_equipmentmaterial');
+
         $equipment->materials()->detach($material->id);
 
         return back()->with('message', [

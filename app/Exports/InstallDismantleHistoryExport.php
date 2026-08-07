@@ -77,7 +77,7 @@ class InstallDismantleHistoryExport implements FromQuery, WithMapping, WithHeadi
             $history->toStatus?->code,
             $history->toFunctionalLocation?->code,
             $history->changedBy?->name,
-            $history->changed_at?->format('Y-d-m h:i:s'),
+            $history->changed_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

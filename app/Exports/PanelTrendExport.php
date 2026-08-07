@@ -10,9 +10,11 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class PanelTrendExport implements
+    WithTitle,
     FromCollection,
     WithHeadings,
     WithMapping,
@@ -128,5 +130,11 @@ class PanelTrendExport implements
                 ],
             ],
         ];
+    }
+
+    #[Override]
+    public function title(): string
+    {
+        return 'panel_trends';
     }
 }

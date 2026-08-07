@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Permission\StorePermissionRequest;
+use App\Http\Requests\Permission\UpdatePermissionRequest;
 use App\Http\Resources\PermissionResource;
 use App\Traits\HasPerPagePreference;
 use Illuminate\Http\Request;
@@ -83,15 +84,30 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
-        //
+        Gate::authorize('edit_permission');
+
+        return Inertia::render('permission/edit', [
+            'permission' => new PermissionResource($permission),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Permission $permission)
+    public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        //
+        Gate::authorize('update_permission');
+
+        try {
+            $permission->update($request->validated());
+
+            return back();
+        } catch (\Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Failed deleting permission',
+            ]);
+        }
     }
 
     /**

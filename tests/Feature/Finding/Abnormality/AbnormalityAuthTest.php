@@ -2,6 +2,7 @@
 
 use App\Models\Finding;
 use App\Models\FindingType;
+use App\Models\User;
 use Database\Seeders\CauseCodeSeeder;
 use Database\Seeders\FindingClauseSeeder;
 use Database\Seeders\FindingPrioritySeeder;
@@ -10,6 +11,7 @@ use Database\Seeders\FindingStatusSeeder;
 use Database\Seeders\FindingTypeSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -48,6 +50,7 @@ test('normal user cannot access abnormality edit form', function () {
     $user = createNormalUser();
     $finding = Finding::factory()->create([
         'finding_type_id' => FindingType::where('code', 'ABN')->first(),
+        'inspected_by' => User::factory()->create()->id,
     ]);
 
     $this->actingAs($user)

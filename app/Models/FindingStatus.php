@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FindingStatus extends Model
 {
+    /** @use HasFactory<\Database\Factories\FindingStatusFactory> */
+    use HasFactory;
+
     protected $table = 'finding_statuses';
 
     protected $fillable = [

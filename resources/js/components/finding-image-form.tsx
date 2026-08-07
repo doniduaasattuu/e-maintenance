@@ -1,12 +1,11 @@
 import { useImageCompressor } from '@/hooks/use-image-compressor';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn, handleImageUploadHelper } from '@/lib/utils';
 import { Finding, Image } from '@/types';
 import { useForm } from '@inertiajs/react';
-import { X } from 'lucide-react';
-import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
+import { ChangeEvent, FormEventHandler, useState } from 'react';
 import ButtonSubmit from './button-submit';
-import CompressingDescription from './compressing-description';
-import { Field, FieldError, FieldLabel } from './ui/field';
-import { Input } from './ui/input';
+import PhotoInput from './photo-input';
 
 interface Props {
     finding: Finding;
@@ -20,11 +19,11 @@ interface FindingImageForm {
 
 export default function FindingImageForm({ finding, className, category }: Props) {
     type FindingImageForm = {
-        images?: File[] | null;
+        images: File[] | null;
         category: 'before' | 'after';
     };
 
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const isMobile = useIsMobile();
 
     const { data, post, setData, processing, errors, reset, recentlySuccessful } = useForm<FindingImageForm>({
         images: null,
@@ -34,43 +33,14 @@ export default function FindingImageForm({ finding, className, category }: Props
     const compressImage = useImageCompressor();
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
 
-    const handleRemoveImage = (indexToRemove: number) => {
-        if (!data.images) return;
-
-        // 1. Revoke the object URL of the image being removed to prevent memory leaks
-        URL.revokeObjectURL(URL.createObjectURL(data.images[indexToRemove]));
-
-        // 2. Filter out the image by its index and update Inertia form state
-        const updatedImages = data.images.filter((_, index) => index !== indexToRemove);
-
-        // 3. Update state (set to null if array is empty to match your type definition)
-        setData('images', updatedImages.length > 0 ? updatedImages : null);
-    };
-
-    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-
-        if (!files || files.length === 0) return;
-
-        setIsCompressing(true);
-
-        try {
-            const fileArray = Array.from(files);
-
-            const compressionPromises = fileArray.map(async (file) => {
-                return await compressImage(file);
-            });
-
-            const compressedFiles = await Promise.all(compressionPromises);
-
-            setData('images', compressedFiles);
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error('Compression failed: ', error);
-            }
-        } finally {
-            setIsCompressing(false);
-        }
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        handleImageUploadHelper({
+            e,
+            compressFn: compressImage,
+            setIsCompressing,
+            setData,
+            fieldKey: 'images',
+        });
     };
 
     const submit: FormEventHandler = (e) => {
@@ -85,42 +55,23 @@ export default function FindingImageForm({ finding, className, category }: Props
     };
 
     return (
-        <form onSubmit={submit} className="space-y-6">
-            <Field className={className}>
-                <FieldLabel htmlFor="images">Upload</FieldLabel>
-                <Input
-                    multiple
-                    type="file"
-                    id="images"
-                    ref={fileInputRef}
-                    disabled={processing}
-                    onChange={handleFileChange}
-                    accept=".jpg,.jpeg,.png,.webp"
-                />
-
-                {data.images && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                        {data.images.map((image, index) => (
-                            <div className="relative size-16 overflow-hidden rounded border bg-slate-100">
-                                <img src={URL.createObjectURL(image)} alt="preview" className="size-full object-cover" />
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveImage(index)}
-                                    className="absolute top-0 right-0 rounded-bl bg-red-500 text-white"
-                                >
-                                    <X className="size-3" />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                <FieldError>{errors.images}</FieldError>
-                {isCompressing && <CompressingDescription />}
-            </Field>
+        <form onSubmit={submit} className={cn('space-y-6', className)}>
+            <PhotoInput
+                variant={isMobile ? 'standard' : 'dropzone'}
+                images={data.images}
+                onFileChange={handleFileChange}
+                error={errors.images}
+                isCompressing={isCompressing}
+                disabled={processing}
+                tabIndex={10}
+                onRemoveImage={(index: number) => {
+                    const newImages = data.images?.filter((_, idx) => idx !== index) || null;
+                    setData('images', newImages && newImages.length > 0 ? newImages : null);
+                }}
+            />
             <ButtonSubmit
                 processing={processing}
-                disabled={processing || fileInputRef.current == null || data.images == null}
+                disabled={processing || data.images == null}
                 showSuccessMessage={true}
                 label="Upload"
                 successMessage="Uploaded"

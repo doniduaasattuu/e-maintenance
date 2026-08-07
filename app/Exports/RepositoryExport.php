@@ -3,17 +3,17 @@
 namespace App\Exports;
 
 use App\Models\Repository;
-use App\Models\User;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class RepositoryExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithEvents
+class RepositoryExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithEvents, WithTitle
 {
     protected array $filters;
 
@@ -45,8 +45,8 @@ class RepositoryExport implements FromQuery, WithHeadings, WithMapping, WithStyl
             $repository?->extension ?? '-',
             $repository?->uploadedBy?->name ?? '-',
 
-            $repository?->created_at ?? '-',
-            $repository?->updated_at ?? '-',
+            $repository->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $repository->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 
@@ -108,5 +108,11 @@ class RepositoryExport implements FromQuery, WithHeadings, WithMapping, WithStyl
         return [
             1    => ['font' => ['bold' => true]],
         ];
+    }
+
+    #[Override]
+    public function title(): string
+    {
+        return 'repositories';
     }
 }

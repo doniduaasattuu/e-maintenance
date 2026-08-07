@@ -92,12 +92,19 @@ class FindingFactory extends Factory
             'Reinforced handrail joints using arc welding and secured anchor bolts to floor.'
         ];
 
-        $type = FindingType::inRandomOrder()->first();
+        $type = FindingType::inRandomOrder()->first() ?? FindingType::factory()->create([
+            'code' => 'ABN',
+            'name' => 'Abnormality',
+            'description' => 'Findings of deviations from standard conditions found during patrols or daily operations.',
+        ]);
         $randomIndex = $this->faker->numberBetween(0, count($industrialFindings) - 1);
         $description = $industrialFindings[$randomIndex];
         $rectificationAction = $rectificationActions[$randomIndex];
-        $findingStatus =  FindingStatus::inRandomOrder()->first();
-        $isClosed = strtolower($findingStatus->name) === 'closed';
+        $findingStatus =  FindingStatus::inRandomOrder()->first() ?? FindingStatus::factory()->create([
+            'name' => 'Open',
+            'description' => 'Finding is open and requires action.',
+        ]);
+        $isClosed = strtolower($findingStatus?->name) === 'closed' ?? false;
         $createdAt = $this->faker->dateTimeBetween('-5 month', 'now');
 
         return [

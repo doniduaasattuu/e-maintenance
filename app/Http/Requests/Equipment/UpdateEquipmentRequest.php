@@ -94,12 +94,4 @@ class UpdateEquipmentRequest extends FormRequest
             }
         });
     }
-
-    // public function messages()
-    // {
-    //     return [
-    //         'functional_location_id.required_if' => 'Functional location is required when the equipment status is "Installed".',
-    //         'functional_location_id.prohibited_unless' => 'Functional location is only allowed when the equipment status is "Installed".',
-    //     ];
-    // }
 }

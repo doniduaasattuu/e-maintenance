@@ -174,12 +174,12 @@ export default function RepositoryRelation({ repository, equipments, materials }
                                                                     'mr-2 h-4 w-4',
                                                                     (() => {
                                                                         if (activeTab === 'equipment') {
-                                                                            return equipments.data.map((e) => e.id).includes(relation.id)
+                                                                            return equipments.data.some((e) => e.id === relation.id)
                                                                                 ? 'opacity-100'
                                                                                 : 'opacity-0';
                                                                         }
                                                                         if (activeTab === 'material') {
-                                                                            return materials.data.map((m) => m.id).includes(relation.id)
+                                                                            return materials.data.some((e) => e.id === relation.id)
                                                                                 ? 'opacity-100'
                                                                                 : 'opacity-0';
                                                                         }
@@ -188,7 +188,6 @@ export default function RepositoryRelation({ repository, equipments, materials }
                                                                 )}
                                                             />
                                                             <div className="flex gap-2">
-                                                                {selected.current && selected.current?.id == relation.id && <Check />}
                                                                 <div className="w-full">
                                                                     <div className="font-medium">{relation.code}</div>
                                                                     <div className="text-muted-foreground max-w-xs truncate text-sm sm:max-w-full">

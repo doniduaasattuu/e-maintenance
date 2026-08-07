@@ -8,9 +8,10 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class FunctionalLocationExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
+class FunctionalLocationExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithTitle
 {
     protected array $filters;
 
@@ -38,8 +39,8 @@ class FunctionalLocationExport implements FromQuery, WithHeadings, WithMapping, 
             $functionalLocation->id,
             $functionalLocation->code,
             $functionalLocation->description,
-            $functionalLocation?->created_at ?? '-',
-            $functionalLocation?->updated_at ?? '-',
+            $functionalLocation->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $functionalLocation->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 
@@ -59,5 +60,11 @@ class FunctionalLocationExport implements FromQuery, WithHeadings, WithMapping, 
         return [
             1    => ['font' => ['bold' => true]],
         ];
+    }
+
+    #[Override]
+    public function title(): string
+    {
+        return 'functional_locations';
     }
 }

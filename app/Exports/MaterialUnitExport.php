@@ -32,8 +32,8 @@ class MaterialUnitExport implements FromQuery, WithMapping, WithHeadings, Should
         return [
             $materialUnit->id,
             $materialUnit->name,
-            $materialUnit->created_at?->format('Y-d-m h:i:s'),
-            $materialUnit->updated_at?->format('Y-d-m h:i:s'),
+            $materialUnit->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $materialUnit->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

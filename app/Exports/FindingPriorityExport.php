@@ -38,8 +38,8 @@ class FindingPriorityExport implements FromQuery, WithMapping, WithHeadings, Sho
             $findingPriority->description,
             $findingPriority->color_code,
             $findingPriority->sla_resolution_hours,
-            $findingPriority->created_at?->format('Y-d-m h:i:s'),
-            $findingPriority->updated_at?->format('Y-d-m h:i:s'),
+            $findingPriority->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $findingPriority->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

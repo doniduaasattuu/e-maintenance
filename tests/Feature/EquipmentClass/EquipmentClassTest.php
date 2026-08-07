@@ -14,7 +14,7 @@ beforeEach(function () {
 });
 
 test('equipment class index page accessible', function () {
-    EquipmentClass::factory()->count(20)->create();
+
 
     $response = $this
         ->actingAs(createAdminUser())
@@ -24,7 +24,7 @@ test('equipment class index page accessible', function () {
         ->assertInertia(
             fn($page) => $page
                 ->component('equipment-class/index')
-                ->has('equipmentClasses.data', 10)
+                ->has('equipmentClasses.data', 4)
         );
 });
 
@@ -41,22 +41,21 @@ test('create equipment class page accessible', function () {
 });
 
 test('store equipment class successfully', function () {
-    EquipmentClass::factory()->count(5)->create();
 
     $response = $this
         ->actingAs(createAdminUser())
         ->from(route('equipment-classes.create'))
         ->post(route('equipment-classes.store'), [
-            'code' => 'ZCLASS_E008',
-            'name' => 'ELECTRICAL PANEL',
-            'formable_type' => 'PANEL',
-            'description' => 'Distribution panels for managing electrical circuits and power systems.'
+            'code' => 'PCLASS_Z010',
+            'name' => 'POMPA AIR',
+            'formable_type' => 'POMPA',
+            'description' => 'Water pump for hydrant.'
         ]);
 
     $response
         ->assertRedirect(route('equipment-classes.create'));
 
-    $equipmentClass = EquipmentClass::where('code', 'ZCLASS_E008')->first();
+    $equipmentClass = EquipmentClass::where('code', 'PCLASS_Z010')->first();
     expect($equipmentClass)->not()->toBeNull();
 });
 

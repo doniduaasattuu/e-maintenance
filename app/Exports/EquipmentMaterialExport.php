@@ -28,11 +28,6 @@ class EquipmentMaterialExport implements FromCollection, WithTitle, WithHeadings
         return $this->equipment->materials;
     }
 
-    public function title(): string
-    {
-        return 'BOM ' . $this->equipment->code;
-    }
-
     public function map($material): array
     {
         return [
@@ -48,8 +43,8 @@ class EquipmentMaterialExport implements FromCollection, WithTitle, WithHeadings
             $material?->type?->description ?? '-',
             $material?->unit?->name ?? '-',
 
-            $material?->created_at ?? '-',
-            $material?->updated_at ?? '-',
+            $material->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $material->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 
@@ -90,5 +85,11 @@ class EquipmentMaterialExport implements FromCollection, WithTitle, WithHeadings
         return [
             1    => ['font' => ['bold' => true]],
         ];
+    }
+
+    #[Override]
+    public function title(): string
+    {
+        return 'equipment_materials';
     }
 }

@@ -7,6 +7,7 @@ import { tableCaption } from '@/lib/utils';
 import { Meta, Permission } from '@/types';
 import EmptyIcon from '../empty-icon';
 import { PerPageSelector } from '../per-page-selector';
+import TextLink from '../text-link';
 
 interface TablePermissionProps {
     permissions: {
@@ -54,7 +55,13 @@ export default function TablePermission({ permissions, withHeader = true, filter
                                     <TableRow key={permission.id}>
                                         <TableCell className="w-12.5">{meta.from + index}</TableCell>
                                         <TableCell className="font-medium">
-                                            <span>{permission.name}</span>
+                                            {can.edit_permission ? (
+                                                <TextLink href={route('permissions.edit', permission.id)}>
+                                                    <span className="font-medium">{permission.name}</span>
+                                                </TextLink>
+                                            ) : (
+                                                <span className="font-medium">{permission.name}</span>
+                                            )}
                                         </TableCell>
                                         <TableCell className="text-muted-foreground w-22.5">{permission.created_at}</TableCell>
                                         <TableCell className="text-muted-foreground w-22.5">{permission.updated_at}</TableCell>

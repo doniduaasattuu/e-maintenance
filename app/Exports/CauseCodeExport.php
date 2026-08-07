@@ -28,14 +28,14 @@ class CauseCodeExport implements FromQuery, WithMapping, WithHeadings, ShouldAut
         ];
     }
 
-    public function map($CauseCode): array
+    public function map($causeCode): array
     {
         return [
-            $CauseCode->id,
-            $CauseCode->code,
-            $CauseCode->description,
-            $CauseCode->created_at?->format('Y-d-m h:i:s'),
-            $CauseCode->updated_at?->format('Y-d-m h:i:s'),
+            $causeCode->id,
+            $causeCode->code,
+            $causeCode->description,
+            $causeCode->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $causeCode->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 

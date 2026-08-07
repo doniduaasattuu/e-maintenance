@@ -9,10 +9,11 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class EquipmentExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithEvents
+class EquipmentExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithEvents, WithTitle
 {
     protected array $filters;
 
@@ -61,8 +62,8 @@ class EquipmentExport implements FromQuery, WithHeadings, WithMapping, WithStyle
             $equipment?->functionalLocation?->code ?? 'N/A',
             $equipment?->functionalLocation?->description ?? 'N/A',
 
-            $equipment?->created_at ?? '-',
-            $equipment?->updated_at ?? '-',
+            $equipment->created_at?->format('Y-d-m h:i:s') ?? '-',
+            $equipment->updated_at?->format('Y-d-m h:i:s') ?? '-',
         ];
     }
 
@@ -102,5 +103,11 @@ class EquipmentExport implements FromQuery, WithHeadings, WithMapping, WithStyle
         return [
             1    => ['font' => ['bold' => true]],
         ];
+    }
+
+    #[Override]
+    public function title(): string
+    {
+        return 'equipments';
     }
 }
