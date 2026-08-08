@@ -58,6 +58,7 @@ export default function TableFindingPriority({ findingPriorities, withHeader = t
                                 <TableHead className="text-muted-foreground">Label</TableHead>
                                 <TableHead className="text-muted-foreground">Point</TableHead>
                                 <TableHead className="text-muted-foreground">Description</TableHead>
+                                <TableHead className="text-muted-foreground">Color</TableHead>
                                 <TableHead className="text-muted-foreground">SLA</TableHead>
                                 <TableHead className="text-muted-foreground">Created at</TableHead>
                                 <TableHead className={`text-muted-foreground ${can.delete_findingpriority ?? 'text-right'}`}>Updated at</TableHead>
@@ -81,6 +82,14 @@ export default function TableFindingPriority({ findingPriorities, withHeader = t
                                             {findingPriority.minimum_point}-{findingPriority.maximum_point}
                                         </TableCell>
                                         <TableCell className="max-w-75 truncate">{findingPriority.description}</TableCell>
+                                        <TableCell
+                                            className="max-w-75 truncate"
+                                            style={{
+                                                color: findingPriority.color_code,
+                                            }}
+                                        >
+                                            {findingPriority.color_code}
+                                        </TableCell>
                                         <TableCell className="max-w-75 truncate">{findingPriority.sla_resolution_hours}</TableCell>
                                         <TableCell className="table-timestamp text-muted-foreground">{findingPriority.created_at}</TableCell>
                                         <TableCell className={`table-timestamp text-muted-foreground ${can.delete_findingpriority ?? 'text-right'}`}>

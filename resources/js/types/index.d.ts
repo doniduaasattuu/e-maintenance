@@ -527,4 +527,17 @@ export interface ImprovementCategory {
     description: string;
     created_at: string;
     updated_at: string;
+
+    // improvements?: Improvement[] | null;
+}
+
+export interface ImprovementStatus {
+    id: number;
+    name: string;
+    color: string;
+    sequence: number;
+    created_at: string;
+    updated_at: string;
+
+    // improvements?: Improvement[] | null;
 }

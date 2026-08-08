@@ -6,16 +6,16 @@ import TextLink from '@/components/text-link';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import usePermissions from '@/hooks/use-permissions';
 import { tableCaption } from '@/lib/utils';
-import { ImprovementCategory, Meta } from '@/types';
+import { ImprovementStatus, Meta } from '@/types';
 import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import EmptyIcon from '../empty-icon';
 import { PerPageSelector } from '../per-page-selector';
 import { ButtonGroup } from '../ui/button-group';
 
-interface TableImprovementCategoryProps {
-    improvementCategories: {
-        data: ImprovementCategory[];
+interface TableImprovementStatusProps {
+    improvementStatuses: {
+        data: ImprovementStatus[];
         meta: Meta;
     };
     withHeader?: boolean;
@@ -25,13 +25,13 @@ interface TableImprovementCategoryProps {
     };
 }
 
-export default function TableImprovementCategory({ improvementCategories, withHeader = true, filters }: TableImprovementCategoryProps) {
+export default function TableImprovementStatus({ improvementStatuses, withHeader = true, filters }: TableImprovementStatusProps) {
     const { can } = usePermissions();
-    const meta = improvementCategories.meta;
+    const meta = improvementStatuses.meta;
     const caption = tableCaption(meta);
 
-    function handleDeleteImprovementCategory(id: number | string) {
-        router.delete(route('improvement-categories.destroy', id));
+    function handleDeleteImprovementStatus(id: number | string) {
+        router.delete(route('improvement-statuses.destroy', id));
     }
     return (
         <>
@@ -42,49 +42,58 @@ export default function TableImprovementCategory({ improvementCategories, withHe
                         <PerPageSelector value={filters?.per_page?.toString() ?? '10'} tabIndex={2} />
                     </div>
                     <ButtonGroup>
-                        {can.create_improvementcategory && <ButtonAdd tabIndex={3} route={route('improvement-categories.create')} />}
+                        {can.create_improvementstatus && <ButtonAdd tabIndex={3} route={route('improvement-statuses.create')} />}
                     </ButtonGroup>
                 </div>
             )}
             <div className="grid min-w-0 overflow-x-auto rounded-md">
-                {improvementCategories?.data && improvementCategories?.data?.length > 0 ? (
+                {improvementStatuses?.data && improvementStatuses?.data?.length > 0 ? (
                     <Table>
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-muted-foreground">Name</TableHead>
-                                <TableHead className="text-muted-foreground">Description</TableHead>
+                                <TableHead className="text-muted-foreground">Color</TableHead>
+                                <TableHead className="text-muted-foreground">Sequence</TableHead>
                                 <TableHead className="table-timestamp text-muted-foreground">Created at</TableHead>
-                                <TableHead className={`table-timestamp text-muted-foreground ${can.delete_improvementcategory ?? 'text-right'}`}>
+                                <TableHead className={`table-timestamp text-muted-foreground ${can.delete_improvementstatus ?? 'text-right'}`}>
                                     Updated at
                                 </TableHead>
-                                {can.delete_improvementcategory && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
+                                {can.delete_improvementstatus && <TableHead className="text-muted-foreground w-10 text-right"></TableHead>}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {improvementCategories.data.map((improvementCategory: ImprovementCategory) => {
+                            {improvementStatuses.data.map((improvementStatus: ImprovementStatus) => {
                                 return (
-                                    <TableRow key={improvementCategory.id}>
+                                    <TableRow key={improvementStatus.id}>
                                         <TableCell>
-                                            {can.edit_improvementcategory ? (
-                                                <TextLink href={route('improvement-categories.edit', improvementCategory.id)}>
-                                                    <span className="font-medium">{improvementCategory.name}</span>
+                                            {can.edit_improvementstatus ? (
+                                                <TextLink href={route('improvement-statuses.edit', improvementStatus.id)}>
+                                                    <span className="font-medium">{improvementStatus.name}</span>
                                                 </TextLink>
                                             ) : (
-                                                <span className="font-medium">{improvementCategory.name}</span>
+                                                <span className="font-medium">{improvementStatus.name}</span>
                                             )}
                                         </TableCell>
-                                        <TableCell className="max-w-75 truncate">{improvementCategory.description}</TableCell>
-                                        <TableCell className="text-muted-foreground">{improvementCategory.created_at}</TableCell>
-                                        <TableCell className={`text-muted-foreground ${can.delete_improvementcategory ?? 'text-right'}`}>
-                                            {improvementCategory.updated_at}
+                                        <TableCell
+                                            className="max-w-75 truncate"
+                                            style={{
+                                                color: improvementStatus.color,
+                                            }}
+                                        >
+                                            {improvementStatus.color}
                                         </TableCell>
-                                        {can.delete_improvementcategory && (
+                                        <TableCell className="max-w-75 truncate">{improvementStatus.sequence}</TableCell>
+                                        <TableCell className="text-muted-foreground">{improvementStatus.created_at}</TableCell>
+                                        <TableCell className={`text-muted-foreground ${can.delete_improvementstatus ?? 'text-right'}`}>
+                                            {improvementStatus.updated_at}
+                                        </TableCell>
+                                        {can.delete_improvementstatus && (
                                             <TableCell className="w-10 flex-col text-right align-top">
                                                 <ActionConfirm
-                                                    action={() => handleDeleteImprovementCategory(improvementCategory.id)}
-                                                    title={`Delete data ${improvementCategory.name}?`}
-                                                    description="This action will remove this improvement category from database. This action cannot be undone."
+                                                    action={() => handleDeleteImprovementStatus(improvementStatus.id)}
+                                                    title={`Delete data ${improvementStatus.name}?`}
+                                                    description="This action will remove this improvement status from database. This action cannot be undone."
                                                 >
                                                     <Trash2 size={18} className="text-red-500" />
                                                 </ActionConfirm>

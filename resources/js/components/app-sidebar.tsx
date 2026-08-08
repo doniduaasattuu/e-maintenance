@@ -125,6 +125,11 @@ const mainNavItems: NavItem[] = [
                 href: route('improvement-categories.index'),
                 permission: 'index_improvementcategory',
             },
+            {
+                title: strings?.IMPROVEMENT_STATUS?.label ?? 'Improvement Status',
+                href: route('improvement-statuses.index'),
+                permission: 'index_improvementstatus',
+            },
         ],
     },
     {
