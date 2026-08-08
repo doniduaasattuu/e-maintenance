@@ -120,6 +120,11 @@ const mainNavItems: NavItem[] = [
                 href: route('cause-codes.index'),
                 permission: 'index_causecode',
             },
+            {
+                title: strings?.IMPROVEMENT_CATEGORY?.label ?? 'Improvement Category',
+                href: route('improvement-categories.index'),
+                permission: 'index_improvementcategory',
+            },
         ],
     },
     {

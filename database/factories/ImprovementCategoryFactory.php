@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\FindingType>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ImprovementCategory>
  */
-class FindingTypeFactory extends Factory
+class ImprovementCategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,6 @@ class FindingTypeFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => 'FT' . Str::upper(fake()->randomLetter() . fake()->unique()->numerify('###')),
             'name' => fake()->words(2, true),
             'description' => Str::ucfirst(fake()->sentence(5)),
         ];

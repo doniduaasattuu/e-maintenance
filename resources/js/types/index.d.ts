@@ -520,3 +520,11 @@ export interface EquipmentType {
 
     equipmentClass: EquipmentClass | null;
 }
+
+export interface ImprovementCategory {
+    id: number;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
