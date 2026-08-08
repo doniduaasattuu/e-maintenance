@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -32,7 +33,11 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $user->fill($request->validated());
+        $validated = $request->validated();
+        $user->fill([
+            'name' => Str::title($validated['name']),
+            'email' => $validated['email'],
+        ]);
 
         if ($request->hasFile('avatar')) {
 

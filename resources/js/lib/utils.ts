@@ -16,6 +16,11 @@ export function cfl(word: string): string {
     return capitalizedWord;
 }
 
+export function strTitle(str: string) {
+    if (!str) return '';
+    return str.toLowerCase().replace(/(?:^|\s)\S/g, (match) => match.toUpperCase());
+}
+
 export function formatCurrency(value: number, format: string = 'id-ID', currency: string = 'IDR') {
     return new Intl.NumberFormat(format, {
         style: 'currency',
