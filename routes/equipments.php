@@ -55,5 +55,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('equipment-statuses', EquipmentStatusController::class);
     // EQUIPMENt TYPE
     // Route::get('equipment-types/export', [EquipmentTypeController::class, 'export'])->name('equipment-types.export');
+    Route::put('equipments/{equipment}/equipment-types', [EquipmentController::class, 'updateType'])->name('equipments.equipmenttype.update');
     Route::resource('equipment-types', EquipmentTypeController::class);
 });

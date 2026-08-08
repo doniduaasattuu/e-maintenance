@@ -4,12 +4,13 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import usePermissions from '@/hooks/use-permissions';
 import AppLayout from '@/layouts/app-layout';
 import EquipmentLayout from '@/layouts/equipment/layout';
 import { UI_STRINGS } from '@/lib/ui-strings';
-import { BreadcrumbItem, Equipment } from '@/types';
-import { Head } from '@inertiajs/react';
+import { BreadcrumbItem, Equipment, EquipmentType } from '@/types';
+import { Head, router } from '@inertiajs/react';
 import { QrCodeIcon } from 'lucide-react';
 import React from 'react';
 
@@ -17,9 +18,12 @@ interface EquipmentShowProps {
     equipment: {
         data: Equipment;
     };
+    equipmentTypes?: {
+        data: EquipmentType[];
+    };
 }
 
-export default function EquipmentShow({ equipment }: EquipmentShowProps) {
+export default function EquipmentShow({ equipment, equipmentTypes }: EquipmentShowProps) {
     const strings = UI_STRINGS;
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -34,6 +38,12 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
 
     const { can } = usePermissions();
     const [isQROpen, setIsQROpen] = React.useState<boolean>(false);
+
+    const handleUpdateEquipmentType = (typeId: number) => {
+        router.put(route('equipments.equipmenttype.update', equipment.data.id), {
+            equipment_type_id: typeId,
+        });
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -72,7 +82,7 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                         <FieldLabel htmlFor="functional_location_id">Functional location</FieldLabel>
                         <Input readOnly id="functional_location_id" value={equipment.data.functionalLocation?.code ?? ''} />
                     </Field>
-                    <div className="flex justify-between gap-2">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                         <Field>
                             <FieldLabel htmlFor="equipment_class_id">Equipment class</FieldLabel>
                             <Input
@@ -83,11 +93,28 @@ export default function EquipmentShow({ equipment }: EquipmentShowProps) {
                         </Field>
                         <Field>
                             <FieldLabel htmlFor="equipment_type_id">Equipment type</FieldLabel>
-                            <Input
-                                readOnly
-                                id="equipment_type_id"
-                                value={equipment.data.type ? equipment.data.type?.code + ' - ' + equipment.data.type?.name : ''}
-                            />
+                            <Select
+                                disabled={false}
+                                onValueChange={(e) => handleUpdateEquipmentType(parseInt(e))}
+                                value={equipment.data?.equipment_type_id?.toString()}
+                            >
+                                <SelectTrigger tabIndex={6} className="truncate overflow-hidden whitespace-nowrap">
+                                    <SelectValue placeholder="Select a equipment type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel className="text-muted-foreground">Equipment type</SelectLabel>
+                                        {equipmentTypes &&
+                                            equipmentTypes.data.map((p) => {
+                                                return (
+                                                    <SelectItem key={p.id} value={p.id.toString()}>
+                                                        {p.code + ' - ' + p.name}
+                                                    </SelectItem>
+                                                );
+                                            })}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
                         </Field>
                     </div>
                     <Field>

@@ -5,9 +5,12 @@ use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
 use App\Models\EquipmentType;
 use App\Models\FunctionalLocation;
+use Database\Seeders\EquipmentClassSeeder;
+use Database\Seeders\EquipmentSeeder;
+use Database\Seeders\EquipmentStatusSeeder;
+use Database\Seeders\EquipmentTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use function Pest\Laravel\assertDatabaseHas;
 
 uses(RefreshDatabase::class);
 
@@ -205,4 +208,66 @@ test('can delete equipment', function () {
         ]);
 
     expect(Equipment::find($equipment->id))->toBeNull();
+});
+
+test('can update equipment type directly', function () {
+    $this->seed([
+        EquipmentClassSeeder::class,
+        EquipmentStatusSeeder::class,
+        EquipmentTypeSeeder::class,
+        EquipmentSeeder::class,
+    ]);
+
+    $typeBefore = EquipmentType::first();
+    $equipment = Equipment::factory()->create([
+        'equipment_type_id' => $typeBefore->id,
+    ]);
+
+    expect($equipment)->not()->toBeNull();
+    expect($equipment->eclass)->not()->toBeNull();
+    expect($equipment->status)->not()->toBeNull();
+    expect($equipment->type)->not()->toBeNull();
+
+    $this
+        ->actingAs(createNormalUser())
+        ->from(route('equipments.show', $equipment->id))
+        ->put(route('equipments.equipmenttype.update', $equipment->id), [
+            'equipment_type_id' => EquipmentType::last()->id,
+        ])
+        ->assertSessionHas('message', [
+            'type' => 'success',
+            'description' => 'Equipment type updated successfully',
+        ])
+        ->assertStatus(302);
+
+    $this->assertNotEquals($typeBefore, $equipment->type->id);
+});
+
+test('fail update equipment type directly', function () {
+    $this->seed([
+        EquipmentClassSeeder::class,
+        EquipmentStatusSeeder::class,
+        EquipmentTypeSeeder::class,
+        EquipmentSeeder::class,
+    ]);
+
+    $typeBefore = EquipmentType::first();
+    $equipment = Equipment::factory()->create([
+        'equipment_type_id' => $typeBefore->id,
+    ]);
+
+    expect($equipment)->not()->toBeNull();
+    expect($equipment->eclass)->not()->toBeNull();
+    expect($equipment->status)->not()->toBeNull();
+    expect($equipment->type)->not()->toBeNull();
+
+    $this
+        ->actingAs(createNormalUser())
+        ->from(route('equipments.show', $equipment->id))
+        ->put(route('equipments.equipmenttype.update', $equipment->id), [
+            'equipment_type_id' => -1,
+        ])->assertSessionHas('message', function ($message) {
+            return $message['type'] === 'error';
+        })
+        ->assertStatus(302);
 });

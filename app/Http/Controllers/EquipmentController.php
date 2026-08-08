@@ -134,6 +134,7 @@ class EquipmentController extends Controller
         $departments = Department::all();
         $workCenters = WorkCenter::all();
         $causeCodes = CauseCode::all();
+        $equipmentTypes = EquipmentType::all();
 
         $equipment->load([
             'functionalLocation',
@@ -156,6 +157,7 @@ class EquipmentController extends Controller
             'departments' => DepartmentResource::collection($departments),
             'workCenters' => WorkCenterResource::collection($workCenters),
             'causeCodes' => CauseCodeResource::collection($causeCodes),
+            'equipmentTypes' => EquipmentTypeResource::collection($equipmentTypes)
         ]);
     }
 
@@ -231,6 +233,33 @@ class EquipmentController extends Controller
             return back()->with('message', [
                 'type' => 'error',
                 'description' => 'Failed to delete equipment: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function updateType(Request $request, Equipment $equipment)
+    {
+        $validated = $request->validate([
+            'equipment_type_id' => 'required',
+            'numeric',
+            'exists:equipment_types,id'
+        ]);
+
+        try {
+            $equipment->update([
+                'equipment_type_id' => $validated['equipment_type_id'],
+            ]);
+
+            return back()->with([
+                'message' => [
+                    'type' => 'success',
+                    'description' => 'Equipment type updated successfully',
+                ]
+            ]);
+        } catch (Throwable $e) {
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => $e->getMessage() ?? 'Failed updating equipment type',
             ]);
         }
     }
