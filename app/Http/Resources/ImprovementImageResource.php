@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FindingImageResource extends JsonResource
+class ImprovementImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +16,7 @@ class FindingImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'finding_id' => $this->finding_id,
+            'improvement_id' => $this->improvement_id,
             'file_path' => $this->file_path,
             'category' => $this->category,
             'url' => $this->url,
@@ -24,7 +24,7 @@ class FindingImageResource extends JsonResource
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
 
-            'finding' => new FindingResource($this->whenLoaded('finding')),
+            'improvement' => new ImprovementResource($this->whenLoaded('improvement')),
         ];
     }
 }

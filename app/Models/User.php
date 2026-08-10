@@ -61,6 +61,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function isAdministrator(): bool
+    {
+        return $this->hasAnyRole(['Admin', 'Administrator']);
+    }
+
     #[Scope]
     protected function scopeSearch(Builder $builder, Request $request): void
     {
@@ -163,5 +168,10 @@ class User extends Authenticatable
     public function verifiedFindings(): HasMany
     {
         return $this->hasMany(Finding::class, 'verified_by', 'id');
+    }
+
+    public function improvements(): HasMany
+    {
+        return $this->hasMany(Improvement::class, 'created_by', 'id');
     }
 }

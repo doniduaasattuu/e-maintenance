@@ -54,4 +54,9 @@ class Department extends Model
     {
         return $this->hasMany(Finding::class, 'department_id', 'id');
     }
+
+    public function improvements(): HasMany
+    {
+        return $this->hasMany(Improvement::class);
+    }
 }

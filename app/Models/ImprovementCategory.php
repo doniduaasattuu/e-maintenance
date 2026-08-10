@@ -35,7 +35,8 @@ class ImprovementCategory extends Model
         }
     }
 
-    // public function improvements(): HasMany {
-    //     return $this->hasMany(Improvement::class);
-    // }
+    public function improvements(): HasMany
+    {
+        return $this->hasMany(Improvement::class);
+    }
 }

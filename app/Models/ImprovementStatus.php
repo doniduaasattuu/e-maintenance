@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ImprovementStatus extends Model
 {
@@ -35,7 +36,8 @@ class ImprovementStatus extends Model
         }
     }
 
-    // public function improvements(): HasMany {
-    //     return $this->hasMany(Improvement::class);
-    // }
+    public function improvements(): HasMany
+    {
+        return $this->hasMany(Improvement::class);
+    }
 }

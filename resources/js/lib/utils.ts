@@ -21,6 +21,16 @@ export function strTitle(str: string) {
     return str.toLowerCase().replace(/(?:^|\s)\S/g, (match) => match.toUpperCase());
 }
 
+export function formatName(name: string): string {
+    const parts = name.trim().split(/\s+/);
+
+    if (parts.length === 1) {
+        return parts[0];
+    }
+
+    return `${parts[0]} ${parts[1].charAt(0)}`;
+}
+
 export function formatCurrency(value: number, format: string = 'id-ID', currency: string = 'IDR') {
     return new Intl.NumberFormat(format, {
         style: 'currency',
@@ -72,6 +82,20 @@ export function formatDateIndonesia(date: number) {
         month: 'long',
         year: 'numeric',
     }).format(date);
+}
+
+export function formatDateString(inputDate = new Date()): string {
+    const date = new Date(inputDate);
+    const pad = (num: number) => String(num).padStart(2, '0');
+
+    const yyyy = date.getFullYear();
+    const mm = pad(date.getMonth() + 1);
+    const dd = pad(date.getDate());
+    const hh = pad(date.getHours());
+    const min = pad(date.getMinutes());
+    const ss = pad(date.getSeconds());
+
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
 }
 
 export default function truncateText(str: string, maxLength: number = 40) {

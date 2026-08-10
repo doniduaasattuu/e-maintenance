@@ -27,7 +27,7 @@ class StoreRoleRequest extends FormRequest
         $validPermissions = Permission::pluck('name');
 
         return [
-            'name' => ['required', 'string', 'max:15', 'unique:roles,name'],
+            'name' => ['required', 'string', 'max:25', 'unique:roles,name'],
             'selectedPermissions' => ['required', 'array', 'min:1'],
             'selectedPermissions.*' => ['string', Rule::in($validPermissions)],
         ];

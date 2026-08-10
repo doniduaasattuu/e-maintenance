@@ -8,13 +8,16 @@ use App\Http\Requests\FunctionalLocation\UpdateFunctionalLocationRequest;
 use App\Http\Resources\EquipmentClassResource;
 use App\Http\Resources\EquipmentResource;
 use App\Http\Resources\EquipmentStatusResource;
+use App\Http\Resources\FindingResource;
 use App\Http\Resources\FunctionalLocationResource;
+use App\Http\Resources\ImprovementResource;
 use App\Http\Resources\PlantResource;
 use App\Models\EquipmentClass;
 use App\Models\EquipmentStatus;
 use App\Models\FunctionalLocation;
 use App\Models\Plant;
 use App\Traits\HasPerPagePreference;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -167,6 +170,52 @@ class FunctionalLocationController extends Controller
                 'description' => $e->getMessage() ?? 'Functional location is not found',
             ]);
         }
+    }
+
+    public function findings(Request $request, FunctionalLocation $functionalLocation)
+    {
+        $perPage = $this->getPerPage($request);
+
+        return Inertia::render('functional-location/findings', [
+            'functionalLocation' => new FunctionalLocationResource($functionalLocation),
+            'findings' => FindingResource::collection(
+                $functionalLocation->findings()
+                    ->withAllRelations()
+                    ->latest()
+                    ->search($request)
+                    ->paginate($perPage)
+                    ->withQueryString()
+            ),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+                'start_date' => $request->query('start_date') ?? Carbon::now()->subMonths(3)->format('Y-m-d'),
+                'end_date' => $request->query('end_date') ?? Carbon::now()->format('Y-m-d'),
+            ],
+        ]);
+    }
+
+    public function improvements(Request $request, FunctionalLocation $functionalLocation)
+    {
+        $perPage = $this->getPerPage($request);
+
+        return Inertia::render('functional-location/improvements', [
+            'functionalLocation' => new FunctionalLocationResource($functionalLocation),
+            'improvements' => ImprovementResource::collection(
+                $functionalLocation->improvements()
+                    ->withAllRelations()
+                    ->latest()
+                    ->search($request)
+                    ->paginate($perPage)
+                    ->withQueryString()
+            ),
+            'filters' => [
+                'query' => $request->query('query'),
+                'per_page' => (string) $perPage,
+                'start_date' => $request->query('start_date') ?? Carbon::now()->subMonths(3)->format('Y-m-d'),
+                'end_date' => $request->query('end_date') ?? Carbon::now()->format('Y-m-d'),
+            ],
+        ]);
     }
 
     public function export(Request $request)

@@ -16,29 +16,29 @@ class ImprovementStatusSeeder extends Seeder
         $statuses = [
             [
                 'name' => 'Submitted',
-                'color' => '#3B82F6',
+                'color' => '#fe5f55',
                 'sequence' => 1,
 
             ],
             [
-                'name' => 'Approved',
+                'name' => 'Implemented',
                 'color' => '#8B5CF6',
                 'sequence' => 2,
             ],
             [
-                'name' => 'Implemented',
-                'color' => '#22C55E',
+                'name' => 'Approved',
+                'color' => '#3B82F6',
                 'sequence' => 3,
             ],
             [
                 'name' => 'Verified',
-                'color' => '#10B981',
+                'color' => '#22C55E',
                 'sequence' => 4,
             ],
             [
                 'name' => 'Rejected',
-                'color' => '#EF4444',
-                'sequence' => 5,
+                'color' => '#710000',
+                'sequence' => 99,
             ],
         ];
 

@@ -15,6 +15,7 @@ import {
     LayoutGrid,
     ScanQrCodeIcon,
     ScanSearch,
+    Sparkles,
     TextSearch,
     Users2,
 } from 'lucide-react';
@@ -159,6 +160,12 @@ const mainNavItems: NavItem[] = [
                 permission: 'index_finding',
             },
         ],
+    },
+    {
+        title: strings?.IMPROVEMENT?.label ?? 'Improvement',
+        href: route('improvements.index'),
+        icon: Sparkles,
+        permission: 'index_improvement',
     },
     {
         title: strings?.REPOSITORY?.label ?? 'Document Control',

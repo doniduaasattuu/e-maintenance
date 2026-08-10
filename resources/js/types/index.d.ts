@@ -528,7 +528,7 @@ export interface ImprovementCategory {
     created_at: string;
     updated_at: string;
 
-    // improvements?: Improvement[] | null;
+    improvements?: Improvement[] | null;
 }
 
 export interface ImprovementStatus {
@@ -539,5 +539,72 @@ export interface ImprovementStatus {
     created_at: string;
     updated_at: string;
 
-    // improvements?: Improvement[] | null;
+    improvements?: Improvement[] | null;
+}
+
+export interface Improvement {
+    id: number;
+
+    code: string;
+    title: string;
+
+    functional_location_id: number;
+    equipment_id: number | null;
+    department_id: number | null;
+    improvement_category_id: number;
+    improvement_status_id: number;
+
+    problem: string;
+    description: string;
+    root_cause: string;
+
+    expected_benefit: string | null;
+    actual_benefit: string | null;
+
+    implementation_date: string | null;
+    remarks: string | null;
+
+    functionalLocation?: FunctionalLocation | null;
+    equipment?: Equipment | null;
+    department?: Department | null;
+    category?: ImprovementCategory | null;
+    status?: ImprovementStatus | null;
+
+    images?: ImprovementImage[];
+    gallery?: {
+        before: ImprovementImage[];
+        after: ImprovementImage[];
+    };
+
+    creator?: User | null;
+    approver?: User | null;
+
+    // images?: ImprovementImage[] | null;
+    // findings?: Finding[] | null;
+    // documents?: Repository[] | null;
+
+    created_at: string;
+    updated_at: string;
+
+    can: {
+        show: boolean;
+        update: boolean;
+        delete: boolean;
+        submit: boolean;
+        implement: boolean;
+        approve: boolean;
+        verify: boolean;
+        reject: boolean;
+    };
+}
+
+export interface ImprovementImage {
+    id: number;
+    improvement_id: number;
+    file_path: string;
+    url: string;
+    category: 'before' | 'after';
+    original_name: string;
+    created_at: string;
+    updated_at: string;
 }
