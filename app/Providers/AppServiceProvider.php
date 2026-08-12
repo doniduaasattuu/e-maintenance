@@ -2,7 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Finding;
+use App\Models\Improvement;
+use App\Models\Repository;
+use App\Models\User;
 use App\Policies\FindingPolicy;
+use App\Policies\ImprovementPolicy;
 use App\Policies\RepositoryPolicy;
 use App\Policies\RolePolicy;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,11 +33,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::before(function (User $user, string $ability) {
+            if ($user->isAdministrator()) {
+                return true;
+            }
+        });
+
         Builder::macro('last', function (string $column = null) {
             return $this->latest($column)->first();
         });
 
-        Gate::policy(Role::class, RolePolicy::class, FindingPolicy::class, RepositoryPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
+        Gate::policy(Finding::class, FindingPolicy::class);
+        Gate::policy(Repository::class, RepositoryPolicy::class);
+        Gate::policy(Improvement::class, ImprovementPolicy::class);
 
         Relation::enforceMorphMap([
             'USER' => 'App\Models\User',

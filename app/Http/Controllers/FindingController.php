@@ -90,8 +90,8 @@ abstract class FindingController extends Controller
             'filters' => [
                 'query' => $request->query('query'),
                 'per_page' => (string) $perPage,
-                'start_date' => $request->query('start_date') ?? Carbon::now()->subMonths(3)->format('Y-m-d'),
-                'end_date' => $request->query('end_date') ?? Carbon::now()->format('Y-m-d'),
+                'start_date' => $request->query('start_date'),
+                'end_date' => $request->query('end_date'),
             ],
         ]);
     }

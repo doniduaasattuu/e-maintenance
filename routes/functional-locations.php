@@ -16,7 +16,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('{id}/images/{type}', [ImageController::class, 'store'])->name('images.functional-location.store');
         // EXPORT
         Route::get('export', [FunctionalLocationController::class, 'export'])->name('functional-locations.export');
-        Route::get('{functionalLocation}/findings', [FunctionalLocationFindingController::class, 'show'])->name('functional-locations.findings');
+        Route::get('{functionalLocation}/findings', [FunctionalLocationController::class, 'findings'])->name('functional-locations.findings');
+        Route::get('{functionalLocation}/improvements', [FunctionalLocationController::class, 'improvements'])->name('functional-locations.improvements');
         Route::get('findings/export', [FunctionalLocationFindingController::class, 'export'])->name('functional-locations.findings.export');
     });
 

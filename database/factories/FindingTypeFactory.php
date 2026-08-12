@@ -19,7 +19,7 @@ class FindingTypeFactory extends Factory
     {
         return [
             'code' => 'FT' . Str::upper(fake()->randomLetter() . fake()->unique()->numerify('###')),
-            'name' => fake()->words(2),
+            'name' => fake()->words(2, true),
             'description' => Str::ucfirst(fake()->sentence(5)),
         ];
     }

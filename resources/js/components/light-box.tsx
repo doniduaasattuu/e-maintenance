@@ -1,14 +1,14 @@
 import { cfl } from '@/lib/utils';
-import { FindingImage, Image } from '@/types';
+import { FindingImage, Image, ImprovementImage } from '@/types';
 import { X } from 'lucide-react';
 
 interface LightboxProps {
     onClose: () => void;
-    image: FindingImage | Image;
+    image: FindingImage | Image | ImprovementImage;
 }
 
 export default function Lightbox({ onClose, image }: LightboxProps) {
-    function isFindingImage(image: FindingImage | Image): image is FindingImage {
+    function isFindingImage(image: FindingImage | Image | ImprovementImage): image is FindingImage {
         return (image as FindingImage).finding_id !== undefined;
     }
 

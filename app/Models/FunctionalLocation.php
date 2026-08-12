@@ -68,4 +68,9 @@ class FunctionalLocation extends Model
     {
         return $this->belongsTo(Plant::class);
     }
+
+    public function improvements(): HasMany
+    {
+        return $this->hasMany(Improvement::class, 'functional_location_id', 'id');
+    }
 }

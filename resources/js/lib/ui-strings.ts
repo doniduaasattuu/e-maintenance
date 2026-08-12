@@ -367,6 +367,50 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         },
     },
 
+    IMPROVEMENT_CATEGORY: {
+        label: 'Improvement Category',
+        plural: 'Improvement Categories',
+        description:
+            'Classifies improvement activities by their technical area or primary objective to support organization, tracking, and reporting.',
+        create: {
+            header: 'Create Improvement Category',
+            description: 'Create a new category to classify and organize improvement activities.',
+        },
+        edit: {
+            header: 'Edit Improvement Category',
+            description: 'Modify the definition of an existing improvement category.',
+        },
+    },
+
+    IMPROVEMENT_STATUS: {
+        label: 'Improvement Status',
+        plural: 'Improvement Statuses',
+        description: 'Tracks the current stage of an improvement activity throughout its implementation and verification process.',
+        create: {
+            header: 'Create Improvement Status',
+            description: 'Create a new status to define a stage in the improvement workflow.',
+        },
+        edit: {
+            header: 'Edit Improvement Status',
+            description: 'Modify the definition or workflow order of an existing improvement status.',
+        },
+    },
+
+    IMPROVEMENT: {
+        label: 'Improvement',
+        plural: 'Improvements',
+        description:
+            'Documents improvement activities performed to enhance equipment reliability, prevent recurring failures, and reduce breakdowns.',
+        create: {
+            header: 'Create Improvement',
+            description: 'Document a new improvement activity performed to improve equipment reliability and prevent recurring failures.',
+        },
+        edit: {
+            header: 'Edit Improvement',
+            description: 'Update the details, implementation results, or supporting information of an existing improvement activity.',
+        },
+    },
+
     INSPECTION_AIR_CONDITIONER: {
         label: 'AC Inspection',
         plural: 'AC Inspections',

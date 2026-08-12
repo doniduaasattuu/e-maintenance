@@ -75,7 +75,7 @@ export default function EquipmentRepositoryDialog({ open, setOpen, equipment, re
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <form>
-                <DialogContent className="max-w-sm sm:max-w-md">
+                <DialogContent className="rounded-xl">
                     <DialogHeader>
                         <DialogTitle>Document</DialogTitle>
                         <DialogDescription>Attach related documents to this equipment.</DialogDescription>
@@ -105,7 +105,7 @@ export default function EquipmentRepositoryDialog({ open, setOpen, equipment, re
                                             <div className="flex gap-2">
                                                 <div>
                                                     <div title={repository.title} className="w-full truncate font-medium">
-                                                        {repository.id} - {truncateText(repository.title, 40)}
+                                                        {repository.id} - {truncateText(repository.title, 50)}
                                                     </div>
                                                     <div className="text-muted-foreground max-w-xs truncate text-sm sm:max-w-full">
                                                         {repository.extension} - {repository.mime_type}
