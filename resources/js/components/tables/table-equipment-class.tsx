@@ -54,6 +54,7 @@ export default function TableEquipmentClass({ equipmentClasses, withHeader = tru
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
+                                <TableHead className="text-muted-foreground">ID</TableHead>
                                 <TableHead className="text-muted-foreground">Code</TableHead>
                                 <TableHead className="text-muted-foreground">Name</TableHead>
                                 <TableHead className="text-muted-foreground">Formable</TableHead>
@@ -67,6 +68,7 @@ export default function TableEquipmentClass({ equipmentClasses, withHeader = tru
                             {equipmentClasses.data.map((equipmentClass: EquipmentClass) => {
                                 return (
                                     <TableRow key={equipmentClass.id}>
+                                        <TableCell>{equipmentClass.id}</TableCell>
                                         <TableCell>
                                             {can.edit_equipmentclass ? (
                                                 <TextLink href={route('equipment-classes.edit', equipmentClass.id)}>

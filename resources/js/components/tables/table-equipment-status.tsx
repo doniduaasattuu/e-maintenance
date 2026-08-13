@@ -54,6 +54,7 @@ export default function TableEquipmentStatus({ equipmentStatuses, withHeader = t
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
+                                <TableHead className="text-muted-foreground">ID</TableHead>
                                 <TableHead className="text-muted-foreground">Code</TableHead>
                                 <TableHead className="text-muted-foreground">Name</TableHead>
                                 <TableHead className="text-muted-foreground">Description</TableHead>
@@ -68,6 +69,7 @@ export default function TableEquipmentStatus({ equipmentStatuses, withHeader = t
                             {equipmentStatuses.data.map((equipmentStatus: EquipmentStatus) => {
                                 return (
                                     <TableRow key={equipmentStatus.id}>
+                                        <TableCell>{equipmentStatus.id}</TableCell>
                                         <TableCell>
                                             {can.edit_equipmentstatus ? (
                                                 <TextLink href={route('equipment-statuses.edit', equipmentStatus.id)}>

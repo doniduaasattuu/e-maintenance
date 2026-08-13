@@ -334,13 +334,13 @@ export default function Tableimprovement({
                                                                     },
                                                                 )
                                                             }
-                                                            title="Mark as rejected"
+                                                            title="Mark as Rejected"
                                                             description="Are you sure you want to mark this improvement as rejected? This indicates that the improvement is rejected."
                                                             actionLabel="Reject"
                                                         >
                                                             <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                                                 <X className="h-4 w-4" />
-                                                                Mark as rejected
+                                                                Mark as Rejected
                                                             </DropdownMenuItem>
                                                         </ActionConfirm>
                                                     )}
