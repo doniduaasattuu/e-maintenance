@@ -159,6 +159,11 @@ const mainNavItems: NavItem[] = [
                 href: route('findings.mom'),
                 permission: 'index_finding',
             },
+            {
+                title: strings?.DELETED_FINDING?.label ?? 'Deleted',
+                href: route('findings.deleted'),
+                permission: 'index_finding',
+            },
         ],
     },
     {

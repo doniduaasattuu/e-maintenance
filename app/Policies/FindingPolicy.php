@@ -15,6 +15,11 @@ class FindingPolicy
         return $user->hasAnyPermission(['index_finding', 'index_audit', 'index_abnormality']);
     }
 
+    public function viewAnyDeleted(User $user): bool
+    {
+        return $user->hasAnyPermission(['index_finding', 'index_audit', 'index_abnormality']);
+    }
+
     /**
      * Determine whether the user can view the model.
      */
@@ -60,7 +65,7 @@ class FindingPolicy
      */
     public function restore(User $user, Finding $finding): bool
     {
-        return false;
+        return $user->hasAnyPermission(['restore_finding']);
     }
 
     /**

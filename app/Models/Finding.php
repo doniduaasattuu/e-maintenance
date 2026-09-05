@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 class Finding extends Model
 {
     /** @use HasFactory<\Database\Factories\FindingFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'findings';
 
@@ -34,6 +35,7 @@ class Finding extends Model
         "rectified_by",
         "verified_by",
         "closed_at",
+        "deleted_reason",
     ];
 
     #[Scope]
@@ -222,6 +224,11 @@ class Finding extends Model
                 }
             });
         });
+    }
+
+    public function deletedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     public function type(): BelongsTo

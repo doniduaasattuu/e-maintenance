@@ -307,19 +307,26 @@ abstract class FindingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(Finding $finding)
+    public function delete(Request $request, Finding $finding)
     {
         Gate::authorize('delete', $finding);
 
-        return DB::transaction(function () use ($finding) {
-            $directoryPath = 'images/findings/' . $finding->id;
+        $validated = $request->validate([
+            'deleted_reason' => ['required', 'string', 'max:1000'],
+        ]);
 
-            $finding->images()->delete();
+        return DB::transaction(function () use ($finding, $validated, $request) {
+            $finding->update([
+                'deleted_by' => $request->user()->id,
+                'deleted_reason' => $validated['deleted_reason'],
+            ]);
+
             $finding->delete();
 
-            if (Storage::disk('public')->exists($directoryPath)) {
-                Storage::disk('public')->deleteDirectory($directoryPath);
-            }
+            return back()->with('message', [
+                'type' => 'success',
+                'description' => 'Finding deleted successfully.',
+            ]);
         });
     }
 }

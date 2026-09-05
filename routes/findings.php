@@ -4,6 +4,7 @@ use App\Http\Controllers\AbnormalityController;
 use App\Http\Controllers\ArchivedFindingController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CauseCodeController;
+use App\Http\Controllers\DeletedFindingController;
 use App\Http\Controllers\FindingClauseController;
 use App\Http\Controllers\FindingImageController;
 use App\Http\Controllers\FindingMomController;
@@ -20,6 +21,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('findings/archived/export', [ArchivedFindingController::class, 'export'])->name('findings.archived.export');
 
     Route::get('findings/archived', [ArchivedFindingController::class, 'index'])->name('findings.archived');
+    Route::get('findings/deleted', [DeletedFindingController::class, 'index'])->name('findings.deleted');
+
+    Route::delete('findings/{finding}/restore', [DeletedFindingController::class, 'restore'])->withTrashed()->name('findings.restore');
+    Route::delete('findings/{finding}/delete', [DeletedFindingController::class, 'forceDelete'])->withTrashed()->name('findings.force_delete');
 
     // EXPORT
     Route::get('audits/export', [AuditController::class, 'export'])->name('audits.export');

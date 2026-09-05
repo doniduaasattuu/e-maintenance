@@ -295,10 +295,12 @@ test('can delete audit finding', function () {
     $this
         ->actingAs(createAdminUser())
         ->from(route('audits.index'))
-        ->delete(route('audits.destroy', $finding->id))
+        ->delete(route('audits.destroy', $finding->id), [
+            'deleted_reason' => 'Finding duplikat'
+        ])
         ->assertSessionHas('message', [
             'type' => 'success',
-            'description' => 'Audit and photos deleted successfully.',
+            'description' => 'Finding deleted successfully.',
         ]);
 
     expect(Finding::find($finding->id))->toBeNull();

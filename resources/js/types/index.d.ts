@@ -477,7 +477,11 @@ export interface Finding {
     created: string;
     updated_at: string;
     closed_at: string | null;
+    deleted_at: string;
     closed: string | null;
+
+    deleted_reason: string;
+    deletedBy?: User | null;
 
     can: {
         show: boolean;

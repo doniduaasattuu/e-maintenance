@@ -278,6 +278,12 @@ export const DEFAULT_STRINGS: Record<string, UIEntry> = {
         description: 'Represents any finding that have been closed.',
     },
 
+    DELETED_FINDING: {
+        label: 'Deleted',
+        plural: 'Deleted',
+        description: 'Represents any finding that have been deleted.',
+    },
+
     REPOSITORY: {
         label: 'Document Control',
         plural: 'Document Controls',

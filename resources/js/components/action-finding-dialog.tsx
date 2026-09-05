@@ -48,7 +48,6 @@ export function ActionFindingDialog({ children, finding }: ActionFindingDialogPr
 
             const finalDateTime = `${datePart} ${timePart}`;
 
-            console.log('Syncing to form:', finalDateTime); // Cek log di sini
             setData('closed_at', finalDateTime);
         }
     }, [closedDate, closedTime, setData]);

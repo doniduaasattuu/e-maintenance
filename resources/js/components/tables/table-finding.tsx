@@ -16,13 +16,14 @@ import {
     WorkCenter,
 } from '@/types';
 import { router } from '@inertiajs/react';
-import { Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
+import { ArchiveRestore, Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
 import { ActionFindingDialog } from '../action-finding-dialog';
 import ButtonAdd from '../button-add';
 import ButtonExport from '../button-export';
 import { DateRangePopover } from '../date-range-popover';
+import { DeleteFindingDialog } from '../delete-finding-dialog';
 import DialogFindingExportExcel from '../dialog-finding-export-excel';
 import EmptyIcon from '../empty-icon';
 import Filter from '../filter';
@@ -48,6 +49,7 @@ interface FindingTableProps {
     mode: 'standalone' | 'functional-location' | 'equipment';
     asset?: Equipment | FunctionalLocation;
     isArchived?: boolean;
+    isDeleted?: boolean;
     isMom?: boolean;
     findingTypeCode?: 'AUD' | 'ABN';
     findings: {
@@ -187,6 +189,7 @@ export default function TableFinding({
     asset,
     isMom = false,
     isArchived = false,
+    isDeleted = false,
     findingTypeCode,
     findings,
     findingClauses,
@@ -243,9 +246,15 @@ export default function TableFinding({
         }
     }
 
-    function handleDeletefinding(finding: Finding) {
+    function handleRestorefinding(finding: Finding) {
         if (isStandAlone(finding)) {
-            router.delete(route(`${getEndpointFromFinding(finding)}.destroy`, finding.id));
+            router.delete(route('findings.restore', finding.id));
+        }
+    }
+
+    function handleForceDeletefinding(finding: Finding) {
+        if (isStandAlone(finding)) {
+            router.delete(route('findings.force_delete', finding.id));
         }
     }
 
@@ -309,7 +318,7 @@ export default function TableFinding({
                             label="Export"
                             variant={'outline'}
                         />
-                    ) : (
+                    ) : !isDeleted ? (
                         <ButtonGroup>
                             {can.create_finding &&
                                 !isArchived &&
@@ -321,7 +330,7 @@ export default function TableFinding({
                                 ))}
                             <ButtonExport tabIndex={4} onClick={() => setExportDialog(true)} label="Export" variant={'outline'} />
                         </ButtonGroup>
-                    )}
+                    ) : null}
                 </div>
             )}
             {findings.data && findings.data.length > 0 ? (
@@ -338,8 +347,10 @@ export default function TableFinding({
                                 <TableHead className="text-muted-foreground min-w-50">Description</TableHead>
                                 <TableHead className="text-muted-foreground">Before</TableHead>
                                 <TableHead className="text-muted-foreground">After</TableHead>
-                                <TableHead className="text-muted-foreground hidden min-w-50 md:table-cell">Rectification Action</TableHead>
-                                <TableHead className="text-muted-foreground min-w-30">Created</TableHead>
+                                <TableHead className="text-muted-foreground hidden min-w-50 md:table-cell">
+                                    {!isDeleted ? 'Rectification Action' : 'Deleted Reason'}
+                                </TableHead>
+                                <TableHead className="text-muted-foreground min-w-30">{!isDeleted ? 'Created' : 'Deleted'}</TableHead>
                                 {isArchived && <TableHead className="text-muted-foreground min-w-30">Closed</TableHead>}
                                 <TableHead className="text-muted-foreground min-w-20">Dept.</TableHead>
                                 <TableHead className="text-muted-foreground"></TableHead>
@@ -414,15 +425,21 @@ export default function TableFinding({
                                     <FindingAfterCell finding={finding} setSelectedImage={setSelectedImage} />
 
                                     <TableCell className="align-center hidden md:table-cell">
-                                        <p className="text-xs text-wrap">{truncateText(finding.rectification_action ?? '', 100)}</p>
+                                        <p className="text-xs text-wrap">
+                                            {truncateText((!isDeleted ? finding.rectification_action : finding.deleted_reason) ?? '', 100)}
+                                        </p>
                                     </TableCell>
 
                                     <TableCell className="align-center text-xs">
                                         <div className="grid grid-cols-1 gap-2">
-                                            <span>{truncateText(finding?.inspector?.name ?? 'N/A', 15)}</span>
+                                            <span>
+                                                {truncateText((!isDeleted ? finding?.inspector?.name : finding?.deletedBy?.name) ?? 'N/A', 15)}
+                                            </span>
                                             <Tooltip>
                                                 <TooltipTrigger className="text-left">
-                                                    <span className="text-muted-foreground">{finding?.created_at ?? 'N/A'}</span>
+                                                    <span className="text-muted-foreground">
+                                                        {(!isDeleted ? finding?.created_at : finding?.deleted_at) ?? 'N/A'}
+                                                    </span>
                                                 </TooltipTrigger>
                                                 <TooltipContent>{finding?.created ?? '-'}</TooltipContent>
                                             </Tooltip>
@@ -476,36 +493,63 @@ export default function TableFinding({
                                                         </DropdownMenuItem>
                                                     )}
 
-                                                    {finding.can?.update && (
-                                                        <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
-                                                            <Edit />
-                                                            Edit
-                                                        </DropdownMenuItem>
-                                                    )}
+                                                    {!isDeleted ? (
+                                                        <>
+                                                            {finding.can?.update && (
+                                                                <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
+                                                                    <Edit />
+                                                                    Edit
+                                                                </DropdownMenuItem>
+                                                            )}
 
-                                                    {finding.status?.name.toLowerCase() != 'closed' && (
-                                                        <ActionFindingDialog finding={finding}>
-                                                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                                <Wrench />
-                                                                Resolve
-                                                            </DropdownMenuItem>
-                                                        </ActionFindingDialog>
-                                                    )}
+                                                            {finding.status?.name.toLowerCase() != 'closed' && (
+                                                                <ActionFindingDialog finding={finding}>
+                                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                        <Wrench />
+                                                                        Resolve
+                                                                    </DropdownMenuItem>
+                                                                </ActionFindingDialog>
+                                                            )}
 
-                                                    {finding.can?.delete && (
-                                                        <ActionConfirm
-                                                            action={() => handleDeletefinding(finding)}
-                                                            title="Delete Finding"
-                                                            description="Are you sure? This will permanently delete the finding and its images from the storage."
-                                                        >
-                                                            <DropdownMenuItem
-                                                                onSelect={(e) => e.preventDefault()}
-                                                                className="text-red-600 focus:bg-red-50 focus:text-red-700"
+                                                            {finding.can?.delete && (
+                                                                <DeleteFindingDialog finding={finding} mode={mode}>
+                                                                    <DropdownMenuItem
+                                                                        onSelect={(e) => e.preventDefault()}
+                                                                        className="text-red-600 focus:bg-red-50 focus:text-red-700"
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
+                                                                        Delete
+                                                                    </DropdownMenuItem>
+                                                                </DeleteFindingDialog>
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <ActionConfirm
+                                                                action={() => handleRestorefinding(finding)}
+                                                                title="Restore Finding"
+                                                                description="Are you sure? This action will restored from deleted finding."
+                                                                actionLabel="Restore"
                                                             >
-                                                                <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
-                                                                Delete
-                                                            </DropdownMenuItem>
-                                                        </ActionConfirm>
+                                                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                    <ArchiveRestore className="h-4 w-4" />
+                                                                    Restore
+                                                                </DropdownMenuItem>
+                                                            </ActionConfirm>
+                                                            <ActionConfirm
+                                                                action={() => handleForceDeletefinding(finding)}
+                                                                title="Delete Finding"
+                                                                description="Are you sure? This will permanently delete the finding and its images from the storage."
+                                                            >
+                                                                <DropdownMenuItem
+                                                                    onSelect={(e) => e.preventDefault()}
+                                                                    className="text-red-600 focus:bg-red-50 focus:text-red-700"
+                                                                >
+                                                                    <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
+                                                                    Delete
+                                                                </DropdownMenuItem>
+                                                            </ActionConfirm>
+                                                        </>
                                                     )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>

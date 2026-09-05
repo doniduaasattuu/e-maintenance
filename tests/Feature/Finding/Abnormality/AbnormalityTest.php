@@ -313,10 +313,12 @@ test('can delete abnormality finding', function () {
     $this
         ->actingAs(createAdminUser())
         ->from(route('abnormalities.index'))
-        ->delete(route('abnormalities.destroy', $finding->id))
+        ->delete(route('abnormalities.destroy', $finding->id), [
+            'deleted_reason' => 'Duplikat finding'
+        ])
         ->assertSessionHas('message', [
             'type' => 'success',
-            'description' => 'Abnormality and photos deleted successfully.',
+            'description' => 'Finding deleted successfully.',
         ]);
 
     expect(Finding::find($finding->id))->toBeNull();

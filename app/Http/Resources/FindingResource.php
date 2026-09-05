@@ -41,6 +41,7 @@ class FindingResource extends JsonResource
             'inspector' => new UserResource($this->whenLoaded('inspector')),
             'rectifier' => new UserResource($this->whenLoaded('rectifier')),
             'verifier' => new UserResource($this->whenLoaded('verifier')),
+            'deletedBy' => new UserResource($this->whenLoaded('deletedBy')),
 
             'images' => FindingImageResource::collection($this->whenLoaded('images')),
             'gallery' => $this->when($this->relationLoaded('images'), function () {
@@ -58,7 +59,10 @@ class FindingResource extends JsonResource
             'updated_at' => $this->updated_at?->toDateTimeString(),
             'created'   => $this->created_at ? Carbon::parse($this->created_at)->format('d/m/Y H:i:s') : null,
             'closed_at' => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y') : null,
+            'deleted_at' => $this->deleted_at ? Carbon::parse($this->deleted_at)->format('d/m/Y') : null,
             'closed'    => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y H:i:s') : null,
+
+            'deleted_reason' => $this->deleted_reason,
 
             'can' => [
                 'show' => $request->user()->can('view', $this->resource),

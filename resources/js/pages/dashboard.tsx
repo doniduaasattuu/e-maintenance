@@ -460,8 +460,8 @@ export default function Dashboard({
                         chartData={chartInspectorFindings}
                         title="Inspector Weekly"
                         description="Total temuan inspector per minggu"
-                        xAxisAngle={-45}
                         withSelect={true}
+                        xAxisAngle={-90}
                         availableMonths={availableMonths}
                         selectedMonth={selectedMonth}
                         onSelectChange={(value) =>
@@ -481,6 +481,7 @@ export default function Dashboard({
                         valueKey="totalFindings"
                         withSelect={true}
                         labelSliced={false}
+                        xAxisAngle={-90}
                         availableMonths={availableWeeks}
                         selectedMonth={selectedWeek}
                         onSelectChange={(value) =>
@@ -494,6 +495,7 @@ export default function Dashboard({
                         description="User dengan finding Closed terbanyak pada bulan terpilih"
                         chartData={topResolvers}
                         labelKey="name"
+                        xAxisAngle={-90}
                         valueKey="totalSolved"
                         withSelect={true}
                         labelSliced={false}
@@ -506,7 +508,7 @@ export default function Dashboard({
                         }
                     />
                 </div>
-                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                {/* <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
                         title="Closed Findings Achievement"
                         description="Distribusi temuan selesai per departemen sepanjang waktu"
@@ -521,7 +523,7 @@ export default function Dashboard({
                         labelKey="code"
                         valueKey="totalClosedFindings"
                     />
-                </div>
+                </div> */}
             </div>
         </AppLayout>
     );

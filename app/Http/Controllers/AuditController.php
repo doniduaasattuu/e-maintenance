@@ -108,16 +108,16 @@ class AuditController extends FindingController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $finding = Finding::findOrFail($id);
 
         try {
-            $this->delete($finding);
+            $this->delete($request, $finding);
 
             return back()->with('message', [
                 'type' => 'success',
-                'description' => 'Audit and photos deleted successfully.',
+                'description' => 'Finding deleted successfully.',
             ]);
         } catch (\Throwable $e) {
             return back()->with('message', [
