@@ -22,18 +22,7 @@ class FindingMomExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
 
         return Finding::query()
             ->withAllRelations()
-            ->where(function ($query) use ($oneWeekAgo) {
-                // 1. Tampilkan yang BELUM Closed TAPI dibuat dalam 7 hari terakhir
-                $query->where(function ($q) use ($oneWeekAgo) {
-                    $q->whereHas('status', fn($sq) => $sq->where('name', '!=', 'Closed'))
-                        ->where('created_at', '>=', $oneWeekAgo);
-                })
-                    // 2. ATAU yang SUDAH Closed dalam 7 hari terakhir
-                    ->orWhere(function ($q) use ($oneWeekAgo) {
-                        $q->whereHas('status', fn($sq) => $sq->where('name', 'Closed'))
-                            ->where('created_at', '>=', $oneWeekAgo);
-                    });
-            })
+            ->where('created_at', '>=', $oneWeekAgo)
             ->latest('created_at');
     }
 
