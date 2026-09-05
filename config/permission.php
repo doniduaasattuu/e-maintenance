@@ -218,5 +218,12 @@ return [
             'resolve',
             'view_all',
         ],
+        'Improvement' => [
+            'submit',
+            'implement',
+            'approve',
+            'verify',
+            'reject',
+        ],
     ],
 ];

@@ -17,6 +17,8 @@ interface PhotoInputProps {
     required?: boolean;
     maxFiles?: number;
     minFiles?: number;
+    fieldId?: string;
+    label?: string;
 }
 
 export default function PhotoInput({
@@ -31,6 +33,8 @@ export default function PhotoInput({
     required = true,
     maxFiles = 5,
     minFiles = 1,
+    fieldId = 'images',
+    label = 'Photos',
 }: PhotoInputProps) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [isDragging, setIsDragging] = useState(false);
@@ -76,8 +80,8 @@ export default function PhotoInput({
 
     return (
         <Field>
-            <FieldLabel htmlFor="images">
-                Photos
+            <FieldLabel htmlFor={fieldId}>
+                {label}
                 {required && <RequiredLabel />}
             </FieldLabel>
 
@@ -87,7 +91,7 @@ export default function PhotoInput({
                 <Input
                     tabIndex={tabIndex}
                     type="file"
-                    id="images"
+                    id={fieldId}
                     multiple
                     ref={fileInputRef}
                     disabled={disabled || isCompressing}
@@ -108,7 +112,7 @@ export default function PhotoInput({
                     <Input
                         tabIndex={tabIndex}
                         type="file"
-                        id="images"
+                        id={fieldId}
                         multiple
                         ref={fileInputRef}
                         disabled={disabled || isCompressing}

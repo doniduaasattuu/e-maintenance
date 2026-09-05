@@ -139,4 +139,9 @@ class Equipment extends Model
     {
         return $this->hasMany(Finding::class, 'equipment_id', 'id');
     }
+
+    public function improvements(): HasMany
+    {
+        return $this->hasMany(Improvement::class);
+    }
 }

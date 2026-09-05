@@ -43,7 +43,6 @@ class FindingResource extends JsonResource
             'verifier' => new UserResource($this->whenLoaded('verifier')),
 
             'images' => FindingImageResource::collection($this->whenLoaded('images')),
-
             'gallery' => $this->when($this->relationLoaded('images'), function () {
                 return [
                     'before' => FindingImageResource::collection($this->images->where('category', 'before')),

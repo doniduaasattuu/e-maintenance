@@ -39,12 +39,17 @@ class PermissionSeeder extends Seeder
             'FindingPriority',
             'CauseCode',
             'Finding',
+            'FindingImage',
             'Audit',
             'Abnormality',
             'Repository',
             'MaterialUnit',
             'MaterialType',
-            'Image'
+            'Image',
+            'ImprovementCategory',
+            'ImprovementStatus',
+            'Improvement',
+            'ImprovementImage',
         ];
 
         $this->generatePermissions($models);

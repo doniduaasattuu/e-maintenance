@@ -172,13 +172,14 @@ export default function UserForm({
                                 <SelectItem className="text-muted-foreground" value="null">
                                     -- None --
                                 </SelectItem>
-                                {departments.data.map((d) => {
-                                    return (
-                                        <SelectItem key={d.id} value={d.id.toString()}>
-                                            {d.code + ' - ' + d.name}
-                                        </SelectItem>
-                                    );
-                                })}
+                                {departments &&
+                                    departments.data.map((d) => {
+                                        return (
+                                            <SelectItem key={d.id} value={d.id.toString()}>
+                                                {d.code + ' - ' + d.name}
+                                            </SelectItem>
+                                        );
+                                    })}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -201,13 +202,14 @@ export default function UserForm({
                                 <SelectItem className="text-muted-foreground" value="null">
                                     -- None --
                                 </SelectItem>
-                                {positions.data.map((p) => {
-                                    return (
-                                        <SelectItem key={p.id} value={p.id.toString()}>
-                                            {p.code + ' - ' + p.name}
-                                        </SelectItem>
-                                    );
-                                })}
+                                {positions &&
+                                    positions.data.map((p) => {
+                                        return (
+                                            <SelectItem key={p.id} value={p.id.toString()}>
+                                                {p.code + ' - ' + p.name}
+                                            </SelectItem>
+                                        );
+                                    })}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -232,13 +234,14 @@ export default function UserForm({
                                 <SelectItem className="text-muted-foreground" value="null">
                                     -- None --
                                 </SelectItem>
-                                {workCenters.data.map((p) => {
-                                    return (
-                                        <SelectItem key={p.id} value={p.id.toString()}>
-                                            {p.code + ' - ' + p.name}
-                                        </SelectItem>
-                                    );
-                                })}
+                                {workCenters &&
+                                    workCenters.data.map((p) => {
+                                        return (
+                                            <SelectItem key={p.id} value={p.id.toString()}>
+                                                {p.code + ' - ' + p.name}
+                                            </SelectItem>
+                                        );
+                                    })}
                             </SelectGroup>
                         </SelectContent>
                     </Select>

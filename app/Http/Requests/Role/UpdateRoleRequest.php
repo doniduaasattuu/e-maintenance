@@ -29,7 +29,7 @@ class UpdateRoleRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'max:15',
+                'max:25',
                 Rule::unique('roles', 'name')->ignore($this->role),
             ],
             'selectedPermissions' => ['required', 'array', 'min:1'],

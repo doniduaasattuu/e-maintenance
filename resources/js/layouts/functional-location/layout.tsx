@@ -21,6 +21,12 @@ export default function FunctionalLocationLayout({ functionalLocation, className
             permission: 'index_finding',
         },
         {
+            title: 'Improvement',
+            href: route('functional-locations.improvements', functionalLocation.id),
+            icon: null,
+            permission: 'index_improvement',
+        },
+        {
             title: 'Image',
             href: route('images.functional-location.index', {
                 id: functionalLocation.id,

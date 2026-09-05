@@ -13,12 +13,13 @@ import { ActionConfirm } from './action-confirm';
 type Props = {
     id: string;
     value: string;
-    currentValue?: FunctionalLocation | null;
+    currentValue?: FunctionalLocation | null | undefined;
     onChange: (value: number | null) => void;
     tabIndex: number;
     recentlySuccessful?: boolean;
     processing: boolean;
     isEditing?: boolean;
+    showDismantleButton?: boolean;
     className?: string;
     placeholder?: string;
 };
@@ -32,6 +33,7 @@ export default function FunctionalLocationSelect({
     recentlySuccessful,
     processing,
     isEditing,
+    showDismantleButton = true,
     className,
     placeholder,
 }: Props) {
@@ -64,8 +66,10 @@ export default function FunctionalLocationSelect({
 
     // Reset state jika transaksi sukses (misal setelah simpan form)
     useEffect(() => {
-        if (recentlySuccessful) setSelectedLoc(null);
-    }, [recentlySuccessful]);
+        if (recentlySuccessful && !isEditing) {
+            setSelectedLoc(null);
+        }
+    }, [recentlySuccessful, isEditing]);
 
     const handleDismantling = () => {
         setSelectedLoc(null);
@@ -134,7 +138,7 @@ export default function FunctionalLocationSelect({
                 </Popover>
             </div>
 
-            {isEditing && value !== '' && (
+            {isEditing && showDismantleButton && value !== '' && (
                 <ActionConfirm
                     action={handleDismantling}
                     title="Dismantle?"

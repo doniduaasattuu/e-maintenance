@@ -32,6 +32,7 @@ export default function EquipmentSelect({
     processing,
     className,
     placeholder,
+    isEditing,
     functionalLocationId,
 }: Props) {
     const [open, setOpen] = useState(false);
@@ -65,8 +66,8 @@ export default function EquipmentSelect({
     }, [input, functionalLocationId, fetchEquipments, selectedLoc]);
 
     useEffect(() => {
-        if (recentlySuccessful) setSelectedLoc(null);
-    }, [recentlySuccessful]);
+        if (recentlySuccessful && !isEditing) setSelectedLoc(null);
+    }, [isEditing, recentlySuccessful]);
 
     return (
         <div className={cn('flex w-full items-center gap-2', className)}>

@@ -139,7 +139,7 @@ export default function EquipmentForm({
                 <FieldError>{errors.functional_location_id}</FieldError>
             </Field>
 
-            <div className="flex justify-between gap-2">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
                 <Field>
                     <FieldLabel htmlFor="equipment_class_id">
                         Equipment class

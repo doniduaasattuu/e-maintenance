@@ -6,10 +6,12 @@ import ButtonSubmit from '@/components/button-submit';
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
+import RequiredLabel from '@/components/required-label';
+import { FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import { strTitle } from '@/lib/utils';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -49,7 +51,9 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         });
     };
 
+    const employeeId = auth.user?.employee_id;
     const department = auth.user?.department?.name;
+    const workCenter = auth.user?.work_center?.name;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -60,28 +64,48 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                     <HeadingSmall title="Profile information" description="Update your name and email address" />
 
                     <form onSubmit={submit} className="space-y-6">
-                        <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
+                            <div className="grid gap-2">
+                                <FieldLabel htmlFor="employee_id">
+                                    Employee ID <RequiredLabel />
+                                </FieldLabel>
 
-                            <Input
-                                tabIndex={1}
-                                id="name"
-                                className="mt-1 block w-full"
-                                value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
-                                required
-                                autoComplete="name"
-                                placeholder="Full name"
-                            />
+                                <Input
+                                    tabIndex={1}
+                                    id="employee_id"
+                                    type="employee_id"
+                                    className="bg-muted/50 mt-1 block w-full"
+                                    value={employeeId}
+                                />
+                            </div>
 
-                            <InputError message={errors.name} />
+                            <div className="grid gap-2">
+                                <FieldLabel htmlFor="name">
+                                    Name <RequiredLabel />
+                                </FieldLabel>
+
+                                <Input
+                                    tabIndex={2}
+                                    id="name"
+                                    className="mt-1 block w-full"
+                                    value={data.name}
+                                    onChange={(e) => setData('name', strTitle(e.target.value))}
+                                    required
+                                    autoComplete="name"
+                                    placeholder="Full name"
+                                />
+
+                                <InputError message={errors.name} />
+                            </div>
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
+                            <FieldLabel htmlFor="email">
+                                Email address <RequiredLabel />
+                            </FieldLabel>
 
                             <Input
-                                tabIndex={2}
+                                tabIndex={3}
                                 id="email"
                                 type="email"
                                 className="mt-1 block w-full"
@@ -95,23 +119,36 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <InputError message={errors.email} />
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="department_id">Department</Label>
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
+                            <div className="grid gap-2">
+                                <FieldLabel htmlFor="department_id">Department</FieldLabel>
 
-                            <Input
-                                tabIndex={3}
-                                id="department_id"
-                                type="department_id"
-                                className="bg-muted/50 mt-1 block w-full"
-                                value={department}
-                            />
+                                <Input
+                                    tabIndex={4}
+                                    id="department_id"
+                                    type="department_id"
+                                    className="bg-muted/50 mt-1 block w-full"
+                                    value={department}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <FieldLabel htmlFor="work_center_id">Work Center</FieldLabel>
+
+                                <Input
+                                    tabIndex={5}
+                                    id="work_center_id"
+                                    type="work_center_id"
+                                    className="bg-muted/50 mt-1 block w-full"
+                                    value={workCenter}
+                                />
+                            </div>
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="avatar">Avatar</Label>
+                            <FieldLabel htmlFor="avatar">Avatar</FieldLabel>
 
                             <Input
-                                tabIndex={4}
+                                tabIndex={6}
                                 id="avatar"
                                 type="file"
                                 ref={fileInputRef}
@@ -128,7 +165,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 <p className="text-muted-foreground -mt-4 text-sm">
                                     Your email address is unverified.{' '}
                                     <Link
-                                        tabIndex={5}
+                                        tabIndex={6}
                                         href={route('verification.send')}
                                         method="post"
                                         as="button"
@@ -148,12 +185,12 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                         <div className="flex items-center gap-4">
                             <ButtonSubmit
-                                tabIndex={6}
+                                tabIndex={7}
                                 processing={processing}
-                                label="Save"
+                                label="Update"
                                 disabled={processing || data.name == '' || data.email == ''}
                                 recentlySuccessful={recentlySuccessful}
-                                successMessage="Saved"
+                                successMessage="Updated"
                             />
                         </div>
                     </form>

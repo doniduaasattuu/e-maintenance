@@ -74,7 +74,7 @@ export default function TableRole({ roles, withHeader = true, filters }: TableRo
 
                                         {can.delete_role && (
                                             <TableCell className="w-10 text-right">
-                                                {can.delete_role && role.name !== 'Admin' && (
+                                                {can.delete_role && role.name !== 'Admin' && role.name !== 'Administrator' && (
                                                     <ActionConfirm
                                                         action={() => handleDeleteRole(role.id)}
                                                         title={`Delete Role ${role.name}?`}

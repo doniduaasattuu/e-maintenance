@@ -23,6 +23,8 @@ class FindingImageResource extends JsonResource
             'original_name' => $this->original_name,
             'created_at' => $this->created_at?->toFormattedDateString(),
             'updated_at' => $this->updated_at?->toFormattedDateString(),
+
+            'finding' => new FindingResource($this->whenLoaded('finding')),
         ];
     }
 }

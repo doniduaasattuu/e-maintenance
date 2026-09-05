@@ -15,6 +15,7 @@ import {
     LayoutGrid,
     ScanQrCodeIcon,
     ScanSearch,
+    Sparkles,
     TextSearch,
     Users2,
 } from 'lucide-react';
@@ -120,6 +121,16 @@ const mainNavItems: NavItem[] = [
                 href: route('cause-codes.index'),
                 permission: 'index_causecode',
             },
+            {
+                title: strings?.IMPROVEMENT_CATEGORY?.label ?? 'Improvement Category',
+                href: route('improvement-categories.index'),
+                permission: 'index_improvementcategory',
+            },
+            {
+                title: strings?.IMPROVEMENT_STATUS?.label ?? 'Improvement Status',
+                href: route('improvement-statuses.index'),
+                permission: 'index_improvementstatus',
+            },
         ],
     },
     {
@@ -149,6 +160,12 @@ const mainNavItems: NavItem[] = [
                 permission: 'index_finding',
             },
         ],
+    },
+    {
+        title: strings?.IMPROVEMENT?.label ?? 'Improvement',
+        href: route('improvements.index'),
+        icon: Sparkles,
+        permission: 'index_improvement',
     },
     {
         title: strings?.REPOSITORY?.label ?? 'Document Control',

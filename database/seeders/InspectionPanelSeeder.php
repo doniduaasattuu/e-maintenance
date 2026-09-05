@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Equipment;
 use App\Models\EquipmentInspectionForm;
 use App\Models\InspectionPanel;
+use App\Models\Position;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -26,7 +27,9 @@ class InspectionPanelSeeder extends Seeder
         InspectionPanel::truncate();
 
         // Ambil seluruh user
-        $users = User::all();
+        $users = User::whereHas('position', function ($query) {
+            $query->whereIn('code', ['OPR', 'FR', 'GL']);
+        })->get();
 
         if ($users->isEmpty()) {
             $this->command->warn('No user found. Please seed users first.');
@@ -39,7 +42,7 @@ class InspectionPanelSeeder extends Seeder
                 $query->where('code', 'ZCLASS_E008');
             })
             ->orderBy('id')
-            ->limit(10)
+            // ->limit(10)
             ->get();
 
         if ($equipments->isEmpty()) {
