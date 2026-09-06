@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
+import { Bar, CartesianGrid, ComposedChart, LabelList, Line, XAxis, YAxis } from 'recharts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface StackSeries {
@@ -79,10 +79,41 @@ export function ChartBarStackedDefault({
 
             <CardContent>
                 <ChartContainer config={chartConfig} className="mx-auto h-70 w-full sm:h-auto">
-                    <BarChart accessibilityLayer data={chartData} margin={{ top: 12 }}>
+                    <ComposedChart accessibilityLayer data={chartData} margin={{ top: 12, right: 12 }}>
                         <CartesianGrid vertical={false} />
 
                         <XAxis dataKey={xAxisKey} tickLine={false} axisLine={false} />
+
+                        {/* Left axis - Finding count */}
+                        <YAxis yAxisId="count" tickLine={false} axisLine={false} />
+
+                        {/* Right axis - Percentage */}
+                        <YAxis
+                            yAxisId="percentage"
+                            orientation="right"
+                            domain={[0, 100]}
+                            tickLine={false}
+                            axisLine={false}
+                            tickFormatter={(value) => `${value}%`}
+                        />
+
+                        {/* Diagonal target line */}
+                        <Line
+                            yAxisId="percentage"
+                            type="monotone"
+                            dataKey="closing_rate"
+                            stroke="#ff7300"
+                            strokeWidth={3}
+                            dot={true}
+                            isAnimationActive={false}
+                        >
+                            <LabelList
+                                dataKey="closing_rate"
+                                position="top"
+                                formatter={(value: number) => `${value}%`}
+                                className="fill-foreground text-[10px] font-semibold"
+                            />
+                        </Line>
 
                         <ChartTooltip content={<ChartTooltipContent />} />
 
@@ -91,6 +122,7 @@ export function ChartBarStackedDefault({
                         {series.map((item, index) => (
                             <Bar
                                 key={item.key}
+                                yAxisId="count"
                                 dataKey={item.key}
                                 stackId="stack"
                                 fill={`var(--color-${item.key})`}
@@ -106,7 +138,7 @@ export function ChartBarStackedDefault({
                                 )}
                             </Bar>
                         ))}
-                    </BarChart>
+                    </ComposedChart>
                 </ChartContainer>
             </CardContent>
         </Card>

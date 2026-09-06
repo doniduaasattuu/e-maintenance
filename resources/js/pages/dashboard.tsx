@@ -201,8 +201,6 @@ interface DashboardProps {
 
 export default function Dashboard({
     stats,
-    chartClosedFindingDepartment,
-    chartClosedFindingWorkCenter,
     topInspectorsWeekly,
     topResolvers,
     monthlyFinding,

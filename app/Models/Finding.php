@@ -34,6 +34,7 @@ class Finding extends Model
         "inspected_by",
         "rectified_by",
         "verified_by",
+        "deleted_by",
         "closed_at",
         "deleted_reason",
     ];
@@ -512,7 +513,6 @@ class Finding extends Model
 
     public static function getMonthlyFinding()
     {
-
         $monthlyFindings = Finding::query()
             ->leftJoin(
                 'finding_statuses',
@@ -521,19 +521,19 @@ class Finding extends Model
                 'finding_statuses.id'
             )
             ->selectRaw("
-        YEAR(findings.created_at) as year,
-        MONTH(findings.created_at) as month,
+            YEAR(findings.created_at) as year,
+            MONTH(findings.created_at) as month,
 
-        SUM(CASE
-            WHEN finding_statuses.name = 'Closed'
-            THEN 1 ELSE 0
-        END) as closed,
+            COUNT(findings.id) as total,
 
-        SUM(CASE
-            WHEN finding_statuses.name <> 'Closed'
-            THEN 1 ELSE 0
-        END) as open
-    ")
+            SUM(
+                CASE
+                    WHEN finding_statuses.name = 'Closed'
+                    THEN 1
+                    ELSE 0
+                END
+            ) as closed
+        ")
             ->where(
                 'findings.created_at',
                 '>=',
@@ -552,8 +552,11 @@ class Finding extends Model
             1
         );
 
-        for ($i = 11; $i >= 0; $i--) {
+        // Accumulated values
+        $accumulatedTotal = 0;
+        $accumulatedClosed = 0;
 
+        for ($i = 11; $i >= 0; $i--) {
             $d = $date
                 ->copy()
                 ->subMonthsNoOverflow($i);
@@ -563,16 +566,26 @@ class Finding extends Model
                     && $item->month == $d->month;
             });
 
-            $open = (int) ($row?->open ?? 0);
+            $total = (int) ($row?->total ?? 0);
             $closed = (int) ($row?->closed ?? 0);
+            $open = $total - $closed;
+
+            // Accumulate
+            $accumulatedTotal += $total;
+            $accumulatedClosed += $closed;
+
+            $closingRate = $accumulatedTotal > 0
+                ? round(($accumulatedClosed / $accumulatedTotal) * 100)
+                : 0;
 
             $chartMonthlyFindings->push([
                 'month' => $d->format('M'),
-                'closed' => (int) ($row->closed ?? 0),
-                'open' => (int) ($row->open ?? 0),
-                'closing_rate' => ($open + $closed) > 0
-                    ? round(($closed / ($open + $closed)) * 100)
-                    : 0,
+
+                'closed' => $closed,
+
+                'open' => $open,
+
+                'closing_rate' => $closingRate,
             ]);
         }
 
@@ -594,7 +607,6 @@ class Finding extends Model
             'series' => $seriesMonthlyFindings,
         ];
     }
-
 
     public static function getWeeklyFinding(\Carbon\Carbon $startDate, \Carbon\Carbon $endDate)
     {
