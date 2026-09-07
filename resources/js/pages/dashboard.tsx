@@ -204,6 +204,7 @@ export default function Dashboard({
     topInspectorsWeekly,
     topResolvers,
     monthlyFinding,
+    chartClosedFindingDepartment,
     // equipmentStatusChart,
     availableMonths,
     availableWeeks,
@@ -281,8 +282,9 @@ export default function Dashboard({
                         </Card>
                     </div>
                 </div>
-                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                <div>
                     <ChartBarStackedDefault
+                        className="h-90 sm:h-120"
                         title="Monthly Finding"
                         description="Total temuan per bulan dalam satu tahun"
                         chartData={monthlyFinding.chart}
@@ -290,6 +292,8 @@ export default function Dashboard({
                         xAxisKey="month"
                         labelDataKey="closing_rate"
                     />
+                </div>
+                <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartPieDefault
                         withSelect={true}
                         selectedMonth={selectedMonth}
@@ -305,8 +309,14 @@ export default function Dashboard({
                             })
                         }
                     />
+                    <ChartBarDefault
+                        title="Closed Findings Achievement"
+                        description="Distribusi temuan selesai per departemen sepanjang waktu"
+                        chartData={chartClosedFindingDepartment}
+                        labelKey="code"
+                        valueKey="totalClosedFindings"
+                    />
                 </div>
-
                 <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
                     <ChartBarDefault
                         title="Weekly Finding"
@@ -507,6 +517,21 @@ export default function Dashboard({
                     />
                 </div>
                 {/* <div className="grid auto-rows-min grid-cols-1 gap-4 lg:grid-cols-2">
+                   <ChartPieDefault
+                        withSelect={true}
+                        selectedMonth={selectedMonth}
+                        availableMonths={availableMonths}
+                        title="Top 5 Finding Areas"
+                        description="Distribusi finding berdasarkan area"
+                        chartData={chartTopFindingAreas}
+                        labelKey="label"
+                        valueKey="value"
+                        onSelectChange={(value) =>
+                            refreshDashboard({
+                                month: value,
+                            })
+                        }
+                    />
                     <ChartBarDefault
                         title="Closed Findings Achievement"
                         description="Distribusi temuan selesai per departemen sepanjang waktu"

@@ -75,15 +75,7 @@ export function ChartPieDefault({
                     <PieChart>
                         <ChartTooltip content={<ChartTooltipContent hideIndicator />} />
 
-                        <Pie data={chartData} dataKey={valueKey} label>
-                            {/* <LabelList
-                                dataKey={labelKey}
-                                className="fill-background"
-                                stroke="none"
-                                fontSize={10}
-                                formatter={(value: string) => value.split('-').pop()}
-                            /> */}
-                        </Pie>
+                        <Pie data={chartData} dataKey={valueKey} label className="text-lg"></Pie>
 
                         <ChartLegend
                             content={<ChartLegendContent nameKey="label" />}

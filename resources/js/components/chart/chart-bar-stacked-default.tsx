@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { cn } from '@/lib/utils';
 import { Bar, CartesianGrid, ComposedChart, LabelList, Line, XAxis, YAxis } from 'recharts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
@@ -31,6 +32,7 @@ interface Props {
 
     xAxisKey?: string;
     labelDataKey?: string;
+    className?: string;
 }
 
 export function ChartBarStackedDefault({
@@ -44,6 +46,7 @@ export function ChartBarStackedDefault({
     onSelectChange,
     xAxisKey = 'week',
     labelDataKey,
+    className,
 }: Props) {
     const chartConfig = series.reduce((acc, item) => {
         acc[item.key] = {
@@ -55,7 +58,7 @@ export function ChartBarStackedDefault({
     }, {} as ChartConfig);
 
     return (
-        <Card className="bg-sidebar">
+        <Card className="bg-sidebar flex h-full flex-col overflow-hidden">
             <CardHeader className="flex flex-row items-center gap-2 space-y-0 border-b py-5">
                 <div className="grid flex-1 gap-1">
                     <CardTitle className="text-xl font-bold">{title}</CardTitle>
@@ -78,7 +81,7 @@ export function ChartBarStackedDefault({
             </CardHeader>
 
             <CardContent>
-                <ChartContainer config={chartConfig} className="mx-auto h-70 w-full sm:h-auto">
+                <ChartContainer config={chartConfig} className={cn('mx-auto aspect-auto h-120 min-h-0 w-full', className)}>
                     <ComposedChart accessibilityLayer data={chartData} margin={{ top: 12, right: 12 }}>
                         <CartesianGrid vertical={false} />
 
