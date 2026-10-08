@@ -42,7 +42,7 @@ class InspectionPanelSeeder extends Seeder
                 $query->where('code', 'ZCLASS_E008');
             })
             ->orderBy('id')
-            // ->limit(10)
+            ->limit(5)
             ->get();
 
         if ($equipments->isEmpty()) {

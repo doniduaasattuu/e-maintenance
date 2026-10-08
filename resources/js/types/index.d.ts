@@ -480,6 +480,12 @@ export interface Finding {
     deleted_at: string;
     closed: string | null;
 
+    month: {
+        created: string | null;
+        closed: string | null;
+        deleted: string | null;
+    };
+
     deleted_reason: string;
     deletedBy?: User | null;
 

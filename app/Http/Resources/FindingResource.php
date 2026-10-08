@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Traits\HasMonthName;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Carbon\Carbon;
@@ -61,6 +62,19 @@ class FindingResource extends JsonResource
             'closed_at' => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y') : null,
             'deleted_at' => $this->deleted_at ? Carbon::parse($this->deleted_at)->format('d/m/Y') : null,
             'closed'    => $this->closed_at ? Carbon::parse($this->closed_at)->format('d/m/Y H:i:s') : null,
+            'month' => [
+                'created' => $this->created_at
+                    ? $this->resource->getMonthName($this->created_at)
+                    : null,
+
+                'closed' => $this->closed_at
+                    ? $this->resource->getMonthName($this->closed_at)
+                    : null,
+
+                'deleted' => $this->deleted_at
+                    ? $this->resource->getMonthName($this->deleted_at)
+                    : null,
+            ],
 
             'deleted_reason' => $this->deleted_reason,
 

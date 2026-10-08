@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\FindingExport;
 use App\Exports\FindingMomExport;
 use App\Http\Resources\CauseCodeResource;
 use App\Http\Resources\DepartmentResource;

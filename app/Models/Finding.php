@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasMonthName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 class Finding extends Model
 {
     /** @use HasFactory<\Database\Factories\FindingFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasMonthName;
 
     protected $table = 'findings';
 
