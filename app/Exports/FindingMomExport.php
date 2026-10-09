@@ -12,17 +12,41 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
 class FindingMomExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents, WithTitle
 {
+    protected ?string $startDate;
+    protected ?string $endDate;
+
+    public function __construct(Request $request)
+    {
+        $this->startDate = $request->query('start_date');
+        $this->endDate = $request->query('end_date');
+    }
+
     public function query()
     {
-        $oneWeekAgo = now()->subDays(7)->startOfDay();
-
         return Finding::query()
             ->withAllRelations()
-            ->where('created_at', '>=', $oneWeekAgo)
+            ->when(
+                $this->startDate && $this->endDate,
+                function ($query) {
+                    $query->whereBetween('created_at', [
+                        Carbon::parse($this->startDate)->startOfDay(),
+                        Carbon::parse($this->endDate)->endOfDay(),
+                    ]);
+                },
+                function ($query) {
+                    // Default: 7 hari terakhir.
+                    $query->where(
+                        'created_at',
+                        '>=',
+                        now()->subDays(7)->startOfDay()
+                    );
+                }
+            )
             ->latest('created_at');
     }
 

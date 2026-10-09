@@ -314,7 +314,13 @@ export default function TableFinding({
                     {isMom ? (
                         <ButtonExport
                             tabIndex={4}
-                            onClick={() => (window.location.href = route('findings.mom.export'))}
+                            // onClick={() => (window.location.href = route('findings.mom.export'))}
+                            onClick={() => {
+                                const url = window.location;
+                                const params = new URLSearchParams(url.search);
+
+                                window.location.href = `${route('findings.mom.export')}?${params.toString()}`;
+                            }}
                             label="Export"
                             variant={'outline'}
                         />

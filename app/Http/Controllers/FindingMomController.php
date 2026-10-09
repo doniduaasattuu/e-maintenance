@@ -33,29 +33,48 @@ class FindingMomController extends Controller
         Gate::authorize('viewAny', Finding::class);
 
         $perPage = $this->getPerPage($request);
+
+        $hasDateRange = $request->filled('start_date')
+            && $request->filled('end_date');
+
         $oneWeekAgo = now()->subDays(7)->startOfDay();
 
         $findings = Finding::withAllRelations()
-            ->where(function ($query) use ($oneWeekAgo) {
-                // 1. Tampilkan yang BELUM Closed TAPI dibuat dalam 7 hari terakhir
-                $query->where(function ($q) use ($oneWeekAgo) {
-                    $q->whereHas('status', fn($sq) => $sq->where('name', '!=', 'Closed'))
-                        ->where('created_at', '>=', $oneWeekAgo);
-                })
-                    // 2. ATAU yang SUDAH Closed dalam 7 hari terakhir
-                    ->orWhere(function ($q) use ($oneWeekAgo) {
-                        $q->whereHas('status', fn($sq) => $sq->where('name', 'Closed'))
-                            ->where('created_at', '>=', $oneWeekAgo);
+            ->when(
+                $hasDateRange,
+                function ($query) use ($request) {
+                    // Gunakan rentang tanggal pilihan user.
+                    $query->whereBetween('created_at', [
+                        Carbon::parse($request->start_date)->startOfDay(),
+                        Carbon::parse($request->end_date)->endOfDay(),
+                    ]);
+                },
+                function ($query) use ($oneWeekAgo) {
+                    // Default: finding yang belum Closed
+                    // dibuat dalam 7 hari terakhir,
+                    // ATAU finding yang sudah Closed
+                    // dalam 7 hari terakhir berdasarkan created_at.
+                    $query->where(function ($q) use ($oneWeekAgo) {
+                        $q->where(function ($subQuery) use ($oneWeekAgo) {
+                            $subQuery
+                                ->whereHas(
+                                    'status',
+                                    fn($sq) => $sq->where('name', '!=', 'Closed')
+                                )
+                                ->where('created_at', '>=', $oneWeekAgo);
+                        })->orWhere(function ($subQuery) use ($oneWeekAgo) {
+                            $subQuery
+                                ->whereHas(
+                                    'status',
+                                    fn($sq) => $sq->where('name', 'Closed')
+                                )
+                                ->where('created_at', '>=', $oneWeekAgo);
+                        });
                     });
-            })
-            ->when($request->start_date && $request->end_date, function ($query) use ($request) {
-                $query->whereBetween('created_at', [
-                    $request->start_date . ' 00:00:00',
-                    $request->end_date . ' 23:59:59'
-                ]);
-            })
+                }
+            )
             ->search($request)
-            ->orderBy('created_at', 'DESC')
+            ->orderByDesc('created_at')
             ->paginate($perPage)
             ->withQueryString();
 
@@ -66,7 +85,7 @@ class FindingMomController extends Controller
         $workCenters = WorkCenter::all();
         $causeCodes = CauseCode::all();
 
-        return Inertia::render("finding/mom/index", [
+        return Inertia::render('finding/mom/index', [
             'findings' => FindingResource::collection($findings),
             'findingClauses' => FindingClauseResource::collection($findingClauses),
             'findingStatuses' => FindingStatusResource::collection($findingStatuses),
@@ -77,14 +96,16 @@ class FindingMomController extends Controller
             'filters' => [
                 'query' => $request->query('query'),
                 'per_page' => (string) $perPage,
-                'start_date' => $request->query('start_date') ?? Carbon::now()->subDays(7)->format('Y-m-d'),
-                'end_date' => $request->query('end_date') ?? Carbon::now()->format('Y-m-d'),
+                'start_date' => $request->query('start_date')
+                    ?? now()->subDays(7)->format('Y-m-d'),
+                'end_date' => $request->query('end_date')
+                    ?? now()->format('Y-m-d'),
             ],
         ]);
     }
 
     public function export(Request $request)
     {
-        return Excel::download(new FindingMomExport(), 'Finding_MoM_' . now()->format('Ymd_His') . '.xlsx');
+        return Excel::download(new FindingMomExport($request), 'Finding_MoM_' . now()->format('Ymd_His') . '.xlsx');
     }
 }

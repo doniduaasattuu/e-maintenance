@@ -60,6 +60,7 @@ use Database\Seeders\MaterialUnitSeeder;
 use Database\Seeders\RepositorySeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\WorkCenterSeeder;
+use Illuminate\Http\Request;
 
 dataset('exports', [
     'divisions' => new ExportDefinition(
@@ -590,7 +591,7 @@ dataset('exports', [
     ),
 
     'momsFindings' => new ExportDefinition(
-        factory: fn() => new FindingMomExport([
+        factory: fn() => new FindingMomExport(Request::create('/export', 'GET', [
             'start_date' => null,
             'end_date' => null,
             'type_id' => null,
@@ -599,7 +600,7 @@ dataset('exports', [
             'status_ids' => null,
             'department_ids' => null,
             'priority_ids' => null,
-        ]),
+        ])),
         title: 'moms_findings',
         setup: fn($test) => $test->seed([
             FindingStatusSeeder::class,
