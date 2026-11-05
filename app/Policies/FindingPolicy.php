@@ -77,7 +77,7 @@ class FindingPolicy
     }
 
 
-    public function bulkDelete(User $user, Finding $finding): bool
+    public function bulkDelete(User $user): bool
     {
         return $user->hasAnyPermission(['bulk_delete_finding']);
     }

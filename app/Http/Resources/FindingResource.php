@@ -82,6 +82,7 @@ class FindingResource extends JsonResource
                 'show' => $request->user()->can('view', $this->resource),
                 'update' => $request->user()->can('update', $this->resource),
                 'delete' => $request->user()->can('delete', $this->resource),
+                'bulk_delete' => $request->user()->can('bulkDelete'),
             ]
         ];
     }

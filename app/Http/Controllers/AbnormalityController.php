@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
@@ -152,7 +153,7 @@ class AbnormalityController extends FindingController
 
         $ids = $validated['finding_ids'];
 
-        Gate::authorize('bulkDelete', Finding::class);
+        Gate::authorize('bulkDelete');
 
         try {
             DB::transaction(function () use ($ids) {
@@ -167,6 +168,14 @@ class AbnormalityController extends FindingController
 
                 foreach ($findings as $finding) {
                     Gate::authorize('forceDelete', $finding);
+
+                    $directoryPath = 'images/findings/' . $finding->id;
+
+                    $finding->images()->delete();
+
+                    if (Storage::disk('public')->exists($directoryPath)) {
+                        Storage::disk('public')->deleteDirectory($directoryPath);
+                    }
 
                     $finding->forceDelete();
                 }
