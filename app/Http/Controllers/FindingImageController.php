@@ -6,6 +6,7 @@ use App\Http\Resources\FindingResource;
 use App\Models\Finding;
 use App\Models\FindingImage;
 use App\Models\FindingStatus;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -192,8 +193,15 @@ class FindingImageController extends Controller
     {
         Gate::authorize('delete', $finding);
 
+        $finding->load('images');
+
         try {
+            if (count($finding->images) < 2) {
+                throw new Exception('Finding must have at least 1 image');
+            }
+
             DB::transaction(function () use ($image) {
+
                 if (Storage::disk('public')->exists($image->file_path)) {
                     Storage::disk('public')->delete($image->file_path);
                 }

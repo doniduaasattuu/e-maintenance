@@ -39,9 +39,11 @@ export default function FindingImageManagement({ finding, images, className }: P
                                     title={`Delete this image?`}
                                     description="This action will remove the image permanently. This action can't be undone."
                                 >
-                                    <div className="rounded bg-red-500 p-1 transition duration-300 hover:bg-red-700">
-                                        <Trash2 size={20} className="text-white" />
-                                    </div>
+                                    {images.length > 1 && (
+                                        <div className="rounded bg-red-500 p-1 transition duration-300 hover:bg-red-700">
+                                            <Trash2 size={20} className="text-white" />
+                                        </div>
+                                    )}
                                 </ActionConfirm>
                             </div>
                             <Card className="p-0" onClick={() => setSelectedImage(image)}>

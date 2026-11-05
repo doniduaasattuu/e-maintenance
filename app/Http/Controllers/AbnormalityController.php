@@ -9,6 +9,7 @@ use App\Http\Requests\Finding\BulkDeleteFindingsRequest;
 use App\Models\Finding;
 use App\Models\FindingType;
 use Error;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -161,9 +162,7 @@ class AbnormalityController extends FindingController
 
                 // Ensure all submitted IDs exist as soft-deleted findings.
                 if ($findings->count() !== count($ids)) {
-                    throw ValidationException::withMessages([
-                        'finding_ids' => 'Some findings are not available for permanent deletion.',
-                    ]);
+                    throw new Exception('Some findings are not available for permanent deletion.');
                 }
 
                 foreach ($findings as $finding) {

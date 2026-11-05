@@ -72,7 +72,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                                                 ) : finding == 'abnormalities' && abnormalityOpen > 0 ? (
                                                                     <>
                                                                         {subItem.title}
-                                                                        <Badge variant={'destructive'} className="h-5 w-2 text-[12px]">
+                                                                        <Badge variant={'destructive'} className="h-5 text-[12px]">
                                                                             {abnormalityOpen}
                                                                         </Badge>{' '}
                                                                     </>
