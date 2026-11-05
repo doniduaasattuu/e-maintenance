@@ -73,6 +73,12 @@ class FindingPolicy
      */
     public function forceDelete(User $user, Finding $finding): bool
     {
-        return false;
+        return $user->hasAnyPermission(['delete_finding']);
+    }
+
+
+    public function bulkDelete(User $user, Finding $finding): bool
+    {
+        return $user->hasAnyPermission(['bulk_delete_finding']);
     }
 }

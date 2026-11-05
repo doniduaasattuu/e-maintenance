@@ -16,7 +16,7 @@ import {
     WorkCenter,
 } from '@/types';
 import { router } from '@inertiajs/react';
-import { ArchiveRestore, Edit, Info, MoreHorizontalIcon, Trash2, Wrench } from 'lucide-react';
+import { ArchiveRestore, Edit, Info, MoreHorizontalIcon, Trash2, Wrench, X } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { ActionConfirm } from '../action-confirm';
 import { ActionFindingDialog } from '../action-finding-dialog';
@@ -260,6 +260,64 @@ export default function TableFinding({
 
     const [exportDialog, setExportDialog] = useState<boolean>(false);
 
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+
+    function toggleUser(id: string, checked: boolean) {
+        setSelectedIds((previous) => {
+            const next = new Set(previous);
+
+            if (checked) {
+                next.add(id);
+            } else {
+                next.delete(id);
+            }
+
+            return next;
+        });
+    }
+
+    const pageIds = findings.data.map((finding) => finding.id);
+
+    const selectedOnPage = pageIds.filter((id) => selectedIds.has(`${id}`));
+
+    function togglePage(checked: boolean) {
+        setSelectedIds((previous) => {
+            const next = new Set(previous);
+
+            for (const id of pageIds) {
+                if (checked) {
+                    next.add(`${id}`);
+                } else {
+                    next.delete(`${id}`);
+                }
+            }
+
+            return next;
+        });
+    }
+    const allSelected = pageIds.length > 0 && selectedOnPage.length === pageIds.length;
+
+    const partiallySelected = selectedOnPage.length > 0 && !allSelected;
+
+    function clearSelection() {
+        setSelectedIds(new Set());
+    }
+
+    function handleBulkDeleteFindings() {
+        router.post(
+            route('findings.deleted.destroy'),
+            {
+                finding_ids: [...selectedIds],
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    clearSelection();
+                },
+            },
+        );
+    }
+
     return (
         <>
             {withHeader && (
@@ -345,6 +403,14 @@ export default function TableFinding({
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
+                                {isDeleted && (
+                                    <TableHead className="text-muted-foreground w-12.5">
+                                        <Checkbox
+                                            checked={allSelected ? true : partiallySelected ? 'indeterminate' : false}
+                                            onCheckedChange={(checked) => togglePage(checked === true)}
+                                        />
+                                    </TableHead>
+                                )}
                                 <TableHead className="text-muted-foreground w-12.5">ID</TableHead>
                                 <TableHead className="text-muted-foreground w-12.5">#</TableHead>
                                 <TableHead className="text-muted-foreground">Area & Clause</TableHead>
@@ -363,162 +429,202 @@ export default function TableFinding({
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {findings.data?.map((finding: Finding) => (
-                                <TableRow
-                                    className={`${finding.inspector?.id === user?.id || finding.workCenter?.id === user?.work_center_id ? 'bg-green-200 dark:bg-green-900' : undefined} hover:bg-yellow-200 dark:hover:bg-orange-900`}
-                                    key={finding.id}
-                                >
-                                    <TableCell>{finding.id}</TableCell>
-                                    {can.close_finding ? (
-                                        <TableCell className="align-center">
-                                            <Checkbox
-                                                className={
-                                                    finding.status?.name.toLowerCase() === 'closed' ||
-                                                    (finding.gallery?.after && finding.gallery.after.length < 1)
-                                                        ? undefined
-                                                        : 'border-2 border-gray-400'
-                                                }
-                                                checked={finding.status?.name.toLowerCase() === 'closed'}
-                                                disabled={
-                                                    finding.status?.name.toLowerCase() === 'closed' ||
-                                                    (finding.gallery?.after && finding.gallery.after.length < 1)
-                                                }
-                                                onCheckedChange={(checked) => {
-                                                    if (checked) {
-                                                        handleCloseFinding(finding);
+                            {findings.data?.map((finding: Finding) => {
+                                const isSelected = selectedIds.has(`${finding.id}`);
+
+                                return (
+                                    <TableRow
+                                        className={`${finding.inspector?.id === user?.id || finding.workCenter?.id === user?.work_center_id ? 'bg-green-200 dark:bg-green-900' : undefined} hover:bg-yellow-200 dark:hover:bg-orange-900`}
+                                        key={finding.id}
+                                    >
+                                        {isDeleted && (
+                                            <TableCell>
+                                                <Checkbox
+                                                    checked={isSelected}
+                                                    onCheckedChange={(checked) => toggleUser(`${finding.id}`, checked === true)}
+                                                    aria-label={`Select ${user.name ?? user.email}`}
+                                                />
+                                            </TableCell>
+                                        )}
+                                        <TableCell>{finding.id}</TableCell>
+                                        {can.close_finding ? (
+                                            <TableCell className="align-center">
+                                                <Checkbox
+                                                    className={
+                                                        finding.status?.name.toLowerCase() === 'closed' ||
+                                                        (finding.gallery?.after && finding.gallery.after.length < 1)
+                                                            ? undefined
+                                                            : 'border-2 border-gray-400'
                                                     }
-                                                }}
-                                            />
-                                        </TableCell>
-                                    ) : (
-                                        <TableCell onClick={() => router.get(route(`${getEndpointFromFinding(finding)}.show`, finding.id))}>
-                                            <Info className="h-4 w-4 text-blue-500" />
-                                        </TableCell>
-                                    )}
-                                    <TableCell className="align-center">
-                                        <div className="flex flex-col gap-1">
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <span>{truncateText(finding.functionalLocation?.description ?? '', 20)}</span>
-                                                </TooltipTrigger>
-                                                <TooltipContent>{finding.functionalLocation?.code}</TooltipContent>
-                                            </Tooltip>
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <div className="text-muted-foreground flex gap-2 text-xs">
-                                                        <span>{finding?.clause?.code}</span>
-                                                        {finding?.type?.name && (
-                                                            <>
-                                                                {' - '}
-                                                                <span>{finding?.type?.name}</span>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                </TooltipTrigger>
-                                                <TooltipContent>{finding?.clause?.description}</TooltipContent>
-                                            </Tooltip>
-                                        </div>
-                                    </TableCell>
-
-                                    <FindingStatusCell className="hidden md:table-cell" finding={finding} />
-
-                                    {!isArchived && <FindingPriorityAndDueDateCell className="hidden md:table-cell" finding={finding} />}
-
-                                    <FindingDescriptionCell finding={finding} />
-
-                                    <FindingBeforeCell finding={finding} setSelectedImage={setSelectedImage} />
-
-                                    <FindingAfterCell finding={finding} setSelectedImage={setSelectedImage} />
-
-                                    <TableCell className="align-center hidden md:table-cell">
-                                        <p className="text-xs text-wrap">
-                                            {truncateText((!isDeleted ? finding.rectification_action : finding.deleted_reason) ?? '', 100)}
-                                        </p>
-                                    </TableCell>
-
-                                    <TableCell className="align-center text-xs">
-                                        <div className="grid grid-cols-1 gap-2">
-                                            <span>
-                                                {truncateText((!isDeleted ? finding?.inspector?.name : finding?.deletedBy?.name) ?? 'N/A', 15)}
-                                            </span>
-                                            <Tooltip>
-                                                <TooltipTrigger className="text-left">
-                                                    <span className="text-muted-foreground">
-                                                        {(!isDeleted ? finding?.created_at : finding?.deleted_at) ?? 'N/A'}
-                                                    </span>
-                                                </TooltipTrigger>
-                                                <TooltipContent>{finding?.created ?? '-'}</TooltipContent>
-                                            </Tooltip>
-                                        </div>
-                                    </TableCell>
-
-                                    {isArchived && (
-                                        <TableCell className="align-center text-xs">
-                                            <div className="grid grid-cols-1 gap-2">
-                                                <span>{truncateText(finding?.rectifier?.name ?? 'N/A', 15)}</span>
+                                                    checked={finding.status?.name.toLowerCase() === 'closed'}
+                                                    disabled={
+                                                        finding.status?.name.toLowerCase() === 'closed' ||
+                                                        (finding.gallery?.after && finding.gallery.after.length < 1)
+                                                    }
+                                                    onCheckedChange={(checked) => {
+                                                        if (checked) {
+                                                            handleCloseFinding(finding);
+                                                        }
+                                                    }}
+                                                />
+                                            </TableCell>
+                                        ) : (
+                                            <TableCell onClick={() => router.get(route(`${getEndpointFromFinding(finding)}.show`, finding.id))}>
+                                                <Info className="h-4 w-4 text-blue-500" />
+                                            </TableCell>
+                                        )}
+                                        <TableCell className="align-center">
+                                            <div className="flex flex-col gap-1">
                                                 <Tooltip>
-                                                    <TooltipTrigger className="text-left">
-                                                        <span className="text-muted-foreground">{finding?.closed_at ?? 'N/A'}</span>
+                                                    <TooltipTrigger asChild>
+                                                        <span>{truncateText(finding.functionalLocation?.description ?? '', 20)}</span>
                                                     </TooltipTrigger>
-                                                    <TooltipContent>{finding?.closed ?? '-'}</TooltipContent>
+                                                    <TooltipContent>{finding.functionalLocation?.code}</TooltipContent>
+                                                </Tooltip>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="text-muted-foreground flex gap-2 text-xs">
+                                                            <span>{finding?.clause?.code}</span>
+                                                            {finding?.type?.name && (
+                                                                <>
+                                                                    {' - '}
+                                                                    <span>{finding?.type?.name}</span>
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>{finding?.clause?.description}</TooltipContent>
                                                 </Tooltip>
                                             </div>
                                         </TableCell>
-                                    )}
 
-                                    <TableCell className="align-center text-xs">
-                                        <div className="flex flex-col gap-1">
-                                            <Tooltip>
-                                                <TooltipTrigger className="truncate text-left text-xs">
-                                                    {truncateText(finding.department?.code ?? 'N/A', 15)}
-                                                </TooltipTrigger>
-                                                <TooltipContent>{finding.department?.name}</TooltipContent>
-                                            </Tooltip>
-                                            <Tooltip>
-                                                <TooltipTrigger className="text-muted-foreground truncate text-left text-xs">
-                                                    {truncateText(finding.workCenter?.name ?? 'N/A', 15)}
-                                                </TooltipTrigger>
-                                                <TooltipContent>{finding.workCenter?.code ?? 'N/A'}</TooltipContent>
-                                            </Tooltip>
-                                        </div>
-                                    </TableCell>
+                                        <FindingStatusCell className="hidden md:table-cell" finding={finding} />
 
-                                    {mode === 'standalone' ? (
-                                        <TableCell className="text-right">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="size-8">
-                                                        <MoreHorizontalIcon />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    {finding.can?.show && (
-                                                        <DropdownMenuItem onClick={() => handleShowFinding(finding)}>
-                                                            <Info />
-                                                            Details
-                                                        </DropdownMenuItem>
-                                                    )}
+                                        {!isArchived && <FindingPriorityAndDueDateCell className="hidden md:table-cell" finding={finding} />}
 
-                                                    {!isDeleted ? (
-                                                        <>
-                                                            {finding.can?.update && (
-                                                                <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
-                                                                    <Edit />
-                                                                    Edit
-                                                                </DropdownMenuItem>
-                                                            )}
+                                        <FindingDescriptionCell finding={finding} />
 
-                                                            {finding.status?.name.toLowerCase() != 'closed' && (
-                                                                <ActionFindingDialog finding={finding}>
-                                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                                        <Wrench />
-                                                                        Resolve
+                                        <FindingBeforeCell finding={finding} setSelectedImage={setSelectedImage} />
+
+                                        <FindingAfterCell finding={finding} setSelectedImage={setSelectedImage} />
+
+                                        <TableCell className="align-center hidden md:table-cell">
+                                            <p className="text-xs text-wrap">
+                                                {truncateText((!isDeleted ? finding.rectification_action : finding.deleted_reason) ?? '', 100)}
+                                            </p>
+                                        </TableCell>
+
+                                        <TableCell className="align-center text-xs">
+                                            <div className="grid grid-cols-1 gap-2">
+                                                <span>
+                                                    {truncateText((!isDeleted ? finding?.inspector?.name : finding?.deletedBy?.name) ?? 'N/A', 15)}
+                                                </span>
+                                                <Tooltip>
+                                                    <TooltipTrigger className="text-left">
+                                                        <span className="text-muted-foreground">
+                                                            {(!isDeleted ? finding?.created_at : finding?.deleted_at) ?? 'N/A'}
+                                                        </span>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>{finding?.created ?? '-'}</TooltipContent>
+                                                </Tooltip>
+                                            </div>
+                                        </TableCell>
+
+                                        {isArchived && (
+                                            <TableCell className="align-center text-xs">
+                                                <div className="grid grid-cols-1 gap-2">
+                                                    <span>{truncateText(finding?.rectifier?.name ?? 'N/A', 15)}</span>
+                                                    <Tooltip>
+                                                        <TooltipTrigger className="text-left">
+                                                            <span className="text-muted-foreground">{finding?.closed_at ?? 'N/A'}</span>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>{finding?.closed ?? '-'}</TooltipContent>
+                                                    </Tooltip>
+                                                </div>
+                                            </TableCell>
+                                        )}
+
+                                        <TableCell className="align-center text-xs">
+                                            <div className="flex flex-col gap-1">
+                                                <Tooltip>
+                                                    <TooltipTrigger className="truncate text-left text-xs">
+                                                        {truncateText(finding.department?.code ?? 'N/A', 15)}
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>{finding.department?.name}</TooltipContent>
+                                                </Tooltip>
+                                                <Tooltip>
+                                                    <TooltipTrigger className="text-muted-foreground truncate text-left text-xs">
+                                                        {truncateText(finding.workCenter?.name ?? 'N/A', 15)}
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>{finding.workCenter?.code ?? 'N/A'}</TooltipContent>
+                                                </Tooltip>
+                                            </div>
+                                        </TableCell>
+
+                                        {mode === 'standalone' ? (
+                                            <TableCell className="text-right">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="size-8">
+                                                            <MoreHorizontalIcon />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        {finding.can?.show && (
+                                                            <DropdownMenuItem onClick={() => handleShowFinding(finding)}>
+                                                                <Info />
+                                                                Details
+                                                            </DropdownMenuItem>
+                                                        )}
+
+                                                        {!isDeleted ? (
+                                                            <>
+                                                                {finding.can?.update && (
+                                                                    <DropdownMenuItem onClick={() => handleEditFinding(finding)}>
+                                                                        <Edit />
+                                                                        Edit
                                                                     </DropdownMenuItem>
-                                                                </ActionFindingDialog>
-                                                            )}
+                                                                )}
 
-                                                            {finding.can?.delete && (
-                                                                <DeleteFindingDialog finding={finding} mode={mode}>
+                                                                {finding.status?.name.toLowerCase() != 'closed' && (
+                                                                    <ActionFindingDialog finding={finding}>
+                                                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                            <Wrench />
+                                                                            Resolve
+                                                                        </DropdownMenuItem>
+                                                                    </ActionFindingDialog>
+                                                                )}
+
+                                                                {finding.can?.delete && (
+                                                                    <DeleteFindingDialog finding={finding} mode={mode}>
+                                                                        <DropdownMenuItem
+                                                                            onSelect={(e) => e.preventDefault()}
+                                                                            className="text-red-600 focus:bg-red-50 focus:text-red-700"
+                                                                        >
+                                                                            <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
+                                                                            Delete
+                                                                        </DropdownMenuItem>
+                                                                    </DeleteFindingDialog>
+                                                                )}
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <ActionConfirm
+                                                                    action={() => handleRestorefinding(finding)}
+                                                                    title="Restore Finding"
+                                                                    description="Are you sure? This action will restored from deleted finding."
+                                                                    actionLabel="Restore"
+                                                                >
+                                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                                        <ArchiveRestore className="h-4 w-4" />
+                                                                        Restore
+                                                                    </DropdownMenuItem>
+                                                                </ActionConfirm>
+                                                                <ActionConfirm
+                                                                    action={() => handleForceDeletefinding(finding)}
+                                                                    title="Delete Finding"
+                                                                    description="Are you sure? This will permanently delete the finding and its images from the storage."
+                                                                >
                                                                     <DropdownMenuItem
                                                                         onSelect={(e) => e.preventDefault()}
                                                                         className="text-red-600 focus:bg-red-50 focus:text-red-700"
@@ -526,49 +632,22 @@ export default function TableFinding({
                                                                         <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
                                                                         Delete
                                                                     </DropdownMenuItem>
-                                                                </DeleteFindingDialog>
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <ActionConfirm
-                                                                action={() => handleRestorefinding(finding)}
-                                                                title="Restore Finding"
-                                                                description="Are you sure? This action will restored from deleted finding."
-                                                                actionLabel="Restore"
-                                                            >
-                                                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                                    <ArchiveRestore className="h-4 w-4" />
-                                                                    Restore
-                                                                </DropdownMenuItem>
-                                                            </ActionConfirm>
-                                                            <ActionConfirm
-                                                                action={() => handleForceDeletefinding(finding)}
-                                                                title="Delete Finding"
-                                                                description="Are you sure? This will permanently delete the finding and its images from the storage."
-                                                            >
-                                                                <DropdownMenuItem
-                                                                    onSelect={(e) => e.preventDefault()}
-                                                                    className="text-red-600 focus:bg-red-50 focus:text-red-700"
-                                                                >
-                                                                    <Trash2 className="h-4 w-4 text-red-500 focus:text-red-800" />
-                                                                    Delete
-                                                                </DropdownMenuItem>
-                                                            </ActionConfirm>
-                                                        </>
-                                                    )}
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
-                                    ) : (
-                                        <TableCell className="text-right">
-                                            <Button onClick={() => handleShowFinding(finding)} variant="ghost" size="icon" className="size-8">
-                                                <Info />
-                                            </Button>
-                                        </TableCell>
-                                    )}
-                                </TableRow>
-                            ))}
+                                                                </ActionConfirm>
+                                                            </>
+                                                        )}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        ) : (
+                                            <TableCell className="text-right">
+                                                <Button onClick={() => handleShowFinding(finding)} variant="ghost" size="icon" className="size-8">
+                                                    <Info />
+                                                </Button>
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                 </div>
@@ -592,6 +671,27 @@ export default function TableFinding({
             />
 
             {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />}
+
+            {selectedIds.size > 0 && (
+                <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
+                    <div className="bg-background flex items-center gap-3 rounded-xl border px-4 py-3 shadow-xl">
+                        <span className="text-sm font-medium whitespace-nowrap">{selectedIds.size} selected</span>
+
+                        <div className="bg-border h-5 w-px" />
+
+                        <ActionConfirm action={handleBulkDeleteFindings} actionLabel="Delete All">
+                            <Button size="sm" className="bg-red-500 text-white hover:bg-red-600">
+                                <Trash2 className="size-4" />
+                                Delete
+                            </Button>
+                        </ActionConfirm>
+
+                        <Button variant="ghost" size="icon" className="size-8" aria-label="Clear selection" onClick={clearSelection}>
+                            <X className="size-4" />
+                        </Button>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

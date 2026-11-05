@@ -42,6 +42,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('abnormalities/{finding}/close', [AbnormalityController::class, 'close'])->name('abnormalities.close');
     Route::get('abnormalities/{finding}/images/edit', [FindingImageController::class, 'edit'])->name('abnormalities.images.edit');
 
+    // DELETED
+    Route::post('findings/deleted/destroy', [AbnormalityController::class, 'bulkDelete'])->name('findings.deleted.destroy');
+
     // FINDING TYPE
     Route::get('finding-types/export', [FindingTypeController::class, 'export'])->name('finding-types.export');
     Route::resource('finding-types', FindingTypeController::class)->except(['show']);

@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Exports\FindingExport;
 use App\Http\Requests\Finding\Abnormality\StoreAbnormalityRequest;
 use App\Http\Requests\Finding\Abnormality\UpdateAbnormalityRequest;
+use App\Http\Requests\Finding\BulkDeleteFindingsRequest;
 use App\Models\Finding;
 use App\Models\FindingType;
+use Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 class AbnormalityController extends FindingController
 {
@@ -139,5 +143,47 @@ class AbnormalityController extends FindingController
         ];
 
         return Excel::download(new FindingExport($filters), 'Abnormalities_Reports_' . now()->format('Ymd_His') . '.xlsx');
+    }
+
+    public function bulkDelete(BulkDeleteFindingsRequest $request)
+    {
+        $validated = $request->validated();
+
+        $ids = $validated['finding_ids'];
+
+        Gate::authorize('bulkDelete', Finding::class);
+
+        try {
+            DB::transaction(function () use ($ids) {
+                $findings = Finding::onlyTrashed()
+                    ->whereIn('id', $ids)
+                    ->get();
+
+                // Ensure all submitted IDs exist as soft-deleted findings.
+                if ($findings->count() !== count($ids)) {
+                    throw ValidationException::withMessages([
+                        'finding_ids' => 'Some findings are not available for permanent deletion.',
+                    ]);
+                }
+
+                foreach ($findings as $finding) {
+                    Gate::authorize('forceDelete', $finding);
+
+                    $finding->forceDelete();
+                }
+            });
+
+            return back()->with('message', [
+                'type' => 'success',
+                'description' => 'Findings permanently deleted successfully.',
+            ]);
+        } catch (Throwable $e) {
+            report($e);
+
+            return back()->with('message', [
+                'type' => 'error',
+                'description' => 'Failed to permanently delete findings.',
+            ]);
+        }
     }
 }
