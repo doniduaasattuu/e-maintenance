@@ -43,7 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('abnormalities/{finding}/images/edit', [FindingImageController::class, 'edit'])->name('abnormalities.images.edit');
 
     // DELETED
-    Route::post('findings/deleted/destroy', [AbnormalityController::class, 'bulkDelete'])->name('findings.deleted.destroy');
+    Route::post('findings/bulk-delete', [AbnormalityController::class, 'bulkDelete'])->name('abnormalities.bulk-delete');
 
     // FINDING TYPE
     Route::get('finding-types/export', [FindingTypeController::class, 'export'])->name('finding-types.export');

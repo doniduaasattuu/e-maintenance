@@ -305,9 +305,10 @@ export default function TableFinding({
 
     function handleBulkDeleteFindings() {
         router.post(
-            route('findings.deleted.destroy'),
+            route('abnormalities.bulk-delete'),
             {
                 finding_ids: [...selectedIds],
+                force_delete: isDeleted,
             },
             {
                 preserveScroll: true,
@@ -403,7 +404,7 @@ export default function TableFinding({
                         <TableCaption className="pb-4 text-sm">{caption}</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                {isDeleted && can.bulk_delete_finding && (
+                                {(isDeleted || findingTypeCode === 'ABN') && can.bulk_delete_finding && (
                                     <TableHead className="text-muted-foreground w-12.5">
                                         <Checkbox
                                             checked={allSelected ? true : partiallySelected ? 'indeterminate' : false}
@@ -437,7 +438,7 @@ export default function TableFinding({
                                         className={`${finding.inspector?.id === user?.id || finding.workCenter?.id === user?.work_center_id ? 'bg-green-200 dark:bg-green-900' : undefined} hover:bg-yellow-200 dark:hover:bg-orange-900`}
                                         key={finding.id}
                                     >
-                                        {isDeleted && can.bulk_delete_finding && (
+                                        {(isDeleted || findingTypeCode === 'ABN') && can.bulk_delete_finding && (
                                             <TableCell>
                                                 <Checkbox
                                                     checked={isSelected}

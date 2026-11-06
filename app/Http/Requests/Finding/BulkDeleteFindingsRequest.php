@@ -24,6 +24,7 @@ class BulkDeleteFindingsRequest extends FormRequest
         return [
             'finding_ids'   => ['required', 'array', 'min:1'],
             'finding_ids.*' => ['integer', 'distinct', 'exists:findings,id'],
+            'force_delete' => ['required', 'boolean'],
         ];
     }
 }

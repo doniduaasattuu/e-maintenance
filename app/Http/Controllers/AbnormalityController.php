@@ -149,48 +149,81 @@ class AbnormalityController extends FindingController
 
     public function bulkDelete(BulkDeleteFindingsRequest $request)
     {
+        Gate::authorize('bulkDelete');
+
         $validated = $request->validated();
 
         $ids = $validated['finding_ids'];
-
-        Gate::authorize('bulkDelete');
+        $forceDelete = $validated['force_delete'] ?? false;
 
         try {
-            DB::transaction(function () use ($ids) {
-                $findings = Finding::onlyTrashed()
+            DB::transaction(function () use ($ids, $forceDelete) {
+                $findings = Finding::withTrashed()
                     ->whereIn('id', $ids)
                     ->get();
 
-                // Ensure all submitted IDs exist as soft-deleted findings.
+                // Ensure all submitted IDs exist.
                 if ($findings->count() !== count($ids)) {
-                    throw new Exception('Some findings are not available for permanent deletion.');
+                    throw new Exception('Some findings could not be found.');
                 }
 
                 foreach ($findings as $finding) {
-                    Gate::authorize('forceDelete', $finding);
+                    if ($forceDelete) {
+                        // Only allow permanent deletion of trashed findings.
+                        if (!$finding->trashed()) {
+                            throw new Exception(
+                                'Only deleted findings can be permanently deleted.'
+                            );
+                        }
 
-                    $directoryPath = 'images/findings/' . $finding->id;
+                        Gate::authorize('forceDelete', $finding);
 
-                    $finding->images()->delete();
+                        $directoryPath = 'images/findings/' . $finding->id;
 
-                    if (Storage::disk('public')->exists($directoryPath)) {
-                        Storage::disk('public')->deleteDirectory($directoryPath);
+                        $finding->images()->delete();
+
+                        $finding->forceDelete();
+
+                        // Delete physical files after successful database commit.
+                        DB::afterCommit(function () use ($directoryPath) {
+                            if (Storage::disk('public')->exists($directoryPath)) {
+                                Storage::disk('public')->deleteDirectory($directoryPath);
+                            }
+                        });
+                    } else {
+                        // Only allow soft deletion of active findings.
+                        if ($finding->trashed()) {
+                            throw new Exception(
+                                'Some findings have already been deleted.'
+                            );
+                        }
+
+                        Gate::authorize('delete', $finding);
+
+                        $finding->update([
+                            'deleted_by' => auth()->id(),
+                            'deleted_reason' => 'Bulk deletion',
+                        ]);
+
+                        $finding->delete();
                     }
-
-                    $finding->forceDelete();
                 }
             });
 
             return back()->with('message', [
                 'type' => 'success',
-                'description' => 'Findings permanently deleted successfully.',
+                'description' => $forceDelete
+                    ? 'Findings permanently deleted successfully.'
+                    : 'Findings deleted successfully.',
             ]);
         } catch (Throwable $e) {
             report($e);
 
             return back()->with('message', [
                 'type' => 'error',
-                'description' => 'Failed to permanently delete findings.',
+                'description' => $forceDelete
+                    ? 'Failed to permanently delete findings.'
+                    : 'Failed to delete findings.',
             ]);
         }
     }
